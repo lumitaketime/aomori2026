@@ -17,11 +17,9 @@
             --card-glass: rgba(255, 255, 255, 0.95);
             --primary-wood: #8D6E63;
             --secondary-wood: #A1887F;
-            --accent-blue: #78909C;
+            --accent-blue: #546E7A;
             --text-main: #4E342E;
-            --text-sub: #8D6E63;
             --shadow-card: 0 4px 15px rgba(141, 110, 99, 0.08);
-            --shadow-float: 0 10px 30px rgba(0,0,0,0.15);
             --safe-area-bottom: env(safe-area-inset-bottom);
         }
 
@@ -33,117 +31,110 @@
             background-image: radial-gradient(#D7CCC8 1px, transparent 1px);
             background-size: 20px 20px;
             color: var(--text-main);
-            margin: 0; padding: 0;
-            padding-bottom: calc(90px + var(--safe-area-bottom));
+            margin: 0; padding-bottom: calc(90px + var(--safe-area-bottom));
             overscroll-behavior-y: none;
         }
 
-        /* --- Smart Header --- */
+        /* --- 1. Header (Double Bar) --- */
         .hero-section {
             background: linear-gradient(180deg, rgba(0,0,0,0.1) 0%, var(--bg-color) 100%),
                         url('https://images.unsplash.com/photo-1548261320-56d15b021319?q=80&w=2574') center/cover;
-            padding: 20px;
-            padding-top: 60px;
-            border-radius: 0 0 30px 30px;
-            margin-bottom: 20px;
+            padding: 20px; padding-top: 50px; border-radius: 0 0 30px 30px;
         }
-
-        /* 智慧提醒氣泡 */
-        .smart-bubble {
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 15px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-            border: 1px solid rgba(255,255,255,0.6);
-            margin-top: 10px;
-            animation: float 3s ease-in-out infinite;
+        
+        .status-grid {
+            display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 15px;
         }
-        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-5px); } 100% { transform: translateY(0px); } }
-
-        .bubble-icon { font-size: 2rem; }
-        .bubble-content h3 { margin: 0; font-size: 1rem; color: var(--primary-wood); }
-        .bubble-content p { margin: 2px 0 0; font-size: 0.85rem; color: #666; }
+        .status-card {
+            background: rgba(255,255,255,0.85); backdrop-filter: blur(8px);
+            border-radius: 12px; padding: 8px; text-align: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1); border: 1px solid rgba(255,255,255,0.4);
+        }
+        .status-label { font-size: 0.7rem; color: #666; font-weight: bold; }
+        .status-val { font-size: 1rem; font-weight: 800; color: var(--text-main); margin-top: 2px; }
+        .status-icon { font-size: 1.2rem; margin-bottom: 2px; }
 
         /* --- View Toggle --- */
-        .view-toggle { display: flex; justify-content: center; gap: 10px; margin-bottom: 15px; }
+        .view-toggle { display: flex; justify-content: center; gap: 10px; margin: 15px 0; }
         .toggle-pill {
             padding: 6px 16px; border-radius: 20px; font-size: 0.9rem; font-weight: bold;
             background: #E0D8D6; color: #8D6E63; border: none; transition: 0.3s;
         }
         .toggle-pill.active { background: var(--primary-wood); color: white; box-shadow: 0 4px 10px rgba(141,110,99,0.3); }
 
-        /* --- Itinerary Card --- */
+        /* --- Itinerary --- */
         .day-tabs { display: flex; gap: 10px; overflow-x: auto; padding: 0 20px 10px; scrollbar-width: none; }
         .day-tab {
             background: white; padding: 8px 16px; border-radius: 12px; font-size: 0.9rem; white-space: nowrap;
-            color: var(--text-sub); box-shadow: var(--shadow-card); transition: 0.2s;
+            color: var(--secondary-wood); box-shadow: var(--shadow-card); transition: 0.2s;
         }
         .day-tab.active { background: var(--text-main); color: white; transform: scale(1.05); }
 
-        .itinerary-container { padding: 0 20px; }
+        .weather-advice-box {
+            background: linear-gradient(135deg, #ECEFF1, #CFD8DC);
+            border-radius: 16px; padding: 15px; margin: 0 20px 20px;
+            border-left: 5px solid var(--accent-blue);
+            box-shadow: var(--shadow-card);
+        }
+        .wa-title { font-weight: bold; color: var(--accent-blue); font-size: 0.9rem; margin-bottom: 5px; display: flex; align-items: center; gap: 5px; }
+        .wa-text { font-size: 0.85rem; line-height: 1.5; color: #455A64; }
+
         .event-card {
-            background: white; border-radius: 18px; padding: 15px; margin-bottom: 15px;
-            display: flex; align-items: center; gap: 15px; position: relative;
+            background: white; border-radius: 18px; padding: 15px; margin: 0 20px 15px;
+            display: flex; gap: 15px; position: relative;
             box-shadow: var(--shadow-card); cursor: pointer; transition: transform 0.2s;
         }
         .event-card:active { transform: scale(0.98); }
-        
-        .event-weather {
-            position: absolute; top: 10px; right: 10px; 
-            font-size: 0.75rem; color: var(--accent-blue); background: #E3F2FD;
-            padding: 2px 6px; border-radius: 6px; font-weight: bold;
-        }
-
-        .event-thumb { width: 60px; height: 60px; border-radius: 12px; object-fit: cover; background: #eee; flex-shrink: 0; }
-        .event-info { flex: 1; }
+        .event-thumb { width: 70px; height: 70px; border-radius: 12px; object-fit: cover; background: #eee; flex-shrink: 0; }
+        .event-info { flex: 1; min-width: 0; }
         .event-time { font-size: 0.8rem; font-weight: 700; color: white; background: var(--secondary-wood); padding: 2px 8px; border-radius: 6px; display: inline-block; margin-bottom: 4px; }
-        .event-title { font-size: 1.05rem; font-weight: 700; color: var(--text-main); }
-        
-        /* --- Expenses (New Layout) --- */
-        .expense-header { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 20px; }
-        .stat-card {
-            background: white; padding: 10px 5px; border-radius: 12px; text-align: center;
-            box-shadow: var(--shadow-card);
+        .event-title { font-size: 1.05rem; font-weight: 700; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .event-meta { font-size: 0.85rem; color: #888; margin-top: 4px; display: flex; align-items: center; gap: 5px; }
+
+        /* Transport Card Variant */
+        .event-card.transport {
+            background: #FFF8E1; border: 1px dashed #FFB74D;
         }
-        .stat-label { font-size: 0.75rem; color: #999; font-weight: bold; }
-        .stat-val { font-size: 0.95rem; font-weight: 800; color: var(--primary-wood); }
+        .trans-badge { background: #FFB74D; color: #fff; font-size: 0.7rem; padding: 2px 6px; border-radius: 4px; }
+
+        /* --- Expenses --- */
+        .rate-banner {
+            background: var(--text-main); color: white; padding: 15px; border-radius: 16px;
+            text-align: center; margin: 0 20px 20px; box-shadow: 0 5px 15px rgba(78, 52, 46, 0.3);
+        }
+        .rate-val { font-size: 1.5rem; font-weight: bold; margin: 5px 0; }
+        .rate-sub { font-size: 0.8rem; opacity: 0.8; }
 
         .add-box {
-            background: white; padding: 15px; border-radius: 16px; box-shadow: var(--shadow-card); margin-bottom: 20px;
+            background: white; padding: 15px; border-radius: 16px; margin: 0 20px 20px;
+            box-shadow: var(--shadow-card);
         }
         .form-row { display: flex; gap: 10px; margin-bottom: 10px; }
         .form-input { 
             border: 1px solid #eee; padding: 12px; border-radius: 10px; font-size: 1rem; width: 100%; outline: none; background: #FAFAFA;
         }
-        .currency-switch {
-            display: flex; background: #eee; border-radius: 10px; padding: 2px;
-        }
+        .currency-switch { display: flex; background: #eee; border-radius: 10px; padding: 2px; flex: 1; }
         .curr-opt {
-            flex: 1; text-align: center; padding: 8px; border-radius: 8px; font-size: 0.8rem; font-weight: bold; color: #888; transition: 0.3s;
+            flex: 1; text-align: center; padding: 10px; border-radius: 8px; font-size: 0.8rem; font-weight: bold; color: #888; transition: 0.3s;
         }
         .curr-opt.active { background: white; color: var(--text-main); box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
         .btn-save { background: var(--primary-wood); color: white; width: 100%; border: none; padding: 12px; border-radius: 10px; font-weight: bold; font-size: 1rem; }
 
-        /* --- Translation Tools --- */
-        .tools-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
+        /* --- Tools --- */
+        .tools-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 0 20px; }
         .tool-card {
             background: white; border-radius: 16px; padding: 20px 10px; text-align: center;
-            box-shadow: var(--shadow-card); cursor: pointer; transition: 0.2s;
-            border: 2px solid transparent;
+            box-shadow: var(--shadow-card); cursor: pointer;
         }
-        .tool-card:active { transform: scale(0.95); border-color: var(--primary-wood); }
         .tool-icon { font-size: 2rem; display: block; margin-bottom: 8px; }
         .tool-text { font-weight: bold; font-size: 0.9rem; color: var(--text-main); }
         
         .custom-trans-box {
-            background: white; padding: 15px; border-radius: 16px; box-shadow: var(--shadow-card); display: flex; gap: 10px;
+            background: white; padding: 15px; border-radius: 16px; margin: 0 20px 20px;
+            box-shadow: var(--shadow-card); display: flex; gap: 10px;
         }
-        
-        /* --- Modal (Common) --- */
+
+        /* --- Modals --- */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.6); z-index: 2000; opacity: 0; visibility: hidden; transition: 0.3s;
@@ -151,16 +142,7 @@
         }
         .modal-overlay.open { opacity: 1; visibility: visible; }
         
-        /* Detail Modal (Bottom Sheet) */
-        .detail-modal {
-            position: fixed; bottom: 0; left: 0; width: 100%; height: 85vh;
-            background: #FAF9F6; border-radius: 30px 30px 0 0; z-index: 2100;
-            transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            overflow-y: auto; display: flex; flex-direction: column;
-        }
-        .detail-modal.open { transform: translateY(0); }
-        
-        /* Card Modal (Center Pop) */
+        /* Card Modal (Translation) */
         .card-modal {
             position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9);
             width: 90%; max-width: 350px; background: white; border-radius: 20px; padding: 30px;
@@ -168,11 +150,23 @@
             box-shadow: 0 10px 40px rgba(0,0,0,0.3);
         }
         .card-modal.open { transform: translate(-50%, -50%) scale(1); opacity: 1; visibility: visible; }
-        .big-text { font-size: 2.5rem; font-weight: 900; color: #333; line-height: 1.3; margin: 20px 0; word-break: break-all; }
-        .sub-text { color: #888; font-size: 1rem; margin-bottom: 20px; }
+        .big-text { font-size: 2rem; font-weight: 900; color: #333; line-height: 1.3; margin: 20px 0; word-break: break-all; }
+        
+        /* Detail Modal */
+        .detail-modal {
+            position: fixed; bottom: 0; left: 0; width: 100%; height: 85vh;
+            background: #FAF9F6; border-radius: 30px 30px 0 0; z-index: 2100;
+            transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            overflow-y: auto; display: flex; flex-direction: column;
+        }
+        .detail-modal.open { transform: translateY(0); }
+        .modal-hero { height: 250px; width: 100%; object-fit: cover; }
+        .modal-content { padding: 25px; }
+        .action-btn { padding: 12px; border-radius: 12px; border: none; font-weight: bold; display: flex; justify-content: center; gap: 8px; text-decoration: none; margin-bottom: 10px;}
+        .btn-google { background: #E3F2FD; color: #1565C0; width: 100%; }
 
-        /* --- Helper --- */
-        .tab-content { display: none; padding: 20px; animation: fadeIn 0.3s; }
+        /* --- Nav --- */
+        .tab-content { display: none; padding-bottom: 20px; animation: fadeIn 0.3s; }
         .tab-content.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
@@ -185,76 +179,68 @@
         }
         .nav-item { color: rgba(255,255,255,0.5); font-size: 1.4rem; padding: 10px; transition: 0.3s; position: relative; }
         .nav-item.active { color: #fff; transform: translateY(-3px); }
-        
-        /* Modal Detail Styles */
-        .modal-hero { height: 250px; width: 100%; object-fit: cover; mask-image: linear-gradient(to bottom, black 80%, transparent 100%); }
-        .modal-content { padding: 0 25px 40px; margin-top: -40px; position: relative; }
-        .modal-title { font-size: 1.8rem; font-weight: 800; margin-bottom: 15px; color: #3E2723; }
-        .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
-        .action-btn { padding: 12px; border-radius: 12px; border: none; font-weight: bold; display: flex; justify-content: center; gap: 8px; text-decoration: none; }
-        .btn-google { background: #E3F2FD; color: #1565C0; }
-        .btn-web { background: #F3E5F5; color: #7B1FA2; }
-        .info-box { background: white; padding: 20px; border-radius: 16px; border-left: 4px solid var(--secondary-wood); margin-bottom: 20px; box-shadow: var(--shadow-card); }
     </style>
 </head>
 <body>
 
-    <!-- 1. HEADER & SMART WIDGET -->
+    <!-- HEADER: Countdown & Weather -->
     <header class="hero-section">
         <h1 style="color:#3E2723; margin:0;">青森函館冬旅</h1>
-        <div style="font-size:0.9rem; color:#5D4037;">2026.02.02 - 02.07</div>
+        <div style="font-size:0.9rem; color:#5D4037; margin-bottom:15px;">2026.02.02 - 02.07</div>
 
-        <!-- Smart Bubble (JS updates this) -->
-        <div class="smart-bubble" id="smart-bubble">
-            <div class="bubble-icon" id="bubble-icon">☀️</div>
-            <div class="bubble-content">
-                <h3 id="bubble-title">載入中...</h3>
-                <p id="bubble-desc">正在取得當地資訊</p>
+        <div class="status-grid">
+            <div class="status-card">
+                <div class="status-icon">⏳</div>
+                <div class="status-label">倒數</div>
+                <div class="status-val" id="countdown-days">--</div>
+            </div>
+            <div class="status-card">
+                <div class="status-icon">🌡️</div>
+                <div class="status-label">函館/青森</div>
+                <div class="status-val" id="weather-now">--°</div>
+            </div>
+            <div class="status-card">
+                <div class="status-icon">💴</div>
+                <div class="status-label">JPY 匯率</div>
+                <div class="status-val" id="rate-mini">0.22</div>
             </div>
         </div>
     </header>
 
-    <!-- 2. TAB: ITINERARY -->
-    <div id="tab-itinerary" class="tab-content active" style="padding:0;">
-        <div style="padding:0 20px;">
-            <div class="view-toggle">
-                <button class="toggle-pill active" onclick="setViewMode('day', this)">分日檢視</button>
-                <button class="toggle-pill" onclick="setViewMode('all', this)">總覽模式</button>
-            </div>
+    <!-- TAB 1: ITINERARY -->
+    <div id="tab-itinerary" class="tab-content active">
+        <div class="view-toggle">
+            <button class="toggle-pill active" onclick="setViewMode('day', this)">分日檢視</button>
+            <button class="toggle-pill" onclick="setViewMode('all', this)">總覽模式</button>
         </div>
 
         <div class="day-tabs" id="day-tabs-container"></div>
-        <div id="itinerary-list" class="itinerary-container"></div>
+        <div id="itinerary-content"></div>
     </div>
 
-    <!-- 3. TAB: EXPENSES -->
+    <!-- TAB 2: EXPENSES -->
     <div id="tab-expenses" class="tab-content">
-        <h2 style="margin-top:0;">記帳 (雙幣別)</h2>
+        <div class="rate-banner">
+            <div style="font-size:0.8rem; opacity:0.8;">目前即時匯率</div>
+            <div class="rate-val" id="rate-big">0.22</div>
+            <div class="rate-sub">1 JPY ≈ 0.22 TWD</div>
+        </div>
         
-        <div class="expense-header">
-            <div class="stat-card">
-                <div class="stat-label">YK 代墊</div>
-                <div class="stat-val" id="total-yk">$0</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-label">YY 代墊</div>
-                <div class="stat-val" id="total-yy">$0</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-label">YS 代墊</div>
-                <div class="stat-val" id="total-ys">$0</div>
-            </div>
+        <div style="padding:0 20px; margin-bottom:15px; display:flex; justify-content:space-between; font-size:0.9rem; color:#666;">
+            <span>YK: <b id="total-yk">$0</b></span>
+            <span>YY: <b id="total-yy">$0</b></span>
+            <span>YS: <b id="total-ys">$0</b></span>
         </div>
 
         <div class="add-box">
             <div class="form-row">
-                <input type="text" id="ex-name" class="form-input" placeholder="項目名稱 (如: 晚餐)">
+                <input type="text" id="ex-name" class="form-input" placeholder="項目 (如: 晚餐)">
             </div>
             <div class="form-row">
                 <input type="number" id="ex-price" class="form-input" placeholder="金額" style="flex:2;">
-                <div class="currency-switch" style="flex:1;">
-                    <div class="curr-opt active" onclick="setCurrency('TWD', this)">TWD</div>
-                    <div class="curr-opt" onclick="setCurrency('JPY', this)">JPY</div>
+                <div class="currency-switch">
+                    <div class="curr-opt active" onclick="setCurrency('JPY', this)">JPY</div>
+                    <div class="curr-opt" onclick="setCurrency('TWD', this)">TWD</div>
                 </div>
             </div>
             <div class="form-row">
@@ -264,38 +250,37 @@
                     <option value="YS">YS 付款</option>
                 </select>
             </div>
-            <div style="font-size:0.8rem; color:#888; margin-bottom:10px; text-align:right;">
-                目前匯率: 1 JPY ≈ <span id="rate-label">0.22</span> TWD
-            </div>
             <button class="btn-save" onclick="addExpense()">+ 記一筆</button>
         </div>
 
-        <div id="expense-list"></div>
+        <div id="expense-list" style="padding:0 20px;"></div>
     </div>
 
-    <!-- 4. TAB: TOOLS (TRANSLATION) -->
+    <!-- TAB 3: TOOLS (TRANSLATION) -->
     <div id="tab-tools" class="tab-content">
-        <h2 style="margin-top:0;">溝通翻譯</h2>
+        <h2 style="margin:0 0 15px 20px;">溝通翻譯</h2>
         
-        <!-- 自訂輸入 (產生大字卡) -->
         <div class="custom-trans-box">
-            <input type="text" id="custom-text" class="form-input" placeholder="輸入你想說的中文...">
-            <button class="btn-save" style="width:auto; padding:0 20px;" onclick="showCustomCard()">
-                顯示大字
+            <input type="text" id="custom-text" class="form-input" placeholder="輸入中文...">
+            <button class="btn-save" style="width:auto; padding:0 20px;" onclick="translateCustom()">
+                <i class="fa-solid fa-language"></i> 翻日文
             </button>
         </div>
 
-        <!-- 預設常用卡片 -->
         <div class="tools-grid">
-            <div class="tool-card" onclick="showCard('すみません、トイレはどこですか？', '不好意思，請問廁所在哪裡？')">
-                <span class="tool-icon">🚻</span>
-                <span class="tool-text">找廁所</span>
+            <div class="tool-card" onclick="showCard('豚肉は食べられません（魚介類は大丈夫です）', '我不吃肉類 (海鮮可以)')">
+                <span class="tool-icon">🐟</span>
+                <span class="tool-text">不吃肉(海鮮可)</span>
             </div>
             <div class="tool-card" onclick="showCard('お会計をお願いします', '麻煩結帳')">
                 <span class="tool-icon">💴</span>
                 <span class="tool-text">結帳</span>
             </div>
-            <div class="tool-card" onclick="showCard('これをお願いします', '我要這個 (指菜單)')">
+            <div class="tool-card" onclick="showCard('すみません、トイレはどこですか？', '請問廁所在哪裡？')">
+                <span class="tool-icon">🚻</span>
+                <span class="tool-text">找廁所</span>
+            </div>
+            <div class="tool-card" onclick="showCard('これをお願いします', '我要這個 (指)')">
                 <span class="tool-icon">👈</span>
                 <span class="tool-text">我要這個</span>
             </div>
@@ -303,50 +288,38 @@
                 <span class="tool-icon">📸</span>
                 <span class="tool-text">幫忙拍照</span>
             </div>
-            <div class="tool-card" onclick="showCard('予約しています', '我有預約')">
-                <span class="tool-icon">📅</span>
-                <span class="tool-text">我有預約</span>
-            </div>
-            <div class="tool-card" onclick="showCard('袋はいりません', '不用塑膠袋')">
+            <div class="tool-card" onclick="showCard('袋はいりません', '不用袋子')">
                 <span class="tool-icon">🛍️</span>
                 <span class="tool-text">不用袋子</span>
-            </div>
-             <div class="tool-card" onclick="showCard('豚肉は入っていますか？', '請問這裡面有豬肉嗎？')">
-                <span class="tool-icon">🐷</span>
-                <span class="tool-text">不吃豬肉</span>
-            </div>
-            <div class="tool-card" onclick="showCard('おすすめは何ですか？', '請問推薦什麼？')">
-                <span class="tool-icon">👍</span>
-                <span class="tool-text">推薦什麼</span>
             </div>
         </div>
     </div>
 
     <!-- MODALS -->
     <div class="modal-overlay" id="modal-overlay" onclick="closeAllModals()"></div>
-    
-    <!-- Detail Modal (Bottom Sheet) -->
+
+    <!-- Card Modal (Trans) -->
+    <div class="card-modal" id="card-modal">
+        <div class="sub-text" id="card-cn">中文</div>
+        <div class="big-text" id="card-jp">Loading...</div>
+        <button class="btn-save" onclick="closeAllModals()">關閉</button>
+    </div>
+
+    <!-- Detail Modal -->
     <div class="detail-modal" id="detail-modal">
         <button onclick="closeAllModals()" style="position:absolute; top:20px; right:20px; z-index:2200; width:36px; height:36px; border-radius:50%; border:none; box-shadow:0 4px 10px rgba(0,0,0,0.1);">✕</button>
         <img src="" id="modal-img" class="modal-hero">
         <div class="modal-content">
-            <div class="modal-title" id="modal-title">Title</div>
-            <div class="action-grid">
-                <a href="#" target="_blank" id="btn-map" class="action-btn btn-google"><i class="fa-solid fa-location-dot"></i> Google 導航</a>
-                <a href="#" target="_blank" id="btn-web" class="action-btn btn-web"><i class="fa-solid fa-globe"></i> 官方網站</a>
-            </div>
-            <div class="info-box">
-                <div style="font-size:0.85rem; color:#999; font-weight:bold; margin-bottom:5px;">詳細攻略</div>
-                <div style="line-height:1.6; white-space:pre-line; color:#555;" id="modal-desc"></div>
+            <h2 id="modal-title" style="margin-top:0;">Title</h2>
+            <div id="modal-meta" style="color:#666; margin-bottom:15px;">Time</div>
+            <a href="#" target="_blank" id="btn-map" class="action-btn btn-google">
+                <i class="fa-solid fa-location-dot"></i> Google Maps 導航
+            </a>
+            <div style="background:white; padding:15px; border-radius:12px; margin-top:15px; border-left:4px solid var(--secondary-wood);">
+                <div style="font-weight:bold; color:#999; font-size:0.8rem; margin-bottom:5px;">詳細攻略</div>
+                <div id="modal-desc" style="line-height:1.6; color:#444; white-space:pre-line;"></div>
             </div>
         </div>
-    </div>
-
-    <!-- Card Modal (Center Translation) -->
-    <div class="card-modal" id="card-modal">
-        <div class="sub-text" id="card-cn">中文意思</div>
-        <div class="big-text" id="card-jp">日本語</div>
-        <button class="btn-save" onclick="closeAllModals()">關閉</button>
     </div>
 
     <!-- NAV -->
@@ -357,85 +330,98 @@
     </div>
 
     <script>
-        // --- DATA: 行程資料 (含每日天氣預測) ---
+        // --- DATA ---
         const tripData = [
             {
-                day: 1, date: "2/2 (一)", title: "函館抵達", weather: "☁️ -2°C",
+                day: 1, date: "2/2 (一)", title: "函館抵達",
+                weatherAdvice: "☀️ 早晚溫差大｜函館氣溫約 -2°C，風大。\n建議：抵達時請先將帽子、手套、圍巾戴好再走出機場。晚上看夜景非常冷，暖暖包請貼好。",
                 events: [
-                    { time: "11:10", title: "抵達函館機場", icon: "✈️", loc: "函館空港", img: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=800", url: "https://airport.ne.jp/ch_t/", desc: "入境後領取行李，直接前往計程車乘車處。戶外溫度低，請先穿好外套。" },
-                    { time: "13:15", title: "UNIQLO 採購", icon: "🛍️", loc: "UNIQLO 函館昭和タウンプラザ店", img: "https://images.unsplash.com/photo-1542060748-10c28b62716f?q=80&w=800", url: "https://map.uniqlo.com/jp/ja/detail/10101377", desc: "購買 Heattech 發熱衣、防風褲。旁邊有超市可買補給品。" },
-                    { time: "16:00", title: "金森紅磚倉庫", icon: "🧱", loc: "金森赤レンガ倉庫", img: "https://images.unsplash.com/photo-1579500057271-9c6a71cb069b?q=80&w=800", url: "https://hakodate-kanemori.com/tw", desc: "傍晚適合拍照。海風大請注意保暖。推薦去 Snaffle's 吃起司蛋糕。" },
-                    { time: "17:00", title: "函館山夜景", icon: "🌃", loc: "函館山ロープウェイ", img: "https://images.unsplash.com/photo-1532236204992-f5e85c024202?q=80&w=800", url: "https://334.co.jp/cht/", desc: "搭乘纜車上山。觀景台戶外風大，建議停留 30 分鐘即可。" }
+                    { time: "11:10", title: "抵達函館機場", type: "transport", icon: "✈️", loc: "函館空港", img: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=800", desc: "入境後直接前往計程車乘車處。" },
+                    { time: "11:40", title: "計程車前往 UNIQLO", type: "transport", icon: "🚕", loc: "UNIQLO 函館昭和タウンプラザ店", img: "https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?q=80&w=800", desc: "車程約 20 分鐘。車資預估 3000 日圓。" },
+                    { time: "13:15", title: "UNIQLO 採購", type: "spot", icon: "🛍️", loc: "UNIQLO 函館昭和タウンプラザ店", img: "https://images.unsplash.com/photo-1542060748-10c28b62716f?q=80&w=800", desc: "必買：Heattech 發熱衣、防風褲。" },
+                    { time: "17:00", title: "函館山夜景", type: "spot", icon: "🌃", loc: "函館山ロープウェイ", img: "https://images.unsplash.com/photo-1532236204992-f5e85c024202?q=80&w=800", desc: "百萬夜景。觀景台風大，建議停留 30 分鐘。" }
                 ]
             },
             {
-                day: 2, date: "2/3 (二)", title: "移動至青森", weather: "❄️ -4°C",
+                day: 2, date: "2/3 (二)", title: "移動至青森",
+                weatherAdvice: "❄️ 降雪機率高｜青森氣溫約 -4°C。\n建議：今日長時間在戶外移動，鞋子務必防滑防水。美術館附近可能積雪較深。",
                 events: [
-                    { time: "08:00", title: "函館朝市", icon: "🦑", loc: "函館朝市", img: "https://images.unsplash.com/photo-1559339352-11d035aa65de?q=80&w=800", url: "http://www.hakodate-asaichi.com/", desc: "必玩：釣活烏賊。推薦早餐：海鮮丼 (きくよ食堂)。" },
-                    { time: "14:40", title: "青森縣立美術館", icon: "🎨", loc: "青森県立美術館", img: "https://images.unsplash.com/photo-1629012435532-6d2a452d765d?q=80&w=800", url: "https://www.aomori-museum.jp/tw/", desc: "必看奈良美智「青森犬」。閉館時間 17:00，請抓緊時間參觀。" },
-                    { time: "18:00", title: "青森扇貝小屋", icon: "🐚", loc: "あおもり帆立小屋", img: "https://images.unsplash.com/photo-1625937759425-420008064b32?q=80&w=800", url: "https://aomori-hotategoya.com/", desc: "體驗釣扇貝 (500日圓)。釣到可選刺身、炭烤或握壽司。" }
+                    { time: "08:00", title: "函館朝市", type: "spot", icon: "🦑", loc: "函館朝市", img: "https://images.unsplash.com/photo-1559339352-11d035aa65de?q=80&w=800", desc: "體驗釣活烏賊。" },
+                    { time: "10:00", title: "新幹線 往青森", type: "transport", icon: "🚅", loc: "新函館北斗駅", img: "https://images.unsplash.com/photo-1512423249052-4467554e4772?q=80&w=800", desc: "【Hayabusa 18號】\n新函館北斗 -> 新青森\n預計 11:05 抵達。請提早 20 分鐘進站。" },
+                    { time: "14:40", title: "青森縣立美術館", type: "spot", icon: "🎨", loc: "青森県立美術館", img: "https://images.unsplash.com/photo-1629012435532-6d2a452d765d?q=80&w=800", desc: "必看：青森犬。17:00 閉館。" }
                 ]
             },
             {
-                day: 3, date: "2/4 (三)", title: "暖爐列車", weather: "❄️ -3°C",
+                day: 3, date: "2/4 (三)", title: "暖爐列車",
+                weatherAdvice: "☁️ 多雲時晴｜五所川原 -3°C。\n建議：暖爐列車車廂內非常溫暖（有炭火爐），建議穿容易穿脫的外套。",
                 events: [
-                    { time: "10:15", title: "ELM 購物中心", icon: "🛒", loc: "ELM Shopping Center", img: "https://images.unsplash.com/photo-1519567241046-7f570eee3d9f?q=80&w=800", url: "https://elm-no-machi.jp/", desc: "3COINS+plus 採購小物。限時 35 分鐘，買完直奔車站。" },
-                    { time: "12:30", title: "津輕暖爐列車", icon: "🔥", loc: "津軽五所川原駅", img: "https://images.unsplash.com/photo-1475738972911-5b44ce984c42?q=80&w=800", url: "https://tsutetsu.com/stove.html", desc: "必買：烤魷魚 (Surume)。車廂內很溫暖，可以脫外套。" },
-                    { time: "15:30", title: "藤田紀念庭園", icon: "🍎", loc: "藤田記念庭園", img: "https://images.unsplash.com/photo-1568285908272-98c94625579d?q=80&w=800", url: "http://www.hirosakipark.or.jp/hujita/", desc: "大正浪漫喫茶室，務必在 16:00 前點餐。必吃弘前蘋果派。" }
+                    { time: "09:00", title: "租車自駕", type: "transport", icon: "🚗", loc: "JR駅レンタカー青森営業所", img: "https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?q=80&w=800", desc: "取車：4WD 雪胎。檢查車身刮痕。" },
+                    { time: "12:30", title: "津輕暖爐列車", type: "spot", icon: "🔥", loc: "津軽五所川原駅", img: "https://images.unsplash.com/photo-1475738972911-5b44ce984c42?q=80&w=800", desc: "必買烤魷魚。車票+暖爐券。" },
+                    { time: "15:30", title: "藤田紀念庭園", type: "spot", icon: "🍎", loc: "藤田記念庭園", img: "https://images.unsplash.com/photo-1568285908272-98c94625579d?q=80&w=800", desc: "16:00 前點餐。必吃弘前蘋果派。" }
                 ]
             },
             {
-                day: 4, date: "2/5 (四)", title: "樹冰與星野", weather: "🌬️ -8°C",
+                day: 4, date: "2/5 (四)", title: "樹冰與星野",
+                weatherAdvice: "🌬️ 強風酷寒｜八甲田山頂 -10°C。\n建議：山頂體感極冷，必須全副武裝（毛帽、手套、防風層）。若風大纜車停駛，請執行 B 計畫。",
                 events: [
-                    { time: "10:40", title: "八甲田樹冰", icon: "❄️", loc: "八甲田ロープウェー", img: "https://images.unsplash.com/photo-1483921020237-2ff51e8e4b22?q=80&w=800", url: "http://www.hakkoda-ropeway.jp/", desc: "山頂極冷，務必戴手套、帽子、圍巾。若風大纜車停駛，改去馬門滑雪場。" },
-                    { time: "17:30", title: "星野青森屋", icon: "🏨", loc: "星野リゾート 青森屋", img: "https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?q=80&w=800", url: "https://hoshinoresorts.com/zh_tw/hotels/aomoriya/", desc: "入住後先預約回程接駁。晚餐 Nore Sore 食堂吃到飽。" }
+                    { time: "09:30", title: "開車前往八甲田", type: "transport", icon: "🚗", loc: "八甲田ロープウェー", img: "https://images.unsplash.com/photo-1506079932028-11f67f6b95b4?q=80&w=800", desc: "山路請小心打滑。車程約 1 小時 15 分。" },
+                    { time: "10:40", title: "八甲田樹冰", type: "spot", icon: "❄️", loc: "八甲田ロープウェー", img: "https://images.unsplash.com/photo-1483921020237-2ff51e8e4b22?q=80&w=800", desc: "Snow Monsters。若纜車停駛，改去馬門滑雪場。" },
+                    { time: "17:30", title: "星野青森屋", type: "spot", icon: "🏨", loc: "星野リゾート 青森屋", img: "https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?q=80&w=800", desc: "Check-in。晚餐 Nore Sore 食堂。" }
                 ]
             },
             {
-                day: 5, date: "2/6 (五)", title: "星野全日", weather: "🌤️ -5°C",
+                day: 5, date: "2/6 (五)", title: "星野全日",
+                weatherAdvice: "🌤️ 舒適冬日｜三澤市 -5°C。\n建議：主要在飯店與八食中心室內活動，穿著輕鬆保暖即可。",
                 events: [
-                    { time: "09:00", title: "浮湯溫泉", icon: "♨️", loc: "星野リゾート 青森屋", img: "https://images.unsplash.com/photo-1519711683935-717e1345d355?q=80&w=800", url: "https://hoshinoresorts.com/zh_tw/hotels/aomoriya/hotsprings/", desc: "露天溫泉，周圍有睡魔燈籠裝飾。早上人少適合拍照 (注意隱私)。" },
-                    { time: "11:30", title: "八食中心", icon: "🐟", loc: "八食センター", img: "https://images.unsplash.com/photo-1534483509719-3feaee7c30da?q=80&w=800", url: "https://www.849net.com/", desc: "七輪村炭烤海鮮。購買食材後租用炭火爐現烤。" },
-                    { time: "20:00", title: "陸奧祭典屋", icon: "🥁", loc: "星野リゾート 青森屋", img: "https://images.unsplash.com/photo-1516280440614-6697288d5d38?q=80&w=800", url: "https://hoshinoresorts.com/zh_tw/hotels/aomoriya/activities/show/", desc: "展現青森四大祭典的表演，氣氛熱烈，需預約。" }
+                    { time: "09:00", title: "浮湯溫泉", type: "spot", icon: "♨️", loc: "星野リゾート 青森屋", img: "https://images.unsplash.com/photo-1519711683935-717e1345d355?q=80&w=800", desc: "露天風呂。" },
+                    { time: "11:30", title: "八食中心", type: "spot", icon: "🐟", loc: "八食センター", img: "https://images.unsplash.com/photo-1534483509719-3feaee7c30da?q=80&w=800", desc: "七輪村炭烤海鮮午餐。" },
+                    { time: "20:00", title: "陸奧祭典屋", type: "spot", icon: "🥁", loc: "星野リゾート 青森屋", img: "https://images.unsplash.com/photo-1516280440614-6697288d5d38?q=80&w=800", desc: "睡魔祭表演，需預約。" }
                 ]
             },
             {
-                day: 6, date: "2/7 (六)", title: "安全返程", weather: "☁️ -3°C",
+                day: 6, date: "2/7 (六)", title: "安全返程",
+                weatherAdvice: "☁️ 陰天｜青森市 -3°C。\n建議：回程行李較重，注意機場地滑。請提早 2.5 小時抵達機場。",
                 events: [
-                    { time: "13:00", title: "青森機場", icon: "✈️", loc: "青森空港", img: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=800", url: "https://www.aomori-airport.co.jp/", desc: "還車前加滿油。機場內可做最後採買 (蘋果汁、仙貝)。" }
+                    { time: "10:00", title: "出發往機場", type: "transport", icon: "🚗", loc: "青森空港", img: "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=800", desc: "預留 3.5 小時雪地緩衝。" },
+                    { time: "13:00", title: "青森機場", type: "spot", icon: "✈️", loc: "青森空港", img: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=800", desc: "還車 (加滿油)。最後採買。" }
                 ]
             }
         ];
 
-        // --- JS LOGIC ---
-        
-        // 1. Smart Header Logic
-        function updateSmartHeader() {
-            const hour = new Date().getHours();
-            const bubbleIcon = document.getElementById('bubble-icon');
-            const bubbleTitle = document.getElementById('bubble-title');
-            const bubbleDesc = document.getElementById('bubble-desc');
+        // --- GLOBAL VARS ---
+        let expenses = JSON.parse(localStorage.getItem('expenses_v6')) || [];
+        let currentRate = 0.22;
+        let selectedCurrency = 'JPY'; // Default JPY
 
-            if (hour >= 5 && hour < 11) {
-                bubbleIcon.innerText = "🧣";
-                bubbleTitle.innerText = "早安，準備出發！";
-                bubbleDesc.innerText = "早晨氣溫較低，圍巾手套要帶好喔。";
-            } else if (hour >= 11 && hour < 14) {
-                bubbleIcon.innerText = "🍱";
-                bubbleTitle.innerText = "午安，吃飽了嗎？";
-                bubbleDesc.innerText = "補充能量，繼續下午的行程吧！";
-            } else if (hour >= 14 && hour < 17) {
-                bubbleIcon.innerText = "🌇";
-                bubbleTitle.innerText = "下午好，注意日落";
-                bubbleDesc.innerText = "冬天約 16:30 天黑，注意戶外光線。";
-            } else {
-                bubbleIcon.innerText = "🌙";
-                bubbleTitle.innerText = "晚安，辛苦了";
-                bubbleDesc.innerText = "泡個溫泉放鬆一下，明天繼續玩！";
-            }
+        // --- INIT ---
+        window.onload = function() {
+            initData();
+            setViewMode('day', document.querySelector('.toggle-pill.active'));
+            renderExpenses();
+        };
+
+        async function initData() {
+            // Countdown
+            const days = Math.ceil((new Date("2026-02-02") - new Date())/(1000*60*60*24));
+            document.getElementById('countdown-days').innerText = days;
+            
+            // Rate & Weather
+            try {
+                const rRes = await fetch('https://api.exchangerate-api.com/v4/latest/JPY');
+                const rData = await rRes.json();
+                if(rData.rates.TWD) {
+                    currentRate = rData.rates.TWD;
+                    document.getElementById('rate-mini').innerText = currentRate.toFixed(2);
+                    document.getElementById('rate-big').innerText = currentRate.toFixed(3);
+                }
+                
+                const wRes = await fetch("https://api.open-meteo.com/v1/forecast?latitude=41.76&longitude=140.73&current=temperature_2m&timezone=Asia%2FTokyo");
+                const wData = await wRes.json();
+                document.getElementById('weather-now').innerText = Math.round(wData.current.temperature_2m) + "°";
+            } catch(e) {}
         }
 
-        // 2. View Mode
+        // --- ITINERARY ---
         let currentMode = 'day';
         let currentDayIdx = 0;
 
@@ -447,63 +433,117 @@
         }
 
         function renderItinerary() {
-            const container = document.getElementById('itinerary-list');
+            const container = document.getElementById('itinerary-content');
             const tabsContainer = document.getElementById('day-tabs-container');
             
-            // Tabs
-            if (currentMode === 'day') {
+            if(currentMode === 'day') {
                 tabsContainer.style.display = 'flex';
-                let tabsHtml = '';
-                tripData.forEach((day, i) => {
-                    tabsHtml += `<div class="day-tab ${i === currentDayIdx ? 'active' : ''}" onclick="switchDay(${i})">Day ${day.day}</div>`;
-                });
-                tabsContainer.innerHTML = tabsHtml;
+                tabsContainer.innerHTML = tripData.map((d,i) => 
+                    `<div class="day-tab ${i===currentDayIdx?'active':''}" onclick="switchDay(${i})">Day ${d.day}</div>`
+                ).join('');
+                
+                const day = tripData[currentDayIdx];
+                container.innerHTML = `
+                    <div class="weather-advice-box">
+                        <div class="wa-title">☁️ 當日天氣管家</div>
+                        <div class="wa-text">${day.weatherAdvice}</div>
+                    </div>
+                    <h2 style="margin:0 20px 15px;">${day.date} ${day.title}</h2>
+                    ${day.events.map(ev => createCard(ev)).join('')}
+                `;
             } else {
                 tabsContainer.style.display = 'none';
+                container.innerHTML = tripData.map(day => `
+                    <div style="margin:30px 20px 10px; font-weight:bold; color:#8D6E63; border-bottom:1px solid #ddd;">Day ${day.day} - ${day.title}</div>
+                    ${day.events.map(ev => createCard(ev)).join('')}
+                `).join('');
             }
-
-            // List
-            let listHtml = '';
-            if (currentMode === 'day') {
-                const day = tripData[currentDayIdx];
-                listHtml += `<h2 style="margin:10px 0 20px;">${day.date} ${day.title}</h2>`;
-                day.events.forEach(ev => listHtml += createEventCard(ev, day.weather));
-            } else {
-                tripData.forEach(day => {
-                    listHtml += `<h3 style="margin:30px 0 15px; color:var(--text-sub); border-bottom:1px solid #ddd; padding-bottom:5px;">${day.date} ${day.title} <span style="font-size:0.8rem; background:#E3F2FD; padding:2px 5px; border-radius:5px;">${day.weather}</span></h3>`;
-                    day.events.forEach(ev => listHtml += createEventCard(ev, day.weather));
-                });
-            }
-            container.innerHTML = listHtml;
         }
 
         function switchDay(i) { currentDayIdx = i; renderItinerary(); }
 
-        function createEventCard(ev, weather) {
-            const dataStr = encodeURIComponent(JSON.stringify(ev));
+        function createCard(ev) {
+            const data = encodeURIComponent(JSON.stringify(ev));
+            const isTrans = ev.type === 'transport';
             return `
-                <div class="event-card" onclick="openDetail('${dataStr}')">
-                    <div class="event-weather">${weather}</div>
+                <div class="event-card ${isTrans?'transport':''}" onclick="openDetail('${data}')">
                     <img src="${ev.img}" class="event-thumb">
                     <div class="event-info">
+                        ${isTrans ? '<span class="trans-badge">移動</span>' : ''}
                         <div class="event-time">${ev.time}</div>
                         <div class="event-title">${ev.title}</div>
+                        <div class="event-meta"><i class="fa-solid fa-location-dot"></i> ${ev.loc}</div>
                     </div>
-                    <i class="fa-solid fa-chevron-right" style="color:#ccc;"></i>
+                    <i class="fa-solid fa-chevron-right" style="color:#ccc; align-self:center;"></i>
                 </div>
             `;
         }
 
-        // 3. Modal Logic
-        function openDetail(dataStr) {
-            const ev = JSON.parse(decodeURIComponent(dataStr));
-            document.getElementById('modal-img').src = ev.img;
-            document.getElementById('modal-title').innerText = ev.title;
-            document.getElementById('modal-desc').innerText = ev.desc;
-            document.getElementById('btn-map').href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(ev.loc)}`;
-            document.getElementById('btn-web').href = ev.url || '#';
-            document.getElementById('modal-overlay').classList.add('open');
-            document.getElementById('detail-modal').classList.add('open');
+        // --- EXPENSES ---
+        function setCurrency(c, el) {
+            selectedCurrency = c;
+            document.querySelectorAll('.curr-opt').forEach(b => b.classList.remove('active'));
+            el.classList.add('active');
+        }
+
+        function addExpense() {
+            const name = document.getElementById('ex-name').value;
+            const price = document.getElementById('ex-price').value;
+            const payer = document.getElementById('ex-payer').value;
+            if(name && price) {
+                expenses.unshift({ name, price, payer, curr: selectedCurrency, rate: currentRate });
+                document.getElementById('ex-name').value = '';
+                document.getElementById('ex-price').value = '';
+                renderExpenses();
+            }
+        }
+
+        function renderExpenses() {
+            const list = document.getElementById('expense-list');
+            list.innerHTML = '';
+            let totals = { YK:0, YY:0, YS:0 };
+            
+            expenses.forEach((ex, i) => {
+                let twd = ex.curr === 'JPY' ? Math.round(ex.price * ex.rate) : parseInt(ex.price);
+                totals[ex.payer] += twd;
+                list.innerHTML += `
+                    <div style="background:white; padding:12px; border-radius:12px; margin-bottom:10px; display:flex; justify-content:space-between; box-shadow:0 2px 5px rgba(0,0,0,0.05);">
+                        <div><strong>${ex.name}</strong> <span style="font-size:0.8rem;">(${ex.payer})</span></div>
+                        <div style="text-align:right;">
+                            <div>${ex.curr} ${ex.price}</div>
+                            ${ex.curr==='JPY' ? `<div style="font-size:0.75rem; color:#999;">≈ TWD ${twd}</div>` : ''}
+                        </div>
+                        <i class="fa-solid fa-trash" style="color:#ff8a80; margin-left:10px;" onclick="delEx(${i})"></i>
+                    </div>
+                `;
+            });
+            document.getElementById('total-yk').innerText = '$'+totals.YK;
+            document.getElementById('total-yy').innerText = '$'+totals.YY;
+            document.getElementById('total-ys').innerText = '$'+totals.YS;
+            localStorage.setItem('expenses_v6', JSON.stringify(expenses));
+        }
+        function delEx(i) { if(confirm('刪除?')) { expenses.splice(i,1); renderExpenses(); } }
+
+        // --- TRANSLATION ---
+        async function translateCustom() {
+            const text = document.getElementById('custom-text').value;
+            if(!text) return;
+            
+            showCard(text, '翻譯中...');
+            document.getElementById('card-jp').innerText = 'Loading...';
+            
+            try {
+                // 使用免費 API 進行即時翻譯 (Demo用途)
+                const res = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=zh-TW|ja`);
+                const data = await res.json();
+                if(data.responseData) {
+                    document.getElementById('card-jp').innerText = data.responseData.translatedText;
+                } else {
+                    document.getElementById('card-jp').innerText = "翻譯失敗";
+                }
+            } catch(e) {
+                document.getElementById('card-jp').innerText = "網路錯誤";
+            }
         }
 
         function showCard(jp, cn) {
@@ -513,105 +553,28 @@
             document.getElementById('card-modal').classList.add('open');
         }
 
-        function showCustomCard() {
-            const text = document.getElementById('custom-text').value;
-            if(text) showCard(text, '翻譯內容');
+        // --- MODALS ---
+        function openDetail(dataStr) {
+            const ev = JSON.parse(decodeURIComponent(dataStr));
+            document.getElementById('modal-title').innerText = ev.title;
+            document.getElementById('modal-meta').innerText = `${ev.type==='transport'?'移動':'行程'} • ${ev.time}`;
+            document.getElementById('modal-img').src = ev.img;
+            document.getElementById('modal-desc').innerText = ev.desc;
+            document.getElementById('btn-map').href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(ev.loc)}`;
+            
+            document.getElementById('modal-overlay').classList.add('open');
+            document.getElementById('detail-modal').classList.add('open');
         }
 
         function closeAllModals() {
-            document.getElementById('modal-overlay').classList.remove('open');
-            document.getElementById('detail-modal').classList.remove('open');
-            document.getElementById('card-modal').classList.remove('open');
+            document.querySelectorAll('.open').forEach(el => el.classList.remove('open'));
         }
-
-        // 4. Expenses (Currency Logic)
-        let expenses = JSON.parse(localStorage.getItem('trip_expenses_v5')) || [];
-        let selectedCurrency = 'TWD';
-        let currentRate = 0.22;
-
-        function setCurrency(curr, el) {
-            selectedCurrency = curr;
-            document.querySelectorAll('.curr-opt').forEach(b => b.classList.remove('active'));
-            el.classList.add('active');
-        }
-
-        function renderExpenses() {
-            const list = document.getElementById('expense-list');
-            list.innerHTML = '';
-            let totals = { YK: 0, YY: 0, YS: 0 };
-
-            expenses.forEach((ex, i) => {
-                // 如果原始幣別是 JPY，用當時記錄的 rate 換算成 TWD 加總，但顯示原始金額
-                let amountTWD = ex.curr === 'JPY' ? Math.round(ex.price * ex.rate) : parseInt(ex.price);
-                totals[ex.payer] += amountTWD;
-
-                list.innerHTML += `
-                    <div style="background:white; padding:12px; border-radius:12px; margin-bottom:8px; display:flex; justify-content:space-between; box-shadow:0 2px 5px rgba(0,0,0,0.05);">
-                        <div>
-                            <strong>${ex.name}</strong> <span style="font-size:0.8rem; color:#888;">(${ex.payer})</span>
-                            <div style="font-size:0.75rem; color:#aaa;">${new Date(ex.date).toLocaleDateString()}</div>
-                        </div>
-                        <div style="text-align:right;">
-                            <div style="font-weight:bold;">${ex.curr} ${ex.price}</div>
-                            ${ex.curr === 'JPY' ? `<div style="font-size:0.75rem; color:#888;">≈ TWD ${amountTWD}</div>` : ''}
-                        </div>
-                        <i class="fa-solid fa-trash" style="color:#ff8a80; padding:5px; margin-left:10px;" onclick="delExpense(${i})"></i>
-                    </div>
-                `;
-            });
-
-            document.getElementById('total-yk').innerText = `$${totals.YK.toLocaleString()}`;
-            document.getElementById('total-yy').innerText = `$${totals.YY.toLocaleString()}`;
-            document.getElementById('total-ys').innerText = `$${totals.YS.toLocaleString()}`;
-            localStorage.setItem('trip_expenses_v5', JSON.stringify(expenses));
-        }
-
-        function addExpense() {
-            const name = document.getElementById('ex-name').value;
-            const price = document.getElementById('ex-price').value;
-            const payer = document.getElementById('ex-payer').value;
-
-            if(name && price) {
-                expenses.unshift({ 
-                    name, 
-                    price, 
-                    payer, 
-                    curr: selectedCurrency, 
-                    rate: currentRate,
-                    date: new Date()
-                });
-                document.getElementById('ex-name').value = '';
-                document.getElementById('ex-price').value = '';
-                renderExpenses();
-            }
-        }
-        function delExpense(i) { if(confirm('刪除?')) { expenses.splice(i,1); renderExpenses(); } }
-
-        // Init
-        async function init() {
-            try {
-                const res = await fetch('https://api.exchangerate-api.com/v4/latest/JPY');
-                const data = await res.json();
-                if(data.rates.TWD) {
-                    currentRate = data.rates.TWD;
-                    document.getElementById('rate-label').innerText = currentRate.toFixed(3);
-                }
-            } catch(e) {}
-            
-            updateSmartHeader();
-            renderItinerary();
-            renderExpenses();
-        }
-
         function switchTab(t, el) {
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
             document.getElementById('tab-'+t).classList.add('active');
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             el.classList.add('active');
-            window.scrollTo(0,0);
         }
-
-        window.onload = init;
     </script>
 </body>
 </html>
