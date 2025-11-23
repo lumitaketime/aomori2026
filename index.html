@@ -13,7 +13,7 @@
     
     <style>
         :root {
-            --bg-color: #F2EFE9; /* 更溫潤的紙張色 */
+            --bg-color: #F2EFE9;
             --card-glass: rgba(255, 255, 255, 0.85);
             --card-glass-dark: rgba(255, 255, 255, 0.95);
             --primary-wood: #8D6E63;
@@ -37,7 +37,7 @@
             margin: 0;
             padding: 0;
             padding-bottom: calc(90px + var(--safe-area-bottom));
-            overscroll-behavior-y: none; /* 防止拉動重整 */
+            overscroll-behavior-y: none;
         }
 
         /* --- Header & Weather --- */
@@ -136,7 +136,7 @@
             border-radius: 8px;
             font-size: 0.9rem;
         }
-        .card-tag { font-size: 1.2rem; } /* Emoji Icon */
+        .card-tag { font-size: 1.2rem; } 
 
         .card-title { font-size: 1.15rem; font-weight: 700; margin-bottom: 6px; }
         .card-desc { font-size: 0.9rem; color: #6D4C41; line-height: 1.5; margin-bottom: 12px; }
@@ -205,7 +205,7 @@
             transform: translateX(-50%);
             width: 90%;
             max-width: 400px;
-            background: rgba(78, 52, 46, 0.9); /* 深木色背景 */
+            background: rgba(78, 52, 46, 0.9);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border-radius: 50px;
@@ -355,7 +355,7 @@
     </div>
 
     <script>
-        // --- 1. 資料庫 (已加入 Google Maps 搜尋連結) ---
+        // --- 1. Data ---
         const tripData = [
             {
                 day: 1, date: "2/2 (一)", title: "函館抵達",
@@ -413,13 +413,14 @@
             }
         ];
 
-        // --- 2. 渲染行程 (Render) ---
+        // --- 2. Render Logic ---
         function renderItinerary() {
             const container = document.getElementById('itinerary-list');
             let html = '';
             tripData.forEach(day => {
                 let eventsHtml = '';
                 day.events.forEach(ev => {
+                    const mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(ev.loc)}`;
                     eventsHtml += `
                         <div class="timeline-card">
                             <div class="card-header">
@@ -428,7 +429,7 @@
                             </div>
                             <div class="card-title">${ev.title}</div>
                             <div class="card-desc">${ev.desc}</div>
-                            <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(ev.loc)}" target="_blank" class="btn-map">
+                            <a href="${mapUrl}" target="_blank" class="btn-map">
                                 <i class="fa-solid fa-map-location-dot"></i> 導航去這裡
                             </a>
                         </div>
@@ -447,34 +448,31 @@
             container.innerHTML = html;
         }
 
-        // --- 3. 天氣 API (Open-Meteo) ---
+        // --- 3. Weather Logic ---
         async function fetchWeather() {
             try {
-                // 函館座標 41.76, 140.73 / 青森座標 40.82, 140.74
-                const url = "https://api.open-meteo.com/v1/forecast?latitude=41.76,40.82&longitude=140.73,140.74&current=temperature_2m,weather_code&timezone=Asia%2FTokyo";
+                const url = "https://api.open-meteo.com/v1/forecast?latitude=41.76,40.82&longitude=140.73,140.74&current=temperature_2m&timezone=Asia%2FTokyo";
                 const res = await fetch(url);
                 const data = await res.json();
                 
-                // 更新函館
-                const hakodateTemp = Math.round(data[0].current.temperature_2m);
-                document.querySelector('#weather-hakodate .weather-temp').innerText = `${hakodateTemp}°C`;
-                
-                // 更新青森
-                const aomoriTemp = Math.round(data[1].current.temperature_2m);
-                document.querySelector('#weather-aomori .weather-temp').innerText = `${aomoriTemp}°C`;
-
+                if(data && data.length > 0) {
+                    // Hakodate
+                    document.querySelector('#weather-hakodate .weather-temp').innerText = Math.round(data[0].current.temperature_2m) + "°C";
+                    // Aomori
+                    document.querySelector('#weather-aomori .weather-temp').innerText = Math.round(data[1].current.temperature_2m) + "°C";
+                }
             } catch (e) {
-                console.log("Weather fetch failed", e);
+                console.error("Weather Error:", e);
             }
             
-            // 倒數計時
+            // Countdown
             const tripDate = new Date("2026-02-02").getTime();
             const now = new Date().getTime();
             const daysLeft = Math.ceil((tripDate - now) / (1000 * 60 * 60 * 24));
             document.getElementById('countdown-days').innerText = daysLeft;
         }
 
-        // --- 4. 記帳功能 (Local Storage) ---
+        // --- 4. Expenses Logic ---
         let expenses = JSON.parse(localStorage.getItem('expenses_v2')) || [];
         function renderExpenses() {
             const list = document.getElementById('expense-list');
@@ -499,6 +497,7 @@
             totalEl.innerText = `$${total.toLocaleString()}`;
             localStorage.setItem('expenses_v2', JSON.stringify(expenses));
         }
+
         function addExpense() {
             const name = document.getElementById('expense-name').value;
             const price = document.getElementById('expense-price').value;
@@ -509,11 +508,12 @@
                 renderExpenses();
             }
         }
+
         function delExpense(i) {
-            if(confirm('刪除?')) { expenses.splice(i,1); renderExpenses(); }
+            if(confirm('確定刪除?')) { expenses.splice(i,1); renderExpenses(); }
         }
 
-        // --- 5. 工具 & UI 邏輯 ---
+        // --- 5. UI Logic ---
         function switchTab(tab, el) {
             document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
             document.getElementById(`tab-${tab}`).classList.add('active');
@@ -528,4 +528,19 @@
             document.getElementById('card-modal').classList.add('open');
         }
         function closeCard() {
-            document.getElementById('card
+            document.getElementById('card-modal').classList.remove('open');
+        }
+
+        // Main Init
+        window.onload = function() {
+            try {
+                renderItinerary();
+                renderExpenses();
+                fetchWeather();
+            } catch (e) {
+                alert("初始化錯誤: " + e);
+            }
+        }
+    </script>
+</body>
+</html>
