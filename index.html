@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>青森函館冬旅 2026</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            /* 木質暖白配色 */
+            --bg-color: #FDFBF7; /* 暖白紙張色 */
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --primary-wood: #8D6E63; /* 木頭色 */
+            --dark-wood: #5D4037; /* 深木頭 */
+            --light-wood: #D7CCC8; /* 淺木頭 */
+            --accent-green: #79867C; /* 森林綠點綴 */
+            --text-main: #4E342E;
+            --text-sub: #8D8D8D;
+            --shadow: 0 4px 15px rgba(141, 110, 99, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Zen Maru Gothic', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            padding-bottom: 90px; /* 避開底部導航 */
+            overscroll-behavior-y: none;
+        }
+
+        /* 頂部標題區 */
+        header {
+            background: linear-gradient(135deg, var(--primary-wood), var(--dark-wood));
+            color: white;
+            padding: 40px 20px 20px;
+            border-radius: 0 0 25px 25px;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* 裝飾用的雪花紋理 */
+        header::before {
+            content: '❄';
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-size: 5rem;
+            opacity: 0.1;
+            transform: rotate(15deg);
+        }
+
+        h1 { margin: 0; font-size: 1.5rem; letter-spacing: 1px; }
+        .subtitle { font-size: 0.9rem; opacity: 0.9; margin-top: 5px; }
+        
+        /* 倒數計時器 */
+        .countdown {
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(5px);
+            border-radius: 12px;
+            padding: 10px;
+            margin-top: 15px;
+            display: flex;
+            justify-content: space-around;
+            font-size: 0.9rem;
+        }
+        .countdown span { font-weight: bold; font-size: 1.2rem; }
+
+        /* 分頁內容容器 */
+        .tab-content { display: none; animation: fadeIn 0.3s; padding: 20px; }
+        .tab-content.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 行程卡片 */
+        .day-header {
+            display: flex;
+            align-items: baseline;
+            margin-bottom: 15px;
+            margin-top: 10px;
+            color: var(--dark-wood);
+            border-bottom: 2px solid var(--light-wood);
+            padding-bottom: 5px;
+        }
+        .day-num { font-size: 1.4rem; font-weight: bold; margin-right: 10px; }
+        .day-date { font-size: 0.9rem; color: var(--text-sub); }
+        
+        .timeline-item {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: var(--shadow);
+            border-left: 5px solid var(--primary-wood);
+            position: relative;
+        }
+        
+        .timeline-time {
+            font-weight: bold;
+            color: var(--primary-wood);
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+        }
+        
+        .timeline-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .timeline-desc {
+            font-size: 0.9rem;
+            color: #666;
+            line-height: 1.5;
+        }
+        
+        .tag {
+            display: inline-block;
+            background: var(--light-wood);
+            color: var(--dark-wood);
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            margin-bottom: 5px;
+        }
+
+        /* 記帳功能樣式 */
+        .expense-summary {
+            background: white;
+            padding: 20px;
+            border-radius: 16px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+        }
+        .total-amount {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary-wood);
+        }
+        .currency { font-size: 1rem; color: var(--text-sub); }
+        
+        .input-group {
+            background: white;
+            padding: 15px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+        }
+        .input-row { display: flex; gap: 10px; margin-bottom: 10px; }
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--light-wood);
+            border-radius: 8px;
+            font-size: 1rem;
+            outline: none;
+            background: #FDFBF7;
+        }
+        button.add-btn {
+            width: 100%;
+            padding: 12px;
+            background: var(--primary-wood);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .expense-list { list-style: none; padding: 0; }
+        .expense-item {
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .expense-info h4 { margin: 0; font-size: 1rem; }
+        .expense-info p { margin: 2px 0 0; font-size: 0.8rem; color: #999; }
+        .expense-price { font-weight: bold; color: var(--dark-wood); }
+        .delete-btn { color: #ff6b6b; margin-left: 10px; cursor: pointer; }
+
+        /* 底部導航 */
+        .bottom-nav {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            height: 70px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--text-sub);
+            font-size: 0.75rem;
+            transition: 0.3s;
+        }
+
+        .nav-item i { font-size: 1.4rem; margin-bottom: 4px; }
+        
+        .nav-item.active {
+            color: var(--primary-wood);
+            transform: translateY(-2px);
+        }
+
+        /* 針對不同類型的標籤顏色 */
+        .tag.flight { background-color: #E3F2FD; color: #1565C0; }
+        .tag.hotel { background-color: #E8F5E9; color: #2E7D32; }
+        .tag.shopping { background-color: #FFF3E0; color: #E65100; }
+        .tag.food { background-color: #FCE4EC; color: #C2185B; }
+        .tag.car { background-color: #F3E5F5; color: #7B1FA2; }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>青森函館冬旅 2026</h1>
+        <div class="subtitle">Family Trip • 6 Days 5 Nights</div>
+        <div class="countdown" id="countdown-timer">
+            計算中...
+        </div>
+    </header>
+
+    <div id="tab-itinerary" class="tab-content active">
+        <div id="itinerary-container"></div>
+    </div>
+
+    <div id="tab-expenses" class="tab-content">
+        <div class="expense-summary">
+            <div class="currency">總花費 (TWD)</div>
+            <div class="total-amount" id="total-amount">$0</div>
+        </div>
+
+        <div class="input-group">
+            <div class="input-row">
+                <input type="text" id="expense-name" placeholder="項目 (如: 晚餐)">
+                <select id="expense-cat" style="width: 80px;">
+                    <option value="食">食</option>
+                    <option value="住">住</option>
+                    <option value="行">行</option>
+                    <option value="購">購</option>
+                    <option value="樂">樂</option>
+                </select>
+            </div>
+            <div class="input-row">
+                <input type="number" id="expense-price" placeholder="金額">
+            </div>
+            <button class="add-btn" onclick="addExpense()">記一筆</button>
+        </div>
+
+        <ul class="expense-list" id="expense-list">
+            </ul>
+    </div>
+    
+    <div id="tab-tools" class="tab-content">
+       <div style="text-align: center; margin-top: 50px; color: var(--text-sub);">
+           <i class="fas fa-tools" style="font-size: 3rem; margin-bottom: 20px;"></i>
+           <p>大字卡與導航功能開發中...</p>
+       </div>
+    </div>
+
+    <div class="bottom-nav">
+        <div class="nav-item active" onclick="switchTab('itinerary', this)">
+            <i class="fas fa-map-marked-alt"></i>
+            行程
+        </div>
+        <div class="nav-item" onclick="switchTab('expenses', this)">
+            <i class="fas fa-calculator"></i>
+            記帳
+        </div>
+        <div class="nav-item" onclick="switchTab('tools', this)">
+            <i class="fas fa-language"></i>
+            翻譯
+        </div>
+    </div>
+
+    <script>
+        // --- 1. 行程資料庫 (來自截圖) ---
+        const itineraryData = [
+            {
+                day: 1, date: "2/2 (週一)", 
+                focus: "函館採買 • 夜景優先",
+                events: [
+                    { time: "11:10", title: "抵達函館機場 (HKD)", type: "flight", desc: "落地、入境手續" },
+                    { time: "13:15", title: "前往 UNIQLO / Town Plaza", type: "shopping", desc: "搭計程車前往函館昭和 Town Plaza 採購保暖衣物" },
+                    { time: "14:20", title: "Kojima x Bic Camera", type: "shopping", desc: "購買電器、攝影周邊" },
+                    { time: "16:00", title: "金森紅磚倉庫", type: "sightseeing", desc: "輕裝出門，遊覽港灣區域" },
+                    { time: "17:00", title: "函館山百萬夜景", type: "sightseeing", desc: "搭乘纜車上山，必看絕景" },
+                    { time: "晚餐", title: "函館站或灣區用餐", type: "food", desc: "自由覓食" },
+                    { time: "住宿", title: "JR Inn Hakodate", type: "hotel", desc: "站前便利，舒適大浴場" }
+                ]
+            },
+            {
+                day: 2, date: "2/3 (週二)", 
+                focus: "青森藝術 • 購物之夜",
+                events: [
+                    { time: "08:00", title: "函館朝市", type: "food", desc: "早餐：海鮮丼、釣烏賊" },
+                    { time: "10:00", title: "搭乘新幹線前往青森", type: "transport", desc: "移動至 JR 青森站 (預計 13:45 抵達)" },
+                    { time: "14:40", title: "青森縣立美術館", type: "sightseeing", desc: "參觀奈良美智「青森犬」" },
+                    { time: "18:00", title: "晚餐：青森扇貝小屋", type: "food", desc: "或在地居酒屋享用海鮮" },
+                    { time: "19:30", title: "唐吉訶德 採購", type: "shopping", desc: "青森新町店，離飯店近" },
+                    { time: "住宿", title: "Dormy Inn Aomori", type: "hotel", desc: "享受溫泉、免費夜鳴拉麵" }
+                ]
+            },
+            {
+                day: 3, date: "2/4 (週三)", 
+                focus: "極限衝刺日 • 暖爐 • 蘋果派",
+                events: [
+                    { time: "09:00", title: "青森站取車 (自駕開始)", type: "car", desc: "租車 (4WD)，回飯店載行李" },
+                    { time: "10:15", title: "ELM 購物中心", type: "shopping", desc: "直奔 3COINS+plus 買小物 (限時 35 分)" },
+                    { time: "12:30", title: "津輕鐵道「暖爐列車」", type: "sightseeing", desc: "體驗烤魷魚的復古列車" },
+                    { time: "15:30", title: "弘前 藤田紀念庭園", type: "sightseeing", desc: "大正浪漫喫茶室，享用蘋果派" },
+                    { time: "17:30", title: "開車返回青森市", type: "car", desc: "預留雪地駕駛時間" }
+                ]
+            },
+            {
+                day: 4, date: "2/5 (週四)", 
+                focus: "樹冰 • 滑雪 • 入住星野",
+                events: [
+                    { time: "08:45", title: "古川市場", type: "food", desc: "早餐吃自選配料的「Nokkedon」" },
+                    { time: "10:40", title: "八甲田纜車", type: "sightseeing", desc: "觀賞樹冰 (Snow Monsters)" },
+                    { time: "13:15", title: "馬門溫泉滑雪場", type: "sightseeing", desc: "初學者友善，租裝備滑雪體驗" },
+                    { time: "17:30", title: "晚餐：Nore Sore 食堂", type: "food", desc: "星野青森屋 自助餐" },
+                    { time: "住宿", title: "星野集團 青森屋", type: "hotel", desc: "入住體驗豐富設施" }
+                ]
+            },
+            {
+                day: 5, date: "2/6 (週五)", 
+                focus: "星野全日 • 文化放鬆",
+                events: [
+                    { time: "上午", title: "晨間溫泉 (浮湯)", type: "sightseeing", desc: "露天溫泉享受雪景" },
+                    { time: "10:00", title: "暖爐馬車", type: "sightseeing", desc: "需預約，遊覽公園" },
+                    { time: "11:30", title: "八食中心 (Hasshoku Center)", type: "food", desc: "開車前往，七輪燒烤海鮮午餐" },
+                    { time: "下午", title: "飯店內活動", type: "sightseeing", desc: "逛商店街、玩釣扇貝" },
+                    { time: "17:30", title: "晚餐：南部曲屋", type: "food", desc: "Kaiseki 或自助餐" }
+                ]
+            },
+            {
+                day: 6, date: "2/7 (週六)", 
+                focus: "安全駕駛 • 機場採買",
+                events: [
+                    { time: "10:00", title: "準時離開飯店", type: "car", desc: "鐵律！確保充足雪地緩衝時間 (3.5hr)" },
+                    { time: "13:00", title: "抵達青森機場 (AOJ)", type: "car", desc: "還車 (記得加滿油)" },
+                    { time: "14:00", title: "機場免稅店", type: "shopping", desc: "最後採購伴手禮" },
+                    { time: "15:30", title: "搭乘 BR 121", type: "flight", desc: "長榮航空 返抵台灣" }
+                ]
+            }
+        ];
+
+        // --- 2. 渲染行程 ---
+        function renderItinerary() {
+            const container = document.getElementById('itinerary-container');
+            let html = '';
+            
+            itineraryData.forEach(day => {
+                let eventsHtml = '';
+                day.events.forEach(event => {
+                    eventsHtml += `
+                        <div class="timeline-item">
+                            <div class="tag ${event.type}">${event.type.toUpperCase()}</div>
+                            <div class="timeline-time">${event.time}</div>
+                            <div class="timeline-title">${event.title}</div>
+                            <div class="timeline-desc">${event.desc}</div>
+                        </div>
+                    `;
+                });
+
+                html += `
+                    <div class="day-header">
+                        <span class="day-num">Day ${day.day}</span>
+                        <span class="day-date">${day.date} - ${day.focus}</span>
+                    </div>
+                    ${eventsHtml}
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        // --- 3. 記帳邏輯 (LocalStorage) ---
+        let expenses = JSON.parse(localStorage.getItem('trip_expenses')) || [];
+
+        function renderExpenses() {
+            const list = document.getElementById('expense-list');
+            const totalEl = document.getElementById('total-amount');
+            list.innerHTML = '';
+            let total = 0;
+
+            expenses.forEach((item, index) => {
+                total += parseInt(item.price);
+                list.innerHTML += `
+                    <li class="expense-item">
+                        <div class="expense-info">
+                            <h4>${item.name}</h4>
+                            <p>${item.cat} • ${new Date(item.date).toLocaleDateString()}</p>
+                        </div>
+                        <div style="display:flex; align-items:center;">
+                            <span class="expense-price">$${item.price}</span>
+                            <i class="fas fa-trash delete-btn" onclick="deleteExpense(${index})"></i>
+                        </div>
+                    </li>
+                `;
+            });
+
+            totalEl.innerText = '$' + total.toLocaleString();
+            localStorage.setItem('trip_expenses', JSON.stringify(expenses));
+        }
+
+        function addExpense() {
+            const name = document.getElementById('expense-name').value;
+            const price = document.getElementById('expense-price').value;
+            const cat = document.getElementById('expense-cat').value;
+
+            if(name && price) {
+                expenses.unshift({
+                    name: name,
+                    price: price,
+                    cat: cat,
+                    date: new Date().toISOString()
+                });
+                document.getElementById('expense-name').value = '';
+                document.getElementById('expense-price').value = '';
+                renderExpenses();
+            } else {
+                alert('請輸入項目和金額');
+            }
+        }
+
+        function deleteExpense(index) {
+            if(confirm('確定刪除這筆款項嗎？')) {
+                expenses.splice(index, 1);
+                renderExpenses();
+            }
+        }
+
+        // --- 4. 倒數計時 ---
+        function updateCountdown() {
+            const tripDate = new Date("2026-02-02T11:10:00").getTime();
+            const now = new Date().getTime();
+            const distance = tripDate - now;
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            
+            document.getElementById("countdown-timer").innerHTML = 
+                `距離出發還有 <span>${days}</span> 天`;
+        }
+
+        // --- 5. 頁面切換 ---
+        function switchTab(tabId, navEl) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.getElementById('tab-' + tabId).classList.add('active');
+            
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            navEl.classList.add('active');
+        }
+
+        // 初始化
+        window.onload = function() {
+            renderItinerary();
+            renderExpenses();
+            updateCountdown();
+        }
+    </script>
+</body>
+</html>
