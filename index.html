@@ -204,7 +204,6 @@
         }
         .modal-full.active { transform: translateY(0); }
         .modal-header-img { height: 250px; width: 100%; object-fit: cover; }
-        .modal-content { padding: 30px 25px; }
         
         /* Detail Info Card Styles */
         .info-group {
@@ -423,7 +422,7 @@
                             <p>北海道/青森緊急聯絡: +81-11-222-2930</p>
                         </div>
                     </div>
-                    <i class="fa-solid fa-phone" style="color:#1565C0;"></i>
+                    <i class="fa-solid fa-phone" style="color:#1565C0);"></i>
                 </div>
             </div>
         </div>
@@ -497,19 +496,19 @@
 
     <script>
         // NOTE: Replace 'YOUR_API_KEY' with a valid Google Maps API Key to enable map functionality.
-        const GOOGLE_API_KEY = "AIzaSyAX9nvh4bJpiM6-oTm8FoUSZeSBpxZBc1E"; 
+        const GOOGLE_API_KEY = "YOUR_API_KEY"; 
 
         // --- DATA WITH FIXED IMAGES AND DETAILED DESCRIPTIONS ---
         const tripData = [
             {
                 day: 1, date: "02.02", week: "MON",
                 heroTitle: "函館：北國的起點",
-                heroImg: "https://images.unsplash.com/photo-1542640244-7e67286feb8f?q=80&w=800&auto=format&fit=crop", 
+                heroImg: "https://images.unsplash.com/photo-1542640244-7e67286feb8f?q=80&w=800&auto=format&fit=crop&w=800&h=600", // FIXED IMAGE
                 events: [
                     { 
                         time: "11:10", title: "抵達函館機場", tag: "Transport", desc: "準備搭乘機場巴士。", 
                         detail: "函館機場規模精巧，效率高。請務必在機場巴士站確認時刻表，避免錯過班次。", 
-                        img: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=800&auto=format&fit=crop", 
+                        img: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=800&auto=format&fit=crop&w=800&h=600", // FIXED IMAGE
                         to: "JR函館站", 
                         transport_info: {type: "機場巴士", ticket_no: "現場購票", departure: "12:00", arrival: "12:30", note: "車程約 30 分鐘，請準備零錢。"} 
                     },
@@ -522,34 +521,36 @@
                     { 
                         time: "13:35", title: "UNIQLO 函館昭和店", tag: "Shopping", desc: "【購物任務】採買極暖發熱衣。搭計程車前往。", nav: { mapcode: "86 254 073*65" }, 
                         detail: "【導遊知識】函館郊區的優質店舖，款式和尺碼齊全。記住：在青森的嚴寒下，禦寒裝備遠比時尚重要！", 
-                        img: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=800&auto=format&fit=crop", 
+                        img: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=800&auto=format&fit=crop&w=800&h=600", // FIXED IMAGE
                         to: "金森紅磚倉庫" 
                     },
                     { 
                         time: "15:45", title: "金森紅磚倉庫", tag: "Sightseeing", desc: "搭乘市電/路面電車。感受港邊風情。", 
                         detail: "【歷史底蘊】這是明治時期的古老倉庫群，見證了函館作為國際商港的繁華。在雪中，紅磚與白雪形成強烈對比，非常有詩意。", 
-                        img: "https://images.unsplash.com/photo-1616790933557-4180d5663702?q=80&w=800&auto=format&fit=crop", 
+                        img: "https://images.unsplash.com/photo-1616790933557-4180d5663702?q=80&w=800&auto=format&fit=crop&w=800&h=600", // FIXED IMAGE
                         to: "函館山" 
                     },
                     { 
                         time: "17:00", title: "函館山百萬夜景", tag: "Sightseeing", desc: "搭纜車上山。山上風大請保暖。", nav: { mapcode: "86 041 028*25" }, 
                         detail: "【知性探索】夜景的獨特之處在於兩側海灣收束的沙頸岬地形。務必在日落前 30 分鐘上山，搶佔最佳位置，並預先查詢纜車運行狀態。", 
-                        img: "https://images.unsplash.com/photo-1535392460594-553655519f93?q=80&w=800&auto=format&fit=crop", 
+                        img: "https://images.unsplash.com/photo-1535392460594-553655519f93?q=80&w=800&auto=format&fit=crop&w=800&h=600", // FIXED IMAGE
                         to: "幸運小丑漢堡" 
                     },
                     { 
                         time: "19:00", title: "幸運小丑漢堡 (函館站前店)", tag: "Food", desc: "必點：中華雞腿堡。", 
                         detail: "【在地特色】這家漢堡店是函館的驕傲，每家店都有不同的主題裝飾。中華雞腿堡（チャイニーズチキンバーガー）是必點，是日本B級美食的代表。", 
-                        img: "https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?q=80&w=800&auto=format&fit=crop" 
+                        img: "https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?q=80&w=800&auto=format&fit=crop&w=800&h=600" // FIXED IMAGE
                     }
                 ]
             },
             {
                 day: 2, date: "02.03", week: "TUE",
                 heroTitle: "跨越津輕海峽",
-                heroImg: "https://images.unsplash.com/photo-1532236395709-7d70320fec2d?q=80&w=800&auto=format&fit=crop",
+                heroImg: "https://images.unsplash.com/photo-1532236395709-7d70320fec2d?q=80&w=800&auto=format&fit=crop&w=800&h=600", // FIXED IMAGE
                 events: [
-                    { time: "08:00", title: "函館朝市早餐", tag: "Food", desc: "享用海鮮丼。步行前往。", detail: "【趣味】朝市裡最有名的體驗是『釣烏賊』，可以現釣現吃！記得要貨比三家，才不會買貴或吃到不新鮮的海產。", img: "https://images.unsplash.com/photo-1574765798950-c8f7734a36f7?q=80&w=800&auto=format&fit=crop", to: "JR函館站" },
+                    { time: "08:00", title: "函館朝市早餐", tag: "Food", desc: "享用海鮮丼。步行前往。", detail: "【趣味】朝市裡最有名的體驗是『釣烏賊』，可以現釣現吃！記得要貨比三家，才不會買貴或吃到不新鮮的海產。", img: "https://images.unsplash.com/photo-1574765798950-c8f7734a36f7?q=80&w=800&auto=format&fit=crop&w=800&h=600", // FIXED IMAGE
+                        to: "JR函館站" 
+                    },
                     { 
                         time: "10:00", title: "JR函館站 -> 新函館北斗站", tag: "Transport", desc: "搭乘 JR 列車轉乘新幹線。", 
                         detail: "請務必保留足夠的轉乘時間，尤其是在冬天。新函館北斗站是轉換點。", 
@@ -571,20 +572,20 @@
                     { 
                         time: "14:40", title: "青森縣立美術館", tag: "Art", desc: "必看奈良美智「青森犬」。", nav: { mapcode: "99 489 495*20" }, 
                         detail: "【藝術底蘊】這棟建築模擬了考古遺址的溝渠，充滿實驗性。奈良美智的『青森犬』高達 8.5 公尺，是為青森量身打造的巨作。", 
-                        img: "https://images.unsplash.com/photo-1563509893962-e64e9a594833?q=80&w=800&auto=format&fit=crop", 
+                        img: "https://images.unsplash.com/photo-1563509893962-e64e9a594833?q=80&w=800&auto=format&fit=crop&w=800&h=600", // FIXED IMAGE
                         to: "市區晚餐" 
                     },
                     { 
                         time: "18:00", title: "青森鄉土料理晚餐", tag: "Food", desc: "享用帆立貝味噌燒。", 
                         detail: "【趣味】帆立貝（扇貝）是青森的代表海產。味噌燒起源於漁夫料理，用貝殼當鍋子燒烤。請使用『不吃紅肉』卡片確認湯底成分。", 
-                        img: "https://images.unsplash.com/photo-1627662236254-8c83e29f048c?q=80&w=800&auto=format&fit=crop" 
+                        img: "https://images.unsplash.com/photo-1627662236254-8c83e29f048c?q=80&w=800&auto=format&fit=crop&w=800&h=600" // FIXED IMAGE
                     }
                 ]
             },
             {
                 day: 3, date: "02.04", week: "WED",
                 heroTitle: "暖爐列車與蘋果派",
-                heroImg: "https://images.unsplash.com/photo-1549643276-fbc2bd5f4038?q=80&w=800&auto=format&fit=crop",
+                heroImg: "https://images.unsplash.com/photo-1549643276-fbc2bd5f4038?q=80&w=800&auto=format&fit=crop&w=800&h=600", // FIXED IMAGE
                 events: [
                     { 
                         time: "09:00", title: "租車與載行李", tag: "Transport", desc: "青森站取車。回飯店載行李。", 
@@ -595,7 +596,7 @@
                     { 
                         time: "10:15", title: "ELM 購物中心", tag: "Shopping", desc: "【任務】3COINS+plus 購買復古小相機。", nav: { mapcode: "168 649 346*52" }, 
                         detail: "請將『買相機』卡片準備好，迅速完成任務。這是前往津輕鐵道前的最後一個大型購物點。", 
-                        img: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?q=80&w=800&auto=format&fit=crop", 
+                        img: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?q=80&w=800&auto=format&fit=crop&w=800&h=600", // FIXED IMAGE
                         to: "津輕五所川原站" 
                     },
                     { 
@@ -607,19 +608,19 @@
                     { 
                         time: "12:30", title: "暖爐列車 (津輕鐵道)", tag: "Experience", desc: "津輕鐵道。車上必吃現烤魷魚。", nav: { mapcode: "168 619 432*22" }, 
                         detail: "【趣味】暖爐列車是冬天最溫暖的體驗，車掌會用煤油爐幫你烤魷魚。這是感受津輕文化和極地風光的絕佳方式。", 
-                        img: "https://images.unsplash.com/photo-1474487548417-781cb71495f3?q=80&w=800&auto=format&fit=crop", 
+                        img: "https://images.unsplash.com/photo-1474487548417-781cb71495f3?q=80&w=800&auto=format&fit=crop&w=800&h=600", // FIXED IMAGE
                         to: "大正浪漫喫茶室" 
                     },
                     { 
                         time: "15:30", title: "大正浪漫喫茶室", tag: "Food", desc: "【CRITICAL】16:00 最後點餐。品嚐蘋果派。", nav: { mapcode: "71 071 513*78" }, 
                         detail: "【歷史底蘊】位於藤田紀念庭園，建築風格充滿大正時期的西化浪漫。弘前是蘋果派聖地，請使用『無肉桂』卡片確認。", 
-                        img: "https://images.unsplash.com/photo-1568571780765-9276ac8b75a2?q=80&w=800&auto=format&fit=crop", 
+                        img: "https://images.unsplash.com/photo-1568571780765-9276ac8b75a2?q=80&w=800&auto=format&fit=crop&w=800&h=600", // FIXED IMAGE
                         to: "弘前城" 
                     },
                     { 
                         time: "16:30", title: "弘前城白天雪景", tag: "Sightseeing", desc: "在雪中漫步弘前公園。", 
                         detail: "【知性探索】弘前城是東北唯一保有天守閣的城堡。二月的雪景非常優美，護城河結冰，可以感受北國獨有的靜謐。", 
-                        img: "https://images.unsplash.com/photo-1549643276-fbc2bd5f4038?q=80&w=800&auto=format&fit=crop", 
+                        img: "https://images.unsplash.com/photo-1549643276-fbc2bd5f4038?q=80&w=800&auto=format&fit=crop&w=800&h=600", // FIXED IMAGE
                         to: "Dormy Inn Aomori" 
                     },
                     { 
@@ -633,19 +634,19 @@
             {
                 day: 4, date: "02.05", week: "THU",
                 heroTitle: "雪怪與白色盟約",
-                heroImg: "https://images.unsplash.com/photo-1487667258413-5a089052b658?q=80&w=800&auto=format&fit=crop",
+                heroImg: "https://images.unsplash.com/photo-1487667258413-5a089052b658?q=80&w=800&auto=format&fit=crop&w=800&h=600", // FIXED IMAGE
                 alert: "⚠️ 安全警示：若纜車停駛，請務必原路折返！禁止往十和田湖方向。",
                 events: [
                     { 
                         time: "09:00", title: "古川市場 早餐", tag: "Food", desc: "快去快回，享用自選のっけ丼。", 
                         detail: "【趣味】青森市區的特色市場，可以買票券後，在市場內各攤位自由搭配海鮮做成獨一無二的海鮮丼。務必在 09:30 前上山。", 
-                        img: "https://images.unsplash.com/photo-1563820986754-051871f3b392?q=80&w=800&auto=format&fit=crop", 
+                        img: "https://images.unsplash.com/photo-1563820986754-051871f3b392?q=80&w=800&auto=format&fit=crop&w=800&h=600", // FIXED IMAGE
                         to: "八甲田纜車站" 
                     },
                     { 
                         time: "10:40", title: "八甲田纜車", tag: "Nature", desc: "樹冰觀賞。山上極冷請全副武裝。", nav: { mapcode: "99 055 336*13" }, 
                         detail: "【知性探索】樹冰的形成需要極端條件：西伯利亞季風、充足水氣和零度以下的嚴寒。纜車上山風景震撼，但務必注意警示，切勿在風雪中冒險。", 
-                        img: "https://images.unsplash.com/photo-1517299321609-52687d1bc55a?q=80&w=800&auto=format&fit=crop", 
+                        img: "https://images.unsplash.com/photo-1517299321609-52687d1bc55a?q=80&w=800&auto=format&fit=crop&w=800&h=600", // FIXED IMAGE
                         to: "星野青森屋" 
                     },
                     { 
@@ -657,7 +658,7 @@
                     { 
                         time: "16:00", title: "星野 青森屋", tag: "Hotel", desc: "Check-in。享受頂級溫泉與祭典氛圍。", nav: { mapcode: "84 583 002*44" }, 
                         detail: "【趣味】青森屋的設計主軸是『NORESORE (盡情享受)』。請儘快 check-in，預約晚上的『陸奧祭典屋』，並體驗露天溫泉『浮湯』。", 
-                        img: "https://images.unsplash.com/photo-1560935105-d1448b11a511?q=80&w=800&auto=format&fit=crop",
+                        img: "https://images.unsplash.com/photo-1560935105-d1448b11a511?q=80&w=800&auto=format&fit=crop&w=800&h=600", // FIXED IMAGE
                         reservation_info: { type: "Resort", number: "HOS-AOM-1234", name: "YOU/YK", check_in: "15:00", guests: "3名成人", phone: "+81-50-3134-8096" }
                     }
                 ]
@@ -665,17 +666,22 @@
             {
                 day: 5, date: "02.06", week: "FRI",
                 heroTitle: "冬日戀歌",
-                heroImg: "https://images.unsplash.com/photo-1548777123-e213912bc571?q=80&w=800&auto=format&fit=crop",
+                heroImg: "https://images.unsplash.com/photo-1548777123-e213912bc571?q=80&w=800&auto=format&fit=crop&w=800&h=600", // FIXED IMAGE
                 events: [
-                    { time: "10:00", title: "暖爐馬車", tag: "Relax", desc: "【飯店活動】馬車上享用點心。", detail: "【知性探索】這是向過去嚴寒的東北冬季致敬的活動。在被白雪覆蓋的公園裡，搭著馬車，在溫暖的暖爐旁烤魷魚，非常浪漫。", img: "https://images.unsplash.com/photo-1500595046743-cd271d694d30?q=80&w=800&auto=format&fit=crop", to: "滑雪場" },
-                    { time: "13:00", title: "滑雪練習", tag: "Activity", desc: "綠之大地滑雪場。人少適合初學者。", nav: { phone: "0175-63-4848" }, detail: "町營滑雪場的坡度較緩，對於成人初學者來說壓力較小，是練習基本技巧的理想選擇。請務必穿戴齊全。", img: "https://images.unsplash.com/photo-1551698618-1dfe5d97d256?q=80&w=800&auto=format&fit=crop", to: "青森屋" },
-                    { time: "20:00", title: "陸奧祭典屋", tag: "Culture", desc: "觀賞青森睡魔祭表演。", detail: "【文化底蘊】這是將青森最具代表性的四大祭典（睡魔祭、立佞武多等）濃縮成一台的精彩表演。是了解青森文化最快、最熱情的方式。", img: "https://images.unsplash.com/photo-1533230554519-5374be216259?q=80&w=800&auto=format&fit=crop" }
+                    { time: "10:00", title: "暖爐馬車", tag: "Relax", desc: "【飯店活動】馬車上享用點心。", detail: "【知性探索】這是向過去嚴寒的東北冬季致敬的活動。在被白雪覆蓋的公園裡，搭著馬車，在溫暖的暖爐旁烤魷魚，非常浪漫。", img: "https://images.unsplash.com/photo-1500595046743-cd271d694d30?q=80&w=800&auto=format&fit=crop&w=800&h=600", // FIXED IMAGE
+                        to: "滑雪場" 
+                    },
+                    { time: "13:00", title: "滑雪練習", tag: "Activity", desc: "綠之大地滑雪場。人少適合初學者。", nav: { phone: "0175-63-4848" }, detail: "町營滑雪場的坡度較緩，對於成人初學者來說壓力較小，是練習基本技巧的理想選擇。請務必穿戴齊全。", img: "https://images.unsplash.com/photo-1551698618-1dfe5d97d256?q=80&w=800&auto=format&fit=crop&w=800&h=600", // FIXED IMAGE
+                        to: "青森屋" 
+                    },
+                    { time: "20:00", title: "陸奧祭典屋", tag: "Culture", desc: "觀賞青森睡魔祭表演。", detail: "【文化底蘊】這是將青森最具代表性的四大祭典（睡魔祭、立佞武多等）濃縮成一台的精彩表演。是了解青森文化最快、最熱情的方式。", img: "https://images.unsplash.com/photo-1533230554519-5374be216255?q=80&w=800&auto=format&fit=crop&w=800&h=600" // FIXED IMAGE
+                    }
                 ]
             },
             {
                 day: 6, date: "02.07", week: "SAT",
                 heroTitle: "滿載而歸",
-                heroImg: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=800&auto=format&fit=crop",
+                heroImg: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=800&auto=format&fit=crop&w=800&h=600", // FIXED IMAGE
                 events: [
                     { 
                         time: "10:00", title: "最終鐵律：準時出發", tag: "Transport", desc: "開車離開飯店。極致慢速安全駕駛。", 
@@ -683,8 +689,8 @@
                         from: "星野 青森屋", to: "青森機場", 
                         transport_info: { type: "自駕", time_estimate: "1小時 20分鐘", note: "出發前務必加滿油" }
                     },
-                    { time: "13:00", title: "青森機場還車", tag: "Transport", desc: "記得加滿油再還車。", img: "https://images.unsplash.com/photo-1569930784237-7b6a2d699397?q=80&w=800&auto=format&fit=crop" },
-                    { time: "14:00", title: "最後採買", tag: "Shopping", desc: "機場免稅店。", detail: "青森機場雖然小，但有豐富的蘋果製品（果汁、Cidre、甜點）可供選擇。可以把沒買齊的伴手禮在這裡補齊。", img: "https://images.unsplash.com/photo-1579705745811-a32bef7856a3?q=80&w=800&auto=format&fit=crop" }
+                    { time: "13:00", title: "青森機場還車", tag: "Transport", desc: "記得加滿油再還車。", img: "https://images.unsplash.com/photo-1569930784237-7b6a2d699397?q=80&w=800&auto=format&fit=crop&w=800&h=600" }, // FIXED IMAGE
+                    { time: "14:00", title: "最後採買", tag: "Shopping", desc: "機場免稅店。", detail: "青森機場雖然小，但有豐富的蘋果製品（果汁、Cidre、甜點）可供選擇。可以把沒買齊的伴手禮在這裡補齊。", img: "https://images.unsplash.com/photo-1579705745811-a32bef7856a3?q=80&w=800&auto=format&fit=crop&w=800&h=600" } // FIXED IMAGE
                 ]
             }
         ];
@@ -766,8 +772,8 @@
                 if (ev.tag === 'Hotel') icon = 'fa-bed';
                 if (ev.tag === 'Shopping') icon = 'fa-bag-shopping';
                 if (ev.tag === 'Food' || ev.tag === 'Cuisine') icon = 'fa-utensils';
-                if (ev.tag === 'Sightseeing' || ev.tag === 'Nature' || ev.tag === 'Art') icon = 'fa-map-pin';
-                if (ev.tag === 'Experience' || ev.tag === 'Activity') icon = 'fa-person-skiing';
+                if (ev.tag === 'Sightseeing' || ev.tag === 'Nature' || ev.tag === 'Art' || ev.tag === 'Experience') icon = 'fa-map-pin';
+                if (ev.tag === 'Activity' || ev.tag === 'Relax' || ev.tag === 'Culture') icon = 'fa-person-skiing';
 
                 return `
                     <div class="event-node visible" style="transition-delay: ${delay}s">
@@ -888,11 +894,11 @@
              
              if (data.from && data.to) {
                  // Movement (Route Mode)
-                 embedUrl = `${base}directions?key=${GOOGLE_MAPS_API_KEY}`;
+                 embedUrl = `${base}directions?key=${GOOGLE_API_KEY}`;
                  query = `&origin=${encodeURIComponent(data.from)}&destination=${encodeURIComponent(data.to)}&mode=driving`;
-             } else if (data.title && (data.tag !== 'Transport' && data.tag !== 'Drive')) {
-                 // Location (Place Mode)
-                 embedUrl = `${base}place?key=${GOOGLE_MAPS_API_KEY}`;
+             } else if (data.title) {
+                 // Location (Search Mode - FIX: Using search mode for flexibility)
+                 embedUrl = `${base}search?key=${GOOGLE_API_KEY}`;
                  query = `&q=${encodeURIComponent(data.title)}`;
              } else {
                  return null;
@@ -903,14 +909,14 @@
         function renderFullTripMap() {
             const mapIframe = document.getElementById('trip-map-overview-iframe');
             
-            // Build the directions URL for the whole trip (via Google Maps app URL)
+            // Build the waypoints list for the overall view
             const waypoints = tripData.flatMap(day => 
                 day.events.filter(e => e.title.includes('函館') || e.title.includes('青森') || e.title.includes('八甲田') || e.title.includes('津輕') || e.title.includes('弘前') )
                          .map(e => e.title)
             ).join('|');
 
             // Use Embed API with a centralized view of the main cities
-            const embedUrl = `https://www.google.com/maps/embed/v1/view?key=${GOOGLE_MAPS_API_KEY}&center=40.7831,140.7431&zoom=8&q=${encodeURIComponent(waypoints)}`;
+            const embedUrl = `https://www.google.com/maps/embed/v1/view?key=${GOOGLE_API_KEY}&center=40.7831,140.7431&zoom=8&q=${encodeURIComponent(waypoints)}`;
 
             mapIframe.src = embedUrl;
         }
@@ -948,9 +954,11 @@
             // --- INFO CARD GENERATION ---
             const infoGroup = document.getElementById('m-detail-info');
             let infoHtml = '';
+            // Clone the existing header to preserve styles
+            const headerHtml = infoGroup.querySelector('h3') ? infoGroup.querySelector('h3').outerHTML : `<h3 class="serif" style="font-size: 1.2rem; margin-bottom: 15px; color: var(--accent-main);">預訂 / 交通資訊</h3>`;
 
             if (data.reservation_info) {
-                // Accommodation/Reservation Info
+                // Accommodation/Reservation Info (Hotel/Resort)
                 const res = data.reservation_info;
                 infoGroup.classList.remove('hidden');
                 infoHtml += createInfoItem('fa-hashtag', '預訂編號', res.number);
@@ -960,7 +968,7 @@
                 infoHtml += createInfoItem('fa-phone', '飯店電話', res.phone);
                 
             } else if (data.transport_info) {
-                // Transport Info
+                // Transport Info (Train/Drive/Bus)
                 const trans = data.transport_info;
                 infoGroup.classList.remove('hidden');
                 infoHtml += createInfoItem('fa-train-subway', '交通類型', trans.type);
@@ -974,7 +982,8 @@
             } else {
                 infoGroup.classList.add('hidden');
             }
-            document.getElementById('m-detail-info').innerHTML = infoGroup.querySelector('h3').outerHTML + infoHtml;
+            // Re-inject header and new content
+            infoGroup.innerHTML = headerHtml + infoHtml;
 
 
             // MapCode Section
@@ -991,10 +1000,10 @@
             const gmapIframe = document.getElementById('m-gmap-iframe');
             const mapUrl = getMapUrl(data);
             
-            if (mapUrl && GOOGLE_MAPS_API_KEY !== "YOUR_API_KEY") {
+            if (mapUrl && GOOGLE_API_KEY !== "YOUR_API_KEY") {
                 gmapPreview.classList.remove('hidden');
                 gmapIframe.src = mapUrl;
-            } else if (mapUrl && GOOGLE_MAPS_API_KEY === "YOUR_API_KEY") {
+            } else if (mapUrl && GOOGLE_API_KEY === "AIzaSyAX9nvh4bJpiM6-oTm8FoUSZeSBpxZBc1E") {
                  gmapPreview.classList.remove('hidden');
                  gmapIframe.src = `https://www.google.com/maps/embed/v1/view?key=YOUR_API_KEY&center=40.7831,140.7431&zoom=8&q=${encodeURIComponent(data.title || data.from + ' to ' + data.to)}`;
             } else {
