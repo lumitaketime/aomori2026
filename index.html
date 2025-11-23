@@ -418,12 +418,14 @@
     <!-- Script Block 1: Image & Map Utils -->
     <script>
         const GOOGLE_MAPS_API_KEY = "AIzaSyAX9nvh4bJpiM6-oTm8FoUSZeSBpxZBc1E"; 
+        let apiKey = localStorage.getItem('gemini_api_key') || "";
         let currentRate = 0.2215; // Default fallback
         let currentIdx = 0;
         let currentUser = 'YK';
         let expenses = []; 
         let shoppingList = []; 
         let db, auth, expensesRef, shoppingRef, tripNotesRef;
+        let hasAlertedAuthError = false; // Prevents spamming alerts
         
         // Weather Cache
         let weatherCache = {
@@ -812,13 +814,13 @@
                 <button onclick="copyMapCode()" style="background: white; color: var(--accent-main); border: 1px solid #ddd; padding: 8px 16px; border-radius: 6px; font-weight: 600;">複製</button>
             </div>
             <div style="display:flex; justify-content:space-between; align-items:center; margin-top:20px; border-top: 1px dashed var(--line-light); padding-top:15px;">
-                <h4 class="serif" style="margin: 0; color: var(--accent-main); font-size:1.2rem;">筆記 Note</h4>
+                <h4 class="serif" style="margin: 0; color: var(--accent-main); font-size:1.2rem;">筆記 Note (同步雲端)</h4>
                 <button id="edit-toggle-btn" onclick="toggleEditMode()" style="background:none; border:none; color:var(--accent-gold); font-size:1.1rem; cursor:pointer;"><i class="fa-solid fa-pen-to-square"></i></button>
             </div>
             <p id="m-desc" style="font-size: 1.05rem; line-height: 1.8; color: #555; margin-top:15px;">Description</p>
             <div id="editing-area" class="hidden" style="margin-top: 20px; padding-top: 15px; border-top: 1px solid #EEE;">
                 <textarea id="m-edit-note" rows="5" placeholder="輸入筆記..." style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; resize: none; margin-bottom: 10px;"></textarea>
-                <button onclick="saveDetailNote()" style="width: 100%; padding: 12px; background: var(--accent-red); color: white; border: none; border-radius: 8px; font-weight: 600;">儲存 (本地)</button>
+                <button onclick="saveDetailNote()" style="width: 100%; padding: 12px; background: var(--accent-red); color: white; border: none; border-radius: 8px; font-weight: 600;">儲存筆記 (同步雲端)</button>
             </div>
             <div id="m-detail-info" style="margin-top: 30px; border-top: 1px dashed var(--line-light); padding-top: 20px;"></div>
         </div>
@@ -838,7 +840,7 @@
 
         const GOOGLE_MAPS_API_KEY = "AIzaSyAX9nvh4bJpiM6-oTm8FoUSZeSBpxZBc1E"; 
         let apiKey = localStorage.getItem('gemini_api_key') || "";
-        let currentRate = 0.2215; 
+        let currentRate = 0.2215; // Fallback rate
         let currentIdx = 0;
         let currentUser = 'YK';
         let expenses = [];
@@ -846,9 +848,10 @@
         let db, auth, expensesRef, shoppingRef, tripNotesRef;
         let weatherCache = { hakodate: { temp: '--', summary: '' }, aomori: { temp: '--', summary: '' } };
         let currentModalData = null;
+        let hasAlertedAuthError = false; 
 
         // Fallback config if environment missing
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'local-dev-app';
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
         let firebaseConfig = {};
         try {
             firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
@@ -858,6 +861,7 @@
         async function fetchRealData() {
             if(!apiKey) {
                 console.log("No API Key set. Using offline defaults.");
+                document.getElementById('current-rate-display').innerText = `即時匯率: 1 JPY = ${currentRate.toFixed(4)} TWD (請設定 API Key)`;
                 return;
             }
 
@@ -880,11 +884,19 @@
                     }
                 }
             };
+            // NOTE: The 400 error implies a malformed key or prompt. 
+            // We use the apiKey from localStorage now.
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
             
             try {
                 const response = await fetch(apiUrl, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload) });
+                
+                if (response.status === 400 || response.status === 401) {
+                    console.error("API Error: Check Key or Quota.");
+                    throw new Error(`API status: ${response.status}. Please check your Gemini API Key.`);
+                }
                 if (!response.ok) throw new Error(`API status: ${response.status}`);
+                
                 const result = await response.json();
                 const jsonText = result.candidates?.[0]?.content?.parts?.[0]?.text;
                 if (!jsonText) throw new Error("Missing JSON payload");
@@ -899,7 +911,13 @@
                 
             } catch(e) { 
                 console.error("Data fetch failed:", e);
-                document.getElementById('current-rate-display').innerText = `即時匯率: 1 JPY = ${currentRate.toFixed(4)} TWD (離線)`;
+                document.getElementById('current-rate-display').innerText = `即時匯率: 1 JPY = ${currentRate.toFixed(4)} TWD (連線失敗)`;
+                // Reset header display on failure
+                document.getElementById('header-weather-icon').className = 'fa-solid fa-cloud-sun-rain';
+                document.getElementById('header-weather-temp').innerText = '離線';
+                weatherCache.hakodate = { temp: '--', summary: '無法連線' };
+                weatherCache.aomori = { temp: '--', summary: '無法連線' };
+                window.renderTrip();
             }
         }
 
@@ -955,18 +973,16 @@
         }
 
         const setupFirebase = async () => {
-            // Check if user provided manual config
             let manualConfigStr = localStorage.getItem('firebase_config_manual');
             let manualConfig = null;
             if(manualConfigStr) {
                 try { manualConfig = JSON.parse(manualConfigStr); } catch(e){ console.error("Invalid manual config"); }
             }
 
-            // Use Manual config OR injected config OR fallback to empty
             const finalConfig = manualConfig || firebaseConfig;
             
-            // If no valid config (and manual config not set), use local mode
-            if (!finalConfig || Object.keys(finalConfig).length === 0) {
+            // If no valid config, use local mode
+            if (!finalConfig || Object.keys(finalConfig).length === 0 || !finalConfig.projectId) {
                 console.log("Using LocalStorage Mode (No Config)");
                 document.getElementById('firebase-status').innerHTML = "<span class='status-badge offline'>離線模式 (本地存儲)</span>";
                 window.subExpenses(); window.subShopping(); 
@@ -978,13 +994,11 @@
                 db = getFirestore(app);
                 auth = getAuth(app);
                 
-                // Anonymous Auth
                 await signInAnonymously(auth);
                 
                 onAuthStateChanged(auth, (user) => {
                     if(user) {
                         document.getElementById('firebase-status').innerHTML = "<span class='status-badge online'>已連線 Firebase</span>";
-                        // Use default bucket structure if appId is missing in manual config scenario
                         const targetAppId = appId === 'local-dev-app' ? 'my-travel-app' : appId;
                         
                         expensesRef = collection(db, `artifacts/${targetAppId}/public/data/expenses`);
@@ -1001,27 +1015,37 @@
         };
         
         window.saveFirebaseConfig = () => {
-            const configStr = document.getElementById('firebase-config-input').value;
+            const configStr = document.getElementById('firebase-config-input').value.trim();
             if(configStr) {
                 try {
-                    JSON.parse(configStr); // Validate JSON
+                    const parsedConfig = JSON.parse(configStr);
+                    if (!parsedConfig.projectId) {
+                        alert("JSON 格式正確，但缺少 projectId。請確認複製了完整的 Firebase Config JSON 物件。");
+                        return;
+                    }
                     localStorage.setItem('firebase_config_manual', configStr);
                     alert("設定已儲存！即將重新整理頁面以套用...");
                     location.reload();
                 } catch(e) {
                     alert("JSON 格式錯誤，請檢查複製內容是否完整。");
                 }
+            } else {
+                 localStorage.removeItem('firebase_config_manual');
+                 alert("已清除 Firebase 設定！即將重新整理頁面。");
+                 location.reload();
             }
         };
 
         window.subExpenses = () => {
-            if (expensesRef) {
+            if (expensesRef && !hasAlertedAuthError) {
                 onSnapshot(query(expensesRef), (sn) => {
                     expenses = sn.docs.map(d => ({id:d.id, ...d.data()})).sort((a,b) => (b.timestamp?.toMillis()||0)-(a.timestamp?.toMillis()||0));
                     window.renderExpenses();
+                }, (error) => {
+                    console.error("Firestore Expense Error:", error);
+                    handleAuthError();
                 });
             } else {
-                // Local Mock
                 const ls = new LocalStore('local_expenses');
                 expenses = ls.get();
                 window.renderExpenses();
@@ -1029,10 +1053,13 @@
         };
         
         window.subShopping = () => {
-             if (shoppingRef) {
+             if (shoppingRef && !hasAlertedAuthError) {
                 onSnapshot(query(shoppingRef), (sn) => {
                     shoppingList = sn.docs.map(d => ({id:d.id, ...d.data()})).sort((a,b) => (b.timestamp?.toMillis()||0)-(a.timestamp?.toMillis()||0));
                     window.renderShoppingList();
+                }, (error) => {
+                    console.error("Firestore Shopping Error:", error);
+                    handleAuthError();
                 });
              } else {
                 const ls = new LocalStore('local_shopping');
@@ -1041,12 +1068,30 @@
              }
         };
 
+        // Helper to handle auth errors gracefully
+        function handleAuthError() {
+            if (!hasAlertedAuthError) {
+                hasAlertedAuthError = true; // Prevent spam
+                document.getElementById('firebase-status').innerHTML = "<span class='status-badge offline'>權限錯誤！自動切換離線模式。</span>";
+                // Switch refs to null to force local mode in subsequent calls
+                expensesRef = null;
+                shoppingRef = null;
+                tripNotesRef = null; 
+                // Re-subscribe to local store
+                window.subExpenses();
+                window.subShopping();
+            }
+        }
+
         // --- GLOBAL FNS ---
         window.addExpense = async () => {
             const item = document.getElementById('ex-item').value;
             const price = parseInt(document.getElementById('ex-price').value);
             if(item && price) { 
-                if (expensesRef) await addDoc(expensesRef, {user: currentUser, item, price, timestamp: serverTimestamp(), rate: currentRate});
+                if (expensesRef) {
+                     try { await addDoc(expensesRef, {user: currentUser, item, price, timestamp: serverTimestamp(), rate: currentRate}); }
+                     catch(e) { console.error("Write error:", e); handleAuthError(); }
+                }
                 else { const ls = new LocalStore('local_expenses'); ls.add({user: currentUser, item, price, timestamp: {toMillis: ()=>Date.now()}, rate: currentRate}); window.subExpenses(); }
                 document.getElementById('ex-item').value=''; document.getElementById('ex-price').value=''; 
             }
@@ -1062,17 +1107,26 @@
         window.addShoppingItem = async () => {
             const item = document.getElementById('shop-item').value;
             if(item) { 
-                if (shoppingRef) await addDoc(shoppingRef, {item, is_bought:false, assigned_user:currentUser, timestamp:serverTimestamp()}); 
+                if (shoppingRef) {
+                    try { await addDoc(shoppingRef, {item, is_bought:false, assigned_user:currentUser, timestamp:serverTimestamp()}); }
+                    catch(e) { console.error("Write error:", e); handleAuthError(); }
+                }
                 else { const ls = new LocalStore('local_shopping'); ls.add({item, is_bought:false, assigned_user:currentUser, timestamp:{toMillis: ()=>Date.now()}}); window.subShopping(); }
                 document.getElementById('shop-item').value=''; 
             }
         };
         window.toggleBought = async (id, val) => { 
-            if (shoppingRef) await updateDoc(doc(shoppingRef, id), {is_bought: !val});
+            if (shoppingRef) {
+                try { await updateDoc(doc(shoppingRef, id), {is_bought: !val}); }
+                catch(e) { console.error("Update error:", e); handleAuthError(); }
+            }
             else { const ls = new LocalStore('local_shopping'); ls.update(id, {is_bought: !val}); window.subShopping(); }
         };
         window.deleteShoppingItem = async (id) => { 
-            if (shoppingRef) await deleteDoc(doc(shoppingRef, id));
+            if (shoppingRef) {
+                try { await deleteDoc(doc(shoppingRef, id)); }
+                catch(e) { console.error("Delete error:", e); handleAuthError(); }
+            }
             else { const ls = new LocalStore('local_shopping'); ls.delete(id); window.subShopping(); }
         };
         window.renderShoppingList = () => {
@@ -1115,7 +1169,7 @@
             document.getElementById('m-desc').innerText = data.desc;
             
             // Try fetch note
-            if(tripNotesRef) {
+            if(tripNotesRef && !hasAlertedAuthError) {
                 try {
                     const noteId = `n_${data.dI}_${data.eI}`;
                     const docSnap = await getDoc(doc(tripNotesRef, noteId));
@@ -1126,7 +1180,7 @@
                     } else {
                         document.getElementById('m-edit-note').value = data.desc;
                     }
-                } catch(e) { console.error(e); }
+                } catch(e) { console.error(e); handleAuthError(); }
             }
 
             document.getElementById('m-img').src = tripData[currentIdx].heroImg;
@@ -1139,14 +1193,14 @@
         
         window.saveDetailNote = async () => {
             const newNote = document.getElementById('m-edit-note').value;
-            if(tripNotesRef && currentModalData) {
+            if(tripNotesRef && currentModalData && !hasAlertedAuthError) {
                 const noteId = `n_${currentModalData.dI}_${currentModalData.eI}`;
                 try {
                     await setDoc(doc(tripNotesRef, noteId), { note: newNote, updatedAt: serverTimestamp() });
                     document.getElementById('m-desc').innerText = newNote;
                     window.toggleEditMode();
-                    if(confirm) console.log("筆記已儲存並同步到雲端！");
-                } catch(e) { if(confirm) console.log("儲存失敗：請檢查網路和權限。"); }
+                    alert("筆記已儲存並同步到雲端！");
+                } catch(e) { console.error("Save error:", e); handleAuthError(); }
             } else {
                  // Local Mock Save
                  document.getElementById('m-desc').innerText = newNote;
@@ -1156,11 +1210,11 @@
         };
         
         window.saveApiKey = () => {
-            const key = document.getElementById('api-key-input').value;
+            const key = document.getElementById('api-key-input').value.trim();
             if(key) {
                 localStorage.setItem('gemini_api_key', key);
                 apiKey = key;
-                alert("API Key 已儲存！");
+                alert("API Key 已儲存！即將嘗試連線天氣服務。");
                 fetchRealData();
             }
         };
@@ -1196,11 +1250,19 @@
             document.getElementById('days-left').innerText = diff > 0 ? diff : 0;
             document.getElementById('header-days').innerText = diff > 0 ? diff : 0;
             document.getElementById('dynamic-intro-text').innerText = "準備好迎接青森的雪了嗎？";
-            if(apiKey) document.getElementById('api-key-input').value = apiKey;
             
-            // Pre-fill if manual config exists
+            // Pre-fill keys/config on load
+            if(apiKey) document.getElementById('api-key-input').value = apiKey;
             const manualConfig = localStorage.getItem('firebase_config_manual');
             if(manualConfig) document.getElementById('firebase-config-input').value = manualConfig;
+            
+            // Set initial firebase status
+             if(manualConfig || (typeof __firebase_config !== 'undefined' && JSON.parse(__firebase_config).projectId)) {
+                 document.getElementById('firebase-status').innerHTML = "<span class='status-badge online'>檢查連線中...</span>";
+             } else {
+                 document.getElementById('firebase-status').innerHTML = "<span class='status-badge offline'>未設定 Config (單機模式)</span>";
+             }
+
         };
     </script>
 </body>
