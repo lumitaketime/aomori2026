@@ -13,11 +13,11 @@
     
     <style>
         :root {
-            --bg-color: #FAF9F6; /* 溫暖紙張白 */
+            --bg-color: #FAF9F6;
             --text-main: #2C2C2C;
             --text-sub: #8E8E93;
-            --accent-gold: #C5A059; /* 質感金 */
-            --accent-blue: #546E7A;
+            --accent-gold: #C5A059;
+            --accent-red: #D32F2F;
             --line-color: #E0E0E0;
             --card-shadow: 0 8px 24px rgba(0,0,0,0.06);
             --safe-area-bottom: env(safe-area-inset-bottom);
@@ -38,185 +38,102 @@
 
         /* --- HEADER --- */
         .header {
-            padding: 50px 20px 10px;
-            background: var(--bg-color);
-            position: sticky; top: 0; z-index: 100;
+            padding: 50px 20px 10px; background: var(--bg-color); position: sticky; top: 0; z-index: 100;
             border-bottom: 1px solid rgba(0,0,0,0.05);
         }
-        .app-title {
-            text-align: center; font-size: 1.4rem; font-weight: 900; letter-spacing: 2px;
-            margin-bottom: 5px; color: var(--text-main);
-        }
-        .app-meta {
-            text-align: center; font-size: 0.8rem; color: var(--text-sub); letter-spacing: 1px;
-            display: flex; justify-content: center; gap: 15px; margin-bottom: 15px;
-        }
+        .app-title { text-align: center; font-size: 1.4rem; font-weight: 900; letter-spacing: 2px; margin-bottom: 5px; }
+        .app-meta { display: flex; justify-content: center; gap: 15px; margin-bottom: 15px; font-size: 0.8rem; color: var(--text-sub); }
 
         /* Date Navigator */
-        .date-nav {
-            display: flex; justify-content: space-between; gap: 5px; overflow-x: auto;
-            padding-bottom: 10px; scrollbar-width: none;
-        }
+        .date-nav { display: flex; gap: 5px; overflow-x: auto; padding-bottom: 10px; scrollbar-width: none; }
         .date-item {
-            display: flex; flex-direction: column; align-items: center; min-width: 50px;
-            padding: 8px 0; border-radius: 25px; transition: 0.3s; color: #BBB;
+            display: flex; flex-direction: column; align-items: center; min-width: 50px; padding: 8px 0; border-radius: 25px; transition: 0.3s; color: #BBB;
         }
-        .date-item.active {
-            color: var(--text-main); background: white; box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-        }
+        .date-item.active { color: var(--text-main); background: white; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
         .date-weekday { font-size: 0.7rem; font-weight: bold; margin-bottom: 2px; }
         .date-day { font-size: 1.1rem; font-family: 'Noto Serif TC', serif; font-weight: bold; }
         .date-dot { width: 4px; height: 4px; background: var(--accent-gold); border-radius: 50%; margin-top: 4px; opacity: 0; }
         .date-item.active .date-dot { opacity: 1; }
 
-        /* --- WEATHER WIDGET (Minimal) --- */
-        .weather-strip {
-            display: flex; justify-content: space-around; padding: 15px 20px;
-            border-bottom: 1px solid var(--line-color); margin-bottom: 20px;
-        }
-        .w-item { text-align: center; }
-        .w-time { font-size: 0.75rem; color: #AAA; margin-bottom: 5px; }
-        .w-icon { font-size: 1.2rem; color: var(--text-main); margin-bottom: 5px; }
-        .w-temp { font-size: 0.9rem; font-weight: bold; color: var(--text-main); font-family: 'Noto Serif TC'; }
-
         /* --- TIMELINE LAYOUT --- */
         .timeline-container { padding: 0 20px; }
         .timeline-row { display: flex; gap: 15px; margin-bottom: 25px; position: relative; }
-        
-        /* Left: Time */
         .t-time-col { 
-            width: 50px; flex-shrink: 0; text-align: right; 
-            font-family: 'Noto Serif TC'; font-size: 1.1rem; font-weight: bold; color: var(--text-main);
+            width: 50px; flex-shrink: 0; text-align: right; font-family: 'Noto Serif TC'; font-size: 1.1rem; font-weight: bold; color: var(--text-main);
             padding-top: 5px;
         }
-        .t-time-sub { font-size: 0.7rem; color: #AAA; font-family: sans-serif; margin-top: 2px; }
-
-        /* Middle: Line */
-        .t-line-col {
-            width: 2px; background: var(--line-color); position: relative;
-            margin-top: 10px; margin-bottom: -35px; /* Extend line */
-        }
-        .t-dot {
-            width: 10px; height: 10px; background: var(--bg-color); border: 2px solid var(--text-main);
-            border-radius: 50%; position: absolute; left: 50%; top: 0; transform: translateX(-50%);
-            z-index: 2;
-        }
-        .timeline-row:last-child .t-line-col { display: none; } /* Hide line on last item */
-
-        /* Right: Card */
+        .t-line-col { width: 2px; background: var(--line-color); position: relative; margin-top: 10px; margin-bottom: -35px; }
+        .t-dot { width: 10px; height: 10px; background: var(--bg-color); border: 2px solid var(--text-main); border-radius: 50%; position: absolute; left: 50%; top: 0; transform: translateX(-50%); z-index: 2; }
+        .timeline-row:last-child .t-line-col { display: none; } 
         .t-content-col { flex: 1; min-width: 0; }
         
         .trip-card {
             background: white; border-radius: 16px; padding: 20px; box-shadow: var(--card-shadow);
             transition: transform 0.2s; cursor: pointer; position: relative; overflow: hidden;
         }
-        .trip-card:active { transform: scale(0.98); }
-
-        /* Special Experience Styling */
-        .trip-card.special {
-            border: 1px solid var(--accent-gold);
-            background: linear-gradient(to bottom right, #FFFCF5, #FFF);
-        }
-        .special-tag {
-            color: var(--accent-gold); font-size: 0.65rem; font-weight: bold; letter-spacing: 1px; text-transform: uppercase;
-            margin-bottom: 8px; display: flex; align-items: center; gap: 5px;
-        }
-        
-        .c-tag { 
-            font-size: 0.7rem; font-weight: bold; color: #999; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; 
-            border: 1px solid #EEE; display: inline-block; padding: 2px 8px; border-radius: 4px;
-        }
+        .trip-card.special { border: 1px solid var(--accent-gold); background: linear-gradient(to bottom right, #FFFCF5, #FFF); }
+        .special-tag { color: var(--accent-gold); font-size: 0.65rem; font-weight: bold; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; display: flex; align-items: center; gap: 5px; }
+        .c-tag { font-size: 0.7rem; font-weight: bold; color: #999; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; border: 1px solid #EEE; display: inline-block; padding: 2px 8px; border-radius: 4px; }
         .c-title { font-size: 1.2rem; font-weight: 600; margin-bottom: 5px; line-height: 1.3; font-family: 'Noto Serif TC'; }
         .c-desc { font-size: 0.9rem; color: #666; line-height: 1.6; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-        
-        .c-thumb {
-            width: 100%; height: 120px; object-fit: cover; border-radius: 8px; margin-top: 12px;
-            display: none; /* Hidden by default, shown if image exists */
-        }
+        .c-thumb { width: 100%; height: 120px; object-fit: cover; border-radius: 8px; margin-top: 12px; display: none; }
         .c-thumb.show { display: block; }
 
-        /* --- MODAL (The "Point & Speak" Feature) --- */
+        /* --- MODAL (Detail/Translation) --- */
         .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5); z-index: 2000; opacity: 0; visibility: hidden; transition: 0.3s;
-            backdrop-filter: blur(5px);
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; opacity: 0; visibility: hidden; transition: 0.3s;
         }
         .modal-overlay.open { opacity: 1; visibility: visible; }
-        
         .detail-modal {
-            position: fixed; bottom: 0; left: 0; width: 100%; height: 90vh;
-            background: #FFF; border-radius: 20px 20px 0 0; z-index: 2100;
-            transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            overflow-y: auto; display: flex; flex-direction: column;
+            position: fixed; bottom: 0; left: 0; width: 100%; height: 90vh; background: #FFF; border-radius: 20px 20px 0 0; z-index: 2100;
+            transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); overflow-y: auto;
         }
         .detail-modal.open { transform: translateY(0); }
-
-        .m-header { padding: 25px 25px 0; display: flex; justify-content: space-between; align-items: flex-start; }
-        .m-tag { 
-            border: 1px solid var(--text-main); color: var(--text-main); padding: 4px 10px; 
-            font-size: 0.7rem; font-weight: bold; letter-spacing: 1px; text-transform: uppercase; 
-        }
-        .m-close { font-size: 1.5rem; color: #999; cursor: pointer; padding: 5px; }
-        
-        .m-title-block { padding: 10px 25px 20px; }
-        .m-title { font-family: 'Noto Serif TC'; font-size: 1.8rem; font-weight: 900; margin-bottom: 5px; }
-        .m-address { font-size: 0.85rem; color: #888; display: flex; align-items: center; gap: 5px; }
-        
-        .m-hero { width: 100%; height: 200px; object-fit: cover; margin-bottom: 20px; }
+        .m-hero { width: 100%; height: 200px; object-fit: cover; }
+        .m-content { padding: 25px; margin-top: -30px; position: relative; }
+        .m-title { font-family: 'Noto Serif TC'; font-size: 1.8rem; font-weight: 900; margin-bottom: 10px; }
+        .info-text { font-size: 1rem; line-height: 1.8; color: #555; white-space: pre-line; padding-bottom: 40px; }
 
         /* Point & Speak Section */
         .ps-section { padding: 0 25px 30px; }
-        .sec-title { 
-            font-family: 'Noto Serif TC'; font-size: 0.9rem; color: #AAA; letter-spacing: 2px; 
-            border-bottom: 1px solid #EEE; padding-bottom: 10px; margin-bottom: 20px;
-        }
+        .sec-title { font-family: 'Noto Serif TC'; font-size: 0.9rem; color: #AAA; letter-spacing: 2px; border-bottom: 1px solid #EEE; padding-bottom: 10px; margin-bottom: 20px; }
+        .ps-card { background: #F8F8F8; border-radius: 12px; padding: 15px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
+        .gps-box { background: white; border: 1px solid #EEE; padding: 15px; border-radius: 12px; margin-bottom: 25px; display: flex; align-items: center; gap: 15px; }
         
-        .ps-card {
-            background: #F8F8F8; border-radius: 12px; padding: 15px; margin-bottom: 15px;
-            display: flex; justify-content: space-between; align-items: center;
-        }
-        .ps-cn { font-size: 0.9rem; font-weight: bold; color: #333; }
-        .ps-jp { font-size: 1.1rem; font-family: 'Noto Serif TC'; color: #000; text-align: right; }
+        /* --- EXPENSES TAB --- */
+        .exp-header { background: var(--text-main); color: white; padding: 20px; margin: 20px; border-radius: 16px; text-align: center; }
+        .exp-totals { display: flex; justify-content: space-around; padding: 10px 0; margin: 0 20px 20px; background: white; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .exp-stat { text-align: center; }
+        .exp-label { font-size: 0.75rem; color: #999; }
+        .exp-val { font-size: 1rem; font-weight: bold; color: var(--accent-gold); }
+        .e-btn { width: 100%; padding: 15px; background: var(--accent-gold); color: white; border: none; border-radius: 12px; font-weight: bold; font-size: 1rem; }
 
-        /* GPS Phone Box */
-        .gps-box {
-            background: white; border: 1px solid #EEE; padding: 15px; border-radius: 12px; margin-bottom: 25px;
-            display: flex; align-items: center; gap: 15px;
+        /* --- TOOLS TAB (Hand-drawn) --- */
+        .tool-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 20px; }
+        .tool-card { 
+            background: #FFFCF5; border: 2px dashed #D4B69C; padding: 20px 10px; border-radius: 16px; text-align: center; 
+            box-shadow: 2px 2px 0px 0px #D4B69C; transition: all 0.1s; cursor: pointer;
         }
-        .gps-icon { width: 40px; height: 40px; background: #F5F5F5; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #666; }
-        .gps-label { font-size: 0.7rem; color: #AAA; font-weight: bold; letter-spacing: 1px; }
-        .gps-num { font-size: 1.3rem; font-weight: bold; font-family: monospace; color: var(--text-main); }
+        .tool-card:active { transform: translate(1px, 1px); box-shadow: 1px 1px 0px 0px #D4B69C; }
+        .tool-icon { font-size: 2rem; display: block; margin-bottom: 8px; color: var(--text-main); }
+        .tool-text { font-weight: bold; font-size: 0.9rem; }
+        
+        /* --- INFO TAB (New) --- */
+        .info-section { padding: 20px; }
+        .info-box { background: white; padding: 20px; border-radius: 16px; margin-bottom: 15px; box-shadow: var(--card-shadow); }
+        .info-title { font-family: 'Noto Serif TC'; font-size: 1.2rem; font-weight: 600; margin-bottom: 10px; }
+        .info-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #EEE; }
+        .info-label { font-size: 0.9rem; color: #555; }
+        .info-contact { color: var(--accent-red); font-weight: bold; }
 
-        /* Map & Info */
-        .map-btn {
-            background: #EFEFEF; color: var(--text-main); width: 100%; padding: 15px; border-radius: 12px;
-            border: none; font-weight: bold; font-size: 1rem; margin-bottom: 30px; cursor: pointer;
-            display: flex; align-items: center; justify-content: center; gap: 10px;
-        }
-        .info-text { font-size: 1rem; line-height: 1.8; color: #555; white-space: pre-line; padding-bottom: 40px; }
-
-        /* --- BOTTOM NAV --- */
+        /* --- NAV BAR (4 Items) --- */
         .nav-bar {
             position: fixed; bottom: 0; width: 100%; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px);
             border-top: 1px solid rgba(0,0,0,0.05); display: flex; justify-content: space-around;
             padding: 10px 0 calc(10px + var(--safe-area-bottom)); z-index: 1000;
         }
-        .nav-item { display: flex; flex-direction: column; align-items: center; color: #CCC; font-size: 0.7rem; gap: 4px; transition: 0.3s; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; color: #CCC; font-size: 0.7rem; gap: 4px; transition: 0.3s; width: 25%; }
         .nav-item.active { color: var(--text-main); }
-        .nav-icon { font-size: 1.4rem; }
-
-        /* Currency/Expenses Styles */
-        .exp-header { padding: 20px; background: #333; color: white; margin: 20px; border-radius: 16px; text-align: center; }
-        .exp-input-group { padding: 0 20px; }
-        .e-input { width: 100%; padding: 15px; border: 1px solid #DDD; border-radius: 12px; margin-bottom: 10px; font-size: 1rem; }
-        .e-btn { width: 100%; padding: 15px; background: var(--accent-gold); color: white; border: none; border-radius: 12px; font-weight: bold; font-size: 1rem; }
-
-        /* Translation Tools */
-        .tool-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 20px; }
-        .tool-card { 
-            background: white; padding: 20px; border-radius: 16px; text-align: center; 
-            box-shadow: var(--card-shadow); border: 1px solid #F5F5F5; 
-        }
 
     </style>
 </head>
@@ -229,41 +146,19 @@
             <span><i class="fa-solid fa-yen-sign"></i> <span id="rate-disp">0.22</span></span>
         </div>
         
-        <div class="date-nav" id="date-nav">
-            </div>
+        <div class="date-nav" id="date-nav"></div>
     </div>
 
-    <div class="weather-strip" id="weather-strip">
-        <div class="w-item">
-            <div class="w-time">Now</div>
-            <div class="w-icon"><i class="fa-solid fa-cloud"></i></div>
-            <div class="w-temp">-2°</div>
-        </div>
-        <div class="w-item">
-            <div class="w-time">13:00</div>
-            <div class="w-icon"><i class="fa-regular fa-snowflake"></i></div>
-            <div class="w-temp">-3°</div>
-        </div>
-        <div class="w-item">
-            <div class="w-time">14:00</div>
-            <div class="w-icon"><i class="fa-regular fa-snowflake"></i></div>
-            <div class="w-temp">-3°</div>
-        </div>
-        <div class="w-item">
-            <div class="w-time">15:00</div>
-            <div class="w-icon"><i class="fa-solid fa-wind"></i></div>
-            <div class="w-temp">-4°</div>
-        </div>
-        <div class="w-item">
-            <div class="w-time">16:00</div>
-            <div class="w-icon"><i class="fa-solid fa-moon"></i></div>
-            <div class="w-temp">-5°</div>
-        </div>
+    <div class="weather-strip">
+        <div class="w-item"><div class="w-time">Now</div><div class="w-icon"><i class="fa-solid fa-cloud"></i></div><div class="w-temp">-2°</div></div>
+        <div class="w-item"><div class="w-time">13:00</div><div class="w-icon"><i class="fa-regular fa-snowflake"></i></div><div class="w-temp">-3°</div></div>
+        <div class="w-item"><div class="w-time">14:00</div><div class="w-icon"><i class="fa-regular fa-snowflake"></i></div><div class="w-temp">-3°</div></div>
+        <div class="w-item"><div class="w-time">15:00</div><div class="w-icon"><i class="fa-solid fa-wind"></i></div><div class="w-temp">-4°</div></div>
+        <div class="w-item"><div class="w-time">16:00</div><div class="w-icon"><i class="fa-solid fa-moon"></i></div><div class="w-temp">-5°</div></div>
     </div>
 
     <div id="tab-trip" class="tab-content active">
-        <div id="timeline-container" class="timeline-container">
-            </div>
+        <div id="timeline-container" class="timeline-container"></div>
     </div>
 
     <div id="tab-money" class="tab-content" style="display:none;">
@@ -272,13 +167,18 @@
             <div style="font-size:2rem; font-weight:bold; font-family:'Noto Serif TC';" id="total-spend">¥0</div>
             <div style="font-size:0.8rem; margin-top:5px;">總支出 (TWD 估算: $<span id="total-twd">0</span>)</div>
         </div>
+        
+        <div class="exp-totals">
+            <div class="exp-stat"><div class="exp-label">YK</div><div class="exp-val" id="total-yk">$0</div></div>
+            <div class="exp-stat"><div class="exp-label">YY</div><div class="exp-val" id="total-yy">$0</div></div>
+            <div class="exp-stat"><div class="exp-label">YS</div><div class="exp-val" id="total-ys">$0</div></div>
+        </div>
+
         <div class="exp-input-group">
             <input type="text" id="ex-item" class="e-input" placeholder="項目 (如: 晚餐)">
             <input type="number" id="ex-price" class="e-input" placeholder="金額 (JPY)">
             <select id="ex-who" class="e-input">
-                <option value="YK">YK</option>
-                <option value="YY">YY</option>
-                <option value="YS">YS</option>
+                <option value="YK">YK</option><option value="YY">YY</option><option value="YS">YS</option>
             </select>
             <button class="e-btn" onclick="addExpense()">+ 記一筆</button>
         </div>
@@ -291,32 +191,54 @@
             <button class="e-btn" style="background:#444;" onclick="translateCustom()">翻譯成日文</button>
         </div>
         <div class="tool-grid">
-            <div class="tool-card" onclick="openTransModal('不吃肉 (海鮮可)', '豚肉は食べられません（魚介類は大丈夫です）')">
-                <i class="fa-solid fa-fish fa-2x" style="margin-bottom:10px;"></i><br>飲食禁忌
+            <div class="tool-card" onclick="openTransModal('我不吃肉類 (海鮮可以)', '肉は食べられません（魚介類は大丈夫です）')">
+                <span class="tool-icon"><i class="fa-solid fa-fish"></i></span><span class="tool-text">飲食禁忌</span>
             </div>
             <div class="tool-card" onclick="openTransModal('麻煩結帳', 'お会計をお願いします')">
-                <i class="fa-solid fa-file-invoice-dollar fa-2x" style="margin-bottom:10px;"></i><br>結帳
+                <span class="tool-icon"><i class="fa-solid fa-file-invoice-dollar"></i></span><span class="tool-text">結帳</span>
             </div>
             <div class="tool-card" onclick="openTransModal('請問廁所在哪裡', 'すみません、トイレはどこですか？')">
-                <i class="fa-solid fa-restroom fa-2x" style="margin-bottom:10px;"></i><br>找廁所
+                <span class="tool-icon"><i class="fa-solid fa-restroom"></i></span><span class="tool-text">找廁所</span>
+            </div>
+            <div class="tool-card" onclick="openTransModal('我要這個 (指著)', 'これをお願いします')">
+                <span class="tool-icon"><i class="fa-solid fa-hand-point-right"></i></span><span class="tool-text">我要這個</span>
+            </div>
+            <div class="tool-card" onclick="openTransModal('能幫我們拍照嗎？', '写真を撮ってもらえますか？')">
+                <span class="tool-icon"><i class="fa-solid fa-camera"></i></span><span class="tool-text">幫忙拍照</span>
+            </div>
+            <div class="tool-card" onclick="openTransModal('請問有試吃嗎？', '試食はありますか？')">
+                <span class="tool-icon"><i class="fa-solid fa-utensils"></i></span><span class="tool-text">有試吃嗎？</span>
+            </div>
+        </div>
+    </div>
+    
+    <div id="tab-info" class="tab-content" style="display:none;">
+        <div class="info-section">
+            <h2 class="serif" style="margin-top:0;">緊急聯絡與重要資訊</h2>
+
+            <div class="info-box">
+                <div class="info-title">緊急求助 (日本國內)</div>
+                <div class="info-item"><div class="info-label">警察 (Police)</div><div class="info-contact">110</div></div>
+                <div class="info-item"><div class="info-label">救護車/火警 (Ambulance/Fire)</div><div class="info-contact">119</div></div>
+                <div class="info-item"><div class="info-label">外國人專用熱線 (JNTO)</div><div class="info-contact">050-3816-2787</div></div>
+            </div>
+
+            <div class="info-box">
+                <div class="info-title">台灣駐日辦事處 (支援青森)</div>
+                <div class="info-item"><div class="info-label">駐橫濱辦事處 (負責東北)</div><div class="info-contact"><a href="tel:+81456417730">+81-45-641-7730</a></div></div>
+                <div class="info-item"><div class="info-label">緊急聯絡手機 (24H)</div><div class="info-contact"><a href="tel:+819039634771">+81-90-3963-4771</a></div></div>
+                <div style="font-size:0.8rem; color:#888; margin-top:10px;">(領務轄區包含青森縣)</div>
+            </div>
+
+            <div class="info-box">
+                <div class="info-title">入境與防疫 (Visit Japan)</div>
+                <button class="e-btn" style="background:#5D5D5D;" onclick="window.open('https://www.vjw.digital.go.jp/main/#/', '_blank')">
+                    Visit Japan Web 登錄
+                </button>
             </div>
         </div>
     </div>
 
-    <div class="nav-bar">
-        <div class="nav-item active" onclick="switchTab('trip', this)">
-            <i class="fa-solid fa-map nav-icon"></i>
-            <span>行程</span>
-        </div>
-        <div class="nav-item" onclick="switchTab('money', this)">
-            <i class="fa-solid fa-wallet nav-icon"></i>
-            <span>記帳</span>
-        </div>
-        <div class="nav-item" onclick="switchTab('tools', this)">
-            <i class="fa-solid fa-comments nav-icon"></i>
-            <span>翻譯</span>
-        </div>
-    </div>
 
     <div class="modal-overlay" id="modal-overlay" onclick="closeModal()"></div>
     <div class="detail-modal" id="detail-modal">
@@ -334,27 +256,19 @@
 
         <div class="ps-section">
             <div class="sec-title">指差し会話 (POINT & SPEAK)</div>
-            <div id="ps-container">
-                </div>
-
+            <div id="ps-container"></div>
             <div id="gps-container" style="display:none;">
                 <div class="gps-box">
                     <div class="gps-icon"><i class="fa-solid fa-car"></i></div>
-                    <div>
-                        <div class="gps-label">CAR GPS PHONE</div>
-                        <div class="gps-num" id="gps-num">000-000-000</div>
-                    </div>
+                    <div><div class="gps-label">CAR GPS PHONE</div><div class="gps-num" id="gps-num">000-000-000</div></div>
                 </div>
             </div>
-
             <div id="res-container" style="display:none; background:#F9F9F9; padding:15px; border-radius:12px; margin-bottom:20px;">
                 <div style="font-size:0.7rem; color:#999; font-weight:bold; letter-spacing:1px; margin-bottom:5px;">RESERVATION NO.</div>
                 <div style="font-size:1.2rem; font-weight:bold; font-family:monospace;" id="res-num">--</div>
             </div>
 
-            <button class="map-btn" onclick="openMap()">
-                <i class="fa-solid fa-map-location-dot"></i> 開啟 Google Maps 導航
-            </button>
+            <button class="map-btn" onclick="openMap()"><i class="fa-solid fa-map-location-dot"></i> 開啟 Google Maps 導航</button>
 
             <div class="sec-title">關於此處 (ABOUT)</div>
             <div class="info-text" id="m-desc">Description</div>
@@ -367,65 +281,66 @@
         <button onclick="document.getElementById('trans-pop').style.display='none'; document.getElementById('modal-overlay').style.display='none';" class="e-btn">關閉</button>
     </div>
 
+    <div class="nav-bar">
+        <div class="nav-item active" onclick="switchTab('trip', this)">
+            <i class="fa-solid fa-map nav-icon"></i><span>行程</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('money', this)">
+            <i class="fa-solid fa-wallet nav-icon"></i><span>記帳</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('tools', this)">
+            <i class="fa-solid fa-comments nav-icon"></i><span>翻譯</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('info', this)">
+            <i class="fa-solid fa-circle-exclamation nav-icon"></i><span>資訊</span>
+        </div>
+    </div>
+
     <script>
-        // --- DATA STRUCTURE (Updated Final Aomori/Hakodate) ---
+        // --- DATA STRUCTURE (Final Aomori/Hakodate) ---
         const tripData = [
             {
                 day: 1, date: "2/2", week: "MON",
                 events: [
                     { 
                         time: "11:10", title: "抵達函館機場 (HKD)", tag: "TRANSPORT", 
-                        desc: "入境後領取行李。",
+                        desc: "【入境手續】領取行李。\n【任務】 確認機場巴士時刻表。",
                         addr: "Hakodate Airport",
-                        img: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=800",
-                        pointSpeak: [
-                            { cn: "請問機場巴士在哪？", jp: "空港バス乗り場はどこですか？" }
-                        ]
+                        img: "image-day1-airport.jpg",
+                        pointSpeak: [{ cn: "請問機場巴士在哪？", jp: "空港バス乗り場はどこですか？" }]
                     },
                     { 
-                        time: "12:30", title: "機場巴士至函館站", tag: "TRANSPORT", 
-                        desc: "搭乘機場巴士前往 JR 函館站。",
+                        time: "12:30", title: "機場巴士至 JR 函館站", tag: "TRANSPORT", 
+                        desc: "搭乘機場巴士前往 JR 函館站，車程約 20-30 分鐘。",
                         addr: "JR Hakodate Station"
                     },
                     { 
                         time: "13:35", title: "採購：UNIQLO & Bic Camera", tag: "SHOPPING",
-                        desc: "從飯店/車站搭計程車出發 (計程車來回，效率最高)。UNIQLO 函館昭和店 & Kojima x Bic Camera 函館店。",
+                        desc: "【購物任務】從飯店/車站搭計程車出發 (來回效率最高)。採購防寒用品與電器。",
                         addr: "Kojima x Bic Camera 函館店",
-                        img: "https://images.unsplash.com/photo-1542060748-10c28b62716f?q=80&w=800",
-                        pointSpeak: [
-                            { cn: "請載我到 Bic Camera", jp: "ビックカメラまでお願いします" }
-                        ]
+                        img: "image-day1-shopping.jpg",
+                        pointSpeak: [{ cn: "請載我到 Bic Camera", jp: "ビックカメラまでお願いします" }]
                     },
                     { 
                         time: "15:45", title: "金森紅磚倉庫", tag: "SIGHTSEEING",
-                        desc: "飯店卸貨，搭市電前往。遊覽金森紅磚倉庫區域。",
+                        desc: "飯店卸貨後，搭市電前往。遊覽灣區並尋找晚餐地點。",
                         addr: "金森赤レンガ倉庫",
-                        img: "https://images.unsplash.com/photo-1579500057271-9c6a71cb069b?q=80&w=800"
+                        img: "image-day1-warehouse.jpg"
                     },
                     { 
                         time: "17:00", title: "函館山纜車 (夜景)", tag: "SIGHTSEEING",
-                        desc: "欣賞百萬夜景。纜車人潮可能較多，注意保暖。",
+                        desc: "欣賞百萬夜景。觀景台戶外風大，務必戴手套、帽子。",
                         addr: "Hakodate Ropeway",
-                        img: "https://images.unsplash.com/photo-1532236204992-f5e85c024202?q=80&w=800",
+                        img: "image-day1-nightview.jpg",
                         gps: "0138-23-3105",
-                        pointSpeak: [
-                            { cn: "兩張大人票", jp: "大人2枚お願いします" }
-                        ]
-                    },
-                    { 
-                        time: "晚餐", title: "函館站或灣區用餐", tag: "FOOD",
-                        desc: "步行前往，自由選擇。",
-                        addr: "JR Hakodate Station Area",
-                        pointSpeak: [
-                            { cn: "有素食嗎？", jp: "ベジタリアン料理はありますか？" }
-                        ]
+                        pointSpeak: [{ cn: "兩張大人票", jp: "大人2枚お願いします" }]
                     },
                     { 
                         time: "住宿", title: "JR Inn Hakodate", tag: "HOTEL",
-                        desc: "飯店 Check-in。位於函館站旁。",
+                        desc: "位於函館站旁，交通便利。",
                         addr: "JR Inn Hakodate",
-                        bookingId: "HAKO-JRI-202",
-                        img: "https://images.unsplash.com/photo-1517840901100-8179e982acb7?q=80&w=800"
+                        bookingId: "HAKO-JRI-0202",
+                        img: "image-day1-hotel.jpg"
                     }
                 ]
             },
@@ -434,9 +349,9 @@
                 events: [
                     { 
                         time: "08:00", title: "函館朝市 早餐", tag: "FOOD",
-                        desc: "步行前往。海鮮丼、釣烏賊。",
+                        desc: "步行前往。海鮮丼、釣烏賊。注意地面濕滑。",
                         addr: "Hakodate Morning Market",
-                        img: "https://images.unsplash.com/photo-1559339352-11d035aa65de?q=80&w=800",
+                        img: "image-day2-market.jpg",
                         gps: "0138-22-7981",
                         pointSpeak: [
                             { cn: "釣活烏賊", jp: "活イカ釣り（Ika-tsuri）" },
@@ -444,27 +359,27 @@
                         ]
                     },
                     { 
-                        time: "10:00", title: "新幹線等，移動至青森", tag: "TRANSPORT",
-                        desc: "從函館站出發。JR 新幹線/奧羽本線。",
+                        time: "10:00", title: "JR 新幹線移動至青森", tag: "TRANSPORT",
+                        desc: "從函館站出發。預計 13:45 抵達青森站。",
                         addr: "JR Hakodate Station -> JR Aomori Station",
-                        img: "https://images.unsplash.com/photo-1560931326-03c6838a6a6e?q=80&w=800"
+                        img: "image-day2-shinkansen.jpg"
                     },
                     { 
                         time: "14:15", title: "Dormy Inn 放行李", tag: "HOTEL",
-                        desc: "搭計程車至 Dormy Inn 放行李 (Day 2 無車)。",
+                        desc: "搭計程車至 Dormy Inn (Day 2 無車，計程車代步)。",
                         addr: "Dormy Inn Aomori",
-                        bookingId: "AOM-DOR-203"
+                        bookingId: "AOM-DOR-0203"
                     },
                     { 
                         time: "14:40", title: "青森縣立美術館", tag: "SIGHTSEEING",
-                        desc: "搭計程車前往。參觀奈良美智的「青森犬」。美術館 17:00 閉館。",
+                        desc: "搭計程車前往。參觀奈良美智的「青森犬」。美術館 17:00 閉館 (L.E. 16:30)。",
                         addr: "Aomori Museum of Art",
-                        img: "https://images.unsplash.com/photo-1629012435532-6d2a452d765d?q=80&w=800",
+                        img: "image-day2-museum.jpg",
                         gps: "017-783-3000"
                     },
                     { 
                         time: "18:00", title: "晚餐：青森鄉土料理", tag: "FOOD",
-                        desc: "步行尋找晚餐，推薦青森扇貝小屋或在地居酒屋。",
+                        desc: "步行前往，推薦青森扇貝小屋或在地居酒屋。",
                         addr: "Aomori Station Area",
                         pointSpeak: [
                             { cn: "青森扇貝小屋", jp: "あおもり帆立小屋" }
@@ -472,14 +387,8 @@
                     },
                     { 
                         time: "19:30", title: "唐吉訶德 (購物備案)", tag: "SHOPPING",
-                        desc: "步行前往，離飯店近。",
+                        desc: "步行前往，離飯店近。可逛車站 LOVINA/THREE 百貨。",
                         addr: "ドン・キホーテ 青森新町店"
-                    },
-                    { 
-                        time: "住宿", title: "Dormy Inn Aomori", tag: "HOTEL",
-                        desc: "享受泡湯、夜鳴拉麵。",
-                        addr: "Dormy Inn Aomori",
-                        img: "https://images.unsplash.com/photo-1517840901100-8179e982acb7?q=80&w=800"
                     }
                 ]
             },
@@ -498,25 +407,25 @@
                     },
                     { 
                         time: "10:15", title: "3COINS+plus 採買", tag: "SHOPPING",
-                        desc: "抵達 ELM 購物中心，直奔 3COINS+plus (限時 35 分鐘)。",
+                        desc: "抵達 ELM 購物中心。直奔 3COINS+plus 買小相機 (限時 35 分鐘)。",
                         addr: "ELM Shopping Center",
-                        img: "https://images.unsplash.com/photo-1519567241046-7f570eee3d9f?q=80&w=800"
+                        img: "image-day3-shopping.jpg"
                     },
                     { 
                         time: "12:30", title: "津輕鐵道 「暖爐列車」", tag: "SPECIAL EXPERIENCE",
                         isSpecial: true,
                         desc: "【任務 2】烤魷魚體驗。務必確認 2026 年時刻表。",
                         addr: "津軽五所川原駅",
-                        img: "https://images.unsplash.com/photo-1475738972911-5b44ce984c42?q=80&w=800",
+                        img: "image-day3-stove-train.jpg",
                         pointSpeak: [
                             { cn: "請給我烤魷魚", jp: "スルメ（Surume）をください" }
                         ]
                     },
                     { 
                         time: "15:30", title: "藤田紀念庭園", tag: "SIGHTSEEING",
-                        desc: "【任務 3：CRITICAL】衝刺至大正浪漫喫茶室，16:00 前完成點餐。",
+                        desc: "【任務 3：CRITICAL】大正浪漫喫茶室，16:00 前完成點餐。欣賞弘前城白天雪景。",
                         addr: "藤田記念庭園",
-                        img: "https://images.unsplash.com/photo-1568285908272-98c94625579d?q=80&w=800",
+                        img: "image-day3-garden.jpg",
                         gps: "0172-37-5525",
                         pointSpeak: [
                             { cn: "我要蘋果派", jp: "アップルパイをください" }
@@ -536,6 +445,7 @@
                         time: "09:00", title: "古川市場 のっけ丼 早餐", tag: "FOOD",
                         desc: "自駕，快去快回。",
                         addr: "青森魚菜センター",
+                        img: "image-day4-food.jpg",
                         pointSpeak: [
                             { cn: "我要兩個のっけ丼", jp: "のっけ丼を二つお願いします" }
                         ]
@@ -544,13 +454,14 @@
                         time: "10:40", title: "八甲田樹冰纜車", tag: "SIGHTSEEING",
                         desc: "搭纜車看 Snow Monsters。若纜車因強風停駛，執行 B 計畫。",
                         addr: "八甲田ロープウェー",
-                        img: "https://images.unsplash.com/photo-1483921020237-2ff51e8e4b22?q=80&w=800",
+                        img: "image-day4-snowmonster.jpg",
                         gps: "017-738-0343"
                     },
                     { 
                         time: "13:30", title: "馬門溫泉滑雪場", tag: "ACTIVITY",
-                        desc: "【滑雪體驗】在 8 度緩坡練習滑雪 (租借裝備)。",
+                        desc: "【滑雪體驗】在 8 度緩坡練習滑雪 (租借裝備)。車程約 1 小時。",
                         addr: "馬門溫泉滑雪場",
+                        img: "image-day4-ski.jpg",
                         gps: "0176-74-2131"
                     },
                     { 
@@ -578,12 +489,13 @@
                         isSpecial: true,
                         desc: "【飯店活動】需預約，環繞飯店園區。",
                         addr: "星野リゾート 青森屋",
-                        img: "https://images.unsplash.com/photo-1517840901100-8179e982acb7?q=80&w=800"
+                        img: "image-day5-horse-carriage.jpg"
                     },
                     { 
                         time: "12:00", title: "午餐：八食中心", tag: "FOOD",
                         desc: "開車前往 (35 分鐘)。七輪炭烤海鮮。",
                         addr: "八食センター",
+                        img: "image-day5-hasshoku.jpg",
                         gps: "0178-28-9311",
                         pointSpeak: [
                             { cn: "我要租炭火爐", jp: "七輪（Shichirin）を使いたいです" }
@@ -592,7 +504,8 @@
                     { 
                         time: "20:00", title: "陸奧祭典屋 表演", tag: "ACTIVITY",
                         desc: "【文化體驗】觀賞青森四大祭典表演，需預約。",
-                        addr: "星野リゾート 青森屋"
+                        addr: "星野リゾート 青森屋",
+                        img: "image-day5-matsuri.jpg"
                     }
                 ]
             },
@@ -601,7 +514,7 @@
                 events: [
                     { 
                         time: "10:00", title: "開車離開飯店 (最終鐵律)", tag: "TRANSPORT",
-                        desc: "【最終鐵律】準時離開，確保充足的雪地緩衝時間 (3.5 小時)。",
+                        desc: "【最終鐵律】準時離開，確保充足的雪地緩衝時間 (3.5 小時)。路況不佳請慢速安全駕駛。",
                         addr: "星野リゾート 青森屋 -> 青森空港",
                         gps: "0176-51-1111"
                     },
@@ -648,7 +561,7 @@
         };
 
         function updateMeta() {
-            const startDate = new Date("2026-02-02"); // Updated start date
+            const startDate = new Date("2026-02-02"); 
             const today = new Date();
             today.setHours(0, 0, 0, 0); 
             const days = Math.max(0, Math.ceil((startDate - today) / (1000 * 60 * 60 * 24)));
@@ -684,31 +597,41 @@
             const container = document.getElementById('timeline-container');
             const day = tripData[currentDayIdx];
             
-            container.innerHTML = day.events.map(ev => {
-                const dataStr = encodeURIComponent(JSON.stringify(ev));
-                const specialClass = ev.isSpecial ? 'special' : '';
-                const thumbHtml = ev.img ? `<img src="${ev.img}" class="c-thumb show">` : '';
-                const specialTag = ev.isSpecial ? `<div class="special-tag"><i class="fa-solid fa-crown"></i> SPECIAL EXPERIENCE</div>` : '';
-                
-                return `
-                <div class="timeline-row">
-                    <div class="t-time-col">
-                        ${ev.time}
-                        <div class="t-time-sub">${parseInt(ev.time.split(':')[0]) < 12 ? 'AM' : 'PM'}</div>
-                    </div>
-                    <div class="t-line-col"><div class="t-dot"></div></div>
-                    <div class="t-content-col">
-                        <div class="trip-card ${specialClass}" onclick="openDetail('${dataStr}')">
-                            ${specialTag}
-                            <span class="c-tag">${ev.tag}</span>
-                            <div class="c-title">${ev.title}</div>
-                            <div class="c-desc">${ev.desc}</div>
-                            ${thumbHtml}
+            // Daily Weather Advice Box
+            const adviceBox = `
+                <div class="weather-advice-box">
+                    <div class="wa-title"><i class="fa-solid fa-cloud-sun-rain"></i> 今日行程提醒</div>
+                    <div class="wa-text">${day.events[0].time} - ${day.events[day.events.length-1].time}</div>
+                </div>
+            `;
+
+            container.innerHTML = `
+                ${adviceBox}
+                ${day.events.map(ev => {
+                    const dataStr = encodeURIComponent(JSON.stringify(ev));
+                    const specialClass = ev.isSpecial ? 'special' : '';
+                    const thumbHtml = ev.img ? `<img src="${ev.img}" class="c-thumb show">` : '';
+                    const specialTag = ev.isSpecial ? `<div class="special-tag"><i class="fa-solid fa-crown"></i> SPECIAL EXPERIENCE</div>` : '';
+                    
+                    return `
+                    <div class="timeline-row">
+                        <div class="t-time-col">
+                            ${ev.time}
+                        </div>
+                        <div class="t-line-col"><div class="t-dot"></div></div>
+                        <div class="t-content-col">
+                            <div class="trip-card ${specialClass}" onclick="openDetail('${dataStr}')">
+                                ${specialTag}
+                                <span class="c-tag">${ev.tag}</span>
+                                <div class="c-title">${ev.title}</div>
+                                <div class="c-desc">${ev.desc}</div>
+                                ${thumbHtml}
+                            </div>
                         </div>
                     </div>
-                </div>
-                `;
-            }).join('');
+                    `;
+                }).join('')}
+            `;
         }
 
         // --- DETAIL MODAL LOGIC ---
@@ -721,7 +644,8 @@
             document.getElementById('m-title').innerText = currentEv.title;
             document.getElementById('m-desc').innerText = currentEv.desc;
             document.getElementById('m-addr-text').innerText = currentEv.addr;
-            document.getElementById('m-hero').src = currentEv.img || 'https://images.unsplash.com/photo-1542060748-10c28b62716f?q=80&w=800'; 
+            // Use current URL + image name for custom image source
+            document.getElementById('m-hero').src = currentEv.img ? window.location.href.replace(/[^/]*$/, '') + currentEv.img : ''; 
 
             // Point & Speak
             const psContainer = document.getElementById('ps-container');
@@ -787,7 +711,7 @@
         function openTransModal(cn, jp) {
             document.getElementById('tp-cn').innerText = cn;
             document.getElementById('tp-jp').innerText = jp;
-            document.getElementById('modal-overlay').style.display = 'block';
+            document.getElementById('modal-overlay').classList.add('open');
             document.getElementById('trans-pop').style.display = 'block';
         }
 
@@ -806,23 +730,34 @@
 
         function renderExpenses() {
             const list = document.getElementById('expense-list');
-            let total = 0;
+            let totalJPY = 0;
             let totalTWD = 0;
+            let totals = { YK: 0, YY: 0, YS: 0 };
+            
             list.innerHTML = expenses.map((ex,i) => {
-                total += ex.price;
-                totalTWD += (ex.price * rate);
+                const twdValue = ex.price * rate;
+                totalJPY += ex.price;
+                totalTWD += twdValue;
+                totals[ex.who] += twdValue;
+
                 return `
                 <div style="display:flex; justify-content:space-between; align-items:center; padding:15px 0; border-bottom:1px solid #EEE;">
                     <div><span style="font-weight:bold;">${ex.item}</span> <span style="font-size:0.8rem; color:#999;">(${ex.who})</span></div>
                     <div style="text-align:right;">
                         <div style="font-weight:bold;">¥${ex.price.toLocaleString()}</div>
-                        <div style="font-size:0.7rem; color:#AAA;">≈ $${(ex.price*rate).toFixed(0)} TWD</div>
+                        <div style="font-size:0.7rem; color:#AAA;">≈ $${twdValue.toFixed(0)} TWD</div>
                     </div>
                     <div style="color:red; margin-left:10px; cursor:pointer;" onclick="delEx(${i})">✕</div>
                 </div>`;
             }).join('');
-            document.getElementById('total-spend').innerText = '¥' + total.toLocaleString();
+            
+            document.getElementById('total-spend').innerText = '¥' + totalJPY.toLocaleString();
             document.getElementById('total-twd').innerText = totalTWD.toFixed(0);
+            
+            document.getElementById('total-yk').innerText = '$' + totals.YK.toFixed(0);
+            document.getElementById('total-yy').innerText = '$' + totals.YY.toFixed(0);
+            document.getElementById('total-ys').innerText = '$' + totals.YS.toFixed(0);
+
             localStorage.setItem('trip_v7_expenses', JSON.stringify(expenses));
         }
         function delEx(i) { if(confirm('確定刪除這筆支出嗎？')){expenses.splice(i,1); renderExpenses();}}
