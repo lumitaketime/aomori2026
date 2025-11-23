@@ -37,7 +37,7 @@
         }
 
         h1, h2, h3, .serif { font-family: var(--font-serif); }
-        .hidden { display: none !important; }
+        .hidden { display: none; } /* 修正後的 hidden class */
 
         /* --- INTRO --- */
         #intro-screen {
@@ -495,11 +495,226 @@
     </div>
 
     <script>
-        // NOTE: Replace 'AIzaSyAX9nvh4bJpiM6-oTm8FoUSZeSBpxZBc1E' with a valid Google Maps API Key to enable map functionality.
-        const GOOGLE_API_KEY = "AIzaSyAX9nvh4bJpiM6-oTm8FoUSZeSBpxZBc1E"; 
+        // NOTE: Replace 'YOUR_API_KEY' with a valid Google Maps API Key to enable map functionality.
+        const GOOGLE_MAPS_API_KEY = "AIzaSyAX9nvh4bJpiM6-oTm8FoUSZeSBpxZBc1E"; 
+    </script>
 
-        // --- DATA WITH FIXED IMAGES AND DETAILED DESCRIPTIONS ---
+    <script type="module">
+        // --- FIREBASE IMPORTS ---
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, query, orderBy, onSnapshot, addDoc, serverTimestamp, setDoc, doc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+
+        // setLogLevel('debug'); // Enable for debugging
+
+        // --- GLOBAL STATE & CONFIG ---
+        // GOOGLE_MAPS_API_KEY is now global
+        
+        let db;
+        let auth;
+        let expensesRef;
+        let currentRate = 0.22; // default Fallback
+        let currentIdx = 0;
+        let currentUser = 'YK';
+        let expenses = [];
+        
+        // Canvas environment variables (MANDATORY)
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+
+
+        // --- FIREBASE INITIALIZATION & AUTH ---
+        const setupFirebase = async () => {
+            try {
+                const app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+                
+                // Sign in logic
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+
+                // Listen for Auth State changes to initialize Firestore listener
+                onAuthStateChanged(auth, (user) => {
+                    // Get userId AFTER successful auth
+                    const userId = auth.currentUser?.uid || crypto.randomUUID(); 
+                    
+                    // Firestore path: /artifacts/{appId}/public/data/expenses
+                    // We use "public" so all three members can sync expenses.
+                    const collectionPath = `artifacts/${appId}/public/data/expenses`;
+                    expensesRef = collection(db, collectionPath);
+                    
+                    console.log("Firebase Auth Ready. Collection Path:", collectionPath);
+                    
+                    // Now safe to start data listeners
+                    subscribeToExpenses();
+                });
+
+            } catch (error) {
+                console.error("Firebase Initialization/Auth Error:", error);
+                // Fallback to static render if critical error
+                window.renderTrip();
+            }
+        };
+
+        // --- FIRESTORE SUBSCRIPTION (Real-time Sync) ---
+        const subscribeToExpenses = () => {
+            // NOTE: Firestore orderBy() is complex; we fetch all and sort in memory.
+            const q = query(expensesRef);
+
+            onSnapshot(q, (snapshot) => {
+                expenses = snapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
+                
+                // Sort expenses by timestamp (newest first) in memory
+                expenses.sort((a, b) => b.timestamp?.toMillis() - a.timestamp?.toMillis());
+                
+                console.log("Expenses updated from cloud:", expenses.length);
+                window.renderExpenses(); // Re-render the wallet view
+            }, (error) => {
+                console.error("Error subscribing to expenses:", error);
+            });
+        };
+
+        // --- FIRESTORE WRITE FUNCTION ---
+        window.addExpense = async function() {
+            const item = document.getElementById('ex-item').value;
+            const price = parseInt(document.getElementById('ex-price').value);
+            
+            if(!item || !price || price <= 0) {
+                // Show custom modal instead of alert()
+                alert("請輸入有效的項目名稱和金額。"); 
+                return;
+            }
+            
+            if (!expensesRef) {
+                alert("數據庫未就緒，請檢查連線。");
+                return;
+            }
+
+            try {
+                const newExpense = {
+                    user: currentUser,
+                    item, 
+                    price,
+                    timestamp: serverTimestamp(), // Firestore generates timestamp on the server
+                    rate: currentRate,
+                };
+
+                await addDoc(expensesRef, newExpense);
+                
+                // Clear UI fields after successful add
+                document.getElementById('ex-item').value = '';
+                document.getElementById('ex-price').value = '';
+                document.getElementById('preview-twd').innerText = "≈ TWD 0";
+
+            } catch (error) {
+                console.error("Error adding document:", error);
+                alert("記錄失敗：請檢查網路和權限。");
+            }
+        }
+        
+        // --- WALLET RENDERING (Updated to use synced 'expenses' array) ---
+        window.renderExpenses = function() {
+            let total = 0;
+            
+            // Render total summary
+            expenses.forEach(e => {
+                total += e.price;
+            });
+            
+            document.getElementById('total-jpy').innerText = "¥" + total.toLocaleString();
+            document.getElementById('total-twd').innerText = (total * currentRate).toFixed(0);
+
+            // Render expense list
+            const html = expenses.map(e => {
+                // Safely format timestamp if it exists
+                const dateObj = e.timestamp ? e.timestamp.toDate() : new Date();
+                const timeString = dateObj.getHours().toString().padStart(2,'0') + ":" + dateObj.getMinutes().toString().padStart(2,'0');
+                const dateString = (dateObj.getMonth()+1) + "/" + dateObj.getDate();
+                
+                return `
+                    <div class="expense-item">
+                        <div class="exp-meta">
+                            <div class="exp-user">${e.user}</div>
+                            <div>
+                                <div style="font-weight:500;">${e.item}</div>
+                                <div style="font-size:0.75rem; color:#999;">${dateString} ${timeString}</div>
+                            </div>
+                        </div>
+                        <div class="serif">¥${e.price.toLocaleString()}</div>
+                    </div>
+                `;
+            }).join('');
+            
+            document.getElementById('expense-list').innerHTML = html;
+        }
+
+
+        // --- STARTUP LOGIC ---
+        window.enterApp = function() {
+            document.getElementById('intro-screen').style.transform = 'translateY(-100%)';
+            window.renderTrip();
+            window.fetchRate();
+            window.renderFullTripMap();
+        };
+
+        window.onload = function() {
+            // Initialize Firebase setup
+            setupFirebase();
+
+            const start = new Date("2026-02-02").getTime();
+            const now = new Date().getTime();
+            const days = Math.ceil((start - now) / (1000 * 60 * 60 * 24));
+            document.getElementById('days-left').innerText = days > 0 ? days : 0;
+            document.getElementById('header-days').innerText = days > 0 ? days : 0;
+            
+            // Set initial view to trip (needed for the hidden fix)
+            document.getElementById('view-trip').style.display = 'block';
+        };
+        
+        // --- EXISTING FUNCTIONS (Copied over for context) ---
+        window.fetchRate = function() {
+            fetch('https://api.exchangerate-api.com/v4/latest/JPY')
+                .then(response => response.json())
+                .then(data => {
+                    if(data && data.rates && data.rates.TWD) {
+                        currentRate = data.rates.TWD;
+                        document.getElementById('current-rate').innerText = "1 JPY = " + currentRate.toFixed(4) + " TWD";
+                        window.renderExpenses();
+                    }
+                })
+                .catch(err => {
+                    document.getElementById('current-rate').innerText = "離線匯率: " + currentRate;
+                });
+        }
+        
+        window.selectUser = function(user, btn) {
+            currentUser = user;
+            document.querySelectorAll('.user-btn').forEach(el => el.classList.remove('active'));
+            btn.classList.add('active');
+        }
+
+        window.calculatePreview = function(val) {
+            if(!val) {
+                document.getElementById('preview-twd').innerText = "≈ TWD 0";
+                return;
+            }
+            const twd = Math.round(parseInt(val) * currentRate);
+            document.getElementById('preview-twd').innerText = "≈ TWD " + twd.toLocaleString();
+        }
+
+
+        // --- MAPS & DETAIL VIEW FUNCTIONS ---
+        // (Unchanged logic for brevity)
         const tripData = [
+            // ... (Your tripData remains here for itinerary rendering)
             {
                 day: 1, date: "02.02", week: "MON",
                 heroTitle: "函館：百元發熱衣與百萬夜景",
@@ -864,45 +1079,32 @@
             }
         ];
 
-        let currentIdx = 0;
-        let expenses = JSON.parse(localStorage.getItem('expenses_v2')) || [];
-        let currentUser = 'YK';
-        let currentRate = 0.22; // default Fallback
-        const GOOGLE_MAPS_API_KEY = "AIzaSyAX9nvh4bJpiM6-oTm8FoUSZeSBpxZBc1E"; 
-
-        // --- INIT ---
-        window.enterApp = function() {
-            document.getElementById('intro-screen').style.transform = 'translateY(-100%)';
-            renderTrip();
-            fetchRate();
-            renderFullTripMap(); // Render the interactive full map
-        };
-
-        window.onload = function() {
-            const start = new Date("2026-02-02").getTime();
-            const now = new Date().getTime();
-            const days = Math.ceil((start - now) / (1000 * 60 * 60 * 24));
-            document.getElementById('days-left').innerText = days > 0 ? days : 0;
-            document.getElementById('header-days').innerText = days > 0 ? days : 0;
-        };
-
-        // --- FETCH RATE ---
-        function fetchRate() {
-            fetch('https://api.exchangerate-api.com/v4/latest/JPY')
-                .then(response => response.json())
-                .then(data => {
-                    if(data && data.rates && data.rates.TWD) {
-                        currentRate = data.rates.TWD;
-                        document.getElementById('current-rate').innerText = "1 JPY = " + currentRate.toFixed(4) + " TWD";
-                        renderExpenses();
-                    }
-                })
-                .catch(err => {
-                    document.getElementById('current-rate').innerText = "離線匯率: " + currentRate;
-                });
+        window.switchDay = function(i) {
+            if(i === currentIdx) return;
+            currentIdx = i;
+            window.renderTrip();
         }
 
-        // --- RENDER TRIP ---
+        window.switchView = function(view, btn) {
+            // 修正 Bug: 移除所有 view-section 的 display 屬性，然後再設定目標 view 為 block
+            document.querySelectorAll('.view-section').forEach(el => {
+                el.style.display = 'none';
+            });
+            document.getElementById('view-' + view).style.display = 'block';
+
+            document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+            btn.classList.add('active');
+            
+            if(view === 'wallet') {
+                window.renderExpenses(); 
+            }
+            if(view === 'info') {
+                window.renderFullTripMap();
+            }
+            window.scrollTo(0,0);
+        }
+        
+        // --- EXISTING FUNCTIONS (Copied over for context) ---
         window.renderTrip = function() {
             const nav = document.getElementById('date-nav');
             nav.innerHTML = tripData.map((d, i) => `
@@ -964,99 +1166,6 @@
             container.innerHTML = html;
         }
 
-        window.switchDay = function(i) {
-            if(i === currentIdx) return;
-            currentIdx = i;
-            renderTrip();
-        }
-
-        window.switchView = function(view, btn) {
-            document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
-            document.getElementById('view-' + view).classList.remove('hidden');
-            document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
-            btn.classList.add('active');
-            
-            if(view === 'wallet') {
-                renderExpenses();
-            }
-            window.scrollTo(0,0);
-        }
-
-        // --- WALLET ---
-        window.selectUser = function(user, btn) {
-            currentUser = user;
-            document.querySelectorAll('.user-btn').forEach(el => el.classList.remove('active'));
-            btn.classList.add('active');
-        }
-
-        window.calculatePreview = function(val) {
-            if(!val) {
-                document.getElementById('preview-twd').innerText = "≈ TWD 0";
-                return;
-            }
-            const twd = Math.round(parseInt(val) * currentRate);
-            document.getElementById('preview-twd').innerText = "≈ TWD " + twd.toLocaleString();
-        }
-
-        window.addExpense = function() {
-            const item = document.getElementById('ex-item').value;
-            const price = parseInt(document.getElementById('ex-price').value);
-            
-            if(item && price) {
-                const now = new Date();
-                const timeString = now.getHours().toString().padStart(2,'0') + ":" + now.getMinutes().toString().padStart(2,'0');
-                
-                expenses.unshift({
-                    user: currentUser,
-                    item, 
-                    price,
-                    time: timeString,
-                    date: (now.getMonth()+1) + "/" + now.getDate()
-                });
-                
-                localStorage.setItem('expenses_v2', JSON.stringify(expenses));
-                renderExpenses();
-                
-                document.getElementById('ex-item').value = '';
-                document.getElementById('ex-price').value = '';
-                document.getElementById('preview-twd').innerText = "≈ TWD 0";
-            }
-        }
-
-        function renderExpenses() {
-            let total = 0;
-            const html = expenses.map(e => {
-                total += e.price;
-                return `
-                    <div class="expense-item">
-                        <div class="exp-meta">
-                            <div class="exp-user">${e.user}</div>
-                            <div>
-                                <div style="font-weight:500;">${e.item}</div>
-                                <div style="font-size:0.75rem; color:#999;">${e.date} ${e.time}</div>
-                            </div>
-                        </div>
-                        <div class="serif">¥${e.price.toLocaleString()}</div>
-                    </div>
-                `;
-            }).join('');
-            
-            document.getElementById('expense-list').innerHTML = html;
-            document.getElementById('total-jpy').innerText = "¥" + total.toLocaleString();
-            document.getElementById('total-twd').innerText = (total * currentRate).toFixed(0);
-        }
-
-        // --- TRANSLATE ---
-        window.translateNow = function() {
-            const text = document.getElementById('trans-input').value;
-            if(text) {
-                const url = `https://translate.google.com/?sl=zh-TW&tl=ja&text=${encodeURIComponent(text)}&op=translate`;
-                window.open(url, '_blank');
-            }
-        }
-        
-        // --- MAPS ---
-        
         function getMapUrl(data) {
              const base = `https://www.google.com/maps/embed/v1/`;
              let embedUrl = '';
@@ -1064,11 +1173,11 @@
              
              if (data.from && data.to) {
                  // Movement (Route Mode)
-                 embedUrl = `${base}directions?key=${GOOGLE_API_KEY}`;
+                 embedUrl = `${base}directions?key=${GOOGLE_MAPS_API_KEY}`;
                  query = `&origin=${encodeURIComponent(data.from)}&destination=${encodeURIComponent(data.to)}&mode=driving`;
              } else if (data.title) {
                  // Location (Search Mode - FIX: Using search mode for flexibility)
-                 embedUrl = `${base}search?key=${GOOGLE_API_KEY}`;
+                 embedUrl = `${base}search?key=${GOOGLE_MAPS_API_KEY}`;
                  query = `&q=${encodeURIComponent(data.title)}`;
              } else {
                  return null;
@@ -1076,7 +1185,7 @@
              return embedUrl + query;
         }
 
-        function renderFullTripMap() {
+        window.renderFullTripMap = function() {
             const mapIframe = document.getElementById('trip-map-overview-iframe');
             
             // Build the waypoints list for the overall view
@@ -1086,18 +1195,17 @@
             ).join('|');
 
             // Use Embed API with a centralized view of the main cities
-            const embedUrl = `https://www.google.com/maps/embed/v1/view?key=${GOOGLE_API_KEY}&center=40.7831,140.7431&zoom=8&q=${encodeURIComponent(waypoints)}`;
+            const embedUrl = `https://www.google.com/maps/embed/v1/view?key=${GOOGLE_MAPS_API_KEY}&center=40.7831,140.7431&zoom=8&q=${encodeURIComponent(waypoints)}`;
 
             mapIframe.src = embedUrl;
         }
-
+        
         window.openExternalMap = function() {
             // Opens Google Maps app/website for the current modal's location
             const currentTitle = document.getElementById('m-title').innerText;
             window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(currentTitle)}`, '_blank');
         }
 
-        // --- MODAL ---
         function createInfoItem(icon, label, value) {
             if (!value) return '';
             return `
@@ -1170,12 +1278,9 @@
             const gmapIframe = document.getElementById('m-gmap-iframe');
             const mapUrl = getMapUrl(data);
             
-            if (mapUrl && GOOGLE_API_KEY !== "AIzaSyAX9nvh4bJpiM6-oTm8FoUSZeSBpxZBc1E") {
+            if (mapUrl && GOOGLE_MAPS_API_KEY) {
                 gmapPreview.classList.remove('hidden');
                 gmapIframe.src = mapUrl;
-            } else if (mapUrl && GOOGLE_API_KEY === "AIzaSyAX9nvh4bJpiM6-oTm8FoUSZeSBpxZBc1E") {
-                 gmapPreview.classList.remove('hidden');
-                 gmapIframe.src = `https://www.google.com/maps/embed/v1/view?key=AIzaSyAX9nvh4bJpiM6-oTm8FoUSZeSBpxZBc1E&center=40.7831,140.7431&zoom=8&q=${encodeURIComponent(data.title || data.from + ' to ' + data.to)}`;
             } else {
                 gmapPreview.classList.add('hidden');
             }
