@@ -21,6 +21,7 @@
             --line-color: #E0E0E0;
             --card-shadow: 0 8px 24px rgba(0,0,0,0.06);
             --safe-area-bottom: env(safe-area-inset-bottom);
+            --info-blue: #42A5F5; /* For Info boxes/Smart Reminders */
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -29,14 +30,13 @@
             font-family: 'Zen Maru Gothic', sans-serif;
             background-color: var(--bg-color);
             color: var(--text-main);
-            margin: 0; padding: 0;
-            padding-bottom: calc(90px + var(--safe-area-bottom));
+            margin: 0; padding-bottom: calc(90px + var(--safe-area-bottom));
             overscroll-behavior-y: none;
         }
 
         h1, h2, h3, .serif { font-family: 'Noto Serif TC', serif; }
 
-        /* --- HEADER --- */
+        /* --- HEADER & DATE NAV --- */
         .header {
             padding: 50px 20px 10px; background: var(--bg-color); position: sticky; top: 0; z-index: 100;
             border-bottom: 1px solid rgba(0,0,0,0.05);
@@ -55,11 +55,40 @@
         .date-dot { width: 4px; height: 4px; background: var(--accent-gold); border-radius: 50%; margin-top: 4px; opacity: 0; }
         .date-item.active .date-dot { opacity: 1; }
 
+        /* --- SMART REMINDER BAR --- */
+        #smart-reminder {
+            background: #FFECB3; color: #E65100; padding: 10px 20px; text-align: center; font-size: 0.9rem;
+            font-weight: 700; position: sticky; top: 75px; z-index: 90;
+            display: none; /* Only show when triggered by JS */
+        }
+        
+        /* --- ITINERARY HERO (New) --- */
+        .day-hero-banner {
+            width: 100%; height: 200px; position: relative; overflow: hidden; margin-bottom: 20px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+        .hero-img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.9); }
+        .hero-content {
+            position: absolute; bottom: 0; left: 0; right: 0; padding: 20px;
+            background: linear-gradient(transparent, rgba(0,0,0,0.6));
+            color: white;
+        }
+        .hero-day-tag { font-size: 0.8rem; font-weight: 700; margin-bottom: 5px; background: rgba(255,255,255,0.2); padding: 2px 8px; border-radius: 4px; display: inline-block; }
+        .hero-title { font-size: 1.6rem; font-family: 'Noto Serif TC', serif; font-weight: 900; margin: 0; text-shadow: 1px 1px 3px #000; }
+
+        /* --- WEATHER & ADVICE --- */
+        .weather-advice-box {
+            background: #E8F5E9; border-radius: 12px; padding: 15px; margin: 0 20px 20px;
+            border-left: 5px solid #4CAF50; box-shadow: var(--card-shadow);
+        }
+        .wa-title { font-weight: bold; color: #388E3C; font-size: 0.9rem; margin-bottom: 5px; display: flex; align-items: center; gap: 5px; }
+        .wa-text { font-size: 0.85rem; line-height: 1.5; color: #333; }
+
         /* --- TIMELINE LAYOUT --- */
         .timeline-container { padding: 0 20px; }
         .timeline-row { display: flex; gap: 15px; margin-bottom: 25px; position: relative; }
         .t-time-col { 
-            width: 50px; flex-shrink: 0; text-align: right; font-family: 'Noto Serif TC'; font-size: 1.1rem; font-weight: bold; color: var(--text-main);
+            width: 50px; flex-shrink: 0; text-align: right; font-family: 'Noto Serif TC', serif; font-size: 1.1rem; font-weight: bold; color: var(--text-main);
             padding-top: 5px;
         }
         .t-line-col { width: 2px; background: var(--line-color); position: relative; margin-top: 10px; margin-bottom: -35px; }
@@ -74,32 +103,8 @@
         .trip-card.special { border: 1px solid var(--accent-gold); background: linear-gradient(to bottom right, #FFFCF5, #FFF); }
         .special-tag { color: var(--accent-gold); font-size: 0.65rem; font-weight: bold; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; display: flex; align-items: center; gap: 5px; }
         .c-tag { font-size: 0.7rem; font-weight: bold; color: #999; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; border: 1px solid #EEE; display: inline-block; padding: 2px 8px; border-radius: 4px; }
-        .c-title { font-size: 1.2rem; font-weight: 600; margin-bottom: 5px; line-height: 1.3; font-family: 'Noto Serif TC'; }
-        .c-desc { font-size: 0.9rem; color: #666; line-height: 1.6; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-        .c-thumb { width: 100%; height: 120px; object-fit: cover; border-radius: 8px; margin-top: 12px; display: none; }
-        .c-thumb.show { display: block; }
+        .c-title { font-size: 1.2rem; font-weight: 600; margin-bottom: 5px; line-height: 1.3; font-family: 'Noto Serif TC', serif; }
 
-        /* --- MODAL (Detail/Translation) --- */
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; opacity: 0; visibility: hidden; transition: 0.3s;
-        }
-        .modal-overlay.open { opacity: 1; visibility: visible; }
-        .detail-modal {
-            position: fixed; bottom: 0; left: 0; width: 100%; height: 90vh; background: #FFF; border-radius: 20px 20px 0 0; z-index: 2100;
-            transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); overflow-y: auto;
-        }
-        .detail-modal.open { transform: translateY(0); }
-        .m-hero { width: 100%; height: 200px; object-fit: cover; }
-        .m-content { padding: 25px; margin-top: -30px; position: relative; }
-        .m-title { font-family: 'Noto Serif TC'; font-size: 1.8rem; font-weight: 900; margin-bottom: 10px; }
-        .info-text { font-size: 1rem; line-height: 1.8; color: #555; white-space: pre-line; padding-bottom: 40px; }
-
-        /* Point & Speak Section */
-        .ps-section { padding: 0 25px 30px; }
-        .sec-title { font-family: 'Noto Serif TC'; font-size: 0.9rem; color: #AAA; letter-spacing: 2px; border-bottom: 1px solid #EEE; padding-bottom: 10px; margin-bottom: 20px; }
-        .ps-card { background: #F8F8F8; border-radius: 12px; padding: 15px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
-        .gps-box { background: white; border: 1px solid #EEE; padding: 15px; border-radius: 12px; margin-bottom: 25px; display: flex; align-items: center; gap: 15px; }
-        
         /* --- EXPENSES TAB --- */
         .exp-header { background: var(--text-main); color: white; padding: 20px; margin: 20px; border-radius: 16px; text-align: center; }
         .exp-totals { display: flex; justify-content: space-around; padding: 10px 0; margin: 0 20px 20px; background: white; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
@@ -116,17 +121,15 @@
         }
         .tool-card:active { transform: translate(1px, 1px); box-shadow: 1px 1px 0px 0px #D4B69C; }
         .tool-icon { font-size: 2rem; display: block; margin-bottom: 8px; color: var(--text-main); }
-        .tool-text { font-weight: bold; font-size: 0.9rem; }
         
-        /* --- INFO TAB (New) --- */
+        /* --- INFO TAB --- */
         .info-section { padding: 20px; }
         .info-box { background: white; padding: 20px; border-radius: 16px; margin-bottom: 15px; box-shadow: var(--card-shadow); }
-        .info-title { font-family: 'Noto Serif TC'; font-size: 1.2rem; font-weight: 600; margin-bottom: 10px; }
+        .info-title { font-family: 'Noto Serif TC', serif; font-size: 1.2rem; font-weight: 600; margin-bottom: 10px; }
         .info-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #EEE; }
-        .info-label { font-size: 0.9rem; color: #555; }
         .info-contact { color: var(--accent-red); font-weight: bold; }
 
-        /* --- NAV BAR (4 Items) --- */
+        /* --- NAV BAR --- */
         .nav-bar {
             position: fixed; bottom: 0; width: 100%; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px);
             border-top: 1px solid rgba(0,0,0,0.05); display: flex; justify-content: space-around;
@@ -134,6 +137,7 @@
         }
         .nav-item { display: flex; flex-direction: column; align-items: center; color: #CCC; font-size: 0.7rem; gap: 4px; transition: 0.3s; width: 25%; }
         .nav-item.active { color: var(--text-main); }
+        .nav-icon { font-size: 1.4rem; }
 
     </style>
 </head>
@@ -149,7 +153,9 @@
         <div class="date-nav" id="date-nav"></div>
     </div>
 
-    <div class="weather-strip">
+    <div id="smart-reminder" style="display:none;"></div>
+
+    <div class="weather-strip" id="weather-strip">
         <div class="w-item"><div class="w-time">Now</div><div class="w-icon"><i class="fa-solid fa-cloud"></i></div><div class="w-temp">-2°</div></div>
         <div class="w-item"><div class="w-time">13:00</div><div class="w-icon"><i class="fa-regular fa-snowflake"></i></div><div class="w-temp">-3°</div></div>
         <div class="w-item"><div class="w-time">14:00</div><div class="w-icon"><i class="fa-regular fa-snowflake"></i></div><div class="w-temp">-3°</div></div>
@@ -157,7 +163,7 @@
         <div class="w-item"><div class="w-time">16:00</div><div class="w-icon"><i class="fa-solid fa-moon"></i></div><div class="w-temp">-5°</div></div>
     </div>
 
-    <div id="tab-trip" class="tab-content active">
+    <div id="tab-trip" class="tab-content active" onpointerdown="handleTouchStart(event)" onpointermove="handleTouchMove(event)" onpointerup="handleTouchEnd(event)">
         <div id="timeline-container" class="timeline-container"></div>
     </div>
 
@@ -169,9 +175,9 @@
         </div>
         
         <div class="exp-totals">
-            <div class="exp-stat"><div class="exp-label">YK</div><div class="exp-val" id="total-yk">$0</div></div>
-            <div class="exp-stat"><div class="exp-label">YY</div><div class="exp-val" id="total-yy">$0</div></div>
-            <div class="exp-stat"><div class="exp-label">YS</div><div class="exp-val" id="total-ys">$0</div></div>
+            <div class="exp-stat"><div class="exp-label">YK 代墊</div><div class="exp-val" id="total-yk">$0</div></div>
+            <div class="exp-stat"><div class="exp-label">YY 代墊</div><div class="exp-val" id="total-yy">$0</div></div>
+            <div class="exp-stat"><div class="exp-label">YS 代墊</div><div class="exp-val" id="total-ys">$0</div></div>
         </div>
 
         <div class="exp-input-group">
@@ -191,7 +197,7 @@
             <button class="e-btn" style="background:#444;" onclick="translateCustom()">翻譯成日文</button>
         </div>
         <div class="tool-grid">
-            <div class="tool-card" onclick="openTransModal('我不吃肉類 (海鮮可以)', '肉は食べられません（魚介類は大丈夫です）')">
+            <div class="tool-card" onclick="openTransModal('我不吃肉類 (海鮮可以)', '豚肉は食べられません（魚介類は大丈夫です）')">
                 <span class="tool-icon"><i class="fa-solid fa-fish"></i></span><span class="tool-text">飲食禁忌</span>
             </div>
             <div class="tool-card" onclick="openTransModal('麻煩結帳', 'お会計をお願いします')">
@@ -203,10 +209,10 @@
             <div class="tool-card" onclick="openTransModal('我要這個 (指著)', 'これをお願いします')">
                 <span class="tool-icon"><i class="fa-solid fa-hand-point-right"></i></span><span class="tool-text">我要這個</span>
             </div>
-            <div class="tool-card" onclick="openTransModal('能幫我們拍照嗎？', '写真を撮ってもらえますか？')">
+            <div class="tool-card" onclick="openTransModal('能幫我們拍照嗎？', '写真を撮ってもらえますか？', 'medium')">
                 <span class="tool-icon"><i class="fa-solid fa-camera"></i></span><span class="tool-text">幫忙拍照</span>
             </div>
-            <div class="tool-card" onclick="openTransModal('請問有試吃嗎？', '試食はありますか？')">
+            <div class="tool-card" onclick="openTransModal('請問有試吃嗎？', '試食はありますか？', 'medium')">
                 <span class="tool-icon"><i class="fa-solid fa-utensils"></i></span><span class="tool-text">有試吃嗎？</span>
             </div>
         </div>
@@ -218,9 +224,9 @@
 
             <div class="info-box">
                 <div class="info-title">緊急求助 (日本國內)</div>
-                <div class="info-item"><div class="info-label">警察 (Police)</div><div class="info-contact">110</div></div>
-                <div class="info-item"><div class="info-label">救護車/火警 (Ambulance/Fire)</div><div class="info-contact">119</div></div>
-                <div class="info-item"><div class="info-label">外國人專用熱線 (JNTO)</div><div class="info-contact">050-3816-2787</div></div>
+                <div class="info-item"><div class="info-label">警察 (Police)</div><div class="info-contact"><a href="tel:110">110</a></div></div>
+                <div class="info-item"><div class="info-label">救護車/火警</div><div class="info-contact"><a href="tel:119">119</a></div></div>
+                <div class="info-item"><div class="info-label">外國人專用熱線 (JNTO)</div><div class="info-contact"><a href="tel:05038162787">050-3816-2787</a></div></div>
             </div>
 
             <div class="info-box">
@@ -229,7 +235,7 @@
                 <div class="info-item"><div class="info-label">緊急聯絡手機 (24H)</div><div class="info-contact"><a href="tel:+819039634771">+81-90-3963-4771</a></div></div>
                 <div style="font-size:0.8rem; color:#888; margin-top:10px;">(領務轄區包含青森縣)</div>
             </div>
-
+            
             <div class="info-box">
                 <div class="info-title">入境與防疫 (Visit Japan)</div>
                 <button class="e-btn" style="background:#5D5D5D;" onclick="window.open('https://www.vjw.digital.go.jp/main/#/', '_blank')">
@@ -278,7 +284,7 @@
     <div style="position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); width:80%; background:white; padding:30px; border-radius:20px; text-align:center; z-index:2200; box-shadow:0 10px 40px rgba(0,0,0,0.3); display:none;" id="trans-pop">
         <div style="font-size:1rem; color:#888; margin-bottom:10px;" id="tp-cn">CN</div>
         <div style="font-size:2rem; font-weight:900; margin-bottom:20px; font-family:'Noto Serif TC';" id="tp-jp">JP</div>
-        <button onclick="document.getElementById('trans-pop').style.display='none'; document.getElementById('modal-overlay').style.display='none';" class="e-btn">關閉</button>
+        <button onclick="closeAllModals()" class="e-btn">關閉</button>
     </div>
 
     <div class="nav-bar">
@@ -297,26 +303,27 @@
     </div>
 
     <script>
-        // --- DATA STRUCTURE (Final Aomori/Hakodate) ---
+        // --- DATA STRUCTURE ---
         const tripData = [
             {
                 day: 1, date: "2/2", week: "MON",
+                heroTitle: "函館：購物與百萬夜景",
+                heroImg: "image-day1-nightview.jpg",
                 events: [
                     { 
                         time: "11:10", title: "抵達函館機場 (HKD)", tag: "TRANSPORT", 
-                        desc: "【入境手續】領取行李。\n【任務】 確認機場巴士時刻表。",
+                        desc: "【入境手續】領取行李。注意時間，準備搭乘機場巴士。",
                         addr: "Hakodate Airport",
                         img: "image-day1-airport.jpg",
-                        pointSpeak: [{ cn: "請問機場巴士在哪？", jp: "空港バス乗り場はどこですか？" }]
                     },
                     { 
                         time: "12:30", title: "機場巴士至 JR 函館站", tag: "TRANSPORT", 
-                        desc: "搭乘機場巴士前往 JR 函館站，車程約 20-30 分鐘。",
+                        desc: "車程約 20-30 分鐘，在函館站下車。",
                         addr: "JR Hakodate Station"
                     },
                     { 
-                        time: "13:35", title: "採購：UNIQLO & Bic Camera", tag: "SHOPPING",
-                        desc: "【購物任務】從飯店/車站搭計程車出發 (來回效率最高)。採購防寒用品與電器。",
+                        time: "13:35", title: "UNIQLO & Bic Camera 採購", tag: "SHOPPING",
+                        desc: "【購物任務】從飯店/車站搭計程車來回，效率最高。採購防寒用品與電器。",
                         addr: "Kojima x Bic Camera 函館店",
                         img: "image-day1-shopping.jpg",
                         pointSpeak: [{ cn: "請載我到 Bic Camera", jp: "ビックカメラまでお願いします" }]
@@ -337,7 +344,7 @@
                     },
                     { 
                         time: "住宿", title: "JR Inn Hakodate", tag: "HOTEL",
-                        desc: "位於函館站旁，交通便利。",
+                        desc: "飯店 Check-in。位於函館站旁。",
                         addr: "JR Inn Hakodate",
                         bookingId: "HAKO-JRI-0202",
                         img: "image-day1-hotel.jpg"
@@ -346,6 +353,8 @@
             },
             {
                 day: 2, date: "2/3", week: "TUE",
+                heroTitle: "青森移動日：美術館與鄉土料理",
+                heroImg: "image-day2-museum.jpg",
                 events: [
                     { 
                         time: "08:00", title: "函館朝市 早餐", tag: "FOOD",
@@ -353,20 +362,17 @@
                         addr: "Hakodate Morning Market",
                         img: "image-day2-market.jpg",
                         gps: "0138-22-7981",
-                        pointSpeak: [
-                            { cn: "釣活烏賊", jp: "活イカ釣り（Ika-tsuri）" },
-                            { cn: "我要海膽", jp: "ウニをください" }
-                        ]
+                        pointSpeak: [{ cn: "我要海膽", jp: "ウニをください" }]
                     },
                     { 
                         time: "10:00", title: "JR 新幹線移動至青森", tag: "TRANSPORT",
-                        desc: "從函館站出發。預計 13:45 抵達青森站。",
+                        desc: "從函館站出發。搭乘新幹線等，預計 13:45 抵達青森站。",
                         addr: "JR Hakodate Station -> JR Aomori Station",
                         img: "image-day2-shinkansen.jpg"
                     },
                     { 
                         time: "14:15", title: "Dormy Inn 放行李", tag: "HOTEL",
-                        desc: "搭計程車至 Dormy Inn (Day 2 無車，計程車代步)。",
+                        desc: "抵達青森站後，搭計程車至 Dormy Inn 放下行李。",
                         addr: "Dormy Inn Aomori",
                         bookingId: "AOM-DOR-0203"
                     },
@@ -379,11 +385,9 @@
                     },
                     { 
                         time: "18:00", title: "晚餐：青森鄉土料理", tag: "FOOD",
-                        desc: "步行前往，推薦青森扇貝小屋或在地居酒屋。",
+                        desc: "步行尋找晚餐，推薦青森扇貝小屋。",
                         addr: "Aomori Station Area",
-                        pointSpeak: [
-                            { cn: "青森扇貝小屋", jp: "あおもり帆立小屋" }
-                        ]
+                        pointSpeak: [{ cn: "青森扇貝小屋", jp: "あおもり帆立小屋" }]
                     },
                     { 
                         time: "19:30", title: "唐吉訶德 (購物備案)", tag: "SHOPPING",
@@ -394,32 +398,30 @@
             },
             {
                 day: 3, date: "2/4", week: "WED",
+                heroTitle: "津輕鐵道：暖爐列車與弘前蘋果派",
+                heroImg: "image-day3-stove-train.jpg",
                 events: [
                     { 
                         time: "09:00", title: "青森站取車 (4WD)", tag: "TRANSPORT",
-                        desc: "【租車開始】回飯店載人與行李。",
+                        desc: "【租車開始】回 Dormy Inn 載人與行李。",
                         addr: "JR駅レンタカー青森営業所",
                         bookingId: "CAR-AOM-0204",
                         gps: "017-722-3930",
-                        pointSpeak: [
-                            { cn: "我有預約", jp: "予約しています" }
-                        ]
+                        pointSpeak: [{ cn: "我有預約", jp: "予約しています" }]
                     },
                     { 
                         time: "10:15", title: "3COINS+plus 採買", tag: "SHOPPING",
-                        desc: "抵達 ELM 購物中心。直奔 3COINS+plus 買小相機 (限時 35 分鐘)。",
+                        desc: "抵達 ELM 購物中心。限時 35 分鐘採買。",
                         addr: "ELM Shopping Center",
                         img: "image-day3-shopping.jpg"
                     },
                     { 
                         time: "12:30", title: "津輕鐵道 「暖爐列車」", tag: "SPECIAL EXPERIENCE",
                         isSpecial: true,
-                        desc: "【任務 2】烤魷魚體驗。務必確認 2026 年時刻表。",
+                        desc: "【任務 2】烤魷魚體驗。務必確認時刻表。取車後開往津輕五所川原站。",
                         addr: "津軽五所川原駅",
                         img: "image-day3-stove-train.jpg",
-                        pointSpeak: [
-                            { cn: "請給我烤魷魚", jp: "スルメ（Surume）をください" }
-                        ]
+                        pointSpeak: [{ cn: "請給我烤魷魚", jp: "スルメ（Surume）をください" }]
                     },
                     { 
                         time: "15:30", title: "藤田紀念庭園", tag: "SIGHTSEEING",
@@ -427,9 +429,7 @@
                         addr: "藤田記念庭園",
                         img: "image-day3-garden.jpg",
                         gps: "0172-37-5525",
-                        pointSpeak: [
-                            { cn: "我要蘋果派", jp: "アップルパイをください" }
-                        ]
+                        pointSpeak: [{ cn: "我要蘋果派", jp: "アップルパイをください" }]
                     },
                     { 
                         time: "17:30", title: "開車返回 Dormy Inn", tag: "TRANSPORT",
@@ -440,19 +440,19 @@
             },
             {
                 day: 4, date: "2/5", week: "THU",
+                heroTitle: "八甲田樹冰與滑雪初體驗",
+                heroImg: "image-day4-snowmonster.jpg",
                 events: [
                     { 
                         time: "09:00", title: "古川市場 のっけ丼 早餐", tag: "FOOD",
                         desc: "自駕，快去快回。",
                         addr: "青森魚菜センター",
                         img: "image-day4-food.jpg",
-                        pointSpeak: [
-                            { cn: "我要兩個のっけ丼", jp: "のっけ丼を二つお願いします" }
-                        ]
+                        pointSpeak: [{ cn: "我要兩個のっけ丼", jp: "のっけ丼を二つお願いします" }]
                     },
                     { 
                         time: "10:40", title: "八甲田樹冰纜車", tag: "SIGHTSEEING",
-                        desc: "搭纜車看 Snow Monsters。若纜車因強風停駛，執行 B 計畫。",
+                        desc: "搭纜車看 Snow Monsters。山頂極冷，務必全副武裝。",
                         addr: "八甲田ロープウェー",
                         img: "image-day4-snowmonster.jpg",
                         gps: "017-738-0343"
@@ -470,9 +470,7 @@
                         addr: "星野リゾート 青森屋",
                         bookingId: "HOSHINO-AOM-0205",
                         gps: "0176-51-1111",
-                        pointSpeak: [
-                            { cn: "我要辦理入住", jp: "チェックインをお願いします" }
-                        ]
+                        pointSpeak: [{ cn: "我要辦理入住", jp: "チェックインをお願いします" }]
                     },
                     { 
                         time: "17:30", title: "晚餐：Nore Sore 食堂", tag: "FOOD",
@@ -483,6 +481,8 @@
             },
             {
                 day: 5, date: "2/6", week: "FRI",
+                heroTitle: "星野全日：暖爐馬車與祭典屋",
+                heroImg: "image-day5-matsuri.jpg",
                 events: [
                     { 
                         time: "10:00", title: "暖爐馬車 (Stove Carriage)", tag: "SPECIAL EXPERIENCE",
@@ -493,17 +493,15 @@
                     },
                     { 
                         time: "12:00", title: "午餐：八食中心", tag: "FOOD",
-                        desc: "開車前往 (35 分鐘)。七輪炭烤海鮮。",
+                        desc: "飯店內或開車前往八食中心 (35 分鐘)。七輪炭烤海鮮。",
                         addr: "八食センター",
                         img: "image-day5-hasshoku.jpg",
                         gps: "0178-28-9311",
-                        pointSpeak: [
-                            { cn: "我要租炭火爐", jp: "七輪（Shichirin）を使いたいです" }
-                        ]
+                        pointSpeak: [{ cn: "我要租炭火爐", jp: "七輪（Shichirin）を使いたいです" }]
                     },
                     { 
                         time: "20:00", title: "陸奧祭典屋 表演", tag: "ACTIVITY",
-                        desc: "【文化體驗】觀賞青森四大祭典表演，需預約。",
+                        desc: "【文化體驗】觀賞青森四大祭典表演，需預約。步行前往。",
                         addr: "星野リゾート 青森屋",
                         img: "image-day5-matsuri.jpg"
                     }
@@ -511,10 +509,12 @@
             },
             {
                 day: 6, date: "2/7", week: "SAT",
+                heroTitle: "最終鐵律：安全返程",
+                heroImg: "image-day6-airport.jpg",
                 events: [
                     { 
                         time: "10:00", title: "開車離開飯店 (最終鐵律)", tag: "TRANSPORT",
-                        desc: "【最終鐵律】準時離開，確保充足的雪地緩衝時間 (3.5 小時)。路況不佳請慢速安全駕駛。",
+                        desc: "【最終鐵律】準時離開，確保充足的雪地緩衝時間 (3.5 小時)。上路請開大燈，極致慢速安全駕駛。",
                         addr: "星野リゾート 青森屋 -> 青森空港",
                         gps: "0176-51-1111"
                     },
@@ -541,6 +541,7 @@
         let currentDayIdx = 0;
         let expenses = JSON.parse(localStorage.getItem('trip_v7_expenses')) || [];
         let rate = 0.22;
+        let initialX = null;
 
         // --- INIT ---
         window.onload = function() {
@@ -566,10 +567,13 @@
             today.setHours(0, 0, 0, 0); 
             const days = Math.max(0, Math.ceil((startDate - today) / (1000 * 60 * 60 * 24)));
             document.getElementById('days-left').innerText = days;
+            
+            // Initial Smart Reminder Call
+            checkSmartReminder();
+            setInterval(checkSmartReminder, 60000); // Check every minute
         }
 
-
-        // --- RENDER FUNCTIONS ---
+        // --- RENDER & SWIPE FUNCTIONS ---
         function renderDateNav() {
             const nav = document.getElementById('date-nav');
             nav.innerHTML = tripData.map((d, i) => `
@@ -588,79 +592,160 @@
         }
 
         function switchDay(i) {
-            currentDayIdx = i;
-            renderDateNav();
-            renderTimeline();
+            if (i >= 0 && i < tripData.length) {
+                currentDayIdx = i;
+                renderDateNav();
+                renderTimeline();
+                window.scrollTo(0,0); // Scroll to top on day switch
+            }
         }
 
         function renderTimeline() {
             const container = document.getElementById('timeline-container');
             const day = tripData[currentDayIdx];
             
-            // Daily Weather Advice Box
-            const adviceBox = `
+            // 1. Hero Banner
+            const heroBanner = `
+                <div class="day-hero-banner">
+                    <img src="${window.location.href.replace(/[^/]*$/, '') + day.heroImg}" class="hero-img">
+                    <div class="hero-content">
+                        <div class="hero-day-tag">DAY ${day.day} (${day.date.split('/')[1]})</div>
+                        <div class="hero-title serif">${day.heroTitle}</div>
+                    </div>
+                </div>
+            `;
+            
+            // 2. Weather/Advice Box
+            const weatherAdvice = `
                 <div class="weather-advice-box">
-                    <div class="wa-title"><i class="fa-solid fa-cloud-sun-rain"></i> 今日行程提醒</div>
+                    <div class="wa-title"><i class="fa-solid fa-bell"></i> 今日行程提醒與建議</div>
                     <div class="wa-text">${day.events[0].time} - ${day.events[day.events.length-1].time}</div>
                 </div>
             `;
-
-            container.innerHTML = `
-                ${adviceBox}
-                ${day.events.map(ev => {
-                    const dataStr = encodeURIComponent(JSON.stringify(ev));
-                    const specialClass = ev.isSpecial ? 'special' : '';
-                    const thumbHtml = ev.img ? `<img src="${ev.img}" class="c-thumb show">` : '';
-                    const specialTag = ev.isSpecial ? `<div class="special-tag"><i class="fa-solid fa-crown"></i> SPECIAL EXPERIENCE</div>` : '';
-                    
-                    return `
-                    <div class="timeline-row">
-                        <div class="t-time-col">
-                            ${ev.time}
-                        </div>
-                        <div class="t-line-col"><div class="t-dot"></div></div>
-                        <div class="t-content-col">
-                            <div class="trip-card ${specialClass}" onclick="openDetail('${dataStr}')">
-                                ${specialTag}
-                                <span class="c-tag">${ev.tag}</span>
-                                <div class="c-title">${ev.title}</div>
-                                <div class="c-desc">${ev.desc}</div>
-                                ${thumbHtml}
-                            </div>
+            
+            // 3. Timeline Events
+            const timelineEvents = day.events.map(ev => {
+                const dataStr = encodeURIComponent(JSON.stringify(ev));
+                const specialClass = ev.isSpecial ? 'special' : '';
+                const thumbHtml = ev.img ? `<img src="${window.location.href.replace(/[^/]*$/, '') + ev.img}" class="c-thumb show">` : '';
+                const specialTag = ev.isSpecial ? `<div class="special-tag"><i class="fa-solid fa-crown"></i> SPECIAL EXPERIENCE</div>` : '';
+                
+                return `
+                <div class="timeline-row">
+                    <div class="t-time-col">${ev.time}</div>
+                    <div class="t-line-col"><div class="t-dot"></div></div>
+                    <div class="t-content-col">
+                        <div class="trip-card ${specialClass}" onclick="openDetail('${dataStr}')">
+                            ${specialTag}
+                            <span class="c-tag">${ev.tag}</span>
+                            <div class="c-title">${ev.title}</div>
+                            <div class="c-desc">${ev.desc}</div>
+                            ${thumbHtml}
                         </div>
                     </div>
-                    `;
-                }).join('')}
-            `;
+                </div>
+                `;
+            }).join('');
+            
+            container.innerHTML = heroBanner + weatherAdvice + timelineEvents;
         }
 
-        // --- DETAIL MODAL LOGIC ---
+        // Swipe Functionality
+        function handleTouchStart(evt) {
+            initialX = evt.clientX || evt.touches[0].clientX;
+        }
+
+        function handleTouchMove(evt) {
+            if (initialX === null) return;
+            const currentX = evt.clientX || evt.touches[0].clientX;
+            const diffX = initialX - currentX;
+
+            // Optional: Visually show drag effect if desired
+            // container.style.transform = `translateX(${-diffX}px)`; 
+        }
+
+        function handleTouchEnd(evt) {
+            if (initialX === null) return;
+            const currentX = evt.clientX || evt.changedTouches[0].clientX;
+            const diffX = initialX - currentX;
+            initialX = null; // Reset initial position
+
+            const threshold = 50; // Minimum swipe distance in pixels
+
+            if (Math.abs(diffX) > threshold) {
+                if (diffX > 0) { // Swipe Left (Next Day)
+                    switchDay(currentDayIdx + 1);
+                } else { // Swipe Right (Previous Day)
+                    switchDay(currentDayIdx - 1);
+                }
+            }
+        }
+
+
+        // --- SMART REMINDER LOGIC (New) ---
+        function checkSmartReminder() {
+            const reminderBar = document.getElementById('smart-reminder');
+            const now = new Date();
+            const currentDayDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            const tripStartDate = new Date("2026-02-02");
+            const diffDays = Math.ceil((currentDayDate.getTime() - tripStartDate.getTime()) / (1000 * 60 * 60 * 24));
+            
+            if (diffDays < 0 || diffDays >= tripData.length) {
+                reminderBar.style.display = 'none';
+                return; // Not on a trip day yet
+            }
+
+            const currentDayEvents = tripData[diffDays].events;
+            let reminderMessage = null;
+
+            for (let i = 0; i < currentDayEvents.length; i++) {
+                const event = currentDayEvents[i];
+                const [eventHour, eventMinute] = event.time.split(':').map(Number);
+                
+                // Convert event time to today's date + event time
+                const eventTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), eventHour, eventMinute);
+                const timeDiffMinutes = (eventTime.getTime() - now.getTime()) / (1000 * 60);
+
+                // --- Logic Triggers ---
+                if (timeDiffMinutes >= -15 && timeDiffMinutes <= 20) { // Within 15 min late to 20 min early
+                    
+                    if (timeDiffMinutes > 0 && timeDiffMinutes <= 15) {
+                        reminderMessage = `🔔 ${event.title} 還有 ${Math.round(timeDiffMinutes)} 分鐘開始！請準備前往。`;
+                        break;
+                    } else if (timeDiffMinutes >= -15 && timeDiffMinutes <= 0) {
+                        reminderMessage = `🚨 ${event.title} 應該在 ${Math.abs(Math.round(timeDiffMinutes))} 分鐘前開始了！請加快腳步。`;
+                        break;
+                    }
+                }
+            }
+            
+            if (reminderMessage) {
+                reminderBar.innerText = reminderMessage;
+                reminderBar.style.display = 'block';
+            } else {
+                reminderBar.style.display = 'none';
+            }
+        }
+
+
+        // --- DETAIL MODAL LOGIC (retained) ---
         let currentEv = null;
         function openDetail(dataStr) {
             currentEv = JSON.parse(decodeURIComponent(dataStr));
             
-            // Basic Info
             document.getElementById('m-tag').innerText = currentEv.tag;
             document.getElementById('m-title').innerText = currentEv.title;
             document.getElementById('m-desc').innerText = currentEv.desc;
             document.getElementById('m-addr-text').innerText = currentEv.addr;
-            // Use current URL + image name for custom image source
             document.getElementById('m-hero').src = currentEv.img ? window.location.href.replace(/[^/]*$/, '') + currentEv.img : ''; 
 
-            // Point & Speak
             const psContainer = document.getElementById('ps-container');
             if(currentEv.pointSpeak && currentEv.pointSpeak.length > 0) {
-                psContainer.innerHTML = currentEv.pointSpeak.map(ps => `
-                    <div class="ps-card">
-                        <div class="ps-cn">${ps.cn}</div>
-                        <div class="ps-jp">${ps.jp}</div>
-                    </div>
-                `).join('');
+                psContainer.innerHTML = currentEv.pointSpeak.map(ps => `<div class="ps-card"><div class="ps-cn">${ps.cn}</div><div class="ps-jp">${ps.jp}</div></div>`).join('');
             } else {
                 psContainer.innerHTML = '<div style="color:#CCC; text-align:center; padding:10px;">無特定指差會話</div>';
             }
 
-            // GPS
             const gpsBox = document.getElementById('gps-container');
             if(currentEv.gps) {
                 gpsBox.style.display = 'block';
@@ -669,7 +754,6 @@
                 gpsBox.style.display = 'none';
             }
 
-            // Reservation
             const resBox = document.getElementById('res-container');
             if(currentEv.bookingId) {
                 resBox.style.display = 'block';
@@ -678,7 +762,6 @@
                 resBox.style.display = 'none';
             }
 
-            // Show
             document.getElementById('modal-overlay').classList.add('open');
             document.getElementById('detail-modal').classList.add('open');
         }
@@ -686,6 +769,13 @@
         function closeModal() {
             document.getElementById('modal-overlay').classList.remove('open');
             document.getElementById('detail-modal').classList.remove('open');
+            document.getElementById('trans-pop').style.display = 'none';
+        }
+        
+        function closeAllModals() {
+            document.querySelectorAll('.open').forEach(el => el.classList.remove('open'));
+            document.getElementById('trans-pop').style.display = 'none';
+            document.getElementById('modal-overlay').classList.remove('open');
         }
 
         function openMap() {
@@ -693,29 +783,8 @@
                 window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(currentEv.addr)}`);
             }
         }
-
-        // --- TRANSLATION ---
-        async function translateCustom() {
-            const txt = document.getElementById('trans-input').value;
-            if(!txt) return;
-            openTransModal(txt, "翻譯中...");
-            try {
-                const res = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(txt)}&langpair=zh-TW|ja`);
-                const data = await res.json();
-                if(data.responseData) document.getElementById('tp-jp').innerText = data.responseData.translatedText;
-            } catch(e) {
-                document.getElementById('tp-jp').innerText = "翻譯錯誤";
-            }
-        }
-
-        function openTransModal(cn, jp) {
-            document.getElementById('tp-cn').innerText = cn;
-            document.getElementById('tp-jp').innerText = jp;
-            document.getElementById('modal-overlay').classList.add('open');
-            document.getElementById('trans-pop').style.display = 'block';
-        }
-
-        // --- EXPENSES ---
+        
+        // --- EXPENSES (retained) ---
         function addExpense() {
             const item = document.getElementById('ex-item').value;
             const price = document.getElementById('ex-price').value;
