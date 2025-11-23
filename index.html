@@ -42,7 +42,7 @@
             background-color: var(--bg-body);
             color: var(--text-primary);
             font-family: var(--font-sans);
-            padding-bottom: calc(100px + var(--safe-bottom));
+            padding-bottom: calc(110px + var(--safe-bottom)); 
             overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
         }
@@ -102,13 +102,36 @@
             position: sticky; top: 0; z-index: 100;
         }
         
-        .top-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+        .top-meta { 
+            display: flex; justify-content: space-between; align-items: center; 
+            margin-bottom: 25px; 
+        }
+        .brand-container {
+            display: flex; align-items: center; gap: 12px;
+        }
         .brand { 
             font-family: var(--font-serif); font-size: 1.5rem; font-weight: 700; 
             letter-spacing: 1px; color: var(--accent-main); 
-            border-bottom: 2px solid var(--accent-gold); padding-bottom: 5px;
+            padding-bottom: 2px; border-bottom: 2px solid var(--accent-gold);
         }
         
+        #header-weather-pill {
+            font-size: 0.85rem;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 30px;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(5px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border: 1px solid rgba(255,255,255,0.5);
+            transition: all 0.3s;
+        }
+        #header-weather-pill i { color: var(--accent-gold); font-size: 0.9rem; }
+        #header-weather-pill span { font-weight: 600; font-family: var(--font-sans); }
+
         .status-container { text-align: right; }
         .status-value { font-family: var(--font-serif); font-size: 1.8rem; line-height: 1; color: var(--accent-gold); }
         .status-label { font-size: 0.65rem; letter-spacing: 2px; color: var(--text-secondary); margin-top: 2px; }
@@ -121,7 +144,7 @@
         .date-scroller::-webkit-scrollbar { display: none; }
         
         .d-item { 
-            min-width: 65px; height: 80px;
+            min-width: 60px; height: 80px; 
             background: white; border-radius: 12px;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             opacity: 0.5; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); cursor: pointer;
@@ -141,8 +164,9 @@
         
         .hero-card {
             position: relative; height: 260px; border-radius: 16px; overflow: hidden; 
-            margin-bottom: 35px; box-shadow: var(--shadow-card);
-            background: #E0E6ED; /* Placeholder color */
+            margin-bottom: 25px; 
+            box-shadow: var(--shadow-card);
+            background: #E0E6ED; 
         }
         .hero-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; }
         .hero-overlay {
@@ -155,16 +179,35 @@
             color: white; text-shadow: 0 4px 10px rgba(0,0,0,0.3); 
         }
 
+        /* --- FEATURE 1: WEATHER WIDGET --- */
+        .weather-widget {
+            background: #EAF0F6; border-radius: 12px; padding: 15px; margin-bottom: 35px;
+            display: grid; grid-template-columns: 1fr 1.2fr; gap: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            border: 1px solid #DDE4EB;
+        }
+        .weather-col h4 { margin: 0 0 8px 0; font-size: 0.9rem; color: var(--text-secondary); font-weight: 500;}
+        .temp-display { font-size: 2.2rem; font-family: var(--font-serif); color: var(--accent-main); font-weight: 700; display: flex; align-items: center;}
+        .temp-display i { font-size: 1.5rem; margin-right: 10px; color: var(--accent-gold); }
+        .weather-desc { font-size: 0.9rem; color: var(--text-primary); font-weight: 600; margin-top: 2px; }
+        .outfit-advice { font-size: 0.85rem; color: #555; line-height: 1.5; margin-top: 5px; }
+
+
         .timeline-block { 
             position: relative; padding-left: 24px; 
-            border-left: 2px solid var(--line-light); margin-left: 12px; 
+            border-left: 2px solid var(--line-light); 
         }
         
+        /* NEW: Slide-up Animation for Events */
         .event-node { 
             margin-bottom: 30px; position: relative; opacity: 0; 
-            transform: translateY(20px); transition: 0.6s ease; 
+            transform: translateY(30px); /* Start 30px below */
+            transition: opacity 0.4s ease, transform 0.4s ease; /* Adjusted transition */
         }
-        .event-node.visible { opacity: 1; transform: translateY(0); }
+        .event-node.visible { 
+            opacity: 1; 
+            transform: translateY(0); 
+        }
         
         .time-dot { 
             position: absolute; left: -29px; top: 22px; width: 10px; height: 10px; 
@@ -179,21 +222,11 @@
         }
         .event-card:active { transform: scale(0.98); }
         
-        /* 交通票券樣式優化 */
         .transport-card {
             background: #EDF2F7;
             border-left: 4px solid #34495E;
-            border-radius: 12px; /* 稍微方一點 */
+            border-radius: 12px;
             padding: 20px 24px;
-            /* 使用 mask-image 製作更完美的票券缺口 */
-            --notch-size: 12px;
-            mask-image: radial-gradient(circle at left center, transparent var(--notch-size), black calc(var(--notch-size) + 1px)),
-                        radial-gradient(circle at right center, transparent var(--notch-size), black calc(var(--notch-size) + 1px));
-            mask-composite: intersect;
-            -webkit-mask-image: radial-gradient(circle at 0px 50%, transparent var(--notch-size), black calc(var(--notch-size) + 0.5px)),
-                                radial-gradient(circle at 100% 50%, transparent var(--notch-size), black calc(var(--notch-size) + 0.5px));
-            -webkit-mask-composite: source-in;
-            margin: 0 10px; /* 給缺口留空間 */
         }
         
         .event-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
@@ -207,131 +240,180 @@
         .event-title { font-size: 1.1rem; color: var(--text-primary); font-weight: 600; line-height: 1.4; margin-bottom: 8px; }
         .event-meta { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: var(--text-secondary); }
 
-        /* --- WALLET --- */
+        /* --- WALLET / SHOPPING --- */
         .wallet-card { 
             background: white; padding: 25px; border-radius: 16px; 
             box-shadow: var(--shadow-card); margin-bottom: 24px; 
             position: relative; overflow: hidden;
         }
         
-        .wallet-total {
-            background: linear-gradient(135deg, #1C2541 0%, #2C3E50 100%);
-            color: white; text-align: center;
+        /* NEW: Simple Check List for Shopping */
+        #shopping-input-container {
+            display: flex;
+            margin-bottom: 15px;
+            gap: 10px;
         }
-        .wallet-total::after {
-            content: ""; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
-            animation: rotate 20s linear infinite; pointer-events: none;
+        #shopping-input-container input {
+            flex-grow: 1;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
         }
-        @keyframes rotate { from {transform: rotate(0deg);} to {transform: rotate(360deg);} }
+        #shopping-input-container button {
+            background: var(--accent-gold);
+            color: white;
+            border: none;
+            padding: 12px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
 
-        .currency-input-row {
-            display: grid; grid-template-columns: 1fr 30px 1fr; gap: 10px; align-items: center;
-            background: #F8F9FA; padding: 15px; border-radius: 12px; margin-bottom: 20px;
-        }
-        .currency-field { text-align: center; }
-        .currency-field input { 
-            width: 100%; border: none; background: transparent; 
-            font-family: var(--font-serif); font-size: 1.4rem; 
-            text-align: center; color: var(--accent-main); border-bottom: 2px solid var(--accent-gold);
-            padding: 5px 0; outline: none;
-        }
-        .currency-field label { font-size: 0.7rem; color: #999; letter-spacing: 1px; }
-
-        /* Expense List */
-        .expense-item { 
+        .shopping-item { 
+            padding: 15px 0; border-bottom: 1px solid var(--line-light);
             display: flex; justify-content: space-between; align-items: center;
-            padding: 16px 0; border-bottom: 1px solid var(--line-light); 
         }
-        .exp-user-avatar {
-            width: 36px; height: 36px; border-radius: 50%; 
-            background: var(--accent-main); color: white;
-            display: flex; justify-content: center; align-items: center;
-            font-family: var(--font-serif); font-size: 0.9rem;
-            margin-right: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        .shopping-item-title { font-weight: 600; color: var(--text-primary); }
+        .shopping-item-meta { font-size: 0.8rem; color: var(--text-secondary); margin-top: 4px; }
+        .shopping-actions button {
+            background: none; border: none; padding: 5px; font-size: 1.2rem; cursor: pointer;
+            transition: color 0.2s;
         }
-
-        /* --- TRANSLATE & CARDS --- */
-        .ps-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
+        .shopping-actions .btn-bought { color: #D4EDDA; }
+        .shopping-actions .btn-bought.active { color: #155724; }
+        .shopping-actions .btn-delete { color: #E74C3C; }
+        
+        .bought-item .shopping-item-title { opacity: 0.6; text-decoration: line-through; }
+        .bought-item .shopping-item-meta { opacity: 0.6; }
+        
+        /* --- TRANSLATE VIEW --- */
+        .ps-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr; 
+            gap: 15px;
+            padding-bottom: 20px;
+        }
+        
         .ps-card {
-            background: white; padding: 20px; border-radius: 16px; 
-            box-shadow: var(--shadow-card); text-align: center; 
-            border: 2px solid transparent; cursor: pointer; transition: 0.2s;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            height: 140px;
+            background: white; 
+            padding: 15px; 
+            border-radius: 16px; 
+            box-shadow: var(--shadow-card); 
+            text-align: center; 
+            border: 2px solid transparent; 
+            cursor: pointer; 
+            transition: 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 120px; 
         }
-        .ps-card:active { transform: scale(0.96); background: #FAF9F6; }
         .ps-card.warning { border-color: #E67E22; background: #FEF5E7; }
         .ps-card.danger { border-color: #E74C3C; background: #FDEDEC; color: #C0392B; }
-        .ps-icon { font-size: 2.5rem; margin-bottom: 10px; display: block; }
+        .ps-icon { font-size: 2rem; margin-bottom: 8px; display: block; }
 
-        /* --- NAV BAR (Glassmorphism) --- */
+        /* --- NAV BAR (5 Buttons - Icon Only) --- */
         .glass-nav {
-            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
-            width: 90%; max-width: 400px;
-            background: rgba(28, 37, 65, 0.9);
+            position: fixed; bottom: 10px; left: 50%; transform: translateX(-50%);
+            width: 98%; max-width: 500px; 
+            background: rgba(28, 37, 65, 0.95); 
             backdrop-filter: blur(var(--blur-val));
             -webkit-backdrop-filter: blur(var(--blur-val));
-            border-radius: 40px; padding: 10px 20px;
-            display: flex; justify-content: space-around; align-items: center;
+            border-radius: 40px; padding: 10px 5px; 
+            display: flex; justify-content: space-between; align-items: center;
             box-shadow: var(--shadow-float); z-index: 1000;
-            border: 1px solid rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.15);
         }
         .nav-btn { 
-            color: rgba(255,255,255,0.4); font-size: 1.3rem; 
-            cursor: pointer; transition: 0.3s; padding: 12px; 
+            color: rgba(255,255,255,0.5); font-size: 1.5rem; /* Increased icon size */
+            cursor: pointer; transition: 0.3s; padding: 8px 0; 
             display: flex; flex-direction: column; align-items: center; 
-            position: relative;
+            position: relative; flex: 1; 
         }
-        .nav-btn span { font-size: 0.6rem; margin-top: 4px; opacity: 0; transition: 0.3s; transform: translateY(5px); }
-        .nav-btn.active { color: var(--accent-gold); transform: translateY(-5px); }
-        .nav-btn.active span { opacity: 1; transform: translateY(0); }
+        .nav-btn span { display: none; } /* Hide text */
+        .nav-btn.active { color: var(--accent-gold); transform: translateY(-3px); }
+        .nav-btn.active span { opacity: 0; transform: translateY(0); } /* Ensure text remains hidden */
         
-        /* --- MODAL --- */
-        .modal-full {
-            position: fixed; bottom: 0; left: 0; width: 100%; height: 92vh;
-            background: var(--bg-body); z-index: 2000; 
-            border-radius: 24px 24px 0 0;
-            transform: translateY(100%); transition: 0.4s cubic-bezier(0.19, 1, 0.22, 1);
-            overflow-y: auto; box-shadow: 0 -10px 40px rgba(0,0,0,0.2);
+        /* --- MODAL CARD POP-UP --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6); z-index: 1900;
+            opacity: 0; pointer-events: none; transition: 0.3s;
+            backdrop-filter: blur(3px);
         }
-        .modal-full.active { transform: translateY(0); }
-        .modal-header-img { height: 280px; width: 100%; object-fit: cover; }
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+
+        .modal-full {
+            position: fixed; 
+            top: 50%; left: 50%; 
+            width: 90%; max-width: 500px; max-height: 85vh; 
+            background: var(--bg-body); 
+            z-index: 2000; 
+            border-radius: 20px; 
+            transform: translate(-50%, -50%) scale(0.9); 
+            opacity: 0; pointer-events: none; 
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s; 
+            overflow-y: auto; 
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3); 
+        }
+        .modal-full.active {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+            pointer-events: auto; 
+        }
+
+        .modal-header-img { 
+            height: 220px; width: 100%; object-fit: cover; 
+            border-radius: 20px 20px 0 0; 
+        }
         .modal-close-btn {
-            position: absolute; top: 20px; right: 20px;
-            width: 40px; height: 40px; border-radius: 50%;
-            background: rgba(255,255,255,0.9); border: none;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            z-index: 10; font-size: 1.2rem; color: #333;
+            position: absolute; top: 15px; right: 15px;
+            width: 36px; height: 36px; border-radius: 50%;
+            background: rgba(255,255,255,0.95); border: none;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            z-index: 10; font-size: 1.1rem; color: #333;
             cursor: pointer; display: flex; align-items: center; justify-content: center;
         }
 
-        /* Full Screen Text */
+        /* Full Screen Text Card Fix */
         #fs-text-modal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(255,255,255,0.98); z-index: 2100; 
             display: flex; flex-direction: column;
-            justify-content: center; align-items: center; padding: 40px;
+            justify-content: center; align-items: center; padding: 20px;
             text-align: center; transform: scale(0.95); opacity: 0; 
             pointer-events: none; transition: 0.3s;
         }
         #fs-text-modal.active { transform: scale(1); opacity: 1; pointer-events: auto; }
-        .fs-jp { font-size: 3rem; font-weight: 700; margin-bottom: 30px; line-height: 1.4; color: var(--accent-main); }
-        .fs-cn { font-size: 1.4rem; color: var(--text-secondary); background: #F0F2F5; padding: 15px 30px; border-radius: 50px; }
+        .fs-jp { font-size: 3rem; font-weight: 700; margin-bottom: 30px; line-height: 1.3; color: var(--accent-main); word-break: break-all;}
+        .fs-cn { font-size: 1.2rem; color: var(--text-secondary); background: #F0F2F5; padding: 15px 30px; border-radius: 50px; display: inline-block;}
+
+        #detail-modal .container { padding-top: 15px; padding-bottom: 30px; } 
 
     </style>
 </head>
 <body>
-    <!-- Script Block 1: Immediate Execution for Image Fallbacks & Utilities -->
+    <!-- Script Block 1: Image & Map Utils -->
     <script>
-        // --- 1. CONFIG & STATE ---
         const GOOGLE_MAPS_API_KEY = "AIzaSyAX9nvh4bJpiM6-oTm8FoUSZeSBpxZBc1E"; 
-        let currentRate = 0.2215; 
+        let currentRate = 0.2215; // Default fallback
         let currentIdx = 0;
         let currentUser = 'YK';
-        let expenses = []; // Defined here for global scope
+        let expenses = []; 
+        let shoppingList = []; 
+        let db, auth, expensesRef, shoppingRef, tripNotesRef;
+        
+        // Weather Cache
+        let weatherCache = {
+            hakodate: { temp: '--', summary: '載入中...' },
+            aomori: { temp: '--', summary: '載入中...' }
+        };
 
-        // 圖片優化：使用特定的 Unsplash ID 確保不破圖
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+
         const IMG_MAP = {
             'hakodate_night': 'photo-1535392460594-553655519f93',
             'aomori_nebuta': 'photo-1533230554519-5374be216255',
@@ -352,7 +434,6 @@
             return `https://images.unsplash.com/${id}?q=80&w=800&auto=format&fit=crop`;
         }
 
-        // Image Error Handler (Universal) - MUST BE DEFINED EARLY
         function handleImgError(img) { 
             img.onerror = null; 
             const text = "NO IMAGE";
@@ -363,10 +444,7 @@
         function getMapUrl(data) {
              const base = `https://www.google.com/maps/embed/v1/search?key=${GOOGLE_MAPS_API_KEY}`;
              let query = '';
-             
-             // Prioritize exact match if mapcode or specific destination is available
              if (data.nav && data.nav.mapcode) {
-                 // Note: Google Maps Embed API doesn't directly support MapCode search
                  query = `&q=${encodeURIComponent(data.title)}`;
              } else if (data.title) {
                  query = `&q=${encodeURIComponent(data.title)}`;
@@ -376,130 +454,111 @@
              return base + query;
         }
 
+        // --- WEATHER LOGIC ---
+        function getIconFromSummary(summary) {
+            if (!summary) return 'fa-cloud';
+            const s = summary.toLowerCase();
+            if (s.includes('snow') || s.includes('雪') || s.includes('flurries')) return 'fa-snowflake';
+            if (s.includes('clear') || s.includes('sun') || s.includes('晴')) return 'fa-sun';
+            if (s.includes('rain') || s.includes('drizzle') || s.includes('雨')) return 'fa-cloud-rain';
+            if (s.includes('cloud') || s.includes('overcast') || s.includes('陰') || s.includes('多雲')) return 'fa-cloud';
+            return 'fa-cloud-meatball';
+        }
+
+        function getWeatherForDay(day) {
+            // Determine which cached location data to use
+            let locationKey = (day.day <= 2) ? 'hakodate' : 'aomori';
+            let realData = weatherCache[locationKey];
+            let locationName = locationKey === 'hakodate' ? '函館 (Hakodate)' : '青森 (Aomori)';
+
+            const icon = getIconFromSummary(realData.summary);
+            let outfit = '請穿著防風外套與發熱衣，洋蔥式穿法。';
+            
+            // Parse temp to integer for logic
+            let tempInt = parseInt(realData.temp);
+            if (!isNaN(tempInt) && tempInt < -3) {
+                outfit = '極寒警報！請務必穿著滑雪外套、防風手套與毛帽。';
+            } else if (realData.summary.includes('雪')) {
+                outfit = '降雪機率高，請穿著防水鞋靴，注意路面濕滑。';
+            }
+
+            return {
+                location: locationName,
+                condition: { icon, text: realData.summary, temp: realData.temp },
+                outfit: outfit
+            };
+        }
+
         // --- 2. DATA (TRIP EVENTS) ---
         const tripData = [
-            // 📌 Day 1 (2/2, 週一) - 函館：百元發熱衣與百萬夜景
             {
                 day: 1, date: "02.02", week: "MON",
                 heroTitle: "函館：百元發熱衣與百萬夜景",
                 heroImg: getImg('hakodate_night'),
                 events: [
-                    { time: "11:10", title: "抵達函館機場 (HKD)", tag: "Flight", desc: "入境手續，領取行李。", /* Removed img: getImg('airport') */ },
+                    { time: "11:10", title: "抵達函館機場 (HKD)", tag: "Flight", desc: "入境手續，領取行李。" },
                     { time: "12:00", title: "機場巴士 -> JR 函館站", tag: "Transport", desc: "搭乘巴士。約 20-30 分鐘車程。", transport_info: {type: "機場巴士", time_estimate: "20-30分鐘"} },
                     { time: "12:30", title: "JR Inn Hakodate 寄放行李", tag: "Hotel", desc: "抵達飯店，辦理入住手續或寄放行李。" },
-                    { time: "12:45", title: "計程車前往 UNIQLO 昭和店", tag: "Transport", desc: "昭和店離市區較遠，計程車約 20-25 分鐘。", transport_info: {type: "計程車", time_estimate: "20-25分鐘"} },
-                    { time: "13:15", title: "UNIQLO 函館昭和店", tag: "Shopping", desc: "採購發熱衣等禦寒裝備，預留 1.5 小時。", nav: { mapcode: "86 254 073*65" } },
-                    { time: "14:45", title: "計程車返回飯店", tag: "Transport", desc: "請店員幫忙叫車或使用 GO App 返回飯店。", transport_info: {type: "計程車", time_estimate: "25分鐘"} },
-                    { time: "15:15", title: "飯店卸貨休息", tag: "Hotel", desc: "返回飯店卸貨，稍作整理。" },
-                    { time: "15:45", title: "市電至十字街站", tag: "Transport", desc: "搭乘路面電車至「十字街站」，車程約 10 分鐘。", transport_info: {type: "市電 (路面電車)", time_estimate: "10-15分鐘"} },
-                    { time: "16:10", title: "金森紅磚倉庫", tag: "Sightseeing", desc: "簡單逛街、拍照。與纜車站距離不遠，但雪地步行需增加時間。", /* Removed img */ },
-                    { time: "16:50", title: "步行前往函館山纜車山麓站", tag: "Transport", desc: "雪地步行約 10-15 分鐘，有些微上坡。注意防滑。" },
-                    { time: "17:10", title: "搭乘纜車上山", tag: "Transport", desc: "上山約 3 分鐘，務必提前排隊。", transport_info: {type: "纜車", time_estimate: "3分鐘"} },
-                    { time: "17:15", title: "函館山百萬夜景", tag: "Sightseeing", desc: "日落時間約 16:50，此時剛好接夜景。務必搶佔最佳位置。", nav: { mapcode: "86 041 028*25" } },
-                    { time: "18:30", title: "搭纜車下山 -> 返回站前", tag: "Transport", desc: "建議搭計程車回函館站前 (約 1000 日圓內，省力)。", transport_info: {type: "計程車/步行"} },
-                    { time: "19:00", title: "幸運小丑漢堡 (函館站前店)", tag: "Food", desc: "晚餐：必點中華雞腿堡。", /* Removed img */ },
-                    { time: "20:30", title: "JR Inn Hakodate 休息", tag: "Hotel", desc: "Day 1 結束。" }
+                    { time: "13:15", title: "UNIQLO 函館昭和店", tag: "Shopping", desc: "採購發熱衣等禦寒裝備。", nav: { mapcode: "86 254 073*65" } },
+                    { time: "16:10", title: "金森紅磚倉庫", tag: "Sightseeing", desc: "簡單逛街、拍照。漫步港灣。" },
+                    { time: "17:15", title: "函館山百萬夜景", tag: "Sightseeing", desc: "日落時間約 16:50。務必搶佔最佳位置。", nav: { mapcode: "86 041 028*25" } },
+                    { time: "19:00", title: "幸運小丑漢堡", tag: "Food", desc: "晚餐：必點中華雞腿堡。" }
                 ]
             },
-            // 📌 Day 2 (2/3, 週二) - 移動日：跨越津輕海峽
             {
                 day: 2, date: "02.03", week: "TUE",
                 heroTitle: "移動日：跨越津輕海峽",
                 heroImg: getImg('snow_train'),
                 events: [
-                    { time: "08:00", title: "函館朝市 早餐", tag: "Food", desc: "享用海鮮丼/釣烏賊。記得貨比三家。", /* Removed img */ },
-                    { time: "09:30", title: "JR 函館站閘門", tag: "Transport", desc: "進入 JR 函館站，準備搭車。需換乘兩次（Local → 新幹線 → Local）。" },
-                    { time: "10:00", title: "Hashodate Liner", tag: "Transport", desc: "前往「新函館北斗站」 (約 20 分鐘)。", transport_info: {type: "區間列車", name: "Hashodate Liner", time_estimate: "20分鐘"} },
-                    { time: "10:35", title: "北海道新幹線 (隼 Hayabusa)", tag: "Transport", desc: "前往「新青森站」 (約 1 小時)。", transport_info: {type: "新幹線", name: "隼 Hayabusa"} },
-                    { time: "11:40", title: "轉乘 JR 奧羽本線", tag: "Transport", desc: "前往「青森站」 (約 6 分鐘)。", transport_info: {type: "區間列車", name: "JR 奧羽本線"} },
-                    { time: "12:00", title: "抵達 JR 青森站", tag: "Transport", desc: "出站，準備午餐與寄物。" },
-                    { time: "12:15", title: "計程車至 Dormy Inn 寄物", tag: "Transport", desc: "雖未到 Check-in 時間，但可先寄物。車程約 5 分鐘。", transport_info: {type: "計程車", time_estimate: "5分鐘"} },
-                    { time: "12:40", title: "青森站附近午餐", tag: "Food", desc: "推薦：青森獨創的味噌咖哩牛奶拉麵。", /* Removed img */ },
-                    { time: "13:40", title: "搭計程車前往 青森縣立美術館", tag: "Transport", desc: "美術館位於郊區，車程約 20 分鐘。", transport_info: {type: "計程車", time_estimate: "20分鐘"} },
-                    { time: "14:00", title: "青森縣立美術館", tag: "Art", desc: "必看奈良美智「青森犬」。注意最後入場為 16:30。", nav: { mapcode: "99 489 495*20" } },
-                    { time: "16:15", title: "計程車返回市區/飯店", tag: "Transport", desc: "預留時間辦理入住手續。", transport_info: {type: "計程車", time_estimate: "20分鐘"} },
-                    { time: "16:40", title: "Dormy Inn Aomori 辦理入住", tag: "Hotel", desc: "正式 Check-in，領取房卡。" },
-                    { time: "18:00", title: "青森鄉土料理晚餐", tag: "Food", desc: "例如：津輕三味線居酒屋或帆立貝料理。", /* Removed img */ },
-                    { time: "19:30", title: "唐吉訶德 青森千刈店", tag: "Shopping", desc: "購物。步行約 15 分鐘，建議計程車。", },
-                    { time: "21:30", title: "夜鳴拉麵", tag: "Food", desc: "回飯店享用免費宵夜。" },
+                    { time: "08:00", title: "函館朝市 早餐", tag: "Food", desc: "享用海鮮丼/釣烏賊。記得貨比三家。" },
+                    { time: "10:35", title: "北海道新幹線 (隼)", tag: "Transport", desc: "前往「新青森站」 (約 1 小時)。", transport_info: {type: "新幹線", name: "隼 Hayabusa"} },
+                    { time: "14:00", title: "青森縣立美術館", tag: "Art", desc: "必看奈良美智「青森犬」。", nav: { mapcode: "99 489 495*20" } },
+                    { time: "16:40", title: "Dormy Inn Aomori", tag: "Hotel", desc: "正式 Check-in，領取房卡。" },
                     { time: "22:00", title: "Dormy Inn Aomori 泡湯", tag: "Relax", desc: "天然溫泉，消除疲勞。" }
                 ]
             },
-            // 📌 Day 3 (2/4, 週三) - 自駕：暖爐列車與弘前洋風散策
             {
                 day: 3, date: "02.04", week: "WED",
                 heroTitle: "自駕：暖爐列車與弘前洋風散策",
                 heroImg: getImg('apple_pie'),
                 events: [
-                    { time: "09:00", title: "青森站前租車行取車", tag: "Drive", desc: "【租車開始】手續約 30 分鐘。請確保雪胎已安裝。", transport_info: {type: "自駕", note: "雪胎確認完畢"} },
-                    { time: "09:30", title: "回飯店載人與行李", tag: "Drive", desc: "設定導航，開始自駕。" },
-                    { time: "09:45", title: "開車前往 ELM 購物中心", tag: "Drive", desc: "雪地車程約 50-60 分鐘。", transport_info: {type: "自駕", time_estimate: "50-60分鐘"} },
-                    { time: "10:45", title: "3COINS+plus (ELM)", tag: "Shopping", desc: "快速採購，控制在 35 分鐘內。", },
-                    { time: "11:20", title: "開車前往 津輕五所川原站", tag: "Transport", desc: "車程約 10 分鐘，車站旁有收費停車場。" },
-                    { time: "11:30", title: "車站購票", tag: "Transport", desc: "去程買「乘車券 + 暖爐券」，回程買「乘車券」即可。" },
-                    { time: "11:50", title: "暖爐列車 (去程)", tag: "Experience", desc: "搭乘津輕鐵道「暖爐列車」。車上可點烤魷魚、喝清酒。", },
-                    { time: "12:15", title: "金木站 中場休息", tag: "Sightseeing", desc: "停留約 23 分鐘，在車站周邊拍照即可，不要跑遠。" },
-                    { time: "12:38", title: "搭乘回程列車 (普通車廂)", tag: "Transport", desc: "搭乘回程列車返回五所川原站，不需暖爐券。" },
-                    { time: "13:15", title: "取車，開車前往 弘前市", tag: "Drive", desc: "雪地車程約 50-60 分鐘。", transport_info: {type: "自駕", time_estimate: "50-60分鐘"} },
-                    { time: "14:15", title: "抵達弘前市 藤田紀念庭園 停車場", tag: "Drive", desc: "停車，準備下午茶。" },
-                    { time: "14:30", title: "大正浪漫喫茶室 (蘋果派)", tag: "Food", desc: "重要任務：必吃蘋果派。16:00 最後點餐，時間充裕。", nav: { mapcode: "71 071 513*78" } },
-                    { time: "15:30", title: "弘前城 / 弘前公園", tag: "Sightseeing", desc: "欣賞白天雪景、紅橋。弘前城是東北唯一保有天守閣的城堡。", /* Removed img */ },
-                    { time: "16:30", title: "星巴克 弘前公園前店", tag: "Sightseeing", desc: "由國家註冊有形文化財改建的古蹟星巴克。" },
-                    { time: "17:30", title: "開車返回青森市", tag: "Drive", desc: "夜間雪地慢行，注意安全，車程約 1 小時。", transport_info: {type: "自駕", time_estimate: "1小時"} },
-                    { time: "18:30", title: "晚餐 (青森市區)", tag: "Food", desc: "在青森市區選擇多樣化晚餐。" },
-                    { time: "20:00", title: "Dormy Inn Aomori (宵夜/泡湯)", tag: "Hotel", desc: "吃免費夜鳴拉麵、泡湯。" }
+                    { time: "09:00", title: "青森站前租車行取車", tag: "Drive", desc: "手續約 30 分鐘。請確保雪胎已安裝。", transport_info: {type: "自駕", note: "雪胎確認完畢"} },
+                    { time: "11:50", title: "暖爐列車 (去程)", tag: "Experience", desc: "津輕鐵道。車上可點烤魷魚、喝清酒。" },
+                    { time: "14:30", title: "大正浪漫喫茶室", tag: "Food", desc: "必吃蘋果派。16:00 最後點餐。", nav: { mapcode: "71 071 513*78" } },
+                    { time: "15:30", title: "弘前城 / 弘前公園", tag: "Sightseeing", desc: "欣賞白天雪景、紅橋。" }
                 ]
             },
-            // 📌 Day 4 (2/5, 週四) - 山林：尋找八甲田雪怪
             {
                 day: 4, date: "02.05", week: "THU",
                 heroTitle: "山林：尋找八甲田雪怪",
                 heroImg: getImg('snow_monster'),
-                alert: "冬季國道 103 號 (八甲田-十和田湖段) 封閉。看完樹冰後，不能直接翻山去青森屋，必須原路下山回到青森市外圍，走北邊道路前往三澤。",
+                alert: "冬季國道 103 號封閉。必須原路下山回到青森市外圍，走北邊道路前往三澤。",
                 events: [
-                    { time: "08:30", title: "古川市場 早餐", tag: "Food", desc: "吃「のっけ丼 (Nokkedon)」自選海鮮丼。" },
-                    { time: "09:30", title: "開車上山前往 八甲田纜車站", tag: "Drive", desc: "雪地山路，車程約 45-60 分鐘。請開啟大燈，保持車距。", transport_info: {type: "自駕", time_estimate: "45-60分鐘"} },
-                    { time: "10:30", title: "抵達纜車站，購票", tag: "Activity", desc: "請預先確認當日纜車運行狀況，並詢問山頂風速。" },
-                    { time: "11:00", title: "搭乘纜車賞樹冰 (雪怪)", tag: "Nature", desc: "山頂極冷，請穿著最厚實的裝備！停留約 20-30 分鐘即需下山。", nav: { mapcode: "99 055 336*13" } },
-                    { time: "12:30", title: "午餐 (纜車站食堂/下山途中)", tag: "Food", desc: "在山區食堂享用熱騰騰的食物，快速補充熱量。" },
-                    { time: "13:30", title: "關鍵路線：開車下山轉陸奧收費道路", tag: "Drive", desc: "沿原路下山，轉陸奥收費道路 (Michinoku Toll Road) 或國道 4 號前往三澤。避開封閉路段，車程約 1.5 - 2 小時。", transport_info: {type: "自駕", time_estimate: "1.5-2小時"} },
-                    { time: "15:30", title: "星野集團 青森屋 Check-in", tag: "Resort", desc: "享受頂級溫泉與祭典氛圍。儘快 Check-in 預約活動。", },
-                    { time: "17:30", title: "晚餐：Nore Sore 食堂", tag: "Food", desc: "已預約自助餐。" },
-                    { time: "20:00", title: "陸奧祭典屋表演", tag: "Culture", desc: "觀賞青森四大祭典濃縮表演。", },
+                    { time: "08:30", title: "古川市場 早餐", tag: "Food", desc: "吃「のっけ丼」自選海鮮丼。" },
+                    { time: "11:00", title: "八甲田山纜車", tag: "Nature", desc: "觀賞樹冰 (Snow Monsters)。山頂極冷！", nav: { mapcode: "99 055 336*13" } },
+                    { time: "15:30", title: "星野集團 青森屋", tag: "Resort", desc: "Check-in。享受頂級溫泉與祭典氛圍。" },
+                    { time: "20:00", title: "陸奧祭典屋表演", tag: "Culture", desc: "觀賞青森四大祭典濃縮表演。" }
                 ]
             },
-            // 📌 Day 5 (2/6, 週五) - 體驗：暖爐馬車與滑雪
             {
                 day: 5, date: "02.06", week: "FRI",
                 heroTitle: "體驗：暖爐馬車與滑雪",
                 heroImg: getImg('snow_drive'),
                 events: [
-                    { time: "07:30", title: "飯店早餐", tag: "Food", desc: "享用飯店早餐。確認當天滑雪場的天氣狀況。" },
-                    { time: "10:00", title: "暖爐馬車 (Stove Carriage)", tag: "Relax", desc: "【飯店活動】在馬車上享用點心，需事前預約。", },
-                    { time: "11:00", title: "開車前往滑雪場", tag: "Drive", desc: "距離青森屋約 30 分鐘車程 (例如：東北町滑雪場)。", transport_info: {type: "自駕", time_estimate: "30分鐘"} },
-                    { time: "11:30", title: "滑雪場食堂午餐", tag: "Food", desc: "在滑雪場用餐。" },
-                    { time: "12:30", title: "租借滑雪裝備", tag: "Activity", desc: "租借 Ski/Snowboard。請務必檢查裝備是否合腳。" },
-                    { time: "13:00", title: "滑雪體驗", tag: "Activity", desc: "初學者建議 2 小時已足夠。町營滑雪場坡度較緩。", },
-                    { time: "15:00", title: "歸還裝備，開車返回青森屋", tag: "Drive", desc: "歸還裝備後，仔細檢查有無遺漏物品。", transport_info: {type: "自駕"} },
-                    { time: "16:00", title: "回飯店休息/泡湯", tag: "Relax", desc: "溫泉是消除滑雪疲勞的最佳方式。" },
-                    { time: "17:30", title: "飯店內晚餐", tag: "Food", desc: "享用飯店晚餐 (或前往飯店居酒屋)。" },
-                    { time: "20:00", title: "陸奧祭典屋表演", tag: "Culture", desc: "第二次觀賞，可將重點放在不同祭典上。", }
+                    { time: "10:00", title: "暖爐馬車", tag: "Relax", desc: "【飯店活動】在馬車上享用點心，需事前預約。" },
+                    { time: "11:00", title: "前往滑雪場", tag: "Drive", desc: "距離青森屋約 30 分鐘車程。", transport_info: {type: "自駕", time_estimate: "30分鐘"} },
+                    { time: "13:00", title: "滑雪體驗", tag: "Activity", desc: "初學者建議 2 小時已足夠。" },
+                    { time: "16:00", title: "回飯店休息/泡湯", tag: "Relax", desc: "溫泉是消除滑雪疲勞的最佳方式。" }
                 ]
             },
-            // 📌 Day 6 (2/7, 週六) - 返程：謹慎駕駛
             {
                 day: 6, date: "02.07", week: "SAT",
                 heroTitle: "返程：滿載而歸",
                 heroImg: getImg('airport'),
                 events: [
-                    { time: "08:00", title: "飯店早餐", tag: "Food", desc: "最後一天，把握時間享受早餐。" },
-                    { time: "10:00", title: "Check-out，準時開車出發", tag: "Drive", desc: "極致慢速安全駕駛。請預留 20 分鐘以上給加油站排隊。", transport_info: {type: "自駕", note: "出發前務必加滿油"} },
-                    { time: "10:00", title: "前往青森機場 (AOJ)", tag: "Drive", desc: "行駛 上北自動車道/陸奧收費道路 前往機場 (預留 2 小時車程以防風雪)。", transport_info: {type: "自駕", time_estimate: "1小時 20分鐘"} },
-                    { time: "12:00", title: "機場附近加滿油 (Full Tank)", tag: "Drive", desc: "加滿油後，前往還車地點，避免還車延誤。", },
-                    { time: "12:30", title: "辦理還車手續", tag: "Transport", desc: "檢查車況，辦理還車。確保車內沒有遺漏物品。" },
-                    { time: "13:00", title: "抵達機場航廈", tag: "Transport", desc: "準備 Check-in。" },
-                    { time: "13:30", title: "辦理登機手續 (BR 121)", tag: "Flight", desc: "長榮航空櫃檯。確認登機口資訊。" },
-                    { time: "14:00", title: "機場免稅店 (採買)", tag: "Shopping", desc: "採買蘋果派、蘋果汁、乾貨。青森機場有豐富的蘋果製品可供選擇。", },
+                    { time: "10:00", title: "前往青森機場 (AOJ)", tag: "Drive", desc: "預留 2 小時車程以防風雪。", transport_info: {type: "自駕", time_estimate: "1小時 20分鐘"} },
+                    { time: "12:30", title: "辦理還車手續", tag: "Transport", desc: "檢查車況，辦理還車。" },
+                    { time: "13:30", title: "辦理登機手續 (BR 121)", tag: "Flight", desc: "長榮航空櫃檯。" },
                     { time: "15:30", title: "搭機返台", tag: "Flight", desc: "再見青森，期待下次旅程。" }
                 ]
             }
@@ -516,19 +575,23 @@
             </div>
             <h1 style="font-size: 1.5rem; margin: 0; color: white;">林檎與白雪之旅</h1>
             <h2 style="font-size: 1rem; font-weight: 400; opacity: 0.8; margin-top: 5px;">Hokkaido & Aomori Winter Adventure</h2>
-            
             <div id="dynamic-intro-text" style="margin-top: 30px; min-height: 60px; font-size: 0.95rem; line-height: 1.6; opacity: 0.9;"></div>
-            
             <button class="intro-btn" onclick="enterApp()">開始旅程</button>
         </div>
     </div>
 
     <!-- Main App -->
     <div id="app-container">
-        
         <div class="elegant-header">
             <div class="top-meta">
-                <div class="brand">L'VOYAGE</div>
+                <div class="brand-container">
+                    <div class="brand">L'VOYAGE</div>
+                    <!-- Header Weather Widget -->
+                    <div id="header-weather-pill">
+                        <i id="header-weather-icon" class="fa-solid fa-spinner fa-spin"></i>
+                        <span id="header-weather-temp">--</span>
+                    </div>
+                </div>
                 <div class="status-container">
                     <div class="status-value" id="header-days">--</div>
                     <div class="status-label">DAYS LEFT</div>
@@ -554,7 +617,6 @@
                     <div class="serif" style="font-size: 3rem; color: var(--accent-gold);" id="total-jpy">¥0</div>
                     <div style="opacity: 0.8; font-size: 1rem; margin-top: 5px;">≈ TWD <span id="total-twd">0</span></div>
                 </div>
-
                 <div class="wallet-card">
                     <h3 class="serif" style="margin-top: 0; color: var(--accent-main); margin-bottom: 15px;">快速換算 Converter</h3>
                     <div class="currency-input-row">
@@ -568,50 +630,50 @@
                             <label>TWD $</label>
                         </div>
                     </div>
-                    
-                    <div style="font-size: 0.8rem; color: #999; text-align: center; margin-bottom: 20px;">
-                        匯率 Rate: <span id="current-rate-display">Loading...</span>
+                    <div style="font-size: 0.8rem; color: #999; text-align: center; margin-bottom: 20px;" id="current-rate-display">
+                        匯率 Rate: Loading...
                     </div>
-
-                    <h3 class="serif" style="margin: 20px 0 15px; color: var(--accent-main); display:flex; justify-content:space-between; align-items:center;">
-                        記帳 Record
-                        <span style="font-size:0.7rem; background:#eee; padding:3px 8px; border-radius:10px; color:#666;">公費</span>
-                    </h3>
-
+                    <h3 class="serif" style="margin: 20px 0 15px; color: var(--accent-main);">記帳 Record</h3>
                     <div style="display: flex; gap: 10px; margin-bottom: 15px;">
-                        <button class="user-btn active" style="flex:1; padding:10px; border:1px solid var(--accent-main); background:var(--accent-main); color:white; border-radius:8px;" onclick="selectUser('YK', this)">YK</button>
-                        <button class="user-btn" style="flex:1; padding:10px; border:1px solid #ddd; background:white; color:#666; border-radius:8px;" onclick="selectUser('YY', this)">YY</button>
-                        <button class="user-btn" style="flex:1; padding:10px; border:1px solid #ddd; background:white; color:#666; border-radius:8px;" onclick="selectUser('YS', this)">YS</button>
+                        <button class="user-btn active" onclick="selectUser('YK', this)">YK</button>
+                        <button class="user-btn" onclick="selectUser('YY', this)">YY</button>
+                        <button class="user-btn" onclick="selectUser('YS', this)">YS</button>
                     </div>
-
-                    <input type="text" id="ex-item" placeholder="消費項目 (例如: 蘋果派)" style="width:100%; padding:12px; border:1px solid #ddd; border-radius:8px; margin-bottom:10px; font-size:1rem;">
+                    <input type="text" id="ex-item" placeholder="消費項目" style="width:100%; padding:12px; border:1px solid #ddd; border-radius:8px; margin-bottom:10px; font-size:1rem;">
                     <input type="number" id="ex-price" placeholder="金額 (日幣)" style="width:100%; padding:12px; border:1px solid #ddd; border-radius:8px; margin-bottom:15px; font-size:1rem;">
-                    
-                    <button onclick="addExpense()" style="width:100%; padding:15px; background:var(--accent-main); color:white; border:none; border-radius:8px; font-size:1rem; cursor:pointer;">
-                        <i class="fa-solid fa-plus"></i> 新增紀錄
-                    </button>
+                    <button onclick="addExpense()" style="width:100%; padding:15px; background:var(--accent-main); color:white; border:none; border-radius:8px; font-size:1rem; cursor:pointer;">新增紀錄</button>
                 </div>
-                
                 <h3 class="serif" style="margin-left: 10px; color: var(--text-secondary);">Recent History</h3>
-                <div id="expense-list" style="background: white; border-radius: 16px; padding: 0 20px; box-shadow: var(--shadow-card);">
-                    <!-- List -->
+                <div id="expense-list" style="background: white; border-radius: 16px; padding: 0 20px; box-shadow: var(--shadow-card);"></div>
+            </div>
+        </div>
+        
+        <!-- 3. SHOPPING VIEW -->
+        <div id="view-shopping" class="view-section hidden">
+            <div class="container">
+                <div class="wallet-card">
+                    <h3 class="serif" style="margin-top: 0; color: var(--accent-main); margin-bottom: 15px;">新增購物任務</h3>
+                    <!-- NEW Shopping Input -->
+                    <div id="shopping-input-container">
+                        <input type="text" id="shop-item" placeholder="欲購物品名稱">
+                        <button onclick="addShoppingItem()"><i class="fa-solid fa-plus"></i></button>
+                    </div>
                 </div>
+                <h3 class="serif" style="margin-left: 10px; color: var(--text-secondary);">Shared Shopping List</h3>
+                <div id="shopping-list-container" style="background: white; border-radius: 16px; padding: 0 20px; box-shadow: var(--shadow-card);"></div>
             </div>
         </div>
 
-        <!-- 3. TRANSLATE VIEW -->
+        <!-- 4. TRANSLATE VIEW -->
         <div id="view-trans" class="view-section hidden">
             <div class="container">
                 <div class="wallet-card">
                     <h3 class="serif" style="margin-top:0;">即時翻譯</h3>
                     <div style="position: relative;">
-                        <textarea id="trans-input" rows="3" placeholder="輸入中文... (例如：請問這個多少錢？)" style="width:100%; border:1px solid #eee; padding:15px; border-radius:12px; font-size:1rem; resize:none; background:#FAFAFA;"></textarea>
-                        <button onclick="translateNow()" style="position:absolute; bottom:10px; right:10px; background:var(--accent-gold); color:white; border:none; padding:8px 15px; border-radius:20px; cursor:pointer;">
-                            <i class="fa-solid fa-language"></i> 翻譯
-                        </button>
+                        <textarea id="trans-input" rows="3" placeholder="輸入中文..." style="width:100%; border:1px solid #eee; padding:15px; border-radius:12px; font-size:1rem; resize:none; background:#FAFAFA;"></textarea>
+                        <button onclick="translateNow()" style="position:absolute; bottom:10px; right:10px; background:var(--accent-gold); color:white; border:none; padding:8px 15px; border-radius:20px; cursor:pointer;">翻譯</button>
                     </div>
                 </div>
-
                 <h3 class="serif" style="margin: 25px 0 15px; padding-left:10px;">指差確認 Point & Speak</h3>
                 <div class="ps-grid">
                     <div class="ps-card warning" onclick="showFs('牛肉と豚肉は食べられません。', '我不吃牛、豬肉')">
@@ -642,7 +704,7 @@
             </div>
         </div>
 
-        <!-- 4. INFO VIEW -->
+        <!-- 5. INFO VIEW -->
         <div id="view-info" class="view-section hidden">
             <div class="container">
                 <div class="wallet-card" style="padding: 0; overflow: hidden; margin-top:20px;">
@@ -651,26 +713,22 @@
                     </div>
                     <iframe id="trip-map-overview-iframe" style="width:100%; height:350px; border:none;" loading="lazy"></iframe>
                 </div>
-
                 <h3 class="serif" style="margin: 20px 0 15px; padding-left:10px;">緊急聯絡 Emergency</h3>
                 <div class="ps-grid" style="grid-template-columns: 1fr;">
-                    
                     <div class="ps-card" style="flex-direction: row; justify-content: flex-start; height: auto; text-align: left;" onclick="window.location.href='tel:+81-11-222-2930'">
                         <div class="ps-icon" style="margin:0 20px 0 0; font-size: 1.8rem; color: #1565C0;"><i class="fa-solid fa-building-flag"></i></div>
                         <div>
-                            <div style="font-weight:700; font-size:1.1rem;">駐日代表處 (札幌分處)</div>
-                            <div style="font-size:0.8rem; color:#666;">緊急聯絡: +81-11-222-2930</div>
+                            <div style="font-weight:700; font-size:1.1rem;">駐日代表處 (札幌)</div>
+                            <div style="font-size:0.8rem; color:#666;">+81-11-222-2930</div>
                         </div>
                     </div>
-
-                    <div class="ps-card" style="flex-direction: row; justify-content: flex-start; height: auto; text-align: left;" onclick="window.location.href='tel:0120-088-154'">
-                        <div class="ps-icon" style="margin:0 20px 0 0; font-size: 1.8rem; color: #E67E22;"><i class="fa-solid fa-car-on"></i></div>
+                    <div class="ps-card" style="flex-direction: row; justify-content: flex-start; height: auto; text-align: left;" onclick="window.location.href='tel:119'">
+                        <div class="ps-icon" style="margin:0 20px 0 0; font-size: 1.8rem; color: var(--accent-red);"><i class="fa-solid fa-truck-medical"></i></div>
                         <div>
-                            <div style="font-weight:700; font-size:1.1rem;">道路救援 JAF/保險</div>
-                            <div style="font-size:0.8rem; color:#666;">雪地自駕發生事故或拋錨時</div>
+                            <div style="font-weight:700; font-size:1.1rem;">救護車/火警 119</div>
+                            <div style="font-size:0.8rem; color:#666;">急病或火災</div>
                         </div>
                     </div>
-
                     <div class="ps-card" style="flex-direction: row; justify-content: flex-start; height: auto; text-align: left;" onclick="window.location.href='tel:110'">
                         <div class="ps-icon" style="margin:0 20px 0 0; font-size: 1.8rem; color: var(--accent-red);"><i class="fa-solid fa-bell"></i></div>
                         <div>
@@ -678,55 +736,38 @@
                             <div style="font-size:0.8rem; color:#666;">遇事故或犯罪</div>
                         </div>
                     </div>
-                     <div class="ps-card" style="flex-direction: row; justify-content: flex-start; height: auto; text-align: left;" onclick="window.location.href='tel:119'">
-                        <div class="ps-icon" style="margin:0 20px 0 0; font-size: 1.8rem; color: var(--accent-red);"><i class="fa-solid fa-ambulance"></i></div>
+                    <div class="ps-card" style="flex-direction: row; justify-content: flex-start; height: auto; text-align: left;" onclick="window.location.href='tel:0570008139'">
+                        <div class="ps-icon" style="margin:0 20px 0 0; font-size: 1.8rem; color: #1565C0;"><i class="fa-solid fa-car-on"></i></div>
                         <div>
-                            <div style="font-weight:700; font-size:1.1rem;">救護車/火警 119</div>
-                            <div style="font-size:0.8rem; color:#666;">急病或受傷</div>
+                            <div style="font-weight:700; font-size:1.1rem;">道路救援 (JAF)</div>
+                            <div style="font-size:0.8rem; color:#666;">#8139 (撥打 JAF) 或 0570-00-8139</div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
     </div>
 
     <!-- Navigation -->
     <div class="glass-nav">
-        <div class="nav-btn active" onclick="switchView('trip', this)">
-            <i class="fa-solid fa-map"></i>
-            <span>行程</span>
-        </div>
-        <div class="nav-btn" onclick="switchView('wallet', this)">
-            <i class="fa-solid fa-wallet"></i>
-            <span>記帳</span>
-        </div>
-        <div class="nav-btn" onclick="switchView('trans', this)">
-            <i class="fa-solid fa-comments"></i>
-            <span>翻譯</span>
-        </div>
-        <div class="nav-btn" onclick="switchView('info', this)">
-            <i class="fa-solid fa-circle-info"></i>
-            <span>資訊</span>
-        </div>
+        <div class="nav-btn active" onclick="switchView('trip', this)"><i class="fa-solid fa-map"></i></div>
+        <div class="nav-btn" onclick="switchView('wallet', this)"><i class="fa-solid fa-wallet"></i></div>
+        <div class="nav-btn" onclick="switchView('shopping', this)"><i class="fa-solid fa-list-check"></i></div>
+        <div class="nav-btn" onclick="switchView('trans', this)"><i class="fa-solid fa-comments"></i></div>
+        <div class="nav-btn" onclick="switchView('info', this)"><i class="fa-solid fa-circle-info"></i></div>
     </div>
 
-    <!-- Detail Modal -->
-    <div class="modal-overlay" onclick="closeModal()" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); opacity:0; pointer-events:none; transition:0.3s; z-index:1900;"></div>
+    <!-- Detail Modal (Card Style) -->
+    <div class="modal-overlay" onclick="closeModal()"></div>
     <div class="modal-full" id="detail-modal">
         <button class="modal-close-btn" onclick="closeModal()"><i class="fa-solid fa-times"></i></button>
         <img src="" id="m-img" class="modal-header-img" onerror="handleImgError(this)">
-        
-        <div class="container" style="padding-top: 25px; padding-bottom: 50px;">
+        <div class="container">
             <div id="m-tag" style="font-size: 0.7rem; letter-spacing: 2px; color: var(--accent-gold); text-transform: uppercase; font-weight:700;">TAG</div>
             <h2 id="m-title" class="serif" style="font-size: 2rem; margin: 5px 0 20px 0; line-height: 1.2; color: var(--accent-main);">Title</h2>
-            
-            <!-- Google Maps Interactive Embed Section -->
             <div id="m-gmap-preview" class="hidden" style="margin-top: 20px; text-align: center;">
                 <iframe id="m-gmap-iframe" style="width: 100%; height: 250px; border: none; border-radius: 8px;" allowfullscreen="" loading="lazy"></iframe>
             </div>
-
-            <!-- Map Code -->
             <div id="m-map-section" class="hidden" style="background: #F0F4F8; padding: 20px; border-radius: 12px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
                 <div>
                     <div style="font-size: 0.7rem; color: #666; letter-spacing: 1px; margin-bottom: 4px;">NAVIGATE (MAPCODE)</div>
@@ -734,12 +775,16 @@
                 </div>
                 <button onclick="copyMapCode()" style="background: white; color: var(--accent-main); border: 1px solid #ddd; padding: 8px 16px; border-radius: 6px; font-weight: 600;">複製</button>
             </div>
-
-            <p id="m-desc" style="font-size: 1.05rem; line-height: 1.8; color: #555;">Description</p>
-            
-            <div id="m-detail-info" style="margin-top: 30px; border-top: 1px dashed var(--line-light); padding-top: 20px;">
-                <!-- Injected Info -->
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:20px; border-top: 1px dashed var(--line-light); padding-top:15px;">
+                <h4 class="serif" style="margin: 0; color: var(--accent-main); font-size:1.2rem;">筆記 Note</h4>
+                <button id="edit-toggle-btn" onclick="toggleEditMode()" style="background:none; border:none; color:var(--accent-gold); font-size:1.1rem; cursor:pointer;"><i class="fa-solid fa-pen-to-square"></i></button>
             </div>
+            <p id="m-desc" style="font-size: 1.05rem; line-height: 1.8; color: #555; margin-top:15px;">Description</p>
+            <div id="editing-area" class="hidden" style="margin-top: 20px; padding-top: 15px; border-top: 1px solid #EEE;">
+                <textarea id="m-edit-note" rows="5" placeholder="輸入筆記..." style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; resize: none; margin-bottom: 10px;"></textarea>
+                <button onclick="saveDetailNote()" style="width: 100%; padding: 12px; background: var(--accent-red); color: white; border: none; border-radius: 8px; font-weight: 600;">儲存 (本地)</button>
+            </div>
+            <div id="m-detail-info" style="margin-top: 30px; border-top: 1px dashed var(--line-light); padding-top: 20px;"></div>
         </div>
     </div>
 
@@ -750,296 +795,314 @@
         <div style="position: absolute; bottom: 50px; color: #999; font-size: 0.8rem; letter-spacing: 1px;">TAP ANYWHERE TO CLOSE</div>
     </div>
 
-    <!-- Script Block 2: Core Logic and Initialization -->
-    <script>
-        // --- 3. CORE FUNCTIONS ---
-        function enterApp() { 
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, query, onSnapshot, addDoc, serverTimestamp, setDoc, doc, updateDoc, deleteDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        const GOOGLE_MAPS_API_KEY = "AIzaSyAX9nvh4bJpiM6-oTm8FoUSZeSBpxZBc1E"; 
+        const apiKey = "";
+        let currentRate = 0.2215; 
+        let currentIdx = 0;
+        let currentUser = 'YK';
+        let expenses = [];
+        let shoppingList = [];
+        let db, auth, expensesRef, shoppingRef, tripNotesRef;
+        let weatherCache = { hakodate: { temp: '--', summary: '' }, aomori: { temp: '--', summary: '' } };
+        let currentModalData = null;
+
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+
+        // --- REAL-TIME DATA FETCHING ---
+        async function fetchRealData() {
+            const payload = {
+                contents: [{ 
+                    parts: [{ text: `Get the current temperature and very short weather summary for Hakodate and Aomori, Japan. Also get current JPY to TWD exchange rate.` }] 
+                }],
+                tools: [{ "google_search": {} }],
+                generationConfig: {
+                    responseMimeType: "application/json",
+                    responseSchema: {
+                        type: "OBJECT",
+                        properties: {
+                            "hakodate_temp": { "type": "STRING" },
+                            "hakodate_summary": { "type": "STRING" },
+                            "aomori_temp": { "type": "STRING" },
+                            "aomori_summary": { "type": "STRING" },
+                            "jpy_twd_rate": { "type": "NUMBER" }
+                        }
+                    }
+                }
+            };
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+            
+            try {
+                const response = await fetch(apiUrl, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload) });
+                
+                // Check for successful HTTP status
+                if (!response.ok) {
+                    console.error(`API call failed with status: ${response.status}`);
+                    throw new Error(`API returned non-OK status: ${response.status}`);
+                }
+
+                const result = await response.json();
+                
+                // Safely extract the JSON text (which should be the structured response)
+                const jsonText = result.candidates?.[0]?.content?.parts?.[0]?.text;
+                
+                if (!jsonText) {
+                    console.error("Data fetch failed: Structured JSON text part is missing.");
+                    throw new Error("Missing structured JSON payload from API.");
+                }
+
+                // Attempt to parse the JSON string from the model's response
+                const data = JSON.parse(jsonText);
+                
+                // Update State
+                if(data.jpy_twd_rate) currentRate = data.jpy_twd_rate;
+                weatherCache.hakodate = { temp: data.hakodate_temp || '--', summary: data.hakodate_summary || '無法連線' };
+                weatherCache.aomori = { temp: data.aomori_temp || '--', summary: data.aomori_summary || '無法連線' };
+                
+                // Update UI
+                document.getElementById('current-rate-display').innerText = `即時匯率: 1 JPY = ${currentRate.toFixed(4)} TWD`;
+                window.renderTrip(); // Re-render to show weather
+                
+            } catch(e) { 
+                console.error("Data fetch failed (API/Parsing Error):", e);
+                // Graceful degradation for UI
+                document.getElementById('current-rate-display').innerText = `即時匯率: 1 JPY = ${currentRate.toFixed(4)} TWD (API 連線失敗)`;
+                document.getElementById('header-weather-icon').className = 'fa-solid fa-cloud-sun-rain';
+                document.getElementById('header-weather-temp').innerText = '離線';
+                weatherCache.hakodate = { temp: '--', summary: '無法連線' };
+                weatherCache.aomori = { temp: '--', summary: '無法連線' };
+                window.renderTrip();
+            }
+        }
+
+        window.enterApp = function() { 
             document.getElementById('intro-screen').style.transform = 'translateY(-100%)';
-            renderTrip();
-            startDynamicText();
+            window.renderTrip();
+            setupFirebase();
+            fetchRealData();
         };
 
-        function renderTrip() {
-            // Render Date Scroller
-            const nav = document.getElementById('date-nav');
-            nav.innerHTML = tripData.map((d, i) => `
-                <div class="d-item ${i === currentIdx ? 'active' : ''}" onclick="switchDay(${i})">
-                    <div class="d-week">${d.week}</div>
-                    <div class="d-num">${d.date.split('.')[1]}</div>
-                </div>
-            `).join('');
-
-            // Render Timeline
-            const day = tripData[currentIdx];
-            const container = document.getElementById('timeline-container');
-            
-            let alertHtml = '';
-            if (day.alert) {
-                alertHtml = `
-                    <div style="background:#FDEDEC; border-left:4px solid var(--accent-red); padding:15px; border-radius:8px; margin-bottom:25px; display:flex; align-items:flex-start; box-shadow:var(--shadow-card);">
-                        <i class="fa-solid fa-triangle-exclamation" style="color:var(--accent-red); margin-top:3px; margin-right:10px;"></i>
-                        <div style="font-size:0.9rem; color:#C0392B; font-weight:500;">${day.alert}</div>
-                    </div>
-                `;
-            }
-
-            let html = `
-                <div class="hero-card">
-                    <img src="${day.heroImg}" class="hero-img" onerror="handleImgError(this)">
-                    <div class="hero-overlay">
-                        <div class="serif" style="color:rgba(255,255,255,0.8); letter-spacing:2px; font-size:0.8rem; margin-bottom:5px;">DAY ${day.day}</div>
-                        <div class="hero-title">${day.heroTitle}</div>
-                    </div>
-                </div>
-                ${alertHtml}
-                <div class="timeline-block">
-            `;
-
-            html += day.events.map((ev, i) => {
-                const data = encodeURIComponent(JSON.stringify(ev));
-                const delay = i * 0.1;
-                let icon = 'fa-circle'; // Default
-                if (['Transport', 'Drive', 'Flight'].includes(ev.tag)) icon = 'fa-van-shuttle';
-                if (['Food'].includes(ev.tag)) icon = 'fa-utensils';
-                if (['Hotel', 'Resort', 'Check-in'].includes(ev.tag)) icon = 'fa-bed';
-                if (['Shopping', 'Activity', 'Culture', 'Experience'].includes(ev.tag)) icon = 'fa-tag';
-                if (['Sightseeing', 'Nature', 'Art'].includes(ev.tag)) icon = 'fa-map-pin';
-                
-                // Special Card Style for Transport
-                const isTransport = ['Transport', 'Drive', 'Flight'].includes(ev.tag);
-                const cardClass = isTransport ? 'transport-card' : '';
-
-                return `
-                    <div class="event-node visible" style="transition-delay: ${delay}s">
-                        <div class="time-dot"></div>
-                        <div class="event-card ${cardClass}" onclick="openDetail('${data}')">
-                            <div class="event-header">
-                                <span class="event-time">${ev.time}</span>
-                                <span class="event-tag">${ev.tag}</span>
-                            </div>
-                            <div class="event-title">${ev.title}</div>
-                            <div class="event-meta">
-                                <i class="fa-solid ${icon}"></i>
-                                <span>${ev.desc}</span>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-            
-            html += `</div> <div style="height:50px;"></div>`; // Spacer
-            container.innerHTML = html;
+        // --- WEATHER HELPERS ---
+        function getIcon(s) {
+            if(!s) return 'fa-cloud';
+            s = s.toLowerCase();
+            if(s.includes('snow')||s.includes('雪')||s.includes('flurries')) return 'fa-snowflake';
+            if(s.includes('sun')||s.includes('clear')||s.includes('晴')) return 'fa-sun';
+            if(s.includes('rain')||s.includes('drizzle')||s.includes('雨')) return 'fa-cloud-rain';
+            if(s.includes('cloud')||s.includes('overcast')||s.includes('陰')||s.includes('多雲')) return 'fa-cloud';
+            return 'fa-cloud-meatball';
         }
 
-        function switchDay(i) { 
-            currentIdx = i;
+        function getWeather(day) {
+            const locKey = day.day <= 2 ? 'hakodate' : 'aomori';
+            const data = weatherCache[locKey];
+            const tempVal = parseInt(data.temp);
             
-            // --- NEW FEATURE: Switch to Trip View when clicking date ---
-            const tripView = document.getElementById('view-trip');
-            if (tripView.classList.contains('hidden')) {
-                 // Find the trip button and trigger switchView
-                 const tripBtn = document.querySelector('.nav-btn:nth-child(1)');
-                 switchView('trip', tripBtn); 
+            // Header Update
+            const headerIcon = document.getElementById('header-weather-icon');
+            const headerTemp = document.getElementById('header-weather-temp');
+            if(day.day === currentIdx + 1) { // Update header for current view
+                headerIcon.className = `fa-solid ${getIcon(data.summary)}`;
+                headerTemp.innerText = data.temp;
             }
-            // ----------------------------------------------------------
+
+            let outfit = "請穿著防風外套。";
+            if (!isNaN(tempVal) && tempVal < 0) outfit = "極寒！請務必穿著發熱衣、手套與毛帽。";
             
-            renderTrip();
-            // 滾動到頂部
-            window.scrollTo({top: 0, behavior: 'smooth'});
+            return {
+                loc: locKey === 'hakodate' ? '函館' : '青森',
+                icon: getIcon(data.summary),
+                temp: data.temp,
+                text: data.summary,
+                outfit: outfit
+            };
         }
 
-        function switchView(viewId, btn) { 
-            document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
-            document.getElementById('view-' + viewId).classList.remove('hidden');
-            
-            document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
-            btn.classList.add('active');
-            
-            if(viewId === 'info') {
-                // Lazy Load Map
-                const iframe = document.getElementById('trip-map-overview-iframe');
-                if(!iframe.src) {
-                    iframe.src = `https://www.google.com/maps/embed/v1/view?key=${GOOGLE_MAPS_API_KEY}&center=40.7831,140.7431&zoom=8`;
-                }
-            }
-        }
-
-        // --- 4. FEATURE: WALLET & CONVERTER ---
-        function convert(source) { 
-            const jpyInput = document.getElementById('conv-jpy');
-            const twdInput = document.getElementById('conv-twd');
-            
-            if (source === 'jpy') {
-                const val = parseFloat(jpyInput.value);
-                if (!isNaN(val)) twdInput.value = Math.round(val * currentRate);
-            } else {
-                const val = parseFloat(twdInput.value);
-                if (!isNaN(val)) jpyInput.value = Math.round(val / currentRate);
-            }
-        }
-
-        function selectUser(user, btn) { 
-            currentUser = user;
-            document.querySelectorAll('.user-btn').forEach(b => {
-                b.style.background = 'white'; b.style.color = '#666'; b.style.borderColor = '#ddd';
+        // --- FIREBASE ---
+        const setupFirebase = async () => {
+            const app = initializeApp(firebaseConfig);
+            db = getFirestore(app);
+            auth = getAuth(app);
+            if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                await signInWithCustomToken(auth, __initial_auth_token);
+            } else { await signInAnonymously(auth); }
+            onAuthStateChanged(auth, (user) => {
+                expensesRef = collection(db, `artifacts/${appId}/public/data/expenses`);
+                shoppingRef = collection(db, `artifacts/${appId}/public/data/shopping_list`);
+                tripNotesRef = collection(db, `artifacts/${appId}/public/data/trip_notes`);
+                window.subExpenses(); window.subShopping();
             });
-            btn.style.background = 'var(--accent-main)'; btn.style.color = 'white'; btn.style.borderColor = 'var(--accent-main)';
-        }
+        };
 
-        function addExpense() { 
+        window.subExpenses = () => onSnapshot(query(expensesRef), (sn) => {
+            expenses = sn.docs.map(d => ({id:d.id, ...d.data()})).sort((a,b) => (b.timestamp?.toMillis()||0)-(a.timestamp?.toMillis()||0));
+            window.renderExpenses();
+        });
+        window.subShopping = () => onSnapshot(query(shoppingRef), (sn) => {
+            shoppingList = sn.docs.map(d => ({id:d.id, ...d.data()})).sort((a,b) => (b.timestamp?.toMillis()||0)-(a.timestamp?.toMillis()||0));
+            window.renderShoppingList();
+        });
+
+        // --- GLOBAL FNS ---
+        window.addExpense = async () => {
             const item = document.getElementById('ex-item').value;
-            const price = document.getElementById('ex-price').value;
-            if(!item || !price) return;
-            
-            expenses.unshift({user: currentUser, item, price: parseInt(price)});
-            renderExpenses();
-            document.getElementById('ex-item').value = '';
-            document.getElementById('ex-price').value = '';
-        }
-
-        function renderExpenses() { 
-            let total = 0;
-            const html = expenses.map(e => {
-                total += e.price;
-                return `
-                    <div class="expense-item">
-                        <div style="display:flex; align-items:center;">
-                            <div class="exp-user-avatar">${e.user}</div>
-                            <div>
-                                <div style="font-weight:500;">${e.item}</div>
-                                <div style="font-size:0.75rem; color:#999;">Just now</div>
-                            </div>
+            const price = parseInt(document.getElementById('ex-price').value);
+            if(item && price) { await addDoc(expensesRef, {user: currentUser, item, price, timestamp: serverTimestamp(), rate: currentRate}); document.getElementById('ex-item').value=''; document.getElementById('ex-price').value=''; }
+        };
+        window.renderExpenses = () => {
+            let total=0;
+            const html = expenses.map(e => { total+=e.price; return `<div class="expense-item"><div style="display:flex;align-items:center;"><div class="exp-user-avatar">${e.user}</div><div><div style="font-weight:500;">${e.item}</div></div></div><div class="serif" style="font-weight:600;">¥${e.price.toLocaleString()}</div></div>`; }).join('');
+            document.getElementById('expense-list').innerHTML = html;
+            document.getElementById('total-jpy').innerText = "¥"+total.toLocaleString();
+            document.getElementById('total-twd').innerText = Math.round(total*currentRate).toLocaleString();
+        };
+        
+        window.addShoppingItem = async () => {
+            const item = document.getElementById('shop-item').value;
+            // Removed budget input: We now add a simpler task.
+            if(item) { 
+                await addDoc(shoppingRef, {
+                    item: item, 
+                    is_bought: false, 
+                    assigned_user: currentUser, 
+                    timestamp: serverTimestamp()
+                }); 
+                document.getElementById('shop-item').value=''; 
+            } else {
+                if(confirm) console.log("請輸入物品名稱。"); // Changed confirm to console.log
+            }
+        };
+        window.toggleBought = async (id, val) => { await updateDoc(doc(shoppingRef, id), {is_bought: !val}); };
+        window.deleteShoppingItem = async (id) => { await deleteDoc(doc(shoppingRef, id)); };
+        
+        window.renderShoppingList = () => {
+            document.getElementById('shopping-list-container').innerHTML = shoppingList.map(i => {
+                // Simplified List Rendering: Only name and actions
+                const boughtClass = i.is_bought ? ' active' : '';
+                return `<div class="shopping-item ${i.is_bought ? 'bought-item' : ''}">
+                    <div style="flex-grow:1; display:flex; align-items:center;">
+                        <button class="btn-bought${boughtClass}" onclick="toggleBought('${i.id}', ${i.is_bought})"><i class="fa-solid fa-check"></i></button>
+                        <div style="margin-left:15px;">
+                            <div class="shopping-item-title">${i.item}</div>
+                            <div class="shopping-item-meta">${i.is_bought ? '已購買' : '未完成'} (${i.assigned_user})</div>
                         </div>
-                        <div class="serif" style="font-weight:600;">¥${e.price.toLocaleString()}</div>
                     </div>
-                `;
-            }).join('');
-            
-            document.getElementById('expense-list').innerHTML = html || '<div style="padding:20px; text-align:center; color:#ccc;">尚無紀錄 No Records</div>';
-            document.getElementById('total-jpy').innerText = "¥" + total.toLocaleString();
-            document.getElementById('total-twd').innerText = Math.round(total * currentRate).toLocaleString();
-        }
+                    <div class="shopping-actions">
+                        <button class="btn-delete" onclick="deleteShoppingItem('${i.id}')"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                </div>`;
+            }).join('') || '<div style="padding:20px;text-align:center;color:#ccc;">清單為空 Empty</div>';
+        };
 
-        // --- 5. MODALS & UTILS ---
-        function openDetail(dataStr) { 
-            const data = JSON.parse(decodeURIComponent(dataStr));
-            const modal = document.getElementById('detail-modal');
-            const overlay = document.querySelector('.modal-overlay');
+        window.renderTrip = () => {
+            const day = tripData[currentIdx];
+            const w = getWeather(day);
+            const nav = document.getElementById('date-nav');
+            nav.innerHTML = tripData.map((d, i) => `<div class="d-item ${i === currentIdx ? 'active' : ''}" onclick="switchDay(${i})"><div class="d-week">${d.week}</div><div class="d-num">${d.date.split('.')[1]}</div></div>`).join('');
             
+            let html = `<div class="hero-card"><img src="${day.heroImg}" class="hero-img" onerror="handleImgError(this)"><div class="hero-overlay"><div class="serif" style="color:rgba(255,255,255,0.8); letter-spacing:2px; font-size:0.8rem;">DAY ${day.day}</div><div class="hero-title">${day.heroTitle}</div></div></div>`;
+            
+            html += `<div class="container weather-widget"><div class="weather-col"><h4>${w.loc} 現在天氣</h4><div class="temp-display"><i class="fa-solid ${w.icon}"></i>${w.temp}</div><div class="weather-desc">${w.text}</div></div><div class="weather-col" style="border-left:1px solid #DDE4EB; padding-left:15px;"><h4>穿搭建議</h4><div class="outfit-advice">${w.outfit}</div></div></div>`;
+            
+            if(day.alert) html += `<div style="background:#FDEDEC; border-left:4px solid var(--accent-red); padding:15px; border-radius:8px; margin-bottom:25px; display:flex; align-items:flex-start;"><i class="fa-solid fa-triangle-exclamation" style="color:var(--accent-red); margin-top:3px; margin-right:10px;"></i><div style="font-size:0.9rem; color:#C0392B; font-weight:500;">${day.alert}</div></div>`;
+            
+            // Apply new animation class
+            html += `<div class="timeline-block">` + day.events.map((ev, i) => {
+                const data = encodeURIComponent(JSON.stringify({...ev, dI: currentIdx, eI: i}));
+                const cardClass = ['Transport','Drive','Flight'].includes(ev.tag) ? 'transport-card' : '';
+                // Added opacity and transform transition style
+                return `<div class="event-node visible" style="transition-delay: ${i*0.1}s"><div class="time-dot"></div><div class="event-card ${cardClass}" onclick="openDetail('${data}')"><div class="event-header"><span class="event-time">${ev.time}</span><span class="event-tag">${ev.tag}</span></div><div class="event-title">${ev.title}</div><div class="event-meta"><i class="fa-solid fa-circle"></i><span>${ev.desc}</span></div></div></div>`;
+            }).join('') + `</div><div style="height:50px;"></div>`;
+            
+            document.getElementById('timeline-container').innerHTML = html;
+        };
+
+        window.switchDay = (i) => { currentIdx = i; window.switchView('trip', document.querySelector('.nav-btn')); window.renderTrip(); window.scrollTo({top:0, behavior:'smooth'}); };
+        window.switchView = (id, btn) => {
+            document.querySelectorAll('.view-section').forEach(e=>e.classList.add('hidden')); document.getElementById('view-'+id).classList.remove('hidden');
+            document.querySelectorAll('.nav-btn').forEach(e=>e.classList.remove('active')); if(btn) btn.classList.add('active');
+            if(id==='info') document.getElementById('trip-map-overview-iframe').src = `https://www.google.com/maps/embed/v1/view?key=${GOOGLE_MAPS_API_KEY}&center=40.7831,140.7431&zoom=8`;
+        };
+        
+        window.openDetail = async (str) => {
+            const data = JSON.parse(decodeURIComponent(str));
+            currentModalData = data;
             document.getElementById('m-title').innerText = data.title;
             document.getElementById('m-tag').innerText = data.tag;
-            document.getElementById('m-desc').innerText = data.desc; // 簡單描述
+            document.getElementById('m-desc').innerText = data.desc;
             
-            // Image handling with fallback
-            const imgEl = document.getElementById('m-img');
-            imgEl.src = ""; // Clear first
-            imgEl.src = tripData[currentIdx].heroImg; // Always use Day's hero image
+            // Try fetch note
+            if(tripNotesRef) {
+                try {
+                    const noteId = `n_${data.dI}_${data.eI}`;
+                    const docSnap = await getDoc(doc(tripNotesRef, noteId));
+                    if (docSnap.exists()) {
+                        const noteVal = docSnap.data().note;
+                        document.getElementById('m-desc').innerText = noteVal;
+                        document.getElementById('m-edit-note').value = noteVal;
+                    } else {
+                        document.getElementById('m-edit-note').value = data.desc;
+                    }
+                } catch(e) { console.error(e); }
+            }
 
-            // --- NEW FEATURE: Google Maps Embed ---
-            const gmapPreview = document.getElementById('m-gmap-preview');
-            const gmapIframe = document.getElementById('m-gmap-iframe');
-            const mapUrl = getMapUrl(data);
+            document.getElementById('m-img').src = tripData[currentIdx].heroImg;
+            document.getElementById('m-gmap-preview').classList.toggle('hidden', !data.nav && !data.title);
+            if(data.nav || data.title) document.getElementById('m-gmap-iframe').src = getMapUrl(data);
             
-            if (mapUrl && GOOGLE_MAPS_API_KEY) {
-                gmapPreview.classList.remove('hidden');
-                gmapIframe.src = mapUrl;
-            } else {
-                gmapPreview.classList.add('hidden');
-            }
-            
-            // MapCode Logic
-            const mapSec = document.getElementById('m-map-section');
-            if(data.nav && data.nav.mapcode) {
-                mapSec.classList.remove('hidden');
-                document.getElementById('m-mapcode').innerText = data.nav.mapcode;
-            } else {
-                mapSec.classList.add('hidden');
-            }
-
-            // Info Injection
-            const infoContainer = document.getElementById('m-detail-info');
-            let infoHtml = '';
-            if(data.transport_info) {
-                 infoHtml += `<div style="margin-bottom:10px;"><b>類型:</b> ${data.transport_info.type || '未指定'}</div>`;
-                 if(data.transport_info.name) infoHtml += `<div style="margin-bottom:10px;"><b>名稱/車次:</b> ${data.transport_info.name}</div>`;
-                 if(data.transport_info.seat) infoHtml += `<div style="margin-bottom:10px;"><b>座位:</b> ${data.transport_info.seat}</div>`;
-                 if(data.transport_info.time_estimate) infoHtml += `<div style="margin-bottom:10px;"><b>時長:</b> ${data.transport_info.time_estimate}</div>`;
-                 if(data.transport_info.note) infoHtml += `<div style="margin-bottom:10px;"><b>備註:</b> ${data.transport_info.note}</div>`;
-            }
-            if(data.reservation_info) {
-                 infoHtml += `<div style="margin-bottom:10px;"><b>住宿/預訂:</b> ${data.reservation_info.name}</div>`;
-                 if(data.reservation_info.checkin) infoHtml += `<div style="margin-bottom:10px;"><b>Check-in:</b> ${data.reservation_info.checkin}</div>`;
-            }
-            infoContainer.innerHTML = infoHtml ? `<h4 style="margin:0 0 10px 0;">詳細資訊</h4>` + infoHtml : '';
-
-            overlay.style.opacity = '1'; overlay.style.pointerEvents = 'auto';
-            modal.classList.add('active');
-        }
-
-        function closeModal() { 
-            document.getElementById('detail-modal').classList.remove('active');
-            const overlay = document.querySelector('.modal-overlay');
-            overlay.style.opacity = '0'; overlay.style.pointerEvents = 'none';
-        }
-
-        function showFs(jp, cn) { 
-            document.getElementById('fs-jp').innerText = jp;
-            document.getElementById('fs-cn').innerText = cn;
-            document.getElementById('fs-text-modal').classList.add('active');
-        }
-        function closeFs() { 
-             document.getElementById('fs-text-modal').classList.remove('active');
-        }
-
-        function translateNow() { 
-             const btn = document.querySelector('#view-trans button');
-             const originalText = btn.innerHTML;
-             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 翻譯中...';
-             setTimeout(() => {
-                 btn.innerHTML = originalText;
-                 // Using alert as a temporary replacement for custom modal
-                 if (confirm) { 
-                     confirm("API 未連接：這是一個演示功能。實際串接需使用 Google Translate API。");
-                 } else {
-                     console.log("API 未連接：這是一個演示功能。實際串接需使用 Google Translate API。");
-                 }
-             }, 1000);
-        }
-
-        function copyMapCode() { 
-            const code = document.getElementById('m-mapcode').innerText;
-            // Use execCommand as fallback is often necessary in iFrame
-            const textArea = document.createElement('textarea');
-            textArea.value = code;
-            document.body.appendChild(textArea);
-            textArea.select();
+            document.getElementById('detail-modal').classList.add('active');
+            document.querySelector('.modal-overlay').classList.add('active');
+        };
+        
+        window.saveDetailNote = async () => {
+            if(!tripNotesRef || !currentModalData) return;
+            const newNote = document.getElementById('m-edit-note').value;
+            const noteId = `n_${currentModalData.dI}_${currentModalData.eI}`;
             try {
-                document.execCommand('copy');
-                if (confirm) confirm('MapCode 已複製！');
-            } catch (err) {
-                if (confirm) confirm('複製失敗，請手動複製。');
-            }
-            document.body.removeChild(textArea);
-        }
-
-        // Init
-        window.onload = function() {
-            // Countdown Logic
-            const start = new Date("2026-02-02").getTime();
-            const now = new Date().getTime();
-            const days = Math.ceil((start - now) / (86400000));
-            document.getElementById('days-left').innerText = days > 0 ? days : 0;
-            document.getElementById('header-days').innerText = days > 0 ? days : 0;
-            
-            // Dynamic Text
-            const msgs = ["工作辛苦了，青森的雪在等你。", "記得檢查護照有沒有過期。", "星野溫泉的水溫剛好。", "弘前的蘋果派已經烤好了。"];
-            document.getElementById('dynamic-intro-text').innerText = msgs[Math.floor(Math.random()*msgs.length)];
+                await setDoc(doc(tripNotesRef, noteId), { note: newNote, updatedAt: serverTimestamp() });
+                document.getElementById('m-desc').innerText = newNote;
+                window.toggleEditMode();
+                if(confirm) console.log("筆記已儲存並同步到雲端！");
+            } catch(e) { if(confirm) console.log("儲存失敗：請檢查網路和權限。"); }
         };
 
-        function startDynamicText() { 
-             // Placeholder for dynamic text logic
-        }
+        window.closeModal = () => { document.getElementById('detail-modal').classList.remove('active'); document.querySelector('.modal-overlay').classList.remove('active'); };
+        window.showFs = (j,c) => { document.getElementById('fs-jp').innerText=j; document.getElementById('fs-cn').innerText=c; document.getElementById('fs-text-modal').classList.add('active'); };
+        window.closeFs = () => document.getElementById('fs-text-modal').classList.remove('active');
+        window.convert = (s) => {
+            const j = document.getElementById('conv-jpy'), t = document.getElementById('conv-twd');
+            if(s==='jpy') t.value = Math.round(j.value * currentRate); else j.value = Math.round(t.value / currentRate);
+        };
+        window.selectUser = (u, b) => { currentUser=u; document.querySelectorAll('.user-btn').forEach(e=>{e.style.background='white';e.style.color='#666';e.style.borderColor='#ddd'}); b.style.background='var(--accent-main)';b.style.color='white';b.style.borderColor='var(--accent-main)'; };
+        window.toggleEditMode = () => { const e=document.getElementById('editing-area'), d=document.getElementById('m-desc'); if(e.classList.contains('hidden')){e.classList.remove('hidden');d.classList.add('hidden');}else{e.classList.add('hidden');d.classList.remove('hidden');} };
+        window.translateNow = () => { if(confirm) console.log("翻譯 API 需金鑰，此為演示。"); };
+        window.copyMapCode = () => { 
+            const code = document.getElementById('m-mapcode').innerText; 
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(code);
+                if(confirm) console.log('MapCode 已複製！');
+            } else {
+                const textArea = document.createElement('textarea');
+                textArea.value = code;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                if(confirm) console.log('MapCode 已複製！');
+            }
+        };
 
+        window.onload = () => {
+            const diff = Math.ceil((new Date("2026-02-02") - new Date()) / 86400000);
+            document.getElementById('days-left').innerText = diff > 0 ? diff : 0;
+            document.getElementById('header-days').innerText = diff > 0 ? diff : 0;
+            document.getElementById('dynamic-intro-text').innerText = "準備好迎接青森的雪了嗎？";
+        };
     </script>
 </body>
 </html>
