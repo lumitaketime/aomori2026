@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>L'VOYAGE | 青森函館 2026</title>
+    <title>L'VOYAGE | 青森函館 蘋果之旅</title>
     <meta name="theme-color" content="#1a1a1a">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Noto+Serif+TC:wght@300;500;700&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
@@ -54,7 +54,7 @@
             align-items: center;
         }
 
-        /* NEW INTRO COUNTDOWN STYLES */
+        /* INTRO COUNTDOWN STYLES */
         .intro-countdown-block {
             margin-bottom: 40px;
             opacity: 0;
@@ -77,7 +77,6 @@
             text-align: center;
             margin-top: 10px;
         }
-        /* END NEW INTRO COUNTDOWN STYLES */
 
         .intro-title-block {
             text-align: center; 
@@ -105,8 +104,20 @@
         }
         .top-meta { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 20px; }
         .brand { font-family: var(--font-serif); font-size: 1.5rem; font-weight: 700; letter-spacing: 1px; color: var(--accent-main); }
-        .countdown { font-family: var(--font-serif); font-size: 3rem; line-height: 1; color: var(--accent-gold); }
-        .countdown-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2px; text-align: right; color: var(--text-secondary); }
+        
+        /* NEW HEADER STATUS BAR */
+        #countdown-status { text-align: right; }
+        .status-value { font-family: var(--font-serif); font-size: 3rem; line-height: 1; color: var(--accent-gold); }
+        .status-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2px; color: var(--text-secondary); margin-top: 5px; }
+
+        .weather-reminder-strip {
+            display: flex; justify-content: space-between; align-items: center;
+            background: var(--bg-card); padding: 10px 15px; border-radius: 4px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05); margin: 0 0 10px 0;
+            border-left: 3px solid var(--accent-gold);
+        }
+        .weather-icon { font-size: 1.2rem; color: #42A5F5; margin-right: 10px; }
+        .reminder-text { font-size: 0.85rem; color: var(--text-primary); font-weight: 500; }
 
         /* --- DATE NAV (Minimalist) --- */
         .date-scroller { display: flex; gap: 20px; overflow-x: auto; padding-bottom: 10px; scrollbar-width: none; }
@@ -169,6 +180,21 @@
         .event-img { width: 100%; height: 150px; object-fit: cover; margin-top: 15px; filter: grayscale(10%); transition: 0.3s; }
         .event-card:hover .event-img { filter: grayscale(0%); }
 
+        /* Image Config Button */
+        .image-config-btn {
+            position: absolute; top: 10px; right: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            color: var(--accent-main); border: none;
+            width: 30px; height: 30px; border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            cursor: pointer; z-index: 5;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: 0.2s;
+        }
+        .image-config-btn:hover { background: var(--accent-gold); color: white; }
+        .hero-config-btn { top: auto; bottom: 20px; right: 20px; width: 40px; height: 40px; background: rgba(255, 255, 255, 0.1); color: white; border: 1px solid rgba(255, 255, 255, 0.5); }
+
+
         /* --- FLOATING NAV --- */
         .glass-nav {
             position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
@@ -185,7 +211,15 @@
             width: 4px; height: 4px; background: var(--accent-gold); border-radius: 50%;
         }
 
-        /* --- MODAL (Full Screen Overlay) --- */
+        /* --- MODAL (General) --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7); z-index: 1900;
+            opacity: 0; pointer-events: none; transition: opacity 0.3s;
+        }
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+
+        /* Detail Modal */
         .modal-full {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: var(--bg-body); z-index: 2000;
@@ -203,6 +237,16 @@
             background: white; border-radius: 50%; display: flex; justify-content: center; align-items: center;
             box-shadow: var(--shadow-soft); cursor: pointer; z-index: 2100; color: var(--accent-main);
         }
+
+        /* Image Config Modal */
+        #img-config-modal {
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9);
+            width: 90%; max-width: 400px; background: var(--bg-card);
+            padding: 30px; border-radius: 12px; z-index: 2000;
+            opacity: 0; visibility: hidden; transition: 0.3s;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.3);
+        }
+        #img-config-modal.active { opacity: 1; visibility: visible; transform: translate(-50%, -50%) scale(1); }
 
         /* --- UTILS --- */
         .hidden { display: none; }
@@ -234,7 +278,7 @@
             
             <div class="intro-title-block">
                 <div class="intro-sub">AOMORI & HAKODATE</div>
-                <div class="intro-title serif">青森函館<br>冬日紀行</div>
+                <div class="intro-title serif">青森函館<br>蘋果之旅</div>
             </div>
             
             <button class="intro-btn" onclick="enterApp()">開啟旅程</button>
@@ -246,10 +290,20 @@
         
         <div class="elegant-header">
             <div class="top-meta">
-                <div class="brand">L'VOYAGE</div>
+                <div class="brand">青森函館 蘋果之旅</div>
+                <div id="countdown-status">
+                    <!-- Status generated by JS: Countdown or Day X -->
+                </div>
+            </div>
+            
+            <!-- NEW: Weather and Reminder Strip -->
+            <div id="weather-and-reminder" class="weather-reminder-strip">
+                <div style="display: flex; align-items: center;">
+                    <i class="fa-solid fa-cloud-showers-heavy weather-icon" style="color: #42A5F5;"></i>
+                    <span class="reminder-text" id="weather-status">青森: -2°C | 今日降雪</span>
+                </div>
                 <div>
-                    <div class="countdown" id="days-left">--</div>
-                    <div class="countdown-label">距離出發</div>
+                    <span class="reminder-text" id="smart-reminder-text">無當前提醒</span>
                 </div>
             </div>
             
@@ -258,8 +312,11 @@
             </div>
         </div>
 
-        <!-- TRIP TAB -->
-        <div id="view-trip" class="view-section">
+        <!-- TRIP TAB (Now supports horizontal swiping) -->
+        <div id="view-trip" class="view-section" 
+             onpointerdown="handleTouchStart(event)" 
+             onpointermove="handleTouchMove(event)" 
+             onpointerup="handleTouchEnd(event)">
             <div class="container" id="timeline-container">
                 <!-- Timeline content generated by JS -->
             </div>
@@ -276,6 +333,10 @@
                 </div>
                 
                 <div class="money-display">
+                    <!-- Exchange Rate Display -->
+                    <div style="font-size: 0.9rem; color: var(--text-secondary); letter-spacing: 1px;">
+                        1 JPY ≈ <span id="current-rate">0.22</span> TWD
+                    </div>
                     <div style="font-size: 0.9rem; color: var(--text-secondary); letter-spacing: 1px;">總支出 TOTAL EXPENDITURE</div>
                     <div class="serif" style="font-size: 2.5rem; color: var(--accent-main); margin: 10px 0;" id="total-jpy">¥0</div>
                     <div style="color: var(--accent-gold);">≈ TWD <span id="total-twd">0</span></div>
@@ -327,7 +388,7 @@
     <!-- Full Screen Detail Modal -->
     <div class="modal-full" id="detail-modal">
         <div class="close-fab" onclick="closeModal()"><i class="fa-solid fa-times"></i></div>
-        <img src="" id="m-img" class="modal-hero">
+        <img src="" id="m-img" class="modal-hero" onerror="this.onerror=null; this.src='https://placehold.co/800x600/F4F4F4/CCCCCC?text=No+Image+Set';">
         <div class="modal-content">
             <div id="m-tag" style="color: var(--accent-gold); letter-spacing: 2px; font-size: 0.8rem; font-weight: bold; margin-bottom: 10px;">TAG</div>
             <h1 id="m-title" class="serif" style="font-size: 2.2rem; margin: 0 0 20px 0; line-height: 1.2;">Title</h1>
@@ -340,16 +401,155 @@
         </div>
     </div>
 
-    <script>
+    <!-- Image Configuration Modal -->
+    <div id="img-config-modal">
+        <h3 class="serif" style="color:var(--accent-main); margin-top:0;">圖片連結設定</h3>
+        <p id="img-config-title" style="font-size: 0.9rem; color: #666;"></p>
+        <input type="text" id="img-config-url" class="input-elegant" placeholder="貼上圖片 URL 連結">
+        <div style="font-size: 0.75rem; color: var(--accent-gold); margin-bottom: 20px;">注意：圖片必須是 HTTPS 連結才能正常顯示。</div>
+        <button class="btn-elegant" id="img-config-save">儲存圖片</button>
+        <button class="btn-elegant" style="background: #999; margin-top: 10px;" onclick="closeModal()">取消</button>
+    </div>
+
+    <!-- General Overlay -->
+    <div class="modal-overlay" id="modal-overlay" onclick="closeModal()"></div>
+
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // --- FIREBASE SETUP ---
+        let db, auth, userId = null;
+        // Global variables provided by the Canvas environment
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+
+        let userImages = {}; // Cache for user-defined image URLs
+        let isAuthReady = false;
+        let exchangeRate = 0.22; // Default rate
+
+        async function setupFirebase() {
+            try {
+                const app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+                
+                // Sign in with custom token or anonymously
+                if (typeof __initial_auth_token !== 'undefined') {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+
+                onAuthStateChanged(auth, (user) => {
+                    if (user) {
+                        userId = user.uid;
+                        isAuthReady = true;
+                        console.log("Firebase Auth Ready. User ID:", userId);
+                        loadUserImages();
+                    } else {
+                        isAuthReady = true; // Still ready, but anonymous/unauthorized
+                        console.warn("Firebase: User logged out or anonymous sign-in.");
+                        renderTrip(); // Render static content as fallback
+                    }
+                });
+
+                // Fetch exchange rate on setup
+                fetchExchangeRate();
+
+            } catch (error) {
+                console.error("Firebase Initialization Error:", error);
+                isAuthReady = true;
+                renderTrip(); // Fallback: render static content if Firebase fails
+            }
+        }
+        
+        async function fetchExchangeRate() {
+            try {
+                const response = await fetch('https://api.exchangerate-api.com/v4/latest/JPY');
+                const data = await response.json();
+                if (data.rates && data.rates.TWD) {
+                    exchangeRate = data.rates.TWD;
+                    console.log("Fetched exchange rate:", exchangeRate);
+                    // Update wallet view if it's currently visible
+                    if (document.getElementById('view-wallet').classList.contains('hidden') === false) {
+                        renderExpenses();
+                    }
+                }
+            } catch (error) {
+                console.warn("Failed to fetch exchange rate, using default 0.22.", error);
+            }
+        }
+
+
+        function getImageConfigDocRef() {
+            // Path: artifacts/{appId}/users/{userId}/settings/image_config (6 segments)
+            if (!db || !userId) return null;
+            return doc(db, 'artifacts', appId, 'users', userId, 'settings', 'image_config');
+        }
+
+        function loadUserImages() {
+            const userDocRef = getImageConfigDocRef();
+            
+            if (!userDocRef) {
+                renderTrip(); // Only render static if DB/user not ready
+                return; 
+            }
+
+            // Listen for changes to the user's image configuration document
+            onSnapshot(userDocRef, (docSnap) => {
+                if (docSnap.exists()) {
+                    userImages = docSnap.data().images || {};
+                    console.log("Loaded user images from Firestore. Keys:", Object.keys(userImages).length);
+                } else {
+                    userImages = {};
+                    console.log("No custom image configuration found.");
+                }
+                // Re-render the trip to apply new images
+                renderTrip();
+            }, (error) => {
+                console.error("Error listening to user images:", error);
+                renderTrip();
+            });
+        }
+
+        async function saveUserImage(dayIndex, eventIndex, newUrl, isHero) {
+            const userDocRef = getImageConfigDocRef();
+            
+            if (!userDocRef) {
+                 console.error("無法儲存：Firebase 尚未初始化或使用者未登入。");
+                 return;
+            }
+            
+            // Key format: 'dayX-eventY' or 'dayX-hero'
+            const key = isHero ? `day${dayIndex}-hero` : `day${dayIndex}-event${eventIndex}`;
+            
+            // Update local cache and prepare Firestore data
+            const updatedImages = { ...userImages, [key]: newUrl };
+            
+            try {
+                // Set the document with the updated map of images
+                await setDoc(userDocRef, { images: updatedImages }, { merge: true });
+                console.log("Image saved successfully for key:", key);
+                userImages = updatedImages; // Update local cache immediately
+                renderTrip(); // Re-render to show immediate update
+                closeModal();
+            } catch (error) {
+                console.error("Error saving image to Firestore:", error);
+            }
+        }
+        
         // --- DATA ---
         const tripData = [
             {
                 day: 1, date: "02.02", week: "MON",
                 heroTitle: "函館：北國的起點與百萬夜景",
-                heroImg: "https://placehold.co/800x600/1C2541/FFFFFF?text=Hakodate+Night+View",
+                heroImg: "https://placehold.co/800x600/1C2541/FFFFFF?text=Set+Day+1+Hero+Image",
                 events: [
-                    { time: "11:10", title: "抵達函館機場 (HKD)", tag: "Transport", desc: "入境手續，領取行李。搭乘 12:30 機場巴士前往 JR 函館站。", img: "https://placehold.co/600x300/B49B67/FFFFFF?text=Hakodate+Airport" },
-                    { time: "13:35", title: "購物任務：UNIQLO & Bic Camera", tag: "Shopping", desc: "搭計程車前往。採購防寒用品與電器。務必快狠準，15:15 前結束。", pointSpeak: [{cn:"請載我到 Bic Camera", jp:"ビックカメラまでお願いします"}] },
+                    { time: "11:10", title: "抵達函館機場 (HKD)", tag: "Transport", desc: "入境手續，領取行李。搭乘 12:30 機場巴士前往 JR 函館站。", img: "https://placehold.co/600x300/B49B67/FFFFFF?text=Airport" },
+                    { time: "13:35", title: "購物任務：UNIQLO & Bic Camera", tag: "Shopping", desc: "搭計程車前往。採購防寒用品與電器。務必快狠準，15:15 前結束。", pointSpeak: [{cn:"請載我到 Bic Camera", jp:"ビックカメラまでお願いします"}], img: "https://placehold.co/600x300/42A5F5/FFFFFF?text=Shopping" },
                     { time: "15:45", title: "金森紅磚倉庫", tag: "Sightseeing", desc: "飯店卸貨後，搭市電前往。感受港邊風情。", img: "https://placehold.co/600x300/964B00/FFFFFF?text=Red+Brick+Warehouse" },
                     { time: "17:00", title: "函館山百萬夜景", tag: "Experience", desc: "搭乘纜車上山。山上風大請注意保暖。晚餐於灣區享用。", img: "https://placehold.co/600x300/1C2541/FFFFFF?text=Mt+Hakodate" },
                     { time: "宿", title: "JR Inn Hakodate", tag: "Hotel", desc: "函館站旁，交通便利。", img: "https://placehold.co/600x200/555/FFF?text=JR+Inn" }
@@ -358,9 +558,9 @@
             {
                 day: 2, date: "02.03", week: "TUE",
                 heroTitle: "穿越時光列車：從海港到藝術之都",
-                heroImg: "https://placehold.co/800x600/DDDDDD/333333?text=Aomori+Museum",
+                heroImg: "https://placehold.co/800x600/DDDDDD/333333?text=Set+Day+2+Hero+Image",
                 events: [
-                    { time: "08:00", title: "函館朝市早餐", tag: "Cuisine", desc: "享用新鮮海鮮丼。步行前往。", pointSpeak: [{cn:"我要海膽", jp:"ウニをください"}] },
+                    { time: "08:00", title: "函館朝市早餐", tag: "Cuisine", desc: "享用新鮮海鮮丼。步行前往。", pointSpeak: [{cn:"我要海膽", jp:"ウニをください"}], img: "https://placehold.co/600x300/FFA500/FFF?text=Morning+Market" },
                     { time: "10:00", title: "移動至青森", tag: "Transport", desc: "搭乘新幹線穿越津輕海峽。13:45 抵達青森站。", img: "https://placehold.co/600x300/333/FFF?text=Shinkansen" },
                     { time: "14:40", title: "青森縣立美術館", tag: "Art", desc: "搭計程車前往。探訪奈良美智著名的「青森犬」。", img: "https://placehold.co/600x300/FFF/333?text=Aomori+Dog" },
                     { time: "18:00", title: "晚餐：青森鄉土料理", tag: "Cuisine", desc: "步行前往市區餐廳享用在地美食。", pointSpeak: [{cn:"有推薦的鄉土料理嗎？", jp:"おすすめの郷土料理はありますか？"}] },
@@ -371,12 +571,12 @@
             {
                 day: 3, date: "02.04", week: "WED",
                 heroTitle: "津輕鐵道與弘前雪景",
-                heroImg: "https://placehold.co/800x600/B49B67/FFFFFF?text=Stove+Train",
+                heroImg: "https://placehold.co/800x600/B49B67/FFFFFF?text=Set+Day+3+Hero+Image",
                 events: [
                     { time: "09:00", title: "租車開始", tag: "Transport", desc: "青森站取車，自駕開始。回飯店載行李。", img: "https://placehold.co/600x300/555/FFF?text=Car+Rental" },
                     { time: "10:15", title: "ELM 購物中心", tag: "Shopping", desc: "【任務 1】3COINS+plus 採買，限時 35 分鐘。", pointSpeak: [{cn:"請問 3COINS 在哪裡？", jp:"3COINSはどこですか？"}] },
                     { time: "12:30", title: "暖爐列車 (津輕鐵道)", tag: "Journey", desc: "【任務 2】體驗復古暖爐列車，車上享用烤魷魚。", img: "https://placehold.co/600x300/A52A2A/FFF?text=Stove+Train+Experience" },
-                    { time: "15:30", title: "藤田紀念庭園", tag: "Cuisine", desc: "【任務 3：CRITICAL】大正浪漫喫茶室，16:00 前必須完成點餐。品嚐蘋果派。", pointSpeak: [{cn:"我要蘋果派", jp:"アップルパイをください"}] },
+                    { time: "15:30", title: "藤田紀念庭園", tag: "Cuisine", desc: "【任務 3：CRITICAL】大正浪漫喫茶室，16:00 前必須完成點餐。品嚐蘋果派。", pointSpeak: [{cn:"我要蘋果派", jp:"アップルパイをください"}], img: "https://placehold.co/600x300/FFA500/FFF?text=Apple+Pie" },
                     { time: "16:30", title: "弘前城白天雪景", tag: "Sightseeing", desc: "在雪中漫步弘前公園。", img: "https://placehold.co/600x300/FFF/333?text=Hirosaki+Castle" },
                     { time: "17:30", title: "返回青森市", tag: "Transport", desc: "夜間雪地慢行，注意安全。返回 Dormy Inn。", img: "https://placehold.co/600x200/1C2541/FFF?text=Night+Drive" }
                 ]
@@ -384,9 +584,9 @@
             {
                 day: 4, date: "02.05", week: "THU",
                 heroTitle: "登上雲海邊界：與「雪樹精靈」的白色盟約",
-                heroImg: "https://placehold.co/800x600/E0E0E0/333333?text=Snow+Monsters",
+                heroImg: "https://placehold.co/800x600/E0E0E0/333333?text=Set+Day+4+Hero+Image",
                 events: [
-                    { time: "09:00", title: "古川市場 早餐", tag: "Cuisine", desc: "快去快回，享用自選のっけ丼。", pointSpeak: [{cn:"飯少一點", jp:"ご飯少なめで"}] },
+                    { time: "09:00", title: "古川市場 早餐", tag: "Cuisine", desc: "快去快回，享用自選のっけ丼。", pointSpeak: [{cn:"飯少一點", jp:"ご飯少なめで"}], img: "https://placehold.co/600x300/FFA500/FFF?text=Nokkedon" },
                     { time: "11:00", title: "八甲田樹冰觀光", tag: "Nature", desc: "搭乘纜車欣賞 Snow Monsters。山頂極冷，全副武裝。", img: "https://placehold.co/600x300/FFF/888?text=Hakkoda+Ropeway" },
                     { time: "14:00", title: "前往星野青森屋", tag: "Transport", desc: "約 2 小時車程。享受沿途雪景。", img: "https://placehold.co/600x200/555/FFF?text=Drive+to+Hoshino" },
                     { time: "16:00", title: "青森屋 Check-in", tag: "Hotel", desc: "抵達星野度假村。辦理入住。", img: "https://placehold.co/600x300/C5A059/FFF?text=Aomoriya" },
@@ -396,7 +596,7 @@
             {
                 day: 5, date: "02.06", week: "FRI",
                 heroTitle: "冬日戀歌：馬車暖爐裡的溫柔",
-                heroImg: "https://placehold.co/800x600/8B4513/FFFFFF?text=Stove+Carriage",
+                heroImg: "https://placehold.co/800x600/8B4513/FFFFFF?text=Set+Day+5+Hero+Image",
                 events: [
                     { time: "10:00", title: "暖爐馬車 (Stove Carriage)", tag: "Experience", desc: "【飯店活動】在馬車上享用點心，環繞公園。", img: "https://placehold.co/600x300/8B4513/FFF?text=Horse+Carriage" },
                     { time: "14:00", title: "滑雪體驗", tag: "Activity", desc: "前往綠之大地與羅曼之森滑雪場。練習滑雪。", img: "https://placehold.co/600x300/ADD8E6/333?text=Skiing" },
@@ -407,11 +607,11 @@
             {
                 day: 6, date: "02.07", week: "SAT",
                 heroTitle: "返程：滿載回憶",
-                heroImg: "https://placehold.co/800x600/555555/FFFFFF?text=Departure",
+                heroImg: "https://placehold.co/800x600/555555/FFFFFF?text=Set+Day+6+Hero+Image",
                 events: [
                     { time: "10:00", title: "最終鐵律：準時出發", tag: "Transport", desc: "開車離開飯店。上路請開大燈，極致慢速安全駕駛。", img: "https://placehold.co/600x300/333/FFF?text=Safe+Driving" },
                     { time: "13:00", title: "青森機場還車", tag: "Transport", desc: "抵達機場，加滿油，辦理還車。", img: "https://placehold.co/600x200/555/FFF?text=Car+Return" },
-                    { time: "14:00", title: "最終任務：伴手禮", tag: "Shopping", desc: "機場免稅店最後採購。", pointSpeak: [{cn:"這是青森限定嗎？", jp:"これは青森限定ですか？"}] },
+                    { time: "14:00", title: "最終任務：伴手禮", tag: "Shopping", desc: "機場免稅店最後採購。", pointSpeak: [{cn:"這是青森限定嗎？", jp:"這是青森限定ですか？"}] },
                     { time: "15:30", title: "搭機返台 (BR 121)", tag: "Flight", desc: "再見青森，期待下次旅程。", img: "https://placehold.co/600x300/1C2541/FFF?text=Flight+BR121" }
                 ]
             }
@@ -419,36 +619,68 @@
 
         let currentIdx = 0;
         let expenses = JSON.parse(localStorage.getItem('elegant_expenses')) || [];
+        let currentImageConfig = {}; // Stores context for saving an image
 
         // --- INIT ---
+        window.onload = function() {
+            updateCountdown();
+            setupFirebase(); // Start the Firebase and Firestore setup
+        };
+
         function enterApp() {
             document.getElementById('intro-screen').style.transform = 'translateY(-100%)';
-            renderTrip();
-            // No need to call updateCountdown here, it runs on load.
+            // renderTrip is called by loadUserImages via onSnapshot
         }
 
         function updateCountdown() {
-            const start = new Date("2026-02-02");
+            const tripStartDate = new Date("2026-02-02");
             const now = new Date();
-            const diff = Math.ceil((start - now) / (1000 * 60 * 60 * 24));
+            const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
             
-            const daysDisplay = diff > 0 ? diff : "0";
+            const diffTime = tripStartDate.getTime() - today.getTime();
+            const daysToStart = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
             
-            // Update the header countdown
-            const headerDaysEl = document.getElementById('days-left');
-            if (headerDaysEl) {
-                 headerDaysEl.innerText = daysDisplay;
-            }
+            const totalDays = tripData.length;
+            
+            let displayValue, displayLabel;
 
-            // Update the INTRO screen countdown
-            const introDaysEl = document.getElementById('intro-days-left');
-            if (introDaysEl) {
-                introDaysEl.innerText = daysDisplay;
+            if (daysToStart > 0) {
+                // 尚未開始
+                displayValue = daysToStart;
+                displayLabel = "距離出發 (DAYS LEFT)";
+            } else if (daysToStart <= 0 && daysToStart > -totalDays) {
+                // 旅程中 (Day 1 is when daysToStart is 0, Day 2 is -1, etc.)
+                const currentTripDay = Math.abs(daysToStart) + 1;
+                displayValue = currentTripDay;
+                displayLabel = `青森之旅 第 ${currentTripDay} 天`;
+                
+                // Automatically switch to the current day if not already there
+                if (currentIdx !== currentTripDay - 1) {
+                    currentIdx = currentTripDay - 1;
+                    renderTrip(); 
+                }
+            } else {
+                // 旅程結束
+                displayValue = "0";
+                displayLabel = "旅程已結束";
             }
+            
+            // Update displays
+            const statusHtml = `
+                <div class="status-value">${displayValue}</div>
+                <div class="status-label">${displayLabel}</div>
+            `;
+            document.getElementById('countdown-status').innerHTML = statusHtml;
+            document.getElementById('intro-days-left').innerText = daysToStart > 0 ? daysToStart : "0";
+            
+            // Rerun every hour (or closer if critical)
+            setTimeout(updateCountdown, 3600000); 
         }
 
         // --- RENDER TRIP ---
         function renderTrip() {
+            if (!isAuthReady) return; // Wait for Firebase auth to complete
+
             // Render Nav
             const nav = document.getElementById('date-nav');
             nav.innerHTML = tripData.map((d, i) => `
@@ -462,9 +694,16 @@
             const day = tripData[currentIdx];
             const container = document.getElementById('timeline-container');
             
+            // --- 1. HERO IMAGE LOGIC ---
+            const heroKey = `day${currentIdx + 1}-hero`;
+            const userHeroImg = userImages[heroKey] || day.heroImg;
+
             let html = `
                 <div class="hero-card fade-in">
-                    <img src="${day.heroImg}" class="hero-img">
+                    <img src="${userHeroImg}" onerror="this.onerror=null; this.src='https://placehold.co/800x600/1C2541/FFFFFF?text=Set+Your+Hero+Image';" class="hero-img">
+                    <button class="image-config-btn hero-config-btn" onclick="openImageConfigModal(${currentIdx + 1}, -1, true, event)">
+                        <i class="fa-solid fa-camera"></i>
+                    </button>
                     <div class="hero-overlay">
                         <div class="hero-day">DAY ${day.day} / ${day.week}</div>
                         <h2 class="hero-title serif">${day.heroTitle}</h2>
@@ -473,10 +712,15 @@
                 <div class="timeline-block">
             `;
 
+            // --- 2. EVENT TIMELINE LOGIC ---
             html += day.events.map((ev, i) => {
-                const data = encodeURIComponent(JSON.stringify(ev));
+                const eventKey = `day${currentIdx + 1}-event${i}`;
+                const userEventImg = userImages[eventKey] || ev.img;
+                
+                // Pass the final image URL back into dataStr for the detail modal
+                const data = encodeURIComponent(JSON.stringify({...ev, userImg: userEventImg, dayIndex: currentIdx + 1, eventIndex: i}));
+                
                 const delay = i * 0.1;
-                // Highlight critical or special tasks
                 const isSpecial = ev.title.includes("任務") || ev.title.includes("鐵律");
                 const specialClass = isSpecial ? 'special-event' : '';
                 
@@ -485,10 +729,13 @@
                         <div class="time-dot"></div>
                         <div class="time-label">${ev.time}</div>
                         <div class="event-card ${specialClass}" onclick="openDetail('${data}')">
+                            <button class="image-config-btn" onclick="openImageConfigModal(${currentIdx + 1}, ${i}, false, event)">
+                                <i class="fa-solid fa-camera"></i>
+                            </button>
                             <span class="event-tag">${ev.tag}</span>
                             <div class="event-title">${ev.title}</div>
                             <div class="event-desc">${ev.desc}</div>
-                            ${ev.img ? `<img src="${ev.img}" class="event-img">` : ''}
+                            ${userEventImg ? `<img src="${userEventImg}" onerror="this.onerror=null; this.src='https://placehold.co/600x150/F4F4F4/CCCCCC?text=Set+Image';" class="event-img">` : ''}
                         </div>
                     </div>
                 `;
@@ -496,13 +743,145 @@
 
             html += `</div>`; // Close timeline-block
             container.innerHTML = html;
+            
+            checkSmartReminder(); // Check reminder status on rendering the day
+        }
+        
+        // --- TOUCH SWIPING LOGIC ---
+        let initialX = null;
+        function handleTouchStart(evt) {
+            // Only capture touch start if not on a nested interactive element
+            if (evt.target.closest('.d-item') || evt.target.closest('.image-config-btn') || document.getElementById('detail-modal').classList.contains('active')) return;
+            initialX = evt.clientX || evt.touches[0].clientX;
+        }
+
+        function handleTouchMove(evt) {
+            if (initialX === null) return;
+            // Prevent scrolling horizontally for small movements, focus on swipe intent
+            // evt.preventDefault(); // Sometimes overly restrictive in canvas
+        }
+
+        function handleTouchEnd(evt) {
+            if (initialX === null) return;
+            const currentX = evt.clientX || evt.changedTouches[0].clientX;
+            const diffX = initialX - currentX;
+            initialX = null; // Reset initial position
+
+            const threshold = 70; // Minimum swipe distance in pixels
+
+            if (Math.abs(diffX) > threshold) {
+                if (diffX > 0) { // Swipe Left (Next Day)
+                    switchDay(currentIdx + 1);
+                } else { // Swipe Right (Previous Day)
+                    switchDay(currentIdx - 1);
+                }
+            }
+        }
+        
+        // --- SMART REMINDER LOGIC (Integrated with header) ---
+        function checkSmartReminder() {
+            const reminderEl = document.getElementById('smart-reminder-text');
+            const weatherEl = document.getElementById('weather-status');
+            const now = new Date();
+            const tripStartDate = new Date("2026-02-02");
+            const currentDayDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            
+            const diffDays = Math.ceil((currentDayDate.getTime() - tripStartDate.getTime()) / (1000 * 60 * 60 * 24));
+            
+            // Placeholder Weather Status (can be fetched/dynamic in a real app)
+            const weatherStatus = currentIdx === 0 ? "函館: 晴天, -4°C" : (currentIdx < 3 ? "青森: 陰天, -2°C" : "青森: 降雪, -3°C");
+            weatherEl.innerText = weatherStatus;
+
+            if (diffDays < 0 || diffDays >= tripData.length) {
+                reminderEl.innerText = "旅程尚未開始。";
+                return; 
+            }
+
+            const currentDayEvents = tripData[diffDays].events;
+            let reminderMessage = "今日行程順利！";
+
+            for (let i = 0; i < currentDayEvents.length; i++) {
+                const event = currentDayEvents[i];
+                if (!event.time || !event.time.includes(':')) continue;
+
+                const [eventHour, eventMinute] = event.time.split(':').map(Number);
+                const eventTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), eventHour, eventMinute);
+                const timeDiffMinutes = (eventTime.getTime() - now.getTime()) / (1000 * 60);
+
+                // --- Logic Triggers: 15 min early to 15 min late ---
+                if (timeDiffMinutes > 0 && timeDiffMinutes <= 15) { 
+                    reminderMessage = `🔔 ${event.title} 還有 ${Math.round(timeDiffMinutes)} 分鐘開始！`;
+                    break;
+                } else if (timeDiffMinutes > -15 && timeDiffMinutes <= 0) {
+                    reminderMessage = `🚨 ${event.title} 已經開始 ${Math.abs(Math.round(timeDiffMinutes))} 分鐘了！`;
+                    break;
+                }
+            }
+            
+            reminderEl.innerText = reminderMessage;
         }
 
         function switchDay(idx) {
-            currentIdx = idx;
-            renderTrip();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            if (idx >= 0 && idx < tripData.length) {
+                currentIdx = idx;
+                renderTrip();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
         }
+        
+        // --- IMAGE CONFIGURATION LOGIC (Unchanged, relies on window export) ---
+        function openImageConfigModal(dayIndex, eventIndex, isHero, e) {
+            if (e) e.stopPropagation(); // Prevent card detail from opening if clicking button
+
+            if (!userId) {
+                // If auth is not successful, prevent configuration
+                document.getElementById('img-config-title').innerText = "儲存失敗：請確保網路連線，並重啟應用程式以載入使用者身份。";
+                document.getElementById('img-config-url').value = "";
+                document.getElementById('img-config-save').style.display = 'none';
+                document.getElementById('img-config-modal').classList.add('active');
+                document.getElementById('modal-overlay').classList.add('active');
+                return;
+            }
+            
+            currentImageConfig = { dayIndex, eventIndex, isHero };
+            
+            const titleEl = document.getElementById('img-config-title');
+            const inputEl = document.getElementById('img-config-url');
+            const saveBtn = document.getElementById('img-config-save');
+            const day = tripData[dayIndex - 1]; // Use dayIndex - 1 for 0-indexed array access
+            
+            let currentUrl = '';
+            
+            if (isHero) {
+                titleEl.innerText = `設定 DAY ${dayIndex} 封面圖片`;
+                currentUrl = userImages[`day${dayIndex}-hero`] || day.heroImg;
+            } else {
+                const event = day.events[eventIndex];
+                titleEl.innerText = `設定「${event.title}」圖片`;
+                currentUrl = userImages[`day${dayIndex}-event${eventIndex}`] || event.img;
+            }
+            
+            // Filter out placeholder text
+            inputEl.value = currentUrl.startsWith('https://placehold.co') ? '' : currentUrl;
+            saveBtn.style.display = 'block';
+
+            // Bind the save button's action dynamically
+            saveBtn.onclick = handleSaveImage;
+
+            document.getElementById('modal-overlay').classList.add('active');
+            document.getElementById('img-config-modal').classList.add('active');
+        }
+
+        function handleSaveImage() {
+            const newUrl = document.getElementById('img-config-url').value.trim();
+            const { dayIndex, eventIndex, isHero } = currentImageConfig;
+            
+            // Save to Firestore. dayIndex is 1-based, eventIndex is 0-based or -1 for hero
+            saveUserImage(dayIndex, eventIndex, newUrl, isHero);
+            
+            // Close modal happens in saveUserImage on success
+        }
+
 
         // --- NAVIGATION ---
         function switchView(view, btn) {
@@ -522,7 +901,10 @@
             document.getElementById('m-title').innerText = data.title;
             document.getElementById('m-desc').innerText = data.desc;
             document.getElementById('m-tag').innerText = data.tag || "INFO";
-            document.getElementById('m-img').src = data.img || "https://placehold.co/800x600/F4F4F4/CCCCCC?text=L'VOYAGE";
+            
+            // Use userImg (which contains the user-set URL if available)
+            const finalImgUrl = data.userImg || data.img || "https://placehold.co/800x600/F4F4F4/CCCCCC?text=L'VOYAGE";
+            document.getElementById('m-img').src = finalImgUrl;
             
             const psDiv = document.getElementById('m-ps-content');
             if(data.pointSpeak) {
@@ -538,10 +920,13 @@
             }
 
             document.getElementById('detail-modal').classList.add('active');
+            document.getElementById('modal-overlay').classList.add('active');
         }
 
         function closeModal() {
             document.getElementById('detail-modal').classList.remove('active');
+            document.getElementById('img-config-modal').classList.remove('active');
+            document.getElementById('modal-overlay').classList.remove('active');
         }
 
         // --- WALLET ---
@@ -558,7 +943,6 @@
         }
 
         function renderExpenses() {
-            const rate = 0.22;
             let total = 0;
             const html = expenses.map(ex => {
                 total += ex.price;
@@ -575,12 +959,22 @@
             
             document.getElementById('expense-list').innerHTML = html;
             document.getElementById('total-jpy').innerText = '¥' + total.toLocaleString();
-            document.getElementById('total-twd').innerText = (total * rate).toFixed(0);
+            document.getElementById('total-twd').innerText = (total * exchangeRate).toFixed(0);
+            document.getElementById('current-rate').innerText = exchangeRate.toFixed(4);
         }
 
-        // Initial setup - MUST run immediately to display intro countdown
-        updateCountdown();
-
+        // --- EXPORT GLOBAL FUNCTIONS FOR HTML HANDLERS (Fixing ReferenceError) ---
+        window.enterApp = enterApp;
+        window.switchDay = switchDay;
+        window.switchView = switchView;
+        window.openDetail = openDetail;
+        window.closeModal = closeModal;
+        window.addExpense = addExpense;
+        window.openImageConfigModal = openImageConfigModal;
+        window.handleSaveImage = handleSaveImage;
+        window.handleTouchStart = handleTouchStart;
+        window.handleTouchMove = handleTouchMove;
+        window.handleTouchEnd = handleTouchEnd;
     </script>
 </body>
 </html>
