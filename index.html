@@ -2,493 +2,530 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>青森函館冬旅 2026</title>
     <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#F2EFE9">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            /* 木質暖白配色 */
-            --bg-color: #FDFBF7; /* 暖白紙張色 */
-            --card-bg: rgba(255, 255, 255, 0.9);
-            --primary-wood: #8D6E63; /* 木頭色 */
-            --dark-wood: #5D4037; /* 深木頭 */
-            --light-wood: #D7CCC8; /* 淺木頭 */
-            --accent-green: #79867C; /* 森林綠點綴 */
+            --bg-color: #F2EFE9; /* 更溫潤的紙張色 */
+            --card-glass: rgba(255, 255, 255, 0.85);
+            --card-glass-dark: rgba(255, 255, 255, 0.95);
+            --primary-wood: #8D6E63;
+            --secondary-wood: #A1887F;
+            --accent-snow: #E1F5FE;
             --text-main: #4E342E;
-            --text-sub: #8D8D8D;
-            --shadow: 0 4px 15px rgba(141, 110, 99, 0.15);
+            --text-light: #8D6E63;
+            --shadow-soft: 0 8px 30px rgba(0,0,0,0.08);
+            --shadow-card: 0 4px 12px rgba(141, 110, 99, 0.1);
+            --safe-area-bottom: env(safe-area-inset-bottom);
         }
 
-        * {
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         body {
             font-family: 'Zen Maru Gothic', sans-serif;
             background-color: var(--bg-color);
+            background-image: radial-gradient(#D7CCC8 1px, transparent 1px);
+            background-size: 20px 20px;
             color: var(--text-main);
             margin: 0;
             padding: 0;
-            padding-bottom: 90px; /* 避開底部導航 */
-            overscroll-behavior-y: none;
+            padding-bottom: calc(90px + var(--safe-area-bottom));
+            overscroll-behavior-y: none; /* 防止拉動重整 */
         }
 
-        /* 頂部標題區 */
-        header {
-            background: linear-gradient(135deg, var(--primary-wood), var(--dark-wood));
-            color: white;
-            padding: 40px 20px 20px;
-            border-radius: 0 0 25px 25px;
-            box-shadow: var(--shadow);
+        /* --- Header & Weather --- */
+        .hero-section {
+            background: linear-gradient(180deg, rgba(255,255,255,0) 0%, var(--bg-color) 100%),
+                        url('https://images.unsplash.com/photo-1548261320-56d15b021319?q=80&w=2574&auto=format&fit=crop'); 
+            background-size: cover;
+            background-position: center;
+            padding: 60px 20px 30px;
+            border-radius: 0 0 30px 30px;
+            box-shadow: var(--shadow-soft);
             position: relative;
-            overflow: hidden;
-        }
-        
-        /* 裝飾用的雪花紋理 */
-        header::before {
-            content: '❄';
-            position: absolute;
-            top: 10px;
-            right: 20px;
-            font-size: 5rem;
-            opacity: 0.1;
-            transform: rotate(15deg);
         }
 
-        h1 { margin: 0; font-size: 1.5rem; letter-spacing: 1px; }
-        .subtitle { font-size: 0.9rem; opacity: 0.9; margin-top: 5px; }
-        
-        /* 倒數計時器 */
-        .countdown {
-            background: rgba(255,255,255,0.2);
-            backdrop-filter: blur(5px);
-            border-radius: 12px;
-            padding: 10px;
-            margin-top: 15px;
+        h1 { font-size: 1.8rem; margin: 0; color: #3E2723; text-shadow: 0 2px 10px rgba(255,255,255,0.8); }
+        .subtitle { font-size: 0.95rem; color: #5D4037; font-weight: 500; margin-top: 5px; opacity: 0.9; }
+
+        .weather-widget {
             display: flex;
-            justify-content: space-around;
-            font-size: 0.9rem;
-        }
-        .countdown span { font-weight: bold; font-size: 1.2rem; }
-
-        /* 分頁內容容器 */
-        .tab-content { display: none; animation: fadeIn 0.3s; padding: 20px; }
-        .tab-content.active { display: block; }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* 行程卡片 */
-        .day-header {
-            display: flex;
-            align-items: baseline;
-            margin-bottom: 15px;
-            margin-top: 10px;
-            color: var(--dark-wood);
-            border-bottom: 2px solid var(--light-wood);
+            gap: 10px;
+            margin-top: 20px;
+            overflow-x: auto;
             padding-bottom: 5px;
+            scrollbar-width: none;
         }
-        .day-num { font-size: 1.4rem; font-weight: bold; margin-right: 10px; }
-        .day-date { font-size: 0.9rem; color: var(--text-sub); }
-        
-        .timeline-item {
-            background: var(--card-bg);
-            border-radius: 16px;
-            padding: 15px;
-            margin-bottom: 15px;
-            box-shadow: var(--shadow);
-            border-left: 5px solid var(--primary-wood);
-            position: relative;
-        }
-        
-        .timeline-time {
-            font-weight: bold;
-            color: var(--primary-wood);
-            font-size: 1.1rem;
-            margin-bottom: 5px;
-        }
-        
-        .timeline-title {
-            font-size: 1.1rem;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-        
-        .timeline-desc {
-            font-size: 0.9rem;
-            color: #666;
-            line-height: 1.5;
-        }
-        
-        .tag {
-            display: inline-block;
-            background: var(--light-wood);
-            color: var(--dark-wood);
-            padding: 2px 8px;
-            border-radius: 10px;
-            font-size: 0.75rem;
-            margin-bottom: 5px;
-        }
-
-        /* 記帳功能樣式 */
-        .expense-summary {
-            background: white;
-            padding: 20px;
-            border-radius: 16px;
-            text-align: center;
-            box-shadow: var(--shadow);
-            margin-bottom: 20px;
-        }
-        .total-amount {
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: var(--primary-wood);
-        }
-        .currency { font-size: 1rem; color: var(--text-sub); }
-        
-        .input-group {
-            background: white;
-            padding: 15px;
-            border-radius: 16px;
-            margin-bottom: 20px;
-            box-shadow: var(--shadow);
-        }
-        .input-row { display: flex; gap: 10px; margin-bottom: 10px; }
-        input, select {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid var(--light-wood);
-            border-radius: 8px;
-            font-size: 1rem;
-            outline: none;
-            background: #FDFBF7;
-        }
-        button.add-btn {
-            width: 100%;
-            padding: 12px;
-            background: var(--primary-wood);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        
-        .expense-list { list-style: none; padding: 0; }
-        .expense-item {
-            background: white;
-            padding: 15px;
-            border-radius: 12px;
-            margin-bottom: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
-        .expense-info h4 { margin: 0; font-size: 1rem; }
-        .expense-info p { margin: 2px 0 0; font-size: 0.8rem; color: #999; }
-        .expense-price { font-weight: bold; color: var(--dark-wood); }
-        .delete-btn { color: #ff6b6b; margin-left: 10px; cursor: pointer; }
-
-        /* 底部導航 */
-        .bottom-nav {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            right: 20px;
-            background: rgba(255, 255, 255, 0.95);
+        .weather-card {
+            background: var(--card-glass-dark);
             backdrop-filter: blur(10px);
-            border-radius: 20px;
-            height: 70px;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-            z-index: 1000;
-        }
-
-        .nav-item {
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 12px 16px;
+            min-width: 110px;
+            box-shadow: var(--shadow-card);
             display: flex;
             flex-direction: column;
             align-items: center;
-            color: var(--text-sub);
-            font-size: 0.75rem;
+            border: 1px solid rgba(255,255,255,0.6);
+        }
+        .weather-loc { font-size: 0.8rem; color: var(--text-light); font-weight: bold; }
+        .weather-temp { font-size: 1.4rem; font-weight: 700; margin: 5px 0; color: var(--text-main); }
+        .weather-icon { font-size: 1.2rem; color: #5D4037; }
+
+        /* --- Tabs & Content --- */
+        .tab-content { display: none; padding: 20px; animation: slideUp 0.4s ease-out; }
+        .tab-content.active { display: block; }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- Itinerary Styling --- */
+        .day-container { margin-bottom: 30px; }
+        .day-sticky-header {
+            position: sticky;
+            top: 0;
+            background: rgba(242, 239, 233, 0.95);
+            backdrop-filter: blur(5px);
+            padding: 15px 0;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            margin-bottom: 15px;
+        }
+        .day-badge {
+            background: var(--primary-wood);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            margin-right: 10px;
+            box-shadow: 0 2px 5px rgba(141, 110, 99, 0.4);
+        }
+        .day-title { font-weight: bold; color: var(--text-main); font-size: 1.1rem; }
+
+        .timeline-card {
+            background: var(--card-glass);
+            border-radius: 20px;
+            padding: 18px;
+            margin-bottom: 15px;
+            box-shadow: var(--shadow-card);
+            border: 1px solid rgba(255,255,255,0.5);
+            position: relative;
+            transition: transform 0.2s;
+        }
+        .timeline-card:active { transform: scale(0.98); }
+        
+        .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+        .card-time { 
+            font-family: 'Zen Maru Gothic'; 
+            font-weight: 700; 
+            color: var(--primary-wood);
+            background: #EFEBE9;
+            padding: 2px 8px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+        .card-tag { font-size: 1.2rem; } /* Emoji Icon */
+
+        .card-title { font-size: 1.15rem; font-weight: 700; margin-bottom: 6px; }
+        .card-desc { font-size: 0.9rem; color: #6D4C41; line-height: 1.5; margin-bottom: 12px; }
+
+        .btn-map {
+            display: inline-flex;
+            align-items: center;
+            background: white;
+            color: #1976D2;
+            padding: 8px 16px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: bold;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border: 1px solid #E3F2FD;
+        }
+        .btn-map i { margin-right: 6px; }
+
+        /* --- Tools (Translation Cards) --- */
+        .tools-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .tool-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: var(--shadow-card);
+            cursor: pointer;
             transition: 0.3s;
         }
-
-        .nav-item i { font-size: 1.4rem; margin-bottom: 4px; }
+        .tool-icon { font-size: 2rem; margin-bottom: 10px; display: block; }
+        .tool-label { font-weight: bold; color: var(--text-main); }
         
-        .nav-item.active {
-            color: var(--primary-wood);
-            transform: translateY(-2px);
+        /* Modal for Big Text */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255,255,255,0.98);
+            z-index: 2000;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            text-align: center;
+            animation: fadeIn 0.2s;
+        }
+        .modal.open { display: flex; }
+        .modal-jp { font-size: 3rem; font-weight: bold; color: #333; margin-bottom: 20px; line-height: 1.2; }
+        .modal-cn { font-size: 1.2rem; color: #888; margin-bottom: 40px; }
+        .btn-close {
+            padding: 12px 30px;
+            background: var(--primary-wood);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            box-shadow: var(--shadow-soft);
         }
 
-        /* 針對不同類型的標籤顏色 */
-        .tag.flight { background-color: #E3F2FD; color: #1565C0; }
-        .tag.hotel { background-color: #E8F5E9; color: #2E7D32; }
-        .tag.shopping { background-color: #FFF3E0; color: #E65100; }
-        .tag.food { background-color: #FCE4EC; color: #C2185B; }
-        .tag.car { background-color: #F3E5F5; color: #7B1FA2; }
+        /* --- Navigation --- */
+        .nav-container {
+            position: fixed;
+            bottom: calc(20px + var(--safe-area-bottom));
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 400px;
+            background: rgba(78, 52, 46, 0.9); /* 深木色背景 */
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 50px;
+            height: 65px;
+            display: flex;
+            justify-content: space-evenly;
+            align-items: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            z-index: 100;
+        }
+
+        .nav-item {
+            color: rgba(255,255,255,0.5);
+            font-size: 1.3rem;
+            position: relative;
+            padding: 10px;
+            transition: 0.3s;
+        }
+        .nav-item.active { color: #fff; transform: translateY(-2px); }
+        .nav-item.active::after {
+            content: '';
+            position: absolute;
+            bottom: 5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 4px;
+            background: #fff;
+            border-radius: 50%;
+        }
+
+        /* --- Expense Styles Update --- */
+        .expense-total-card {
+            background: linear-gradient(135deg, #8D6E63, #6D4C41);
+            color: white;
+            border-radius: 20px;
+            padding: 25px;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 20px rgba(141, 110, 99, 0.3);
+        }
+        .input-pill-group {
+            background: white;
+            border-radius: 15px;
+            padding: 5px;
+            display: flex;
+            margin-bottom: 15px;
+            box-shadow: var(--shadow-card);
+        }
+        .input-pill-group input { border: none; padding: 10px; outline: none; flex: 1; border-radius: 10px; }
+        .btn-add { background: var(--secondary-wood); color: white; border: none; padding: 0 20px; border-radius: 10px; font-weight: bold; }
 
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>青森函館冬旅 2026</h1>
-        <div class="subtitle">Family Trip • 6 Days 5 Nights</div>
-        <div class="countdown" id="countdown-timer">
-            計算中...
+    <header class="hero-section">
+        <div style="font-size: 0.8rem; letter-spacing: 2px; opacity: 0.8; margin-bottom: 5px;">FAMILY TRIP</div>
+        <h1>青森函館冬旅</h1>
+        <div class="subtitle">2026.02.02 - 02.07 • 6 Days</div>
+        
+        <div class="weather-widget">
+            <div class="weather-card" id="weather-hakodate">
+                <div class="weather-loc">📍 函館</div>
+                <div class="weather-temp">--°C</div>
+                <div class="weather-icon">❄️</div>
+            </div>
+            <div class="weather-card" id="weather-aomori">
+                <div class="weather-loc">📍 青森</div>
+                <div class="weather-temp">--°C</div>
+                <div class="weather-icon">❄️</div>
+            </div>
+             <div class="weather-card">
+                <div class="weather-loc">⏳ 倒數</div>
+                <div class="weather-temp" id="countdown-days" style="font-size: 1.2rem;">--</div>
+                <div class="weather-icon">天</div>
+            </div>
         </div>
     </header>
 
     <div id="tab-itinerary" class="tab-content active">
-        <div id="itinerary-container"></div>
+        <div id="itinerary-list"></div>
     </div>
 
     <div id="tab-expenses" class="tab-content">
-        <div class="expense-summary">
-            <div class="currency">總花費 (TWD)</div>
-            <div class="total-amount" id="total-amount">$0</div>
+        <div class="expense-total-card">
+            <div style="font-size: 0.9rem; opacity: 0.9;">目前總花費</div>
+            <div id="total-amount" style="font-size: 2.5rem; font-weight: bold; margin-top: 5px;">$0</div>
+            <div style="font-size: 0.8rem; margin-top: 10px; opacity: 0.8;">NTD (台幣)</div>
+        </div>
+        
+        <div class="input-pill-group">
+            <input type="text" id="expense-name" placeholder="項目 (例: 蘋果派)">
+            <input type="number" id="expense-price" placeholder="$" style="max-width: 80px;">
+            <button class="btn-add" onclick="addExpense()">+</button>
         </div>
 
-        <div class="input-group">
-            <div class="input-row">
-                <input type="text" id="expense-name" placeholder="項目 (如: 晚餐)">
-                <select id="expense-cat" style="width: 80px;">
-                    <option value="食">食</option>
-                    <option value="住">住</option>
-                    <option value="行">行</option>
-                    <option value="購">購</option>
-                    <option value="樂">樂</option>
-                </select>
-            </div>
-            <div class="input-row">
-                <input type="number" id="expense-price" placeholder="金額">
-            </div>
-            <button class="add-btn" onclick="addExpense()">記一筆</button>
-        </div>
-
-        <ul class="expense-list" id="expense-list">
-            </ul>
+        <div id="expense-list" style="padding-bottom: 20px;"></div>
     </div>
-    
+
     <div id="tab-tools" class="tab-content">
-       <div style="text-align: center; margin-top: 50px; color: var(--text-sub);">
-           <i class="fas fa-tools" style="font-size: 3rem; margin-bottom: 20px;"></i>
-           <p>大字卡與導航功能開發中...</p>
-       </div>
+        <h3 style="margin-bottom: 20px; color: var(--primary-wood);">溝通大字卡</h3>
+        <div class="tools-grid">
+            <div class="tool-card" onclick="showCard('すみません、トイレはどこですか？', '請問洗手間在哪裡？')">
+                <span class="tool-icon">🚻</span>
+                <span class="tool-label">找廁所</span>
+            </div>
+            <div class="tool-card" onclick="showCard('これをお願いします', '我要這個 (點餐用)')">
+                <span class="tool-icon">👈</span>
+                <span class="tool-label">我要這個</span>
+            </div>
+            <div class="tool-card" onclick="showCard('お会計をお願いします', '麻煩結帳')">
+                <span class="tool-icon">💴</span>
+                <span class="tool-label">結帳</span>
+            </div>
+            <div class="tool-card" onclick="showCard('予約しています', '我有預約')">
+                <span class="tool-icon">📅</span>
+                <span class="tool-label">我有預約</span>
+            </div>
+            <div class="tool-card" onclick="showCard('写真を撮ってもらえますか？', '能幫我們拍照嗎？')">
+                <span class="tool-icon">📸</span>
+                <span class="tool-label">幫忙拍照</span>
+            </div>
+            <div class="tool-card" onclick="showCard('袋はいりません', '不用塑膠袋')">
+                <span class="tool-icon">🛍️</span>
+                <span class="tool-label">不用袋子</span>
+            </div>
+        </div>
     </div>
 
-    <div class="bottom-nav">
+    <div id="card-modal" class="modal" onclick="closeCard()">
+        <div class="modal-jp" id="modal-jp-text"></div>
+        <div class="modal-cn" id="modal-cn-text"></div>
+        <button class="btn-close">關閉</button>
+    </div>
+
+    <div class="nav-container">
         <div class="nav-item active" onclick="switchTab('itinerary', this)">
-            <i class="fas fa-map-marked-alt"></i>
-            行程
+            <i class="fa-solid fa-location-dot"></i>
         </div>
         <div class="nav-item" onclick="switchTab('expenses', this)">
-            <i class="fas fa-calculator"></i>
-            記帳
+            <i class="fa-solid fa-wallet"></i>
         </div>
         <div class="nav-item" onclick="switchTab('tools', this)">
-            <i class="fas fa-language"></i>
-            翻譯
+            <i class="fa-solid fa-comments"></i>
         </div>
     </div>
 
     <script>
-        // --- 1. 行程資料庫 (來自截圖) ---
-        const itineraryData = [
+        // --- 1. 資料庫 (已加入 Google Maps 搜尋連結) ---
+        const tripData = [
             {
-                day: 1, date: "2/2 (週一)", 
-                focus: "函館採買 • 夜景優先",
+                day: 1, date: "2/2 (一)", title: "函館抵達",
                 events: [
-                    { time: "11:10", title: "抵達函館機場 (HKD)", type: "flight", desc: "落地、入境手續" },
-                    { time: "13:15", title: "前往 UNIQLO / Town Plaza", type: "shopping", desc: "搭計程車前往函館昭和 Town Plaza 採購保暖衣物" },
-                    { time: "14:20", title: "Kojima x Bic Camera", type: "shopping", desc: "購買電器、攝影周邊" },
-                    { time: "16:00", title: "金森紅磚倉庫", type: "sightseeing", desc: "輕裝出門，遊覽港灣區域" },
-                    { time: "17:00", title: "函館山百萬夜景", type: "sightseeing", desc: "搭乘纜車上山，必看絕景" },
-                    { time: "晚餐", title: "函館站或灣區用餐", type: "food", desc: "自由覓食" },
-                    { time: "住宿", title: "JR Inn Hakodate", type: "hotel", desc: "站前便利，舒適大浴場" }
+                    { time: "11:10", title: "抵達函館機場", desc: "入境手續、領取行李", icon: "✈️", loc: "函館空港" },
+                    { time: "13:15", title: "UNIQLO / 購物", desc: "搭計程車前往函館昭和 Town Plaza 採購保暖衣物", icon: "🛍️", loc: "UNIQLO Hakodate Showa" },
+                    { time: "16:00", title: "金森紅磚倉庫", desc: "港灣區域漫步、拍照", icon: "🧱", loc: "金森赤レンガ倉庫" },
+                    { time: "17:00", title: "函館山夜景", desc: "搭乘纜車上山，百萬夜景", icon: "🌃", loc: "函館山ロープウェイ" },
+                    { time: "住宿", title: "JR Inn Hakodate", desc: "大浴場與休息", icon: "🏨", loc: "JR Inn Hakodate" }
                 ]
             },
             {
-                day: 2, date: "2/3 (週二)", 
-                focus: "青森藝術 • 購物之夜",
+                day: 2, date: "2/3 (二)", title: "移動至青森",
                 events: [
-                    { time: "08:00", title: "函館朝市", type: "food", desc: "早餐：海鮮丼、釣烏賊" },
-                    { time: "10:00", title: "搭乘新幹線前往青森", type: "transport", desc: "移動至 JR 青森站 (預計 13:45 抵達)" },
-                    { time: "14:40", title: "青森縣立美術館", type: "sightseeing", desc: "參觀奈良美智「青森犬」" },
-                    { time: "18:00", title: "晚餐：青森扇貝小屋", type: "food", desc: "或在地居酒屋享用海鮮" },
-                    { time: "19:30", title: "唐吉訶德 採購", type: "shopping", desc: "青森新町店，離飯店近" },
-                    { time: "住宿", title: "Dormy Inn Aomori", type: "hotel", desc: "享受溫泉、免費夜鳴拉麵" }
+                    { time: "08:00", title: "函館朝市", desc: "早餐：釣烏賊、海鮮丼", icon: "🦑", loc: "函館朝市" },
+                    { time: "10:00", title: "前往青森", desc: "新幹線移動 (預計 13:45 抵達)", icon: "🚄", loc: "新函館北斗駅" },
+                    { time: "14:40", title: "青森縣立美術館", desc: "奈良美智「青森犬」", icon: "🎨", loc: "青森県立美術館" },
+                    { time: "18:00", title: "扇貝小屋", desc: "晚餐：釣扇貝體驗", icon: "🐚", loc: "あおもり帆立小屋" },
+                    { time: "住宿", title: "Dormy Inn Aomori", desc: "夜鳴拉麵、溫泉", icon: "🏨", loc: "Dormy Inn Aomori" }
                 ]
             },
             {
-                day: 3, date: "2/4 (週三)", 
-                focus: "極限衝刺日 • 暖爐 • 蘋果派",
+                day: 3, date: "2/4 (三)", title: "暖爐列車",
                 events: [
-                    { time: "09:00", title: "青森站取車 (自駕開始)", type: "car", desc: "租車 (4WD)，回飯店載行李" },
-                    { time: "10:15", title: "ELM 購物中心", type: "shopping", desc: "直奔 3COINS+plus 買小物 (限時 35 分)" },
-                    { time: "12:30", title: "津輕鐵道「暖爐列車」", type: "sightseeing", desc: "體驗烤魷魚的復古列車" },
-                    { time: "15:30", title: "弘前 藤田紀念庭園", type: "sightseeing", desc: "大正浪漫喫茶室，享用蘋果派" },
-                    { time: "17:30", title: "開車返回青森市", type: "car", desc: "預留雪地駕駛時間" }
+                    { time: "09:00", title: "取車自駕", desc: "檢查裝備、雪胎 (4WD)", icon: "🚗", loc: "JR駅レンタカー青森営業所" },
+                    { time: "10:15", title: "ELM 購物中心", desc: "3COINS 買小物", icon: "🛒", loc: "ELM Shopping Center" },
+                    { time: "12:30", title: "暖爐列車", desc: "津輕鐵道 烤魷魚體驗", icon: "🔥", loc: "津軽五所川原駅" },
+                    { time: "15:30", title: "藤田紀念庭園", desc: "大正浪漫喫茶室 蘋果派", icon: "🍎", loc: "藤田記念庭園" }
                 ]
             },
             {
-                day: 4, date: "2/5 (週四)", 
-                focus: "樹冰 • 滑雪 • 入住星野",
+                day: 4, date: "2/5 (四)", title: "樹冰與星野",
                 events: [
-                    { time: "08:45", title: "古川市場", type: "food", desc: "早餐吃自選配料的「Nokkedon」" },
-                    { time: "10:40", title: "八甲田纜車", type: "sightseeing", desc: "觀賞樹冰 (Snow Monsters)" },
-                    { time: "13:15", title: "馬門溫泉滑雪場", type: "sightseeing", desc: "初學者友善，租裝備滑雪體驗" },
-                    { time: "17:30", title: "晚餐：Nore Sore 食堂", type: "food", desc: "星野青森屋 自助餐" },
-                    { time: "住宿", title: "星野集團 青森屋", type: "hotel", desc: "入住體驗豐富設施" }
+                    { time: "08:45", title: "古川市場", desc: "自助海鮮丼 (Nokkedon)", icon: "🍚", loc: "青森魚菜センター" },
+                    { time: "10:40", title: "八甲田纜車", desc: "觀賞樹冰 (Snow Monsters)", icon: "❄️", loc: "八甲田ロープウェー" },
+                    { time: "17:30", title: "星野青森屋", desc: "入住、晚餐 Nore Sore 食堂", icon: "🏨", loc: "星野リゾート 青森屋" }
                 ]
             },
             {
-                day: 5, date: "2/6 (週五)", 
-                focus: "星野全日 • 文化放鬆",
+                day: 5, date: "2/6 (五)", title: "星野全日",
                 events: [
-                    { time: "上午", title: "晨間溫泉 (浮湯)", type: "sightseeing", desc: "露天溫泉享受雪景" },
-                    { time: "10:00", title: "暖爐馬車", type: "sightseeing", desc: "需預約，遊覽公園" },
-                    { time: "11:30", title: "八食中心 (Hasshoku Center)", type: "food", desc: "開車前往，七輪燒烤海鮮午餐" },
-                    { time: "下午", title: "飯店內活動", type: "sightseeing", desc: "逛商店街、玩釣扇貝" },
-                    { time: "17:30", title: "晚餐：南部曲屋", type: "food", desc: "Kaiseki 或自助餐" }
+                    { time: "09:00", title: "浮湯溫泉", desc: "露天風呂賞雪", icon: "♨️", loc: "星野リゾート 青森屋" },
+                    { time: "10:00", title: "暖爐馬車", desc: "遊覽公園 (需預約)", icon: "🐴", loc: "星野リゾート 青森屋" },
+                    { time: "11:30", title: "八食中心", desc: "七輪燒烤海鮮午餐", icon: "🦐", loc: "八食センター" },
+                    { time: "17:30", title: "南部曲屋", desc: "晚餐 Kaiseki", icon: "🍱", loc: "星野リゾート 青森屋" }
                 ]
             },
             {
-                day: 6, date: "2/7 (週六)", 
-                focus: "安全駕駛 • 機場採買",
+                day: 6, date: "2/7 (六)", title: "返程",
                 events: [
-                    { time: "10:00", title: "準時離開飯店", type: "car", desc: "鐵律！確保充足雪地緩衝時間 (3.5hr)" },
-                    { time: "13:00", title: "抵達青森機場 (AOJ)", type: "car", desc: "還車 (記得加滿油)" },
-                    { time: "14:00", title: "機場免稅店", type: "shopping", desc: "最後採購伴手禮" },
-                    { time: "15:30", title: "搭乘 BR 121", type: "flight", desc: "長榮航空 返抵台灣" }
+                    { time: "10:00", title: "退房出發", desc: "預留雪地緩衝時間", icon: "🚗", loc: "星野リゾート 青森屋" },
+                    { time: "13:00", title: "青森機場", desc: "還車、最後採買", icon: "✈️", loc: "青森空港" },
+                    { time: "15:30", title: "BR 121", desc: "起飛返台", icon: "👋", loc: "青森空港" }
                 ]
             }
         ];
 
-        // --- 2. 渲染行程 ---
+        // --- 2. 渲染行程 (Render) ---
         function renderItinerary() {
-            const container = document.getElementById('itinerary-container');
+            const container = document.getElementById('itinerary-list');
             let html = '';
-            
-            itineraryData.forEach(day => {
+            tripData.forEach(day => {
                 let eventsHtml = '';
-                day.events.forEach(event => {
+                day.events.forEach(ev => {
                     eventsHtml += `
-                        <div class="timeline-item">
-                            <div class="tag ${event.type}">${event.type.toUpperCase()}</div>
-                            <div class="timeline-time">${event.time}</div>
-                            <div class="timeline-title">${event.title}</div>
-                            <div class="timeline-desc">${event.desc}</div>
+                        <div class="timeline-card">
+                            <div class="card-header">
+                                <span class="card-time">${ev.time}</span>
+                                <span class="card-tag">${ev.icon}</span>
+                            </div>
+                            <div class="card-title">${ev.title}</div>
+                            <div class="card-desc">${ev.desc}</div>
+                            <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(ev.loc)}" target="_blank" class="btn-map">
+                                <i class="fa-solid fa-map-location-dot"></i> 導航去這裡
+                            </a>
                         </div>
                     `;
                 });
-
                 html += `
-                    <div class="day-header">
-                        <span class="day-num">Day ${day.day}</span>
-                        <span class="day-date">${day.date} - ${day.focus}</span>
+                    <div class="day-container">
+                        <div class="day-sticky-header">
+                            <span class="day-badge">DAY ${day.day}</span>
+                            <span class="day-title">${day.date} ${day.title}</span>
+                        </div>
+                        ${eventsHtml}
                     </div>
-                    ${eventsHtml}
                 `;
             });
             container.innerHTML = html;
         }
 
-        // --- 3. 記帳邏輯 (LocalStorage) ---
-        let expenses = JSON.parse(localStorage.getItem('trip_expenses')) || [];
+        // --- 3. 天氣 API (Open-Meteo) ---
+        async function fetchWeather() {
+            try {
+                // 函館座標 41.76, 140.73 / 青森座標 40.82, 140.74
+                const url = "https://api.open-meteo.com/v1/forecast?latitude=41.76,40.82&longitude=140.73,140.74&current=temperature_2m,weather_code&timezone=Asia%2FTokyo";
+                const res = await fetch(url);
+                const data = await res.json();
+                
+                // 更新函館
+                const hakodateTemp = Math.round(data[0].current.temperature_2m);
+                document.querySelector('#weather-hakodate .weather-temp').innerText = `${hakodateTemp}°C`;
+                
+                // 更新青森
+                const aomoriTemp = Math.round(data[1].current.temperature_2m);
+                document.querySelector('#weather-aomori .weather-temp').innerText = `${aomoriTemp}°C`;
 
+            } catch (e) {
+                console.log("Weather fetch failed", e);
+            }
+            
+            // 倒數計時
+            const tripDate = new Date("2026-02-02").getTime();
+            const now = new Date().getTime();
+            const daysLeft = Math.ceil((tripDate - now) / (1000 * 60 * 60 * 24));
+            document.getElementById('countdown-days').innerText = daysLeft;
+        }
+
+        // --- 4. 記帳功能 (Local Storage) ---
+        let expenses = JSON.parse(localStorage.getItem('expenses_v2')) || [];
         function renderExpenses() {
             const list = document.getElementById('expense-list');
             const totalEl = document.getElementById('total-amount');
-            list.innerHTML = '';
             let total = 0;
-
-            expenses.forEach((item, index) => {
-                total += parseInt(item.price);
+            list.innerHTML = '';
+            expenses.forEach((ex, i) => {
+                total += parseInt(ex.price);
                 list.innerHTML += `
-                    <li class="expense-item">
-                        <div class="expense-info">
-                            <h4>${item.name}</h4>
-                            <p>${item.cat} • ${new Date(item.date).toLocaleDateString()}</p>
+                    <div style="background:white; padding:15px; border-radius:12px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+                        <div>
+                            <div style="font-weight:bold; color:#4E342E;">${ex.name}</div>
+                            <div style="font-size:0.8rem; color:#999;">${new Date(ex.date).toLocaleDateString()}</div>
                         </div>
                         <div style="display:flex; align-items:center;">
-                            <span class="expense-price">$${item.price}</span>
-                            <i class="fas fa-trash delete-btn" onclick="deleteExpense(${index})"></i>
+                            <span style="font-weight:bold; margin-right:10px;">$${ex.price}</span>
+                            <i class="fa-solid fa-trash" style="color:#ff8a80; cursor:pointer;" onclick="delExpense(${i})"></i>
                         </div>
-                    </li>
+                    </div>
                 `;
             });
-
-            totalEl.innerText = '$' + total.toLocaleString();
-            localStorage.setItem('trip_expenses', JSON.stringify(expenses));
+            totalEl.innerText = `$${total.toLocaleString()}`;
+            localStorage.setItem('expenses_v2', JSON.stringify(expenses));
         }
-
         function addExpense() {
             const name = document.getElementById('expense-name').value;
             const price = document.getElementById('expense-price').value;
-            const cat = document.getElementById('expense-cat').value;
-
             if(name && price) {
-                expenses.unshift({
-                    name: name,
-                    price: price,
-                    cat: cat,
-                    date: new Date().toISOString()
-                });
+                expenses.unshift({ name, price, date: new Date() });
                 document.getElementById('expense-name').value = '';
                 document.getElementById('expense-price').value = '';
                 renderExpenses();
-            } else {
-                alert('請輸入項目和金額');
             }
         }
-
-        function deleteExpense(index) {
-            if(confirm('確定刪除這筆款項嗎？')) {
-                expenses.splice(index, 1);
-                renderExpenses();
-            }
+        function delExpense(i) {
+            if(confirm('刪除?')) { expenses.splice(i,1); renderExpenses(); }
         }
 
-        // --- 4. 倒數計時 ---
-        function updateCountdown() {
-            const tripDate = new Date("2026-02-02T11:10:00").getTime();
-            const now = new Date().getTime();
-            const distance = tripDate - now;
-
-            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            
-            document.getElementById("countdown-timer").innerHTML = 
-                `距離出發還有 <span>${days}</span> 天`;
+        // --- 5. 工具 & UI 邏輯 ---
+        function switchTab(tab, el) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.getElementById(`tab-${tab}`).classList.add('active');
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            el.classList.add('active');
+            window.scrollTo(0,0);
         }
 
-        // --- 5. 頁面切換 ---
-        function switchTab(tabId, navEl) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            document.getElementById('tab-' + tabId).classList.add('active');
-            
-            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-            navEl.classList.add('active');
+        function showCard(jp, cn) {
+            document.getElementById('modal-jp-text').innerText = jp;
+            document.getElementById('modal-cn-text').innerText = cn;
+            document.getElementById('card-modal').classList.add('open');
         }
-
-        // 初始化
-        window.onload = function() {
-            renderItinerary();
-            renderExpenses();
-            updateCountdown();
-        }
-    </script>
-</body>
-</html>
+        function closeCard() {
+            document.getElementById('card
