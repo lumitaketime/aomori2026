@@ -23,9 +23,9 @@
             --line-light: #E0E6ED;
             
             /* Effects */
-            --shadow-card: 0 8px 20px rgba(28, 37, 65, 0.06);
-            --shadow-float: 0 15px 35px rgba(28, 37, 65, 0.15);
-            --glass-bg: rgba(255, 255, 255, 0.85);
+            --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.05);
+            --shadow-float: 0 10px 30px rgba(28, 37, 65, 0.15);
+            --glass-bg: rgba(255, 255, 255, 0.9);
             --glass-border: 1px solid rgba(255, 255, 255, 0.5);
             --blur-val: 12px;
 
@@ -162,35 +162,18 @@
         /* --- TRIP VIEW --- */
         .container { padding: 0 20px; max-width: 600px; margin: 0 auto; }
         
-        .hero-card {
-            position: relative; height: 260px; border-radius: 16px; overflow: hidden; 
-            margin-bottom: 25px; 
-            box-shadow: var(--shadow-card);
-            background: #E0E6ED; 
-        }
-        .hero-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; }
-        .hero-overlay {
-            position: absolute; inset: 0;
-            background: linear-gradient(to top, rgba(28,37,65,0.95), transparent 60%);
-            display: flex; flex-direction: column; justify-content: flex-end; padding: 25px;
-        }
-        .hero-title { 
-            font-size: 1.8rem; line-height: 1.2; font-weight: 500; 
-            color: white; text-shadow: 0 4px 10px rgba(0,0,0,0.3); 
-        }
-
-        /* --- FEATURE 1: WEATHER WIDGET --- */
+        /* Feature 1: Compact Weather Widget */
         .weather-widget {
-            background: #EAF0F6; border-radius: 12px; padding: 15px; margin-bottom: 35px;
-            display: grid; grid-template-columns: 1fr 1.2fr; gap: 15px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            background: #EAF0F6; border-radius: 12px; padding: 15px; margin-bottom: 25px;
+            display: grid; grid-template-columns: 1fr 1.5fr; gap: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
             border: 1px solid #DDE4EB;
         }
-        .weather-col h4 { margin: 0 0 8px 0; font-size: 0.9rem; color: var(--text-secondary); font-weight: 500;}
-        .temp-display { font-size: 2.2rem; font-family: var(--font-serif); color: var(--accent-main); font-weight: 700; display: flex; align-items: center;}
-        .temp-display i { font-size: 1.5rem; margin-right: 10px; color: var(--accent-gold); }
-        .weather-desc { font-size: 0.9rem; color: var(--text-primary); font-weight: 600; margin-top: 2px; }
-        .outfit-advice { font-size: 0.85rem; color: #555; line-height: 1.5; margin-top: 5px; }
+        .weather-col h4 { margin: 0 0 5px 0; font-size: 0.8rem; color: var(--text-secondary); font-weight: 500; text-transform: uppercase; letter-spacing: 1px;}
+        .temp-display { font-size: 2rem; font-family: var(--font-serif); color: var(--accent-main); font-weight: 700; display: flex; align-items: center;}
+        .temp-display i { font-size: 1.3rem; margin-right: 10px; color: var(--accent-gold); }
+        .weather-desc { font-size: 0.85rem; color: var(--text-primary); font-weight: 600; margin-top: 0; }
+        .outfit-advice { font-size: 0.85rem; color: #555; line-height: 1.4; }
 
 
         .timeline-block { 
@@ -198,9 +181,9 @@
             border-left: 2px solid var(--line-light); 
         }
         
-        /* NEW: Slide-up Animation for Events */
+        /* Slide-up Animation for Events */
         .event-node { 
-            margin-bottom: 30px; position: relative; opacity: 0; 
+            margin-bottom: 25px; position: relative; opacity: 0; 
             transform: translateY(30px); /* Start 30px below */
             transition: opacity 0.4s ease, transform 0.4s ease; /* Adjusted transition */
         }
@@ -216,7 +199,7 @@
         }
 
         .event-card {
-            background: var(--bg-card); padding: 20px 24px; border-radius: 16px;
+            background: var(--bg-card); padding: 18px 22px; border-radius: 16px;
             box-shadow: var(--shadow-card); cursor: pointer; transition: transform 0.2s;
             border: 1px solid white; position: relative; overflow: hidden;
         }
@@ -226,66 +209,136 @@
             background: #EDF2F7;
             border-left: 4px solid #34495E;
             border-radius: 12px;
-            padding: 20px 24px;
+            padding: 18px 22px;
         }
         
-        .event-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
-        .event-time { font-family: var(--font-serif); font-size: 1.4rem; color: var(--accent-main); font-weight: 700; }
+        .event-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+        .event-time { font-family: var(--font-serif); font-size: 1.3rem; color: var(--accent-main); font-weight: 700; }
         .event-tag { 
-            font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px; 
-            padding: 4px 8px; border-radius: 4px; background: rgba(0,0,0,0.05); color: var(--text-secondary); 
+            font-size: 0.6rem; text-transform: uppercase; letter-spacing: 1px; 
+            padding: 3px 6px; border-radius: 4px; background: rgba(0,0,0,0.05); color: var(--text-secondary); 
             font-weight: 600;
         }
         
-        .event-title { font-size: 1.1rem; color: var(--text-primary); font-weight: 600; line-height: 1.4; margin-bottom: 8px; }
-        .event-meta { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: var(--text-secondary); }
+        .event-title { font-size: 1.05rem; color: var(--text-primary); font-weight: 600; line-height: 1.4; margin-bottom: 6px; }
+        .event-meta { display: flex; align-items: center; gap: 8px; font-size: 0.8rem; color: var(--text-secondary); }
+        
+        .day-title {
+            font-family: var(--font-serif);
+            font-size: 1.5rem;
+            color: var(--accent-main);
+            margin-bottom: 15px;
+            padding-left: 5px;
+            border-left: 3px solid var(--accent-gold);
+            line-height: 1;
+            padding-top: 5px;
+        }
 
-        /* --- WALLET / SHOPPING --- */
-        .wallet-card { 
-            background: white; padding: 25px; border-radius: 16px; 
-            box-shadow: var(--shadow-card); margin-bottom: 24px; 
-            position: relative; overflow: hidden;
+        /* --- WALLET REDESIGN --- */
+        /* Premium Summary Card */
+        .wallet-summary-card {
+            background: linear-gradient(135deg, #1C2541 0%, #2C3E50 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(28, 37, 65, 0.3);
+            margin-bottom: 25px;
+            position: relative;
+            overflow: hidden;
+        }
+        .wallet-summary-card::before {
+            content: ''; position: absolute; top: -50%; right: -50%; width: 100%; height: 100%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
+            pointer-events: none;
+        }
+        .wallet-label { font-size: 0.75rem; opacity: 0.7; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 5px; }
+        .wallet-amount { font-family: var(--font-serif); font-size: 2.8rem; color: #F4E1D2; margin-bottom: 5px; line-height: 1; }
+        .wallet-sub { font-size: 0.9rem; opacity: 0.8; font-weight: 300; }
+        
+        /* Clean Input Area */
+        .wallet-action-area {
+            background: white; border-radius: 20px; padding: 20px;
+            box-shadow: var(--shadow-card); margin-bottom: 25px;
+        }
+        .converter-row {
+            display: flex; align-items: center; justify-content: space-between;
+            background: #F8F9FA; padding: 10px 15px; border-radius: 12px; margin-bottom: 15px;
+        }
+        .conv-group { display: flex; flex-direction: column; align-items: center; flex: 1; }
+        .conv-group input { 
+            width: 100%; background: transparent; border: none; text-align: center; 
+            font-size: 1.2rem; font-weight: 600; color: var(--text-primary); outline: none;
+            border-bottom: 2px solid transparent; transition: 0.3s;
+        }
+        .conv-group input:focus { border-bottom-color: var(--accent-gold); }
+        .conv-label { font-size: 0.65rem; color: var(--text-secondary); letter-spacing: 1px; }
+        
+        .user-select-row { display: flex; gap: 8px; margin-bottom: 15px; }
+        .user-chip {
+            flex: 1; padding: 8px; border: 1px solid #EEE; border-radius: 8px;
+            background: white; color: var(--text-secondary); cursor: pointer; text-align: center;
+            font-size: 0.9rem; transition: 0.2s;
+        }
+        .user-chip.active { background: var(--accent-main); color: white; border-color: var(--accent-main); }
+        
+        .input-elegant {
+            width: 100%; padding: 12px 0; border: none; border-bottom: 1px solid #EEE;
+            font-size: 1rem; margin-bottom: 10px; outline: none; border-radius: 0;
+            background: transparent;
+        }
+        .input-elegant:focus { border-bottom-color: var(--accent-main); }
+        
+        .btn-add-record {
+            width: 100%; padding: 14px; background: var(--accent-main); color: white;
+            border: none; border-radius: 12px; font-size: 1rem; font-weight: 500;
+            margin-top: 10px; cursor: pointer; box-shadow: 0 4px 10px rgba(28, 37, 65, 0.2);
+        }
+
+        /* Expense List */
+        .expense-list-container { background: white; border-radius: 16px; padding: 10px 20px; box-shadow: var(--shadow-card); }
+        .expense-item { 
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 15px 0; border-bottom: 1px solid #F0F0F0; 
+        }
+        .expense-item:last-child { border-bottom: none; }
+        .exp-avatar {
+            width: 32px; height: 32px; border-radius: 50%; background: #EDF2F7; 
+            color: var(--accent-main); display: flex; justify-content: center; align-items: center;
+            font-size: 0.8rem; font-weight: 700; margin-right: 12px;
         }
         
-        /* NEW: Simple Check List for Shopping */
+        /* --- SHOPPING --- */
+        .shopping-card { 
+            background: white; padding: 20px; border-radius: 16px; 
+            box-shadow: var(--shadow-card); margin-bottom: 24px; 
+        }
+        
         #shopping-input-container {
-            display: flex;
-            margin-bottom: 15px;
-            gap: 10px;
+            display: flex; margin-bottom: 15px; gap: 10px;
         }
         #shopping-input-container input {
-            flex-grow: 1;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 1rem;
+            flex-grow: 1; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem;
         }
         #shopping-input-container button {
-            background: var(--accent-gold);
-            color: white;
-            border: none;
-            padding: 12px 15px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1rem;
+            background: var(--accent-gold); color: white; border: none;
+            padding: 0 20px; border-radius: 8px; cursor: pointer; font-size: 1.2rem;
         }
 
         .shopping-item { 
             padding: 15px 0; border-bottom: 1px solid var(--line-light);
             display: flex; justify-content: space-between; align-items: center;
         }
-        .shopping-item-title { font-weight: 600; color: var(--text-primary); }
-        .shopping-item-meta { font-size: 0.8rem; color: var(--text-secondary); margin-top: 4px; }
+        .shopping-item-title { font-weight: 600; color: var(--text-primary); font-size: 1.05rem; }
+        .shopping-item-meta { font-size: 0.75rem; color: var(--text-secondary); margin-top: 3px; }
         .shopping-actions button {
             background: none; border: none; padding: 5px; font-size: 1.2rem; cursor: pointer;
-            transition: color 0.2s;
+            transition: color 0.2s; margin-left: 8px;
         }
         .shopping-actions .btn-bought { color: #D4EDDA; }
         .shopping-actions .btn-bought.active { color: #155724; }
-        .shopping-actions .btn-delete { color: #E74C3C; }
+        .shopping-actions .btn-delete { color: #E74C3C; opacity: 0.6; }
         
-        .bought-item .shopping-item-title { opacity: 0.6; text-decoration: line-through; }
-        .bought-item .shopping-item-meta { opacity: 0.6; }
+        .bought-item .shopping-item-title { opacity: 0.5; text-decoration: line-through; }
         
         /* --- TRANSLATE VIEW --- */
         .ps-grid {
@@ -334,7 +387,7 @@
         }
         .nav-btn span { display: none; } /* Hide text */
         .nav-btn.active { color: var(--accent-gold); transform: translateY(-3px); }
-        .nav-btn.active span { opacity: 0; transform: translateY(0); } /* Ensure text remains hidden */
+        .nav-btn.active span { opacity: 0; transform: translateY(0); } 
         
         /* --- MODAL CARD POP-UP --- */
         .modal-overlay {
@@ -392,19 +445,6 @@
 
         #detail-modal .container { padding-top: 15px; padding-bottom: 30px; } 
         
-        /* Settings Panel inside Info */
-        .settings-panel {
-            background: #FFF; border: 1px solid #EEE; padding: 15px; border-radius: 12px; margin-bottom: 20px;
-        }
-        .settings-input {
-            width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #DDD; border-radius: 8px;
-            font-size: 0.9rem; font-family: monospace;
-        }
-        .save-btn {
-            margin-top: 10px; padding: 8px 15px; background: var(--accent-main); color: white; 
-            border: none; border-radius: 6px; cursor: pointer; font-size: 0.9rem;
-            width: 100%;
-        }
         .status-badge {
             display: inline-block; padding: 3px 8px; border-radius: 4px; font-size: 0.75rem;
             margin-bottom: 5px;
@@ -417,24 +457,34 @@
 <body>
     <!-- Script Block 1: Image & Map Utils -->
     <script>
+        // TODO: 填入您的 Gemini API Key (保留引號)
+        const GEMINI_API_KEY = ""; 
+
+        // TODO: 填入您的 Firebase Config (整段 JSON 物件)
+        const FIREBASE_CONFIG = {
+             // 請將 Firebase 控制台中的 Config 貼在這裡
+             // 格式範例: 
+             // apiKey: "AIzaSy...",
+             // authDomain: "...",
+             // projectId: "...",
+             // ...
+        };
+
         const GOOGLE_MAPS_API_KEY = "AIzaSyAX9nvh4bJpiM6-oTm8FoUSZeSBpxZBc1E"; 
-        let apiKey = localStorage.getItem('gemini_api_key') || "";
         let currentRate = 0.2215; // Default fallback
         let currentIdx = 0;
         let currentUser = 'YK';
         let expenses = []; 
         let shoppingList = []; 
         let db, auth, expensesRef, shoppingRef, tripNotesRef;
-        let hasAlertedAuthError = false; // Prevents spamming alerts
+        let hasAlertedAuthError = false; 
         
-        // Weather Cache
         let weatherCache = {
             hakodate: { temp: '--', summary: '載入中...' },
             aomori: { temp: '--', summary: '載入中...' }
         };
 
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-        // Firebase Config handling is moved to script module below
         
         const IMG_MAP = {
             'hakodate_night': 'photo-1535392460594-553655519f93',
@@ -488,7 +538,6 @@
         }
 
         function getWeatherForDay(day) {
-            // Determine which cached location data to use
             let locationKey = (day.day <= 2) ? 'hakodate' : 'aomori';
             let realData = weatherCache[locationKey];
             let locationName = locationKey === 'hakodate' ? '函館 (Hakodate)' : '青森 (Aomori)';
@@ -496,7 +545,6 @@
             const icon = getIconFromSummary(realData.summary);
             let outfit = '請穿著防風外套與發熱衣，洋蔥式穿法。';
             
-            // Parse temp to integer for logic
             let tempInt = parseInt(realData.temp);
             if (!isNaN(tempInt) && tempInt < -3) {
                 outfit = '極寒警報！請務必穿著滑雪外套、防風手套與毛帽。';
@@ -512,6 +560,7 @@
         }
 
         // --- 2. DATA (TRIP EVENTS) ---
+        // NOTE: HERO IMAGES REMOVED from display logic, but data kept for modal fallback
         const tripData = [
             {
                 day: 1, date: "02.02", week: "MON",
@@ -634,39 +683,41 @@
         <!-- 2. WALLET VIEW -->
         <div id="view-wallet" class="view-section hidden">
             <div class="container">
-                <div class="wallet-card wallet-total">
-                    <div style="font-size: 0.8rem; opacity: 0.7; letter-spacing: 1px; margin-bottom: 5px;">ESTIMATED TOTAL</div>
-                    <div class="serif" style="font-size: 3rem; color: var(--accent-gold);" id="total-jpy">¥0</div>
-                    <div style="opacity: 0.8; font-size: 1rem; margin-top: 5px;">≈ TWD <span id="total-twd">0</span></div>
+                <!-- Redesigned Wallet Summary -->
+                <div class="wallet-summary-card">
+                    <div class="wallet-label">CURRENT BUDGET STATUS</div>
+                    <div class="wallet-amount" id="total-jpy">¥0</div>
+                    <div class="wallet-sub">≈ TWD <span id="total-twd">0</span></div>
                 </div>
-                <div class="wallet-card">
-                    <h3 class="serif" style="margin-top: 0; color: var(--accent-main); margin-bottom: 15px;">快速換算 Converter</h3>
-                    <div class="currency-input-row">
-                        <div class="currency-field">
+
+                <!-- Clean Action Area -->
+                <div class="wallet-action-area">
+                    <div class="converter-row">
+                        <div class="conv-group">
                             <input type="number" id="conv-jpy" placeholder="0" oninput="convert('jpy')">
-                            <label>JPY ¥</label>
+                            <div class="conv-label">JPY</div>
                         </div>
-                        <i class="fa-solid fa-right-left" style="color: #ccc; font-size: 0.9rem;"></i>
-                        <div class="currency-field">
+                        <i class="fa-solid fa-arrow-right-arrow-left" style="color:#ccc; font-size:0.8rem; margin:0 10px;"></i>
+                        <div class="conv-group">
                             <input type="number" id="conv-twd" placeholder="0" oninput="convert('twd')">
-                            <label>TWD $</label>
+                            <div class="conv-label">TWD</div>
                         </div>
                     </div>
-                    <div style="font-size: 0.8rem; color: #999; text-align: center; margin-bottom: 20px;" id="current-rate-display">
-                        匯率 Rate: Loading...
+                    <div style="font-size: 0.75rem; color: #999; text-align: center; margin-bottom: 15px;" id="current-rate-display">Rate: Loading...</div>
+                    
+                    <div class="user-select-row">
+                        <div class="user-chip active" onclick="selectUser('YK', this)">YK</div>
+                        <div class="user-chip" onclick="selectUser('YY', this)">YY</div>
+                        <div class="user-chip" onclick="selectUser('YS', this)">YS</div>
                     </div>
-                    <h3 class="serif" style="margin: 20px 0 15px; color: var(--accent-main);">記帳 Record</h3>
-                    <div style="display: flex; gap: 10px; margin-bottom: 15px;">
-                        <button class="user-btn active" onclick="selectUser('YK', this)">YK</button>
-                        <button class="user-btn" onclick="selectUser('YY', this)">YY</button>
-                        <button class="user-btn" onclick="selectUser('YS', this)">YS</button>
-                    </div>
-                    <input type="text" id="ex-item" placeholder="消費項目" style="width:100%; padding:12px; border:1px solid #ddd; border-radius:8px; margin-bottom:10px; font-size:1rem;">
-                    <input type="number" id="ex-price" placeholder="金額 (日幣)" style="width:100%; padding:12px; border:1px solid #ddd; border-radius:8px; margin-bottom:15px; font-size:1rem;">
-                    <button onclick="addExpense()" style="width:100%; padding:15px; background:var(--accent-main); color:white; border:none; border-radius:8px; font-size:1rem; cursor:pointer;">新增紀錄</button>
+
+                    <input type="text" id="ex-item" class="input-elegant" placeholder="項目名稱 (例如: 蘋果派)">
+                    <input type="number" id="ex-price" class="input-elegant" placeholder="金額 (JPY)">
+                    <button class="btn-add-record" onclick="addExpense()">新增紀錄</button>
                 </div>
+                
                 <h3 class="serif" style="margin-left: 10px; color: var(--text-secondary);">Recent History</h3>
-                <div id="expense-list" style="background: white; border-radius: 16px; padding: 0 20px; box-shadow: var(--shadow-card);"></div>
+                <div id="expense-list" class="expense-list-container"></div>
             </div>
         </div>
         
@@ -674,14 +725,13 @@
         <div id="view-shopping" class="view-section hidden">
             <div class="container">
                 <div class="wallet-card">
-                    <h3 class="serif" style="margin-top: 0; color: var(--accent-main); margin-bottom: 15px;">新增購物任務</h3>
-                    <!-- NEW Shopping Input -->
+                    <h3 class="serif" style="margin-top: 0; color: var(--accent-main); margin-bottom: 15px;">新增任務</h3>
                     <div id="shopping-input-container">
                         <input type="text" id="shop-item" placeholder="欲購物品名稱">
                         <button onclick="addShoppingItem()"><i class="fa-solid fa-plus"></i></button>
                     </div>
                 </div>
-                <h3 class="serif" style="margin-left: 10px; color: var(--text-secondary);">Shared Shopping List</h3>
+                <h3 class="serif" style="margin-left: 10px; color: var(--text-secondary);">Shared Checklist</h3>
                 <div id="shopping-list-container" style="background: white; border-radius: 16px; padding: 0 20px; box-shadow: var(--shadow-card);"></div>
             </div>
         </div>
@@ -729,28 +779,14 @@
         <!-- 5. INFO VIEW -->
         <div id="view-info" class="view-section hidden">
             <div class="container">
-                 <!-- NEW: Settings Panel -->
-                 <div class="settings-panel">
-                    <h4 class="serif" style="margin-top:0; color:var(--accent-main);">⚙️ 系統設定</h4>
-                    
-                    <div style="font-size:0.85rem; color:#666; margin-bottom:5px;">Google Gemini API Key (用於天氣/翻譯)</div>
-                    <input type="password" id="api-key-input" class="settings-input" placeholder="貼上您的 API Key">
-                    <button class="save-btn" onclick="saveApiKey()">儲存 API Key</button>
-                    
-                    <hr style="margin: 15px 0; border: 0; border-top: 1px solid #eee;">
-
-                    <div style="font-size:0.85rem; color:#666; margin-bottom:5px;">Firebase Config (多人同步用)</div>
-                    <textarea id="firebase-config-input" class="settings-input" rows="5" placeholder='請貼上包含 apiKey, authDomain, projectId... 的 JSON 物件'></textarea>
-                    <button class="save-btn" onclick="saveFirebaseConfig()">儲存並重整</button>
-                    <div id="firebase-status" style="margin-top:10px; font-size:0.8rem; color:#999;">狀態: 檢查中...</div>
-                </div>
-
+                <!-- Note: Settings inputs removed as requested -->
                 <div class="wallet-card" style="padding: 0; overflow: hidden; margin-top:20px;">
                     <div style="padding: 20px; background: #F8F9FA; border-bottom: 1px solid #eee;">
                          <h3 class="serif" style="margin:0; color:var(--accent-main);">全域地圖 Map</h3>
                     </div>
                     <iframe id="trip-map-overview-iframe" style="width:100%; height:350px; border:none;" loading="lazy"></iframe>
                 </div>
+                <div id="firebase-status" style="margin: 10px 20px; font-size:0.8rem; color:#999;">連線狀態偵測中...</div>
                 <h3 class="serif" style="margin: 20px 0 15px; padding-left:10px;">緊急聯絡 Emergency</h3>
                 <div class="ps-grid" style="grid-template-columns: 1fr;">
                     <div class="ps-card" style="flex-direction: row; justify-content: flex-start; height: auto; text-align: left;" onclick="window.location.href='tel:+81-11-222-2930'">
@@ -839,7 +875,7 @@
         import { getFirestore, collection, query, onSnapshot, addDoc, serverTimestamp, setDoc, doc, updateDoc, deleteDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         const GOOGLE_MAPS_API_KEY = "AIzaSyAX9nvh4bJpiM6-oTm8FoUSZeSBpxZBc1E"; 
-        let apiKey = localStorage.getItem('gemini_api_key') || "";
+        let apiKey = ""; // API Key Placeholder
         let currentRate = 0.2215; // Fallback rate
         let currentIdx = 0;
         let currentUser = 'YK';
@@ -853,15 +889,31 @@
         // Fallback config if environment missing
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
         let firebaseConfig = {};
-        try {
-            firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
-        } catch (e) { console.log("No firebase config found, running local mode"); }
+        
+        // Hardcoded Config - Replaced manual input
+        // Note: In a real deployment, these would be environment variables or securely injected.
+        // Since the user requested to hardcode them, they are placed here.
+        // If the user provided them in the prompt, they would be here.
+        // Since they are not provided, we rely on the __firebase_config if available, 
+        // or prompt the user to edit the code.
+        
+        if (typeof FIREBASE_CONFIG !== 'undefined' && Object.keys(FIREBASE_CONFIG).length > 0) {
+             firebaseConfig = FIREBASE_CONFIG;
+        } else {
+             try {
+                firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+             } catch (e) { console.log("No firebase config found"); }
+        }
+        
+        if (typeof GEMINI_API_KEY !== 'undefined' && GEMINI_API_KEY !== "") {
+            apiKey = GEMINI_API_KEY;
+        }
 
         // --- REAL-TIME DATA FETCHING ---
         async function fetchRealData() {
             if(!apiKey) {
                 console.log("No API Key set. Using offline defaults.");
-                document.getElementById('current-rate-display').innerText = `即時匯率: 1 JPY = ${currentRate.toFixed(4)} TWD (請設定 API Key)`;
+                document.getElementById('current-rate-display').innerText = `即時匯率: 1 JPY = ${currentRate.toFixed(4)} TWD (離線)`;
                 return;
             }
 
@@ -884,8 +936,6 @@
                     }
                 }
             };
-            // NOTE: The 400 error implies a malformed key or prompt. 
-            // We use the apiKey from localStorage now.
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
             
             try {
@@ -912,7 +962,6 @@
             } catch(e) { 
                 console.error("Data fetch failed:", e);
                 document.getElementById('current-rate-display').innerText = `即時匯率: 1 JPY = ${currentRate.toFixed(4)} TWD (連線失敗)`;
-                // Reset header display on failure
                 document.getElementById('header-weather-icon').className = 'fa-solid fa-cloud-sun-rain';
                 document.getElementById('header-weather-temp').innerText = '離線';
                 weatherCache.hakodate = { temp: '--', summary: '無法連線' };
@@ -973,16 +1022,8 @@
         }
 
         const setupFirebase = async () => {
-            let manualConfigStr = localStorage.getItem('firebase_config_manual');
-            let manualConfig = null;
-            if(manualConfigStr) {
-                try { manualConfig = JSON.parse(manualConfigStr); } catch(e){ console.error("Invalid manual config"); }
-            }
-
-            const finalConfig = manualConfig || firebaseConfig;
-            
             // If no valid config, use local mode
-            if (!finalConfig || Object.keys(finalConfig).length === 0 || !finalConfig.projectId) {
+            if (!firebaseConfig || Object.keys(firebaseConfig).length === 0 || !firebaseConfig.projectId) {
                 console.log("Using LocalStorage Mode (No Config)");
                 document.getElementById('firebase-status').innerHTML = "<span class='status-badge offline'>離線模式 (本地存儲)</span>";
                 window.subExpenses(); window.subShopping(); 
@@ -990,7 +1031,7 @@
             }
 
             try {
-                const app = initializeApp(finalConfig);
+                const app = initializeApp(firebaseConfig);
                 db = getFirestore(app);
                 auth = getAuth(app);
                 
@@ -1011,28 +1052,6 @@
                 console.log("Firebase init failed, falling back to local", e);
                 document.getElementById('firebase-status').innerHTML = "<span class='status-badge offline'>連線失敗 (使用離線模式)</span>";
                 window.subExpenses(); window.subShopping();
-            }
-        };
-        
-        window.saveFirebaseConfig = () => {
-            const configStr = document.getElementById('firebase-config-input').value.trim();
-            if(configStr) {
-                try {
-                    const parsedConfig = JSON.parse(configStr);
-                    if (!parsedConfig.projectId) {
-                        alert("JSON 格式正確，但缺少 projectId。請確認複製了完整的 Firebase Config JSON 物件。");
-                        return;
-                    }
-                    localStorage.setItem('firebase_config_manual', configStr);
-                    alert("設定已儲存！即將重新整理頁面以套用...");
-                    location.reload();
-                } catch(e) {
-                    alert("JSON 格式錯誤，請檢查複製內容是否完整。");
-                }
-            } else {
-                 localStorage.removeItem('firebase_config_manual');
-                 alert("已清除 Firebase 設定！即將重新整理頁面。");
-                 location.reload();
             }
         };
 
@@ -1073,11 +1092,9 @@
             if (!hasAlertedAuthError) {
                 hasAlertedAuthError = true; // Prevent spam
                 document.getElementById('firebase-status').innerHTML = "<span class='status-badge offline'>權限錯誤！自動切換離線模式。</span>";
-                // Switch refs to null to force local mode in subsequent calls
                 expensesRef = null;
                 shoppingRef = null;
                 tripNotesRef = null; 
-                // Re-subscribe to local store
                 window.subExpenses();
                 window.subShopping();
             }
@@ -1139,7 +1156,9 @@
             const nav = document.getElementById('date-nav');
             nav.innerHTML = tripData.map((d, i) => `<div class="d-item ${i === currentIdx ? 'active' : ''}" onclick="switchDay(${i})"><div class="d-week">${d.week}</div><div class="d-num">${d.date.split('.')[1]}</div></div>`).join('');
             
-            let html = `<div class="hero-card"><img src="${day.heroImg}" class="hero-img" onerror="handleImgError(this)"><div class="hero-overlay"><div class="serif" style="color:rgba(255,255,255,0.8); letter-spacing:2px; font-size:0.8rem;">DAY ${day.day}</div><div class="hero-title">${day.heroTitle}</div></div></div>`;
+            // Removed Hero Card as requested
+            // Keep weather widget at the top
+            let html = `<div class="day-title">DAY ${day.day} · ${day.week}</div>`;
             
             html += `<div class="container weather-widget"><div class="weather-col"><h4>${w.loc} 現在天氣</h4><div class="temp-display"><i class="fa-solid ${w.icon}"></i>${w.temp}</div><div class="weather-desc">${w.text}</div></div><div class="weather-col" style="border-left:1px solid #DDE4EB; padding-left:15px;"><h4>穿搭建議</h4><div class="outfit-advice">${w.outfit}</div></div></div>`;
             
@@ -1168,7 +1187,6 @@
             document.getElementById('m-tag').innerText = data.tag;
             document.getElementById('m-desc').innerText = data.desc;
             
-            // Try fetch note
             if(tripNotesRef && !hasAlertedAuthError) {
                 try {
                     const noteId = `n_${data.dI}_${data.eI}`;
@@ -1202,23 +1220,12 @@
                     alert("筆記已儲存並同步到雲端！");
                 } catch(e) { console.error("Save error:", e); handleAuthError(); }
             } else {
-                 // Local Mock Save
                  document.getElementById('m-desc').innerText = newNote;
                  window.toggleEditMode();
                  console.log("本地筆記已暫存 (重整後消失)");
             }
         };
         
-        window.saveApiKey = () => {
-            const key = document.getElementById('api-key-input').value.trim();
-            if(key) {
-                localStorage.setItem('gemini_api_key', key);
-                apiKey = key;
-                alert("API Key 已儲存！即將嘗試連線天氣服務。");
-                fetchRealData();
-            }
-        };
-
         window.closeModal = () => { document.getElementById('detail-modal').classList.remove('active'); document.querySelector('.modal-overlay').classList.remove('active'); };
         window.showFs = (j,c) => { document.getElementById('fs-jp').innerText=j; document.getElementById('fs-cn').innerText=c; document.getElementById('fs-text-modal').classList.add('active'); };
         window.closeFs = () => document.getElementById('fs-text-modal').classList.remove('active');
@@ -1226,7 +1233,7 @@
             const j = document.getElementById('conv-jpy'), t = document.getElementById('conv-twd');
             if(s==='jpy') t.value = Math.round(j.value * currentRate); else j.value = Math.round(t.value / currentRate);
         };
-        window.selectUser = (u, b) => { currentUser=u; document.querySelectorAll('.user-btn').forEach(e=>{e.style.background='white';e.style.color='#666';e.style.borderColor='#ddd'}); b.style.background='var(--accent-main)';b.style.color='white';b.style.borderColor='var(--accent-main)'; };
+        window.selectUser = (u, b) => { currentUser=u; document.querySelectorAll('.user-chip').forEach(e=>{e.classList.remove('active')}); b.classList.add('active'); };
         window.toggleEditMode = () => { const e=document.getElementById('editing-area'), d=document.getElementById('m-desc'); if(e.classList.contains('hidden')){e.classList.remove('hidden');d.classList.add('hidden');}else{e.classList.add('hidden');d.classList.remove('hidden');} };
         window.translateNow = () => { if(confirm) console.log("翻譯 API 需金鑰，此為演示。"); };
         window.copyMapCode = () => { 
@@ -1251,14 +1258,8 @@
             document.getElementById('header-days').innerText = diff > 0 ? diff : 0;
             document.getElementById('dynamic-intro-text').innerText = "準備好迎接青森的雪了嗎？";
             
-            // Pre-fill keys/config on load
-            if(apiKey) document.getElementById('api-key-input').value = apiKey;
-            const manualConfig = localStorage.getItem('firebase_config_manual');
-            if(manualConfig) document.getElementById('firebase-config-input').value = manualConfig;
-            
-            // Set initial firebase status
-             if(manualConfig || (typeof __firebase_config !== 'undefined' && JSON.parse(__firebase_config).projectId)) {
-                 document.getElementById('firebase-status').innerHTML = "<span class='status-badge online'>檢查連線中...</span>";
+             if(firebaseConfig && firebaseConfig.projectId) {
+                 document.getElementById('firebase-status').innerHTML = "<span class='status-badge online'>已連線 Firebase</span>";
              } else {
                  document.getElementById('firebase-status').innerHTML = "<span class='status-badge offline'>未設定 Config (單機模式)</span>";
              }
