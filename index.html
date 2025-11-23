@@ -3,14 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>青森函館冬旅 2026</title>
+    <title>日光輕井澤冬旅 2026</title>
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#FAF9F6">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <!-- 引入襯線體 (Noto Serif TC) 增加雜誌質感 -->
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;900&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;900&family=Zen+Maru+Gothic:wght=400;500;700&display=swap" rel="stylesheet">
     
     <style>
         :root {
@@ -223,57 +222,50 @@
 </head>
 <body>
 
-    <!-- 1. HEADER & DATE NAV -->
     <div class="header">
-        <div class="app-title">青森函館冬旅</div>
+        <div class="app-title">日光輕井澤冬旅</div>
         <div class="app-meta">
             <span><i class="fa-solid fa-hourglass-half"></i> <span id="days-left">--</span> Days</span>
             <span><i class="fa-solid fa-yen-sign"></i> <span id="rate-disp">0.22</span></span>
         </div>
         
-        <!-- Date Slider (Like Screenshot) -->
         <div class="date-nav" id="date-nav">
-            <!-- JS Generated -->
-        </div>
+            </div>
     </div>
 
-    <!-- 2. WEATHER WIDGET (Like Screenshot) -->
     <div class="weather-strip" id="weather-strip">
         <div class="w-item">
             <div class="w-time">Now</div>
-            <div class="w-icon"><i class="fa-solid fa-cloud"></i></div>
-            <div class="w-temp">-2°</div>
+            <div class="w-icon"><i class="fa-solid fa-sun"></i></div>
+            <div class="w-temp">12°</div>
         </div>
         <div class="w-item">
             <div class="w-time">13:00</div>
-            <div class="w-icon"><i class="fa-regular fa-snowflake"></i></div>
-            <div class="w-temp">-3°</div>
+            <div class="w-icon"><i class="fa-solid fa-cloud-sun"></i></div>
+            <div class="w-temp">13°</div>
         </div>
         <div class="w-item">
             <div class="w-time">14:00</div>
-            <div class="w-icon"><i class="fa-regular fa-snowflake"></i></div>
-            <div class="w-temp">-3°</div>
+            <div class="w-icon"><i class="fa-solid fa-cloud"></i></div>
+            <div class="w-temp">12°</div>
         </div>
         <div class="w-item">
             <div class="w-time">15:00</div>
             <div class="w-icon"><i class="fa-solid fa-wind"></i></div>
-            <div class="w-temp">-4°</div>
+            <div class="w-temp">11°</div>
         </div>
         <div class="w-item">
             <div class="w-time">16:00</div>
-            <div class="w-icon"><i class="fa-solid fa-moon"></i></div>
-            <div class="w-temp">-5°</div>
+            <div class="w-icon"><i class="fa-solid fa-cloud-moon"></i></div>
+            <div class="w-temp">9°</div>
         </div>
     </div>
 
-    <!-- 3. TAB: ITINERARY -->
     <div id="tab-trip" class="tab-content">
         <div id="timeline-container" class="timeline-container">
-            <!-- JS Generated Timeline -->
-        </div>
+            </div>
     </div>
 
-    <!-- 4. TAB: EXPENSES -->
     <div id="tab-money" class="tab-content" style="display:none;">
         <div class="exp-header">
             <div style="font-size:0.8rem; opacity:0.7;">1 JPY ≈ <span id="rate-big">0.22</span> TWD</div>
@@ -293,14 +285,12 @@
         <div id="expense-list" style="padding:20px;"></div>
     </div>
 
-    <!-- 5. TAB: TOOLS -->
     <div id="tab-tools" class="tab-content" style="display:none;">
         <div style="padding:20px;">
             <input type="text" id="trans-input" class="e-input" placeholder="輸入中文...">
             <button class="e-btn" style="background:#444;" onclick="translateCustom()">翻譯成日文</button>
         </div>
         <div class="tool-grid">
-            <!-- Preset Cards -->
             <div class="tool-card" onclick="openTransModal('不吃肉 (海鮮可)', '豚肉は食べられません（魚介類は大丈夫です）')">
                 <i class="fa-solid fa-fish fa-2x" style="margin-bottom:10px;"></i><br>飲食禁忌
             </div>
@@ -313,7 +303,6 @@
         </div>
     </div>
 
-    <!-- BOTTOM NAV -->
     <div class="nav-bar">
         <div class="nav-item active" onclick="switchTab('trip', this)">
             <i class="fa-solid fa-map nav-icon"></i>
@@ -329,7 +318,6 @@
         </div>
     </div>
 
-    <!-- DETAIL MODAL (The Core Feature) -->
     <div class="modal-overlay" id="modal-overlay" onclick="closeModal()"></div>
     <div class="detail-modal" id="detail-modal">
         <div class="m-header">
@@ -345,13 +333,10 @@
         <img src="" id="m-hero" class="m-hero">
 
         <div class="ps-section">
-            <!-- 1. Point & Speak (指差會話) -->
             <div class="sec-title">指差し会話 (POINT & SPEAK)</div>
             <div id="ps-container">
-                <!-- JS generated -->
-            </div>
+                </div>
 
-            <!-- 2. GPS Phone (If exists) -->
             <div id="gps-container" style="display:none;">
                 <div class="gps-box">
                     <div class="gps-icon"><i class="fa-solid fa-car"></i></div>
@@ -362,24 +347,20 @@
                 </div>
             </div>
 
-            <!-- 3. Reservation Info (If exists) -->
             <div id="res-container" style="display:none; background:#F9F9F9; padding:15px; border-radius:12px; margin-bottom:20px;">
                 <div style="font-size:0.7rem; color:#999; font-weight:bold; letter-spacing:1px; margin-bottom:5px;">RESERVATION NO.</div>
                 <div style="font-size:1.2rem; font-weight:bold; font-family:monospace;" id="res-num">--</div>
             </div>
 
-            <!-- 4. Map Button -->
             <button class="map-btn" onclick="openMap()">
                 <i class="fa-solid fa-map-location-dot"></i> 開啟 Google Maps 導航
             </button>
 
-            <!-- 5. Info Text -->
             <div class="sec-title">關於此處 (ABOUT)</div>
             <div class="info-text" id="m-desc">Description</div>
         </div>
     </div>
 
-    <!-- Translation Pop Modal -->
     <div style="position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); width:80%; background:white; padding:30px; border-radius:20px; text-align:center; z-index:2200; box-shadow:0 10px 40px rgba(0,0,0,0.3); display:none;" id="trans-pop">
         <div style="font-size:1rem; color:#888; margin-bottom:10px;" id="tp-cn">CN</div>
         <div style="font-size:2rem; font-weight:900; margin-bottom:20px; font-family:'Noto Serif TC';" id="tp-jp">JP</div>
@@ -387,139 +368,203 @@
     </div>
 
     <script>
-        // --- DATA STRUCTURE (Updated for 7.0) ---
-        // Added: gps, pointSpeak array, address, reservation
+        // --- DATA STRUCTURE (Updated for 8.0 - 日光/輕井澤/東京) ---
+        // New start date: 3/26
         const tripData = [
             {
-                day: 1, date: "2/2", week: "MON",
+                day: 1, date: "3/26", week: "WED",
                 events: [
                     { 
-                        time: "11:10", title: "函館機場抵達", tag: "TRANSPORT", 
-                        desc: "入境後領取行李，前往計程車乘車處。戶外溫度低，請穿好外套。",
-                        addr: "Hakodate Airport",
-                        img: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=800",
-                        pointSpeak: [
-                            { cn: "請載我到函館車站", jp: "函館駅までお願いします" },
-                            { cn: "請問計程車在哪裡搭？", jp: "タクシー乗り場はどこですか？" }
-                        ]
-                    },
-                    { 
-                        time: "13:15", title: "UNIQLO 採購", tag: "SHOPPING",
-                        desc: "購買 Heattech 發熱衣、防風褲。旁邊有超市可買補給品。",
-                        addr: "1-29-2 Showa, Hakodate",
+                        time: "10:30", title: "成田機場抵達 (T2)", tag: "TRANSPORT", 
+                        desc: "入境後領取行李。換領 JR Tokyo Wide Pass (三日券) 及劃位。",
+                        addr: "Narita Airport Terminal 2",
                         img: "https://images.unsplash.com/photo-1542060748-10c28b62716f?q=80&w=800",
                         pointSpeak: [
-                            { cn: "我要免稅", jp: "免税（Tax Free）でお願いします" },
-                            { cn: "有大一點的尺寸嗎？", jp: "もっと大きいサイズはありますか？" }
+                            { cn: "我要換領 JR Tokyo Wide Pass", jp: "JR東京ワイドパスの交換をお願いします" },
+                            { cn: "可以幫我劃位嗎？", jp: "指定席の予約をお願いできますか？" }
                         ]
                     },
                     { 
-                        time: "17:00", title: "函館山夜景", tag: "SIGHTSEEING",
-                        desc: "百萬夜景。觀景台風大，建議停留 30 分鐘。",
-                        addr: "Hakodate Ropeway",
-                        img: "https://images.unsplash.com/photo-1532236204992-f5e85c024202?q=80&w=800",
-                        gps: "0138-23-3105",
+                        time: "12:15", title: "搭乘 N'EX 至東京車站", tag: "TRANSPORT",
+                        desc: "N'EX 12:15 發車，13:17 抵達東京。 (JR Pass 啟用日)",
+                        addr: "成田機場 -> 東京車站",
+                        img: "https://images.unsplash.com/photo-1588667319985-e11a629b19e6?q=80&w=800",
                         pointSpeak: [
-                            { cn: "兩張大人票", jp: "大人2枚お願いします" },
-                            { cn: "最後一班纜車幾點？", jp: "最終のロープウェイは何時ですか？" }
+                            { cn: "請問 N'EX 在哪個月台？", jp: "N'EX のホームはどこですか？" }
+                        ]
+                    },
+                    { 
+                        time: "14:30", title: "JR 新幹線轉往宇都宮", tag: "TRANSPORT",
+                        desc: "東京車站搭乘東北/山形新幹線 (Tsubasa 139) 往宇都宮，14:48 出發，15:35 抵達。",
+                        addr: "東京車站 -> 宇都宮車站",
+                        img: "https://images.unsplash.com/photo-1560931326-03c6838a6a6e?q=80&w=800"
+                    },
+                    { 
+                        time: "16:00", title: "宇都宮餃子晚餐", tag: "FOOD",
+                        desc: "晚餐在宇都宮站前或東口吃餃子。",
+                        addr: "宇都宮車站附近",
+                        pointSpeak: [
+                            { cn: "請問有英文菜單嗎？", jp: "英語のメニューはありますか？" },
+                            { cn: "我要這兩種餃子", jp: "この二種類の餃子をください" }
+                        ]
+                    },
+                    { 
+                        time: "19:00", title: "住宿：東武日光站前飯店", tag: "HOTEL",
+                        desc: "JR 轉東武日光線 (Local) 至東武日光站。飯店在車站對面。",
+                        addr: "Hotel Famitic Nikko",
+                        bookingId: "NKO-FAM-326",
+                        img: "https://images.unsplash.com/photo-1517840901100-8179e982acb7?q=80&w=800"
+                    }
+                ]
+            },
+            {
+                day: 2, date: "3/27", week: "THU",
+                events: [
+                    { 
+                        time: "09:00", title: "日光東照宮", tag: "SIGHTSEEING",
+                        desc: "世界遺產。必看「三猿」和「睡貓」。預計停留 2 小時。",
+                        addr: "Nikko Toshogu Shrine",
+                        img: "https://images.unsplash.com/photo-1559400287-2f3b9074b1c2?q=80&w=800",
+                        pointSpeak: [
+                            { cn: "兩張門票", jp: "入場券を2枚お願いします" },
+                            { cn: "請問東照宮在哪個方向？", jp: "東照宮はどちらの方向ですか？" }
+                        ]
+                    },
+                    { 
+                        time: "12:30", title: "午餐：湯波料理 (豆腐皮)", tag: "FOOD",
+                        desc: "推薦：湯波蕎麥麵或湯波刺身。",
+                        addr: "日光市內 (推薦：油源)",
+                        pointSpeak: [
+                            { cn: "這是素食嗎？", jp: "これはベジタリアンですか？" }
+                        ]
+                    },
+                    { 
+                        time: "14:30", title: "中禪寺湖與華嚴瀑布", tag: "NATURE",
+                        desc: "搭乘東武巴士前往中禪寺湖。瀑布觀景台需另外付費。",
+                        addr: "Lake Chuzenji & Kegon Falls",
+                        img: "https://images.unsplash.com/photo-1536968037341-9c60e0a58e5a?q=80&w=800",
+                        gps: "0288-55-0017"
+                    },
+                    { 
+                        time: "17:30", title: "日光站前購物", tag: "SHOPPING",
+                        desc: "購買紀念品和當地清酒。",
+                        addr: "東武日光車站周邊",
+                        pointSpeak: [
+                            { cn: "請問有試吃嗎？", jp: "試食はありますか？" }
                         ]
                     }
                 ]
             },
             {
-                day: 2, date: "2/3", week: "TUE",
+                day: 3, date: "3/28", week: "FRI",
                 events: [
                     { 
-                        time: "08:00", title: "函館朝市", tag: "FOOD",
-                        desc: "體驗釣活烏賊。推薦早餐：海鮮丼。",
-                        addr: "Hakodate Morning Market",
-                        img: "https://images.unsplash.com/photo-1559339352-11d035aa65de?q=80&w=800",
-                        gps: "0138-22-7981",
+                        time: "09:15", title: "JR 新幹線至輕井澤", tag: "TRANSPORT",
+                        desc: "JR Pass 最後一天。搭乘新幹線前往輕井澤。預計 11:30 抵達。",
+                        addr: "宇都宮 -> 大宮 -> 輕井澤",
+                        img: "https://images.unsplash.com/photo-1516082470757-c3359d9921b7?q=80&w=800"
+                    },
+                    { 
+                        time: "12:00", title: "輕井澤王子大飯店 Outlet", tag: "SHOPPING",
+                        isSpecial: true, // Special Experience
+                        desc: "輕井澤站南口出站即達。午餐在美食區解決。",
+                        addr: "Karuizawa Prince Shopping Plaza",
+                        img: "https://images.unsplash.com/photo-1567401736780-6060c55f28f0?q=80&w=800",
                         pointSpeak: [
-                            { cn: "海鮮丼", jp: "海鮮丼（Kaisen-don）" },
-                            { cn: "釣活烏賊", jp: "活イカ釣り（Ika-tsuri）" },
-                            { cn: "這個多少錢？", jp: "これはいくらですか？" }
+                            { cn: "請問這個有打折嗎？", jp: "これ、割引がありますか？" },
+                            { cn: "試衣間在哪裡？", jp: "試着室はどこですか？" }
                         ]
                     },
                     { 
-                        time: "14:40", title: "青森縣立美術館", tag: "ART",
-                        desc: "必看奈良美智「青森犬」。17:00 閉館。",
-                        addr: "185 Chikano, Yasuta, Aomori",
-                        img: "https://images.unsplash.com/photo-1629012435532-6d2a452d765d?q=80&w=800",
-                        gps: "017-783-3000",
-                        pointSpeak: [
-                            { cn: "請給我門票", jp: "チケットをお願いします" },
-                            { cn: "可以拍照嗎？", jp: "写真を撮ってもいいですか？" }
-                        ]
-                    }
-                ]
-            },
-            {
-                day: 3, date: "2/4", week: "WED",
-                events: [
-                    { 
-                        time: "09:00", title: "租車自駕", tag: "TRANSPORT",
-                        desc: "取車：4WD 雪胎。檢查車身刮痕。",
-                        addr: "JR Station Rent-a-Car Aomori",
-                        img: "https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?q=80&w=800",
-                        bookingId: "RES-99887766",
-                        gps: "017-722-3930",
-                        pointSpeak: [
-                            { cn: "我有預約", jp: "予約しています" },
-                            { cn: "請加滿油", jp: "レギュラー満タンでお願いします" }
-                        ]
-                    },
-                    { 
-                        time: "12:30", title: "津輕暖爐列車", tag: "SPECIAL EXPERIENCE",
-                        isSpecial: true,
-                        desc: "冬季限定體驗。車廂內有燒煤炭的暖爐。必買烤魷魚。",
-                        addr: "Tsugaru-Goshogawara Station",
-                        img: "https://images.unsplash.com/photo-1475738972911-5b44ce984c42?q=80&w=800",
-                        bookingId: "TICKET-STOVE-01",
-                        gps: "0173-34-2148",
-                        pointSpeak: [
-                            { cn: "請給我烤魷魚", jp: "スルメ（Surume）をください" },
-                            { cn: "請給我清酒", jp: "お酒（Sake）をください" }
-                        ]
-                    }
-                ]
-            },
-            {
-                day: 4, date: "2/5", week: "THU",
-                events: [
-                    { 
-                        time: "10:40", title: "八甲田樹冰", tag: "NATURE",
-                        desc: "山頂極冷，務必全副武裝。若風大纜車停駛，改去滑雪場。",
-                        addr: "Hakkoda Ropeway",
-                        img: "https://images.unsplash.com/photo-1483921020237-2ff51e8e4b22?q=80&w=800",
-                        gps: "017-738-0343",
-                        pointSpeak: [
-                            { cn: "今天纜車有開嗎？", jp: "今日ロープウェイは動いていますか？" }
-                        ]
+                        time: "17:00", title: "雲場池", tag: "NATURE",
+                        desc: "輕井澤的必去景點，有「天鵝湖」美稱。",
+                        addr: "Kumoba Pond, Karuizawa",
+                        gps: "0267-42-5555" // 輕井澤觀光會館電話
                     },
                     {
-                        time: "17:30", title: "星野青森屋", tag: "SPECIAL EXPERIENCE",
-                        isSpecial: true,
-                        desc: "Check-in。晚餐 Nore Sore 食堂。",
-                        addr: "Hoshino Resorts Aomoriya",
-                        img: "https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?q=80&w=800",
-                        bookingId: "HOSHINO-2026-FEB",
-                        gps: "0176-51-1111",
+                        time: "19:30", title: "住宿：輕井澤大飯店", tag: "HOTEL",
+                        desc: "Check-in。",
+                        addr: "Karuizawa Hotel",
+                        bookingId: "KRW-328-H",
+                        img: "https://images.unsplash.com/photo-1596701082531-1557995f70b7?q=80&w=800"
+                    }
+                ]
+            },
+            {
+                day: 4, date: "3/29", week: "SAT",
+                events: [
+                    { 
+                        time: "10:00", title: "舊輕井澤銀座街", tag: "SIGHTSEEING",
+                        desc: "逛逛伴手禮店、麵包店。推薦：澤屋果醬。",
+                        addr: "Kyū Karuizawa Ginza-dōri",
+                        img: "https://images.unsplash.com/photo-1582208035889-325b59d6e5c7?q=80&w=800"
+                    },
+                    { 
+                        time: "13:30", title: "搭乘新幹線至橫濱", tag: "TRANSPORT",
+                        desc: "從輕井澤搭乘長野新幹線 (Asama) 至東京，再轉乘 JR 東海道本線往橫濱。 (JR Pass 結束)",
+                        addr: "輕井澤 -> 橫濱",
+                        img: "https://images.unsplash.com/photo-1628169824623-14392f44040f?q=80&w=800"
+                    },
+                    { 
+                        time: "16:00", title: "橫濱紅磚倉庫", tag: "SIGHTSEEING",
+                        desc: "逛街、拍照，感受港口氣氛。",
+                        addr: "Yokohama Red Brick Warehouse",
+                        img: "https://images.unsplash.com/photo-1588667319985-e11a629b19e6?q=80&w=800"
+                    },
+                    {
+                        time: "19:00", title: "橫濱晚餐：中華街", tag: "FOOD",
+                        desc: "在中華街尋找晚餐。可以試試包子或燒賣。",
+                        addr: "Yokohama Chinatown",
                         pointSpeak: [
-                            { cn: "我要辦理入住", jp: "チェックインをお願いします" },
-                            { cn: "早餐幾點開始？", jp: "朝食は何時からですか？" }
+                            { cn: "我要外帶", jp: "テイクアウトをお願いします" }
                         ]
                     }
                 ]
             },
             {
-                day: 5, date: "2/6", week: "FRI", events: [
-                    { time: "11:30", title: "八食中心", tag: "FOOD", desc: "七輪村炭烤海鮮午餐。", gps: "0178-28-9311", addr: "Hasshoku Center", pointSpeak: [{cn:"我要租炭火爐",jp:"七輪（Shichirin）を使いたいです"}]}
+                day: 5, date: "3/30", week: "SUN", events: [
+                    { 
+                        time: "10:00", title: "搭乘 JR 東海道本線往東京", tag: "TRANSPORT", 
+                        desc: "搭乘普通列車，前往東京市區。",
+                        addr: "橫濱 -> 東京"
+                    },
+                    { 
+                        time: "11:30", title: "東京築地場外市場", tag: "FOOD", 
+                        desc: "吃海鮮、玉子燒、草莓大福等小吃。",
+                        addr: "Tsukiji Outer Market",
+                        img: "https://images.unsplash.com/photo-1588667319985-e11a629b19e6?q=80&w=800"
+                    },
+                    {
+                        time: "14:00", title: "澀谷 Shibuya Sky", tag: "SIGHTSEEING", 
+                        desc: "上樓頂觀景台，俯瞰東京城市全景。",
+                        addr: "Shibuya Sky",
+                        img: "https://images.unsplash.com/photo-1586561136582-d0216a7f0e3f?q=80&w=800"
+                    },
+                    {
+                        time: "18:30", title: "新宿晚餐與購物", tag: "SHOPPING", 
+                        desc: "在新宿站周邊的百貨公司逛街、吃晚餐。",
+                        addr: "Shinjuku Station Area"
+                    }
                 ]
             },
             {
-                day: 6, date: "2/7", week: "SAT", events: [
-                    { time: "13:00", title: "青森機場還車", tag: "TRANSPORT", desc: "還車前加滿油。", addr: "Aomori Airport", gps: "017-739-2000" }
+                day: 6, date: "3/31", week: "MON", events: [
+                    { 
+                        time: "09:30", title: "淺草寺與雷門", tag: "SIGHTSEEING", 
+                        desc: "早上人潮較少，先去拍照。",
+                        addr: "Senso-ji Temple",
+                        img: "https://images.unsplash.com/photo-1534005825227-f473c330e713?q=80&w=800"
+                    },
+                    { 
+                        time: "12:00", title: "東京車站拉麵街午餐", tag: "FOOD", 
+                        desc: "在東京車站地下一樓的拉麵街解決午餐。",
+                        addr: "Tokyo Ramen Street"
+                    },
+                    {
+                        time: "15:00", title: "搭乘 N'EX 至成田機場", tag: "TRANSPORT", 
+                        desc: "東京站 15:00 發車，15:58 抵達機場。預留充裕時間。",
+                        addr: "東京車站 -> 成田機場",
+                    }
                 ]
             }
         ];
@@ -548,9 +593,15 @@
         };
 
         function updateMeta() {
-            const days = Math.ceil((new Date("2026-02-02") - new Date())/(1000*60*60*24));
+            // Calculate days left until the start date (3/26/2026)
+            const startDate = new Date("2026-03-26");
+            const today = new Date();
+            // Ensure today is at midnight for accurate calculation
+            today.setHours(0, 0, 0, 0); 
+            const days = Math.max(0, Math.ceil((startDate - today) / (1000 * 60 * 60 * 24)));
             document.getElementById('days-left').innerText = days;
         }
+
 
         // --- RENDER FUNCTIONS ---
         function renderDateNav() {
@@ -558,10 +609,17 @@
             nav.innerHTML = tripData.map((d, i) => `
                 <div class="date-item ${i === currentDayIdx ? 'active' : ''}" onclick="switchDay(${i})">
                     <div class="date-weekday">${d.week}</div>
-                    <div class="date-day">${d.date}</div>
+                    <div class="date-day">${d.date.split('/')[1]}</div>
                     <div class="date-dot"></div>
                 </div>
             `).join('');
+            
+            // Scroll to current date
+            const activeItem = document.querySelector('.date-item.active');
+            if (activeItem) {
+                const nav = document.getElementById('date-nav');
+                nav.scrollLeft = activeItem.offsetLeft - nav.offsetWidth / 2 + activeItem.offsetWidth / 2;
+            }
         }
 
         function switchDay(i) {
@@ -584,7 +642,7 @@
                 <div class="timeline-row">
                     <div class="t-time-col">
                         ${ev.time}
-                        <div class="t-time-sub">${parseInt(ev.time) < 12 ? 'AM' : 'PM'}</div>
+                        <div class="t-time-sub">${parseInt(ev.time.split(':')[0]) < 12 ? 'AM' : 'PM'}</div>
                     </div>
                     <div class="t-line-col"><div class="t-dot"></div></div>
                     <div class="t-content-col">
@@ -611,7 +669,7 @@
             document.getElementById('m-title').innerText = currentEv.title;
             document.getElementById('m-desc').innerText = currentEv.desc;
             document.getElementById('m-addr-text').innerText = currentEv.addr;
-            document.getElementById('m-hero').src = currentEv.img;
+            document.getElementById('m-hero').src = currentEv.img || 'https://images.unsplash.com/photo-1542060748-10c28b62716f?q=80&w=800'; // Fallback image
 
             // Point & Speak
             const psContainer = document.getElementById('ps-container');
@@ -655,7 +713,7 @@
         }
 
         function openMap() {
-            if(currentEv) {
+            if(currentEv && currentEv.addr) {
                 window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(currentEv.addr)}`);
             }
         }
@@ -666,11 +724,12 @@
             if(!txt) return;
             openTransModal(txt, "翻譯中...");
             try {
+                // Using a fallback API for translation
                 const res = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(txt)}&langpair=zh-TW|ja`);
                 const data = await res.json();
                 if(data.responseData) document.getElementById('tp-jp').innerText = data.responseData.translatedText;
             } catch(e) {
-                document.getElementById('tp-jp').innerText = "Error";
+                document.getElementById('tp-jp').innerText = "翻譯錯誤";
             }
         }
 
@@ -686,8 +745,8 @@
             const item = document.getElementById('ex-item').value;
             const price = document.getElementById('ex-price').value;
             const who = document.getElementById('ex-who').value;
-            if(item && price) {
-                expenses.unshift({ item, price, who, date: new Date() });
+            if(item && price && parseInt(price) > 0) {
+                expenses.unshift({ item, price: parseInt(price), who, date: new Date() });
                 renderExpenses();
                 document.getElementById('ex-item').value = '';
                 document.getElementById('ex-price').value = '';
@@ -698,22 +757,22 @@
             const list = document.getElementById('expense-list');
             let total = 0;
             list.innerHTML = expenses.map((ex,i) => {
-                total += parseInt(ex.price);
+                total += ex.price;
                 return `
-                <div style="display:flex; justify-content:space-between; padding:15px 0; border-bottom:1px solid #EEE;">
+                <div style="display:flex; justify-content:space-between; align-items:center; padding:15px 0; border-bottom:1px solid #EEE;">
                     <div><span style="font-weight:bold;">${ex.item}</span> <span style="font-size:0.8rem; color:#999;">(${ex.who})</span></div>
                     <div style="text-align:right;">
-                        <div style="font-weight:bold;">¥${ex.price}</div>
-                        <div style="font-size:0.7rem; color:#AAA;">≈ $${(ex.price*rate).toFixed(0)}</div>
+                        <div style="font-weight:bold;">¥${ex.price.toLocaleString()}</div>
+                        <div style="font-size:0.7rem; color:#AAA;">≈ $${(ex.price*rate).toFixed(0)} TWD</div>
                     </div>
-                    <div style="color:red; margin-left:10px;" onclick="delEx(${i})">✕</div>
+                    <div style="color:red; margin-left:10px; cursor:pointer;" onclick="delEx(${i})">✕</div>
                 </div>`;
             }).join('');
             document.getElementById('total-spend').innerText = '¥' + total.toLocaleString();
             document.getElementById('total-twd').innerText = (total * rate).toFixed(0);
             localStorage.setItem('trip_v7_expenses', JSON.stringify(expenses));
         }
-        function delEx(i) { if(confirm('刪除?')){expenses.splice(i,1); renderExpenses();}}
+        function delEx(i) { if(confirm('確定刪除這筆支出嗎？')){expenses.splice(i,1); renderExpenses();}}
 
         // --- NAV ---
         function switchTab(t, el) {
