@@ -495,137 +495,262 @@
     </div>
 
     <script>
-        // NOTE: Replace 'YOUR_API_KEY' with a valid Google Maps API Key to enable map functionality.
-        const GOOGLE_API_KEY = "YOUR_API_KEY"; 
+        // NOTE: Replace 'AIzaSyAX9nvh4bJpiM6-oTm8FoUSZeSBpxZBc1E' with a valid Google Maps API Key to enable map functionality.
+        const GOOGLE_API_KEY = "AIzaSyAX9nvh4bJpiM6-oTm8FoUSZeSBpxZBc1E"; 
 
         // --- DATA WITH FIXED IMAGES AND DETAILED DESCRIPTIONS ---
         const tripData = [
             {
                 day: 1, date: "02.02", week: "MON",
-                heroTitle: "函館：北國的起點",
-                heroImg: "https://images.unsplash.com/photo-1542640244-7e67286feb8f?q=80&w=800&auto=format&fit=crop&w=800&h=600", // FIXED IMAGE
+                heroTitle: "函館：百元發熱衣與百萬夜景",
+                heroImg: "https://images.unsplash.com/photo-1542640244-7e67286feb8f?q=80&w=800&auto=format&fit=crop&w=800&h=600", 
                 events: [
                     { 
-                        time: "11:10", title: "抵達函館機場", tag: "Transport", desc: "準備搭乘機場巴士。", 
-                        detail: "函館機場規模精巧，效率高。請務必在機場巴士站確認時刻表，避免錯過班次。", 
-                        img: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=800&auto=format&fit=crop&w=800&h=600", // FIXED IMAGE
-                        to: "JR函館站", 
-                        transport_info: {type: "機場巴士", ticket_no: "現場購票", departure: "12:00", arrival: "12:30", note: "車程約 30 分鐘，請準備零錢。"} 
+                        time: "11:10", title: "抵達函館機場 (HKD)", tag: "Transport", desc: "入境手續，領取行李。", 
+                        detail: "重點提示：函館機場規模精巧，入境速度快。請預留時間準備搭乘巴士。", 
+                        img: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=800&auto=format&fit=crop&w=800&h=600",
+                        to: "JR函館站"
                     },
                     { 
-                        time: "12:30", title: "移動至飯店 (JR函館站)", tag: "Transport", desc: "搭乘機場巴士。入住 JR Inn Hakodate 並放下行李。", 
-                        detail: "JR Inn Hakodate 位於函館站旁，地理位置極佳。這是Day 2前往新幹線的最佳起點。", 
+                        time: "12:00", title: "機場巴士 -> JR 函館站", tag: "Transport", desc: "搭乘巴士。約 20-30 分鐘車程。", 
+                        detail: "這是最經濟的移動方式，車程約 20-30 分鐘。請準備好零錢。", 
                         from: "函館機場", to: "JR函館站", 
+                        transport_info: {type: "機場巴士", departure: "12:00", arrival: "12:30", note: "車程約 20-30 分鐘。"} 
+                    },
+                    { 
+                        time: "12:30", title: "JR Inn Hakodate 寄放行李", tag: "Hotel", desc: "抵達飯店，辦理入住手續或寄放行李。", 
+                        detail: "JR Inn Hakodate 位於函館站旁，地理位置極佳。這是 Day 2 前往新幹線的最佳起點。", 
                         reservation_info: { type: "Hotel", number: "JRIH-2026", name: "YOU/YK", check_in: "15:00", guests: "3名成人" }
                     },
                     { 
-                        time: "13:35", title: "UNIQLO 函館昭和店", tag: "Shopping", desc: "【購物任務】採買極暖發熱衣。搭計程車前往。", nav: { mapcode: "86 254 073*65" }, 
-                        detail: "【導遊知識】函館郊區的優質店舖，款式和尺碼齊全。記住：在青森的嚴寒下，禦寒裝備遠比時尚重要！", 
-                        img: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=800&auto=format&fit=crop&w=800&h=600", // FIXED IMAGE
-                        to: "金森紅磚倉庫" 
+                        time: "12:45", title: "計程車前往 UNIQLO 昭和店", tag: "Transport", desc: "從飯店搭計程車出發。約 20-25 分鐘車程。", 
+                        detail: "UNIQLO 函館昭和店離市區較遠，計程車是正確選擇，可直接用『MapCode』導航給司機看。", 
+                        from: "JR函館站", to: "UNIQLO 函館昭和店", 
+                        transport_info: { type: "計程車", time_estimate: "20-25分鐘", note: "請用 GO App 或請飯店叫車" }
                     },
                     { 
-                        time: "15:45", title: "金森紅磚倉庫", tag: "Sightseeing", desc: "搭乘市電/路面電車。感受港邊風情。", 
+                        time: "13:15", title: "UNIQLO 函館昭和店", tag: "Shopping", desc: "【購物任務】採購發熱衣。", nav: { mapcode: "86 254 073*65" }, 
+                        detail: "【導遊知識】郊區店鋪款式齊全，但記住：在青森的嚴寒下，禦寒裝備遠比時尚重要！", 
+                        img: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=800&auto=format&fit=crop&w=800&h=600",
+                        to: "JR Inn Hakodate" 
+                    },
+                    { 
+                        time: "14:45", title: "計程車返回飯店", tag: "Transport", desc: "請店員幫忙叫車返回飯店。", 
+                        detail: "請預留足夠時間避免延誤後續的市電行程。", 
+                        from: "UNIQLO 函館昭和店", to: "JR Inn Hakodate", 
+                        transport_info: { type: "計程車", time_estimate: "25分鐘" }
+                    },
+                    { 
+                        time: "15:15", title: "飯店卸貨休息", tag: "Hotel", desc: "返回飯店卸貨，稍作整理。", 
+                        detail: "這是當天唯一的緩衝時間，請充分利用。"
+                    },
+                    { 
+                        time: "15:45", title: "市電至十字街站", tag: "Transport", desc: "搭乘市電 (路面電車) 至「十字街站」。", 
+                        detail: "函館市電是體驗函館風情的一部分。請在『函館站前』上車，至『十字街站』下車。", 
+                        from: "函館站前", to: "十字街站", 
+                        transport_info: { type: "市電", time_estimate: "10分鐘", note: "準備零錢或使用交通卡" }
+                    },
+                    { 
+                        time: "16:10", title: "金森紅磚倉庫", tag: "Sightseeing", desc: "簡單逛街、拍照。", 
                         detail: "【歷史底蘊】這是明治時期的古老倉庫群，見證了函館作為國際商港的繁華。在雪中，紅磚與白雪形成強烈對比，非常有詩意。", 
-                        img: "https://images.unsplash.com/photo-1616790933557-4180d5663702?q=80&w=800&auto=format&fit=crop&w=800&h=600", // FIXED IMAGE
-                        to: "函館山" 
+                        img: "https://images.unsplash.com/photo-1616790933557-4180d5663702?q=80&w=800&auto=format&fit=crop&w=800&h=600",
+                        to: "函館山纜車站"
                     },
                     { 
-                        time: "17:00", title: "函館山百萬夜景", tag: "Sightseeing", desc: "搭纜車上山。山上風大請保暖。", nav: { mapcode: "86 041 028*25" }, 
-                        detail: "【知性探索】夜景的獨特之處在於兩側海灣收束的沙頸岬地形。務必在日落前 30 分鐘上山，搶佔最佳位置，並預先查詢纜車運行狀態。", 
-                        img: "https://images.unsplash.com/photo-1535392460594-553655519f93?q=80&w=800&auto=format&fit=crop&w=800&h=600", // FIXED IMAGE
+                        time: "16:50", title: "步行至函館山纜車站", tag: "Transport", desc: "雪地步行約 10-15 分鐘，有些微上坡。", 
+                        detail: "請注意防滑。步行是最佳選擇，因為此時車流開始變多。", 
+                        from: "金森紅磚倉庫", to: "函館山纜車站", 
+                        transport_info: { type: "步行", time_estimate: "10-15分鐘", note: "注意防滑" }
+                    },
+                    { 
+                        time: "17:10", title: "搭乘纜車上山", tag: "Transport", desc: "上山約 3 分鐘。", 
+                        detail: "請務必提前排隊，避免錯過日落後的黃金觀景時間。", 
+                        from: "山麓站", to: "觀景台", 
+                        transport_info: { type: "纜車", time_estimate: "3分鐘", note: "山上風大！" }
+                    },
+                    { 
+                        time: "17:15", title: "函館山百萬夜景", tag: "Sightseeing", desc: "日落時間約 16:50，此時剛好接夜景。", nav: { mapcode: "86 041 028*25" }, 
+                        detail: "【知性探索】夜景的獨特之處在於兩側海灣收束的沙頸岬地形。務必搶佔最佳位置。纜車運行狀態可預先查詢。", 
+                        img: "https://images.unsplash.com/photo-1535392460594-553655519f93?q=80&w=800&auto=format&fit=crop&w=800&h=600",
                         to: "幸運小丑漢堡" 
                     },
                     { 
-                        time: "19:00", title: "幸運小丑漢堡 (函館站前店)", tag: "Food", desc: "必點：中華雞腿堡。", 
-                        detail: "【在地特色】這家漢堡店是函館的驕傲，每家店都有不同的主題裝飾。中華雞腿堡（チャイニーズチキンバーガー）是必點，是日本B級美食的代表。", 
-                        img: "https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?q=80&w=800&auto=format&fit=crop&w=800&h=600" // FIXED IMAGE
+                        time: "18:30", title: "搭纜車下山 -> 返回站前", tag: "Transport", desc: "搭纜車下山後，建議搭計程車回函館站前。", 
+                        detail: "下山時人潮擁擠，計程車是省力省時的選擇，車資約 1000 日圓內。", 
+                        from: "觀景台", to: "函館站前", 
+                        transport_info: { type: "計程車/步行", note: "建議計程車，省力" }
+                    },
+                    { 
+                        time: "19:00", title: "幸運小丑漢堡 (函館站前店)", tag: "Food", desc: "晚餐：必點中華雞腿堡。", 
+                        detail: "【在地特色】這家漢堡店是函館的驕傲，是日本B級美食的代表。請使用『不吃紅肉』卡片確認其他品項。", 
+                        img: "https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?q=80&w=800&auto=format&fit=crop&w=800&h=600"
+                    },
+                    { 
+                        time: "20:30", title: "JR Inn Hakodate 休息", tag: "Hotel", desc: "Day 1 結束。", 
+                        detail: "早點休息，為隔天的長途移動做準備。"
                     }
                 ]
             },
             {
                 day: 2, date: "02.03", week: "TUE",
-                heroTitle: "跨越津輕海峽",
-                heroImg: "https://images.unsplash.com/photo-1532236395709-7d70320fec2d?q=80&w=800&auto=format&fit=crop&w=800&h=600", // FIXED IMAGE
+                heroTitle: "移動日：跨越津輕海峽",
+                heroImg: "https://images.unsplash.com/photo-1532236395709-7d70320fec2d?q=80&w=800&auto=format&fit=crop&w=800&h=600",
                 events: [
-                    { time: "08:00", title: "函館朝市早餐", tag: "Food", desc: "享用海鮮丼。步行前往。", detail: "【趣味】朝市裡最有名的體驗是『釣烏賊』，可以現釣現吃！記得要貨比三家，才不會買貴或吃到不新鮮的海產。", img: "https://images.unsplash.com/photo-1574765798950-c8f7734a36f7?q=80&w=800&auto=format&fit=crop&w=800&h=600", // FIXED IMAGE
-                        to: "JR函館站" 
+                    { time: "08:00", title: "函館朝市早餐", tag: "Food", desc: "享用海鮮丼/釣烏賊。", detail: "【趣味】朝市裡最有名的體驗是『釣烏賊』，可以現釣現吃！記得要貨比三家。", img: "https://images.unsplash.com/photo-1574765798950-c8f7734a36f7?q=80&w=800&auto=format&fit=crop&w=800&h=600", to: "JR函館站" },
+                    { 
+                        time: "09:30", title: "JR 函館站閘門", tag: "Transport", desc: "進入 JR 函館站閘門，準備搭車。", 
+                        detail: "時間緊迫，請提前確認月台。需換乘兩次（Local → 新幹線 → Local）。", 
+                        from: "函館朝市", to: "JR函館站", 
+                        transport_info: { type: "步行", time_estimate: "10分鐘", note: "準備好 JR Pass (若有)" }
                     },
                     { 
-                        time: "10:00", title: "JR函館站 -> 新函館北斗站", tag: "Transport", desc: "搭乘 JR 列車轉乘新幹線。", 
-                        detail: "請務必保留足夠的轉乘時間，尤其是在冬天。新函館北斗站是轉換點。", 
+                        time: "10:00", title: "Hashodate Liner", tag: "Transport", desc: "前往「新函館北斗站」。", 
+                        detail: "這是銜接新幹線的接駁列車，車程約 20 分鐘。", 
                         from: "JR函館站", to: "新函館北斗站", 
-                        transport_info: { type: "JR列車", departure: "10:00", arrival: "10:25", note: "轉乘新幹線" }
+                        transport_info: { type: "區間列車", name_jp: "Hashodate Liner", departure: "10:00", arrival: "10:20" }
                     },
                     { 
-                        time: "10:45", title: "新幹線 (新函館北斗 -> 青森站)", tag: "Transport", desc: "搭乘新幹線。13:45 抵達青森站。", 
-                        detail: "【知性探索】新幹線穿越的『青函隧道』曾是世界最長海底隧道。這趟移動標誌著你們從北海道踏入本州東北，交通模式將從大眾運輸轉為自駕。", 
-                        from: "新函館北斗站", to: "青森站", 
-                        transport_info: { type: "新幹線", name_jp: "はやぶさ", ticket_no: "E892-001234", seat_no: "指定席 8號車 12A/B/C", departure: "10:45", arrival: "13:45" }
+                        time: "10:35", title: "北海道新幹線 (隼 Hayabusa)", tag: "Transport", desc: "前往「新青森站」。", 
+                        detail: "【知性探索】新幹線穿越的『青函隧道』曾是世界最長海底隧道。這趟移動標誌著你們從北海道踏入本州東北。", 
+                        from: "新函館北斗站", to: "新青森站", 
+                        transport_info: { type: "新幹線", name_jp: "はやぶさ", ticket_no: "E892-001234", seat_no: "指定席 8號車 12A/B/C", departure: "10:35", arrival: "11:35" }
                     },
                     { 
-                        time: "14:15", title: "Dormy Inn Aomori Check-in", tag: "Hotel", desc: "搭計程車放行李。", 
-                        detail: "【導遊建議】迅速寄放行李，換上輕便的服裝。晚上別忘了免費的醬油拉麵（夜鳴きそば）和頂樓的溫泉。", 
+                        time: "11:40", title: "轉乘 JR 奧羽本線", tag: "Transport", desc: "轉乘 JR 奧羽本線 前往「青森站」。", 
+                        detail: "新青森站到青森站距離很短，車程約 6 分鐘，是青森市區的最後一段接駁。", 
+                        from: "新青森站", to: "青森站", 
+                        transport_info: { type: "JR奧羽本線", departure: "11:40", arrival: "11:46", note: "注意月台資訊" }
+                    },
+                    { 
+                        time: "12:00", title: "抵達 JR 青森站", tag: "Transport", desc: "出站，準備午餐與寄物。", 
+                        detail: "青森站是市區中心，也是 Day 3 租車地點，請熟悉周邊環境。"
+                    },
+                    { 
+                        time: "12:15", title: "計程車至 Dormy Inn 寄物", tag: "Transport", desc: "搭計程車寄放行李。", 
+                        detail: "雖未到 Check-in 時間 (15:00)，但可先寄物。車程約 5 分鐘。", 
                         from: "青森站", to: "Dormy Inn Aomori", 
+                        transport_info: { type: "計程車", time_estimate: "5分鐘" }
+                    },
+                    { 
+                        time: "12:40", title: "青森站附近午餐", tag: "Food", desc: "推薦：味噌咖哩牛奶拉麵。", 
+                        detail: "【在地特色】味噌咖哩牛奶拉麵是青森的獨創美食，口味濃郁但非常特別，值得嘗試。", 
+                        img: "https://images.unsplash.com/photo-1549492193-f0270a316223?q=80&w=800&auto=format&fit=crop&w=800&h=600"
+                    },
+                    { 
+                        time: "13:40", title: "計程車前往青森縣立美術館", tag: "Transport", desc: "搭計程車。約 20 分鐘車程。", 
+                        detail: "美術關位於郊區，計程車是最佳選擇。", 
+                        from: "青森市區", to: "青森縣立美術館", 
+                        transport_info: { type: "計程車", time_estimate: "20分鐘" }
+                    },
+                    { 
+                        time: "14:00", title: "青森縣立美術館", tag: "Art", desc: "必看奈良美智「青森犬」。", nav: { mapcode: "99 489 495*20" }, 
+                        detail: "【藝術底蘊】這棟建築模擬了考古遺址的溝渠。奈良美智的『青森犬』高達 8.5 公尺，是為青森量身打造的巨作。注意最後入場為 16:30。", 
+                        img: "https://images.unsplash.com/photo-1563509893962-e64e9a594833?q=80&w=800&auto=format&fit=crop&w=800&h=600",
+                        to: "Dormy Inn Aomori" 
+                    },
+                    { 
+                        time: "16:15", title: "計程車返回市區/飯店", tag: "Transport", desc: "搭計程車返回。", 
+                        detail: "預留時間辦理入住手續。", 
+                        from: "青森縣立美術館", to: "Dormy Inn Aomori", 
+                        transport_info: { type: "計程車", time_estimate: "20分鐘" }
+                    },
+                    { 
+                        time: "16:40", title: "Dormy Inn Aomori 辦理入住", tag: "Hotel", desc: "正式 Check-in。", 
+                        detail: "確認行李是否已送回房間，並領取房卡。", 
                         reservation_info: { type: "Hotel", number: "DMAO-10023", name: "YOU/YK", check_in: "15:00", guests: "3名成人" }
                     },
                     { 
-                        time: "14:40", title: "青森縣立美術館", tag: "Art", desc: "必看奈良美智「青森犬」。", nav: { mapcode: "99 489 495*20" }, 
-                        detail: "【藝術底蘊】這棟建築模擬了考古遺址的溝渠，充滿實驗性。奈良美智的『青森犬』高達 8.5 公尺，是為青森量身打造的巨作。", 
-                        img: "https://images.unsplash.com/photo-1563509893962-e64e9a594833?q=80&w=800&auto=format&fit=crop&w=800&h=600", // FIXED IMAGE
-                        to: "市區晚餐" 
+                        time: "18:00", title: "青森鄉土料理晚餐", tag: "Food", desc: "例如：津輕三味線居酒屋。", 
+                        detail: "【趣味】帆立貝（扇貝）是青森的代表海產。請使用『不吃紅肉』卡片確認湯底成分。", 
+                        img: "https://images.unsplash.com/photo-1627662236254-8c83e29f048c?q=80&w=800&auto=format&fit=crop&w=800&h=600"
                     },
                     { 
-                        time: "18:00", title: "青森鄉土料理晚餐", tag: "Food", desc: "享用帆立貝味噌燒。", 
-                        detail: "【趣味】帆立貝（扇貝）是青森的代表海產。味噌燒起源於漁夫料理，用貝殼當鍋子燒烤。請使用『不吃紅肉』卡片確認湯底成分。", 
-                        img: "https://images.unsplash.com/photo-1627662236254-8c83e29f048c?q=80&w=800&auto=format&fit=crop&w=800&h=600" // FIXED IMAGE
+                        time: "19:30", title: "唐吉訶德 青森千刈店", tag: "Shopping", desc: "購物。離飯店步行約 15 分鐘，建議計程車。", 
+                        detail: "作為晚餐後的散步行程，可以採購零食和雜貨。請務必將『象印保溫瓶』任務完成。", 
+                        to: "Dormy Inn Aomori"
+                    },
+                    { 
+                        time: "21:30", title: "夜鳴拉麵", tag: "Food", desc: "回飯店享用免費宵夜。", 
+                        detail: "通常是免費醬油拉麵，在溫泉開放時間提供。千萬不要錯過！"
+                    },
+                    { 
+                        time: "22:00", title: "Dormy Inn Aomori 泡湯", tag: "Relax", desc: "天然溫泉。", 
+                        detail: "消除一天的疲勞，為明天的自駕挑戰做準備。"
                     }
                 ]
             },
             {
                 day: 3, date: "02.04", week: "WED",
                 heroTitle: "暖爐列車與蘋果派",
-                heroImg: "https://images.unsplash.com/photo-1549643276-fbc2bd5f4038?q=80&w=800&auto=format&fit=crop&w=800&h=600", // FIXED IMAGE
+                heroImg: "https://images.unsplash.com/photo-1549643276-fbc2bd5f4038?q=80&w=800&auto=format&fit=crop&w=800&h=600",
                 events: [
                     { 
-                        time: "09:00", title: "租車與載行李", tag: "Transport", desc: "青森站取車。回飯店載行李。", 
+                        time: "09:00", title: "青森站前租車行取車", tag: "Transport", desc: "【租車開始】手續約 30 分鐘。", 
                         detail: "雪地自駕第一天，請在停車場練習煞車和轉向手感。請務必確保租車公司已安裝雪胎。", 
                         from: "Dormy Inn Aomori", to: "ELM購物中心", 
                         transport_info: { type: "自駕", car_type: "雪胎確認完畢", note: "駕駛請慢速熱身" } 
                     },
                     { 
-                        time: "10:15", title: "ELM 購物中心", tag: "Shopping", desc: "【任務】3COINS+plus 購買復古小相機。", nav: { mapcode: "168 649 346*52" }, 
-                        detail: "請將『買相機』卡片準備好，迅速完成任務。這是前往津輕鐵道前的最後一個大型購物點。", 
-                        img: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?q=80&w=800&auto=format&fit=crop&w=800&h=600", // FIXED IMAGE
+                        time: "09:30", title: "回飯店載人與行李", tag: "Transport", desc: "設定導航，開始自駕。", 
+                        detail: "請務必將行李和所有採購物品裝上車，確保車內空間配置妥當。", 
+                        from: "青森站前", to: "ELM購物中心", 
+                        transport_info: { type: "自駕", time_estimate: "50-60分鐘" }
+                    },
+                    { 
+                        time: "10:45", title: "3COINS+plus (ELM)", tag: "Shopping", desc: "【任務 1】快速買相機，控制在 35 分鐘內。", nav: { mapcode: "168 649 346*52" }, 
+                        detail: "ELM 購物中心很大，請記下停車位置。請將『買相機』卡片準備好，迅速完成任務。", 
+                        img: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?q=80&w=800&auto=format&fit=crop&w=800&h=600", 
                         to: "津輕五所川原站" 
                     },
                     { 
-                        time: "11:10", title: "移動至津輕五所川原站", tag: "Transport", desc: "自駕前往。準備搭乘暖爐列車。", 
-                        detail: "車程約 1 小時，是較長的平原駕駛。列車班次極少，必須精準控制時間。", 
+                        time: "11:20", title: "開車前往津輕五所川原站", tag: "Transport", desc: "車程約 10 分鐘，準備搭乘暖爐列車。", 
+                        detail: "抵達後，請在車站旁的收費停車場停車、買票。暖爐列車班次極少。", 
                         from: "ELM購物中心", to: "津輕五所川原站", 
-                        transport_info: { type: "自駕", time_estimate: "1小時" }
+                        transport_info: { type: "自駕", time_estimate: "10分鐘", note: "購買乘車券 + 暖爐券 (去程)" }
                     },
                     { 
-                        time: "12:30", title: "暖爐列車 (津輕鐵道)", tag: "Experience", desc: "津輕鐵道。車上必吃現烤魷魚。", nav: { mapcode: "168 619 432*22" }, 
-                        detail: "【趣味】暖爐列車是冬天最溫暖的體驗，車掌會用煤油爐幫你烤魷魚。這是感受津輕文化和極地風光的絕佳方式。", 
-                        img: "https://images.unsplash.com/photo-1474487548417-781cb71495f3?q=80&w=800&auto=format&fit=crop&w=800&h=600", // FIXED IMAGE
-                        to: "大正浪漫喫茶室" 
+                        time: "11:50", title: "暖爐列車 (去程)", tag: "Experience", desc: "搭乘津輕鐵道「暖爐列車」至金木站。", 
+                        detail: "車上活動：點烤魷魚、喝清酒、拍照。這是感受津輕極地風光的絕佳方式。", 
+                        from: "津輕五所川原站", to: "金木站", 
+                        transport_info: { type: "津輕鐵道", name_jp: "ストーブ列車", departure: "11:50", arrival: "12:15" }
                     },
                     { 
-                        time: "15:30", title: "大正浪漫喫茶室", tag: "Food", desc: "【CRITICAL】16:00 最後點餐。品嚐蘋果派。", nav: { mapcode: "71 071 513*78" }, 
-                        detail: "【歷史底蘊】位於藤田紀念庭園，建築風格充滿大正時期的西化浪漫。弘前是蘋果派聖地，請使用『無肉桂』卡片確認。", 
-                        img: "https://images.unsplash.com/photo-1568571780765-9276ac8b75a2?q=80&w=800&auto=format&fit=crop&w=800&h=600", // FIXED IMAGE
+                        time: "12:15", title: "金木站 (中場休息)", tag: "Sightseeing", desc: "在月台拍雪景、車站站體拍照。", 
+                        detail: "停留時間約 23 分鐘，建議在車站周邊活動即可，不要跑遠，以免錯過回程列車。", 
+                        to: "津輕五所川原站"
+                    },
+                    { 
+                        time: "12:38", title: "搭乘回程列車 (一般車廂)", tag: "Transport", desc: "搭乘回程列車返回五所川原站。", 
+                        detail: "只需購買『乘車券』即可。通常此時段回程可能還是同一班車頭拖回，請直接坐普通車廂。", 
+                        from: "金木站", to: "津輕五所川原站", 
+                        transport_info: { type: "津輕鐵道", note: "搭乘普通車廂 (不需暖爐券)" }
+                    },
+                    { 
+                        time: "13:15", title: "取車前往弘前市", tag: "Transport", desc: "雪地車程約 50-60 分鐘。", 
+                        detail: "前往弘前，路程較長，請保持安全車速，尤其注意融雪後的濕滑路面。", 
+                        from: "津輕五所川原站", to: "藤田紀念庭園", 
+                        transport_info: { type: "自駕", time_estimate: "50-60分鐘" }
+                    },
+                    { 
+                        time: "14:30", title: "大正浪漫喫茶室 (藤田紀念庭園)", tag: "Food", desc: "【CRITICAL】必吃蘋果派。16:00 最後點餐。", nav: { mapcode: "71 071 513*78" }, 
+                        detail: "【歷史底蘊】弘前是蘋果派聖地。這家位於優雅的西式庭園內，是體驗大正時期浪漫的最佳地點。請使用『無肉桂』卡片確認。", 
+                        img: "https://images.unsplash.com/photo-1568571780765-9276ac8b75a2?q=80&w=800&auto=format&fit=crop&w=800&h=600", 
                         to: "弘前城" 
                     },
                     { 
-                        time: "16:30", title: "弘前城白天雪景", tag: "Sightseeing", desc: "在雪中漫步弘前公園。", 
-                        detail: "【知性探索】弘前城是東北唯一保有天守閣的城堡。二月的雪景非常優美，護城河結冰，可以感受北國獨有的靜謐。", 
-                        img: "https://images.unsplash.com/photo-1549643276-fbc2bd5f4038?q=80&w=800&auto=format&fit=crop&w=800&h=600", // FIXED IMAGE
-                        to: "Dormy Inn Aomori" 
+                        time: "15:30", title: "弘前城 / 弘前公園", tag: "Sightseeing", desc: "欣賞白天雪景、紅橋。", 
+                        detail: "【知性探索】弘前城是東北唯一保有天守閣的城堡。二月的雪景非常優美，護城河結冰，感受北國獨有的靜謐。", 
+                        img: "https://images.unsplash.com/photo-1549643276-fbc2bd5f4038?q=80&w=800&auto=format&fit=crop&w=800&h=600", 
+                        to: "星巴克 弘前公園前店"
                     },
                     { 
-                        time: "17:30", title: "返回青森市", tag: "Transport", desc: "夜間雪地慢行，注意安全。", 
-                        detail: "夜間駕駛在國道 7 號上，車速務必放慢。結束一天的自駕熱身，準備迎接隔天的挑戰。", 
+                        time: "16:30", title: "星巴克 弘前公園前店", tag: "Shopping", desc: "古蹟改建，非常美。", 
+                        detail: "這家星巴克是由日本國家註冊的有形文化財『舊第五十九銀行本店』改建，建築本身就是藝術品。", 
+                        to: "Dormy Inn Aomori"
+                    },
+                    { 
+                        time: "17:30", title: "開車返回青森市", tag: "Transport", desc: "夜間雪地慢行，注意安全。", 
+                        detail: "夜間駕駛在國道 7 號上，車速務必放慢。結束自駕熱身，返回飯店。", 
                         from: "弘前", to: "Dormy Inn Aomori", 
                         transport_info: { type: "自駕", time_estimate: "1小時", note: "夜間駕駛請保持車距" }
                     }
@@ -633,64 +758,108 @@
             },
             {
                 day: 4, date: "02.05", week: "THU",
-                heroTitle: "雪怪與白色盟約",
-                heroImg: "https://images.unsplash.com/photo-1487667258413-5a089052b658?q=80&w=800&auto=format&fit=crop&w=800&h=600", // FIXED IMAGE
-                alert: "⚠️ 安全警示：若纜車停駛，請務必原路折返！禁止往十和田湖方向。",
+                heroTitle: "山林：尋找八甲田雪怪",
+                heroImg: "https://images.unsplash.com/photo-1487667258413-5a089052b658?q=80&w=800&auto=format&fit=crop&w=800&h=600",
+                alert: "⚠️ 安全警示：若纜車停駛，請務必原路下山！不可前往十和田湖方向。",
                 events: [
                     { 
-                        time: "09:00", title: "古川市場 早餐", tag: "Food", desc: "快去快回，享用自選のっけ丼。", 
-                        detail: "【趣味】青森市區的特色市場，可以買票券後，在市場內各攤位自由搭配海鮮做成獨一無二的海鮮丼。務必在 09:30 前上山。", 
-                        img: "https://images.unsplash.com/photo-1563820986754-051871f3b392?q=80&w=800&auto=format&fit=crop&w=800&h=600", // FIXED IMAGE
+                        time: "08:30", title: "古川市場 早餐", tag: "Food", desc: "吃「のっけ丼 (Nokkedon)」。", 
+                        detail: "【趣味】在市場內各攤位自由搭配海鮮做成獨一無二的海鮮丼。務必在 09:30 前上山。", 
+                        img: "https://images.unsplash.com/photo-1563820986754-051871f3b392?q=80&w=800&auto=format&fit=crop&w=800&h=600", 
                         to: "八甲田纜車站" 
                     },
                     { 
-                        time: "10:40", title: "八甲田纜車", tag: "Nature", desc: "樹冰觀賞。山上極冷請全副武裝。", nav: { mapcode: "99 055 336*13" }, 
-                        detail: "【知性探索】樹冰的形成需要極端條件：西伯利亞季風、充足水氣和零度以下的嚴寒。纜車上山風景震撼，但務必注意警示，切勿在風雪中冒險。", 
-                        img: "https://images.unsplash.com/photo-1517299321609-52687d1bc55a?q=80&w=800&auto=format&fit=crop&w=800&h=600", // FIXED IMAGE
+                        time: "09:30", title: "開車上山前往八甲田纜車站", tag: "Drive", desc: "雪地山路，車程約 45-60 分鐘。", 
+                        detail: "請開啟大燈，保持車距，這段是上坡路段。", 
+                        from: "青森市區", to: "八甲田纜車站", 
+                        transport_info: { type: "自駕", time_estimate: "45-60分鐘", note: "注意上坡打滑" }
+                    },
+                    { 
+                        time: "10:30", title: "抵達纜車站，購票", tag: "Activity", desc: "停車，購票。", 
+                        detail: "請預先確認當日纜車運行狀況。購票時請詢問山頂風速與能見度。", 
+                        nav: { mapcode: "99 055 336*13" }
+                    },
+                    { 
+                        time: "11:00", title: "搭乘纜車賞樹冰 (雪怪)", tag: "Nature", desc: "山頂極冷，停留約 20-30 分鐘即需下山。", 
+                        detail: "【知性探索】樹冰的形成需要極端條件。山頂溫度可能低於 -10°C，請穿著最厚實的裝備！", 
+                        img: "https://images.unsplash.com/photo-1517299321609-52687d1bc55a?q=80&w=800&auto=format&fit=crop&w=800&h=600", 
                         to: "星野青森屋" 
                     },
                     { 
-                        time: "14:00", title: "前往星野青森屋", tag: "Drive", desc: "【保命路線】導航請設中繼點「陸奧收費道路」。", 
-                        detail: "這是行程中最長且最關鍵的駕駛路段。原路下山後，走平坦的收費道路雖然較繞，但避開了山區積雪和白霧，是資深導遊推薦的安全選項。", 
-                        from: "八甲田", to: "星野 青森屋", 
-                        transport_info: { type: "自駕", time_estimate: "2小時 15分鐘", note: "收費道路安全，但請勿超速" }
+                        time: "12:30", title: "午餐 (纜車站食堂/下山途中)", tag: "Food", desc: "在山區或下山途中用餐。", 
+                        detail: "在山區食堂可享用熱騰騰的蕎麥麵或咖哩飯，快速補充熱量。"
                     },
                     { 
-                        time: "16:00", title: "星野 青森屋", tag: "Hotel", desc: "Check-in。享受頂級溫泉與祭典氛圍。", nav: { mapcode: "84 583 002*44" }, 
+                        time: "13:30", title: "前往星野青森屋", tag: "Drive", desc: "【保命路線】開車下山，轉陸奥收費道路 (Michinoku Toll Road)。", 
+                        detail: "原路下山後，走平坦的收費道路雖然較繞，但避開了山區積雪和白霧，是資深導遊推薦的安全選項。", 
+                        from: "八甲田", to: "星野 青森屋", 
+                        transport_info: { type: "自駕", time_estimate: "1.5 - 2小時", note: "收費道路安全，但請勿超速" }
+                    },
+                    { 
+                        time: "15:30", title: "星野 青森屋 Check-in", tag: "Hotel", desc: "享受頂級溫泉與祭典氛圍。", nav: { mapcode: "84 583 002*44" }, 
                         detail: "【趣味】青森屋的設計主軸是『NORESORE (盡情享受)』。請儘快 check-in，預約晚上的『陸奧祭典屋』，並體驗露天溫泉『浮湯』。", 
-                        img: "https://images.unsplash.com/photo-1560935105-d1448b11a511?q=80&w=800&auto=format&fit=crop&w=800&h=600", // FIXED IMAGE
-                        reservation_info: { type: "Resort", number: "HOS-AOM-1234", name: "YOU/YK", check_in: "15:00", guests: "3名成人", phone: "+81-50-3134-8096" }
+                        img: "https://images.unsplash.com/photo-1560935105-d1448b11a511?q=80&w=800&auto=format&fit=crop&w=800&h=600",
+                        reservation_info: { type: "Resort", number: "HOS-AOM-1234", name: "YOU/YK", check_in: "15:30", guests: "3名成人", phone: "+81-50-3134-8096" }
+                    },
+                    { 
+                        time: "17:30", title: "晚餐：Nore Sore 食堂", tag: "Food", desc: "已預約自助餐。", 
+                        detail: "盡情享用飯店提供的青森美食自助餐。"
                     }
                 ]
             },
             {
                 day: 5, date: "02.06", week: "FRI",
-                heroTitle: "冬日戀歌",
-                heroImg: "https://images.unsplash.com/photo-1548777123-e213912bc571?q=80&w=800&auto=format&fit=crop&w=800&h=600", // FIXED IMAGE
+                heroTitle: "體驗：暖爐馬車與滑雪",
+                heroImg: "https://images.unsplash.com/photo-1548777123-e213912bc571?q=80&w=800&auto=format&fit=crop&w=800&h=600",
                 events: [
-                    { time: "10:00", title: "暖爐馬車", tag: "Relax", desc: "【飯店活動】馬車上享用點心。", detail: "【知性探索】這是向過去嚴寒的東北冬季致敬的活動。在被白雪覆蓋的公園裡，搭著馬車，在溫暖的暖爐旁烤魷魚，非常浪漫。", img: "https://images.unsplash.com/photo-1500595046743-cd271d694d30?q=80&w=800&auto=format&fit=crop&w=800&h=600", // FIXED IMAGE
+                    { time: "07:30", title: "飯店早餐", tag: "Food", desc: "享用飯店早餐。", detail: "請在用餐時確認當天滑雪場的天氣狀況。" },
+                    { 
+                        time: "10:00", title: "暖爐馬車 (Stove Carriage)", tag: "Relax", desc: "【飯店活動】在馬車上享用點心。", 
+                        detail: "【知性探索】在被白雪覆蓋的公園裡，搭著馬車，在溫暖的暖爐旁烤魷魚，非常浪漫。需事前預約。", 
+                        img: "https://images.unsplash.com/photo-1500595046743-cd271d694d30?q=80&w=800&auto=format&fit=crop&w=800&h=600", 
                         to: "滑雪場" 
                     },
-                    { time: "13:00", title: "滑雪練習", tag: "Activity", desc: "綠之大地滑雪場。人少適合初學者。", nav: { phone: "0175-63-4848" }, detail: "町營滑雪場的坡度較緩，對於成人初學者來說壓力較小，是練習基本技巧的理想選擇。請務必穿戴齊全。", img: "https://images.unsplash.com/photo-1551698618-1dfe5d97d256?q=80&w=800&auto=format&fit=crop&w=800&h=600", // FIXED IMAGE
+                    { 
+                        time: "11:00", title: "開車前往滑雪場", tag: "Drive", desc: "距離青森屋約 30 分鐘車程。", 
+                        detail: "滑雪場通常指 東北町小川原湖公園滑雪場，路況平坦，但仍需注意雪面。", 
+                        from: "星野 青森屋", to: "綠之大地與羅曼之森公園", 
+                        transport_info: { type: "自駕", time_estimate: "30分鐘" }
+                    },
+                    { time: "11:30", title: "滑雪場食堂午餐", tag: "Food", desc: "在滑雪場用餐。", detail: "午餐時間可觀察場地和人潮狀況。" },
+                    { time: "12:30", title: "租借滑雪裝備", tag: "Activity", desc: "租借 Ski/Snowboard。", detail: "請務必檢查裝備是否合腳，並確保頭盔安全帶牢固。" },
+                    { 
+                        time: "13:00", title: "滑雪體驗", tag: "Activity", desc: "初學者建議 2 小時已足夠。", nav: { phone: "0175-63-4848" }, 
+                        detail: "町營滑雪場的坡度較緩，對於成人初學者來說壓力較小，是練習基本技巧的理想選擇。", 
+                        img: "https://images.unsplash.com/photo-1551698618-1dfe5d97d256?q=80&w=800&auto=format&fit=crop&w=800&h=600", 
                         to: "青森屋" 
                     },
-                    { time: "20:00", title: "陸奧祭典屋", tag: "Culture", desc: "觀賞青森睡魔祭表演。", detail: "【文化底蘊】這是將青森最具代表性的四大祭典（睡魔祭、立佞武多等）濃縮成一台的精彩表演。是了解青森文化最快、最熱情的方式。", img: "https://images.unsplash.com/photo-1533230554519-5374be216255?q=80&w=800&auto=format&fit=crop&w=800&h=600" // FIXED IMAGE
+                    { time: "15:00", title: "歸還裝備，返回青森屋", tag: "Drive", desc: "開車返回飯店。", detail: "歸還裝備後，請仔細檢查是否有遺漏物品。", from: "滑雪場", to: "星野 青森屋" },
+                    { time: "16:00", title: "回飯店休息/泡湯", tag: "Relax", desc: "回飯店休息，再次泡湯暖身。", detail: "溫泉是消除滑雪疲勞的最佳方式。" },
+                    { 
+                        time: "20:00", title: "陸奧祭典屋表演", tag: "Culture", desc: "【文化體驗】觀賞青森睡魔祭表演。", 
+                        detail: "【文化底蘊】這是將青森最具代表性的四大祭典（睡魔祭、立佞武多等）濃縮成一台的精彩表演。是了解青森文化最快、最熱情的方式。", 
+                        img: "https://images.unsplash.com/photo-1533230554519-5374be216255?q=80&w=800&auto=format&fit=crop&w=800&h=600"
                     }
                 ]
             },
             {
                 day: 6, date: "02.07", week: "SAT",
                 heroTitle: "滿載而歸",
-                heroImg: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=800&auto=format&fit=crop&w=800&h=600", // FIXED IMAGE
+                heroImg: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=800&auto=format&fit=crop&w=800&h=600",
                 events: [
+                    { time: "08:00", title: "飯店早餐", tag: "Food", desc: "享用飯店早餐。", detail: "最後一天，把握時間享受早餐。" },
                     { 
-                        time: "10:00", title: "最終鐵律：準時出發", tag: "Transport", desc: "開車離開飯店。極致慢速安全駕駛。", 
-                        detail: "【導遊叮嚀】從青森屋前往機場車程約 1 小時 20 分鐘。確保車窗玻璃乾淨，視線良好。請預留 20 分鐘以上給加油站排隊。", 
+                        time: "10:00", title: "Check-out，準時出發", tag: "Transport", desc: "開車離開飯店。極致慢速安全駕駛。", 
+                        detail: "【最終鐵律】確保車窗玻璃乾淨，視線良好。請預留 20 分鐘以上給加油站排隊。", 
                         from: "星野 青森屋", to: "青森機場", 
                         transport_info: { type: "自駕", time_estimate: "1小時 20分鐘", note: "出發前務必加滿油" }
                     },
-                    { time: "13:00", title: "青森機場還車", tag: "Transport", desc: "記得加滿油再還車。", img: "https://images.unsplash.com/photo-1569930784237-7b6a2d699397?q=80&w=800&auto=format&fit=crop&w=800&h=600" }, // FIXED IMAGE
-                    { time: "14:00", title: "最後採買", tag: "Shopping", desc: "機場免稅店。", detail: "青森機場雖然小，但有豐富的蘋果製品（果汁、Cidre、甜點）可供選擇。可以把沒買齊的伴手禮在這裡補齊。", img: "https://images.unsplash.com/photo-1579705745811-a32bef7856a3?q=80&w=800&auto=format&fit=crop&w=800&h=600" } // FIXED IMAGE
+                    { time: "12:00", title: "機場附近加滿油 (Full Tank)", tag: "Drive", desc: "加滿油後，前往還車地點。", detail: "請尋找機場最近的加油站，避免還車延誤。", img: "https://images.unsplash.com/photo-1569930784237-7b6a2d699397?q=80&w=800&auto=format&fit=crop&w=800&h=600" },
+                    { time: "12:30", title: "辦理還車手續", tag: "Transport", desc: "檢查車況，辦理還車。", detail: "請確保車內沒有遺漏物品，並將車鑰匙交還給租車公司。", from: "還車點", to: "機場航廈" },
+                    { time: "13:00", title: "抵達機場航廈", tag: "Transport", desc: "準備 Check-in。" },
+                    { time: "13:30", title: "辦理登機手續 (BR 121)", tag: "Flight", desc: "長榮航空櫃檯。", detail: "確認登機口資訊。", reservation_info: { type: "Flight", number: "BR121", name: "YOU/YK/YY/YS", departure: "15:30", arrival: "18:30 (TPE)", gate: "3A" } },
+                    { time: "14:00", title: "機場免稅店 (採買)", tag: "Shopping", desc: "採買蘋果派、蘋果汁、乾貨。", detail: "青森機場雖然小，但有豐富的蘋果製品可供選擇。可以把沒買齊的伴手禮在這裡補齊。", img: "https://images.unsplash.com/photo-1579705745811-a32bef7856a3?q=80&w=800&auto=format&fit=crop&w=800&h=600" },
+                    { time: "15:30", title: "搭機返台", tag: "Flight", desc: "再見青森，期待下次旅程。", detail: "祝旅途愉快！" }
                 ]
             }
         ];
@@ -699,7 +868,7 @@
         let expenses = JSON.parse(localStorage.getItem('expenses_v2')) || [];
         let currentUser = 'YK';
         let currentRate = 0.22; // default Fallback
-        const GOOGLE_MAPS_API_KEY = "YOUR_API_KEY"; 
+        const GOOGLE_MAPS_API_KEY = "AIzaSyAX9nvh4bJpiM6-oTm8FoUSZeSBpxZBc1E"; 
 
         // --- INIT ---
         window.enterApp = function() {
@@ -769,11 +938,12 @@
                 // Determine icon based on tag
                 let icon = 'fa-circle';
                 if (ev.tag === 'Transport' || ev.tag === 'Drive') icon = 'fa-car-side';
-                if (ev.tag === 'Hotel') icon = 'fa-bed';
+                if (ev.tag === 'Hotel' || ev.tag === 'Check-in') icon = 'fa-bed';
                 if (ev.tag === 'Shopping') icon = 'fa-bag-shopping';
-                if (ev.tag === 'Food' || ev.tag === 'Cuisine') icon = 'fa-utensils';
-                if (ev.tag === 'Sightseeing' || ev.tag === 'Nature' || ev.tag === 'Art' || ev.tag === 'Experience') icon = 'fa-map-pin';
-                if (ev.tag === 'Activity' || ev.tag === 'Relax' || ev.tag === 'Culture') icon = 'fa-person-skiing';
+                if (ev.tag === 'Food' || ev.tag === 'Cuisine' || ev.tag === '餐飲') icon = 'fa-utensils';
+                if (ev.tag === 'Sightseeing' || ev.tag === 'Nature' || ev.tag === 'Art' || ev.tag === 'Experience' || ev.tag === '景點') icon = 'fa-map-pin';
+                if (ev.tag === 'Activity' || ev.tag === 'Relax' || ev.tag === 'Culture' || ev.tag === '體驗') icon = 'fa-person-skiing';
+                if (ev.tag === 'Flight') icon = 'fa-plane';
 
                 return `
                     <div class="event-node visible" style="transition-delay: ${delay}s">
@@ -1000,12 +1170,12 @@
             const gmapIframe = document.getElementById('m-gmap-iframe');
             const mapUrl = getMapUrl(data);
             
-            if (mapUrl && GOOGLE_API_KEY !== "YOUR_API_KEY") {
+            if (mapUrl && GOOGLE_API_KEY !== "AIzaSyAX9nvh4bJpiM6-oTm8FoUSZeSBpxZBc1E") {
                 gmapPreview.classList.remove('hidden');
                 gmapIframe.src = mapUrl;
             } else if (mapUrl && GOOGLE_API_KEY === "AIzaSyAX9nvh4bJpiM6-oTm8FoUSZeSBpxZBc1E") {
                  gmapPreview.classList.remove('hidden');
-                 gmapIframe.src = `https://www.google.com/maps/embed/v1/view?key=YOUR_API_KEY&center=40.7831,140.7431&zoom=8&q=${encodeURIComponent(data.title || data.from + ' to ' + data.to)}`;
+                 gmapIframe.src = `https://www.google.com/maps/embed/v1/view?key=AIzaSyAX9nvh4bJpiM6-oTm8FoUSZeSBpxZBc1E&center=40.7831,140.7431&zoom=8&q=${encodeURIComponent(data.title || data.from + ' to ' + data.to)}`;
             } else {
                 gmapPreview.classList.add('hidden');
             }
