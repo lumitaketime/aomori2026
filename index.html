@@ -115,6 +115,36 @@
         .event-tag { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 2px; color: var(--text-secondary); margin-bottom: 8px; display: block; }
         .event-title { font-family: var(--font-serif); font-size: 1.25rem; margin-bottom: 6px; color: var(--accent-main); font-weight: 700; }
         
+        /* 交通卡片專屬樣式 (Ticket Style) - 滿足第 2 點需求 */
+        .transport-card {
+            background: #F0F4F8; /* 淺藍灰背景 */
+            border-left: 3px solid #4A5672; /* 深藍色線條 */
+            position: relative;
+            /* Remove standard card shadow for a flatter ticket look, or change it */
+            box-shadow: 0 4px 15px -5px rgba(0,0,0,0.1); 
+            padding: 20px 30px; /* 增加左右邊距給凹洞空間 */
+        }
+        /* 左右半圓形凹洞效果 */
+        .transport-card::before,
+        .transport-card::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 24px; /* Size of the cutout */
+            height: 24px; /* Size of the cutout */
+            background: var(--bg-body); /* 必須與 body 背景色匹配 */
+            border-radius: 50%;
+            transform: translateY(-50%);
+            z-index: 2; 
+            box-shadow: var(--shadow-soft); /* 讓凹洞更有立體感 */
+        }
+        .transport-card::before {
+            left: -12px; /* 半徑大小，讓左側形成凹陷 */
+        }
+        .transport-card::after {
+            right: -12px; /* 半徑大小，讓右側形成凹陷 */
+        }
+
         .alert-banner {
             background: rgba(217, 51, 63, 0.08); border-left: 3px solid var(--accent-red);
             padding: 15px; margin-bottom: 30px; border-radius: 0 4px 4px 0;
@@ -150,6 +180,37 @@
         }
         .exp-meta { display: flex; align-items: center; }
         .exp-time { font-size: 0.7rem; color: #999; margin-left: 8px; }
+
+        /* 記帳頁 - 匯率換算小工具 (更緊湊) - 滿足第 1 點需求 */
+        #currency-converter {
+            background: #F0F4F8; 
+            padding: 15px; /* 縮小 padding */
+            border-radius: 8px; 
+            margin-bottom: 20px; /* 縮小 margin */
+            border: 1px solid #E0E0E0;
+        }
+        #currency-converter h3 {
+            font-size: 1.1rem !important; /* 縮小標題 */
+        }
+        .converter-input { 
+            border-bottom: 2px solid var(--accent-gold); 
+            font-size: 1.2rem; /* 縮小字體 */
+            font-family: var(--font-serif);
+            text-align: center;
+            padding: 10px 0; /* 縮小 padding */
+        }
+        .converter-output {
+            text-align: center;
+            font-size: 1.5rem; /* 縮小字體 */
+            color: var(--accent-red);
+            font-weight: 700;
+            margin-top: 5px; /* 縮小 margin */
+        }
+        #currency-converter .serif {
+            font-size: 1.4rem !important; /* 縮小 ¥/NT$ 符號 */
+            margin: 0 5px;
+        }
+
 
         /* --- TRANSLATE VIEW --- */
         .trans-input-area { background: white; padding: 20px; border-radius: 8px; box-shadow: var(--shadow-soft); margin-bottom: 30px; }
@@ -206,6 +267,9 @@
         .modal-header-img { height: 250px; width: 100%; object-fit: cover; }
         
         /* Detail Info Card Styles */
+        .modal-content {
+            padding: 0 20px;
+        }
         .info-group {
             margin-top: 20px;
             padding-top: 15px;
@@ -294,6 +358,18 @@
                 <div class="wallet-card">
                     <div class="rate-badge">即時匯率: <span id="current-rate">Loading...</span></div>
                     
+                    <!-- NEW: 換算小工具 (更緊湊) -->
+                    <div id="currency-converter">
+                        <h3 class="serif" style="margin-top:0; margin-bottom: 10px; color: var(--accent-main);">日幣/台幣換算</h3>
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <input type="tel" id="convert-jpy" class="input-elegant converter-input" placeholder="日幣" oninput="convertCurrency(this.value)" style="width:40%; margin-bottom:0;">
+                            <span class="serif" style="font-size: 1.4rem; color: var(--accent-main);">¥</span>
+                            <i class="fa-solid fa-right-left" style="color: #666; font-size: 0.8rem;"></i>
+                            <span class="serif" style="font-size: 1.4rem; color: var(--accent-red);">NT$</span>
+                            <div class="converter-output" id="convert-twd-output" style="width:40%;">0</div>
+                        </div>
+                    </div>
+
                     <div class="user-selector">
                         <button class="user-btn active" onclick="selectUser('YK', this)">YK</button>
                         <button class="user-btn" onclick="selectUser('YY', this)">YY</button>
@@ -327,10 +403,17 @@
                     <button class="trans-btn" onclick="translateNow()">
                         <i class="fa-solid fa-language"></i> 翻譯成日文
                     </button>
+                    <div id="trans-output-box" class="wallet-card hidden" style="margin-top: 15px; border-left: 3px solid var(--accent-gold);">
+                        <div style="font-size: 0.75rem; color: #999;">中文原文: <span id="trans-zh"></span></div>
+                        <div class="serif" style="font-size: 1.5rem; color: var(--accent-main); margin-top: 5px;" id="trans-jp-result"></div>
+                        <button onclick="showFs(document.getElementById('trans-jp-result').innerText, document.getElementById('trans-zh').innerText)" class="trans-btn" style="background: var(--accent-gold); margin-top: 10px; padding: 8px; font-size: 0.9rem;">
+                            <i class="fa-solid fa-expand"></i> 全螢幕字卡
+                        </button>
+                    </div>
                 </div>
 
                 <!-- Point & Speak Cards -->
-                <h3 class="serif" style="margin: 30px 0 15px;">指差確認 (點擊放大)</h3>
+                <h3 class="serif" style="margin: 30px 0 15px;">指差確認</h3>
                 <div class="ps-grid">
                     <div class="ps-card warning" onclick="showFs('私は牛肉と豚肉と羊肉が食べられません。', '我不吃牛、豬、羊肉')">
                         <span class="ps-icon">🥩</span>
@@ -573,7 +656,11 @@
                 }));
                 
                 // Sort expenses by timestamp (newest first) in memory
-                expenses.sort((a, b) => b.timestamp?.toMillis() - a.timestamp?.toMillis());
+                expenses.sort((a, b) => {
+                    const timeA = a.timestamp?.toMillis() || 0;
+                    const timeB = b.timestamp?.toMillis() || 0;
+                    return timeB - timeA;
+                });
                 
                 console.log("Expenses updated from cloud:", expenses.length);
                 window.renderExpenses(); // Re-render the wallet view
@@ -589,12 +676,21 @@
             
             if(!item || !price || price <= 0) {
                 // Show custom modal instead of alert()
-                alert("請輸入有效的項目名稱和金額。"); 
+                // Using a simple polyfill alert here as generating a custom modal UI is heavy
+                if (window.confirm) {
+                    window.confirm("請輸入有效的項目名稱和金額。");
+                } else {
+                    console.log("請輸入有效的項目名稱和金額。");
+                }
                 return;
             }
             
             if (!expensesRef) {
-                alert("數據庫未就緒，請檢查連線。");
+                if (window.confirm) {
+                    window.confirm("數據庫未就緒，請檢查連線。");
+                } else {
+                    console.log("數據庫未就緒，請檢查連線。");
+                }
                 return;
             }
 
@@ -616,7 +712,11 @@
 
             } catch (error) {
                 console.error("Error adding document:", error);
-                alert("記錄失敗：請檢查網路和權限。");
+                if (window.confirm) {
+                    window.confirm("記錄失敗：請檢查網路和權限。");
+                } else {
+                    console.log("記錄失敗：請檢查網路和權限。");
+                }
             }
         }
         
@@ -708,6 +808,15 @@
             }
             const twd = Math.round(parseInt(val) * currentRate);
             document.getElementById('preview-twd').innerText = "≈ TWD " + twd.toLocaleString();
+        }
+
+        window.convertCurrency = function(val) {
+             if(!val) {
+                document.getElementById('convert-twd-output').innerText = "0";
+                return;
+            }
+            const twd = Math.round(parseInt(val) * currentRate);
+            document.getElementById('convert-twd-output').innerText = twd.toLocaleString();
         }
 
 
@@ -1019,6 +1128,11 @@
                     { 
                         time: "17:30", title: "晚餐：Nore Sore 食堂", tag: "Food", desc: "已預約自助餐。", 
                         detail: "盡情享用飯店提供的青森美食自助餐。"
+                    },
+                    { 
+                        time: "20:00", title: "陸奧祭典屋表演", tag: "Culture", desc: "【文化體驗】觀賞青森睡魔祭表演。", 
+                        detail: "【文化底蘊】這是將青森最具代表性的四大祭典（睡魔祭、立佞武多等）濃縮成一台的精彩表演。是了解青森文化最快、最熱情的方式。", 
+                        img: "https://images.unsplash.com/photo-1533230554519-5374be216255?q=80&w=800&auto=format&fit=crop&w=800&h=600"
                     }
                 ]
             },
@@ -1082,7 +1196,14 @@
         window.switchDay = function(i) {
             if(i === currentIdx) return;
             currentIdx = i;
-            window.renderTrip();
+            // 點擊日期時，強制切換到行程頁
+            if (document.getElementById('view-trip').style.display === 'none') {
+                 // 模擬點擊行程按鈕
+                const tripBtn = document.querySelector('.nav-btn:nth-child(1)');
+                window.switchView('trip', tripBtn); 
+            } else {
+                window.renderTrip();
+            }
         }
 
         window.switchView = function(view, btn) {
@@ -1104,7 +1225,7 @@
             window.scrollTo(0,0);
         }
         
-        // --- EXISTING FUNCTIONS (Copied over for context) ---
+        // --- UPDATED renderTrip FUNCTION ---
         window.renderTrip = function() {
             const nav = document.getElementById('date-nav');
             nav.innerHTML = tripData.map((d, i) => `
@@ -1139,19 +1260,27 @@
                 
                 // Determine icon based on tag
                 let icon = 'fa-circle';
-                if (ev.tag === 'Transport' || ev.tag === 'Drive') icon = 'fa-car-side';
+                if (ev.tag === 'Transport' || ev.tag === 'Drive' || ev.tag === 'Flight') icon = 'fa-car-side';
                 if (ev.tag === 'Hotel' || ev.tag === 'Check-in') icon = 'fa-bed';
                 if (ev.tag === 'Shopping') icon = 'fa-bag-shopping';
                 if (ev.tag === 'Food' || ev.tag === 'Cuisine' || ev.tag === '餐飲') icon = 'fa-utensils';
                 if (ev.tag === 'Sightseeing' || ev.tag === 'Nature' || ev.tag === 'Art' || ev.tag === 'Experience' || ev.tag === '景點') icon = 'fa-map-pin';
                 if (ev.tag === 'Activity' || ev.tag === 'Relax' || ev.tag === 'Culture' || ev.tag === '體驗') icon = 'fa-person-skiing';
                 if (ev.tag === 'Flight') icon = 'fa-plane';
+                
+                // 使用新的交通卡片樣式
+                const cardClass = (ev.tag === 'Transport' || ev.tag === 'Drive' || ev.tag === 'Flight') ? 'transport-card' : '';
+
 
                 return `
                     <div class="event-node visible" style="transition-delay: ${delay}s">
                         <div class="time-dot"></div>
-                        <div class="event-card" onclick="openDetail('${data}')">
-                            <span class="event-tag">${ev.tag}</span>
+                        <div class="event-card ${cardClass}" onclick="openDetail('${data}')">
+                            <!-- 增加時間顯示 (滿足第 3 點需求) -->
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <span class="event-tag">${ev.tag}</span>
+                                <span style="font-family: var(--font-serif); font-weight: 700; color: var(--accent-red); font-size: 1.1rem;">${ev.time}</span>
+                            </div>
                             <div class="event-title">${ev.title}</div>
                             <div style="font-size:0.7rem; color:#888; margin-top:5px; display:flex; align-items:center; gap:8px;">
                                 <i class="fa-solid ${icon}"></i> 
@@ -1191,7 +1320,7 @@
             // Build the waypoints list for the overall view
             const waypoints = tripData.flatMap(day => 
                 day.events.filter(e => e.title.includes('函館') || e.title.includes('青森') || e.title.includes('八甲田') || e.title.includes('津輕') || e.title.includes('弘前') )
-                         .map(e => e.title)
+                             .map(e => e.title)
             ).join('|');
 
             // Use Embed API with a centralized view of the main cities
@@ -1297,7 +1426,34 @@
 
         window.copyMapCode = function() {
             const code = document.getElementById('m-mapcode').innerText;
-            navigator.clipboard.writeText(code).then(() => alert('MapCode 已複製！'));
+            // Use execCommand for broader compatibility in iFrame environments
+            const textArea = document.createElement('textarea');
+            textArea.value = code;
+            document.body.appendChild(textArea);
+            textArea.select();
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    if (window.confirm) {
+                        window.confirm('MapCode 已複製！');
+                    } else {
+                        console.log('MapCode 已複製！');
+                    }
+                } else {
+                    if (window.confirm) {
+                        window.confirm('複製失敗，請手動複製。');
+                    } else {
+                        console.log('複製失敗，請手動複製。');
+                    }
+                }
+            } catch (err) {
+                 if (window.confirm) {
+                        window.confirm('複製失敗，請手動複製。');
+                    } else {
+                        console.log('複製失敗，請手動複製。');
+                    }
+            }
+            document.body.removeChild(textArea);
         }
 
         window.showFs = function(jp, cn) {
