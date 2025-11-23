@@ -46,7 +46,17 @@
             z-index: 9999; display: flex; flex-direction: column;
             justify-content: center; align-items: center;
             transition: transform 1s cubic-bezier(0.77, 0, 0.175, 1);
+            padding: 0 30px; /* 防止文字貼邊 */
         }
+        
+        /* FIX: 確保 intro-text 內容置中 */
+        .intro-text {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* 確保子元素（如按鈕）置中 */
+        }
+
         .intro-countdown-block { margin-bottom: 40px; opacity: 0; animation: fadeIn 1.5s ease forwards 0.3s; text-align: center; }
         .countdown-value { font-size: 5rem; line-height: 1; font-weight: 300; color: var(--accent-gold); font-family: var(--font-serif); }
         .intro-btn {
@@ -56,6 +66,25 @@
             opacity: 0; animation: fadeIn 1.5s ease forwards 1s;
         }
         @keyframes fadeIn { to { opacity: 1; } }
+        
+        /* NEW: 封面動態文字樣式 - 優化版 */
+        #dynamic-intro-text {
+            font-family: var(--font-serif); /* 使用襯線字體更有質感 */
+            font-size: 1.1rem; 
+            margin-top: 20px; 
+            color: rgba(255,255,255,0.9); 
+            max-width: 320px; 
+            text-align: center; 
+            line-height: 1.6; 
+            min-height: 60px; /* 預留高度避免跳動 */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out; /* 更慢的淡入淡出 */
+            padding: 5px 0;
+            letter-spacing: 1px;
+        }
 
         /* --- HEADER --- */
         .elegant-header {
@@ -318,7 +347,9 @@
                 <div class="countdown-value" id="days-left">--</div>
                 <div style="font-size: 0.9rem; letter-spacing: 3px; color: rgba(255,255,255,0.8);">DAYS LEFT</div>
             </div>
-            <div class="intro-title" style="letter-spacing: 3px;">函館-青森 林檎之旅</div>
+            <div class="intro-title" style="letter-spacing: 3px; font-size: 1.2rem; text-align: center;">函館-青森 林檎之旅</div>
+            <!-- NEW: 互動文字區塊 -->
+            <div id="dynamic-intro-text"></div> 
             <button class="intro-btn" onclick="enterApp()">開啟旅程</button>
         </div>
     </div>
@@ -756,6 +787,34 @@
             document.getElementById('expense-list').innerHTML = html;
         }
 
+        // --- TRANSLATION FUNCTION (Stub to fix ReferenceError) ---
+        window.translateNow = async function() {
+            const input = document.getElementById('trans-input').value.trim();
+            const outputBox = document.getElementById('trans-output-box');
+            const transZh = document.getElementById('trans-zh');
+            const transJpResult = document.getElementById('trans-jp-result');
+
+            if (!input) {
+                // Using console log as a non-intrusive alert replacement
+                console.warn("翻譯輸入為空。");
+                outputBox.classList.add('hidden');
+                return;
+            }
+
+            // Simulate loading
+            transZh.innerText = input;
+            transJpResult.innerText = "正在呼叫翻譯服務...";
+            outputBox.classList.remove('hidden');
+
+            // Simulate the translation result after a small delay
+            await new Promise(resolve => setTimeout(resolve, 1500));
+            
+            // Placeholder/Stub result
+            transJpResult.innerText = "目前即時翻譯功能正在串接中，請先使用指差確認卡片。"; 
+            
+            // For pointing and speaking, we use the original phrase
+            window.showFs(transJpResult.innerText, input);
+        }
 
         // --- STARTUP LOGIC ---
         window.enterApp = function() {
@@ -764,6 +823,114 @@
             window.fetchRate();
             window.renderFullTripMap();
         };
+
+        // NEW: 封面互動文字邏輯 - 拆分與時間感知
+        const timeSensitiveMessages = {
+            // 08:00 - 17:59 (Daytime: Work & Endurance)
+            work: [
+                "今天的任務再多也沒關係，想想函館山的百萬夜景在等你。",
+                "工作很累對吧？再撐一下，青森的蘋果派會治癒這一切。",
+                "加班的時候想一想，星野青森屋的露天溫泉正在冒著熱氣。",
+                "當你覺得精疲力盡時，記得有一碗幸運小丑漢堡是為你而做的。",
+                "薪水就是為了變成機票和海鮮丼而存在的，再撐一下！",
+                "再堅持一下，Dormy Inn 的夜鳴拉麵在呼喚你疲憊的靈魂。",
+                "為了那一杯暖爐列車上的清酒，今天的鳥事都不算什麼。",
+                "今天的努力，都是為了在八甲田山看樹冰時能無憂無慮。",
+                "讓這週過得快一點吧，我們和青森犬有個約定。",
+                "雪靴準備好了嗎？青森的雪不是開玩笑的，我們需要禦寒神裝。",
+                "護照和駕照譯本，是不是該拿出來確認一下有效期限了？",
+                "手機記憶體清空了嗎？青森的美可能會塞爆你的相簿喔。",
+                "那雙陪你走過很多路的鞋子，這次防滑功能足夠應付北國的雪嗎？",
+                "墨鏡準備好了嗎？雪地反射的陽光，有時候比你的未來還耀眼。",
+                "弘前城與大正浪漫的故事，要不要出發前先查查看？",
+                "再堅持一下，把那些讓你理智斷線的瞬間都留在這裡。",
+                "把那些讓你心煩的人事物，想像成八甲田山上的雪怪就好了（笑）。"
+            ],
+            // 18:00 - 23:59 (Evening: Anticipation & Planning)
+            evening: [
+                "想像一下，幸運小丑漢堡淋上特製醬汁的那一瞬間...",
+                "在暖爐列車上烤魷魚的香氣，你想好要配哪一款清酒了嗎？",
+                "古川市場的「去吃丼」，你想好第一樣要夾什麼了嗎？",
+                "青森的蘋果有很多種，你要不要先查查看「富士」和「王林」的差別？",
+                "在大正浪漫喫茶室喝下午茶，是不是該點一杯蘋果紅茶來搭配？",
+                "我們即將欣賞函館山夜景，相機記憶體清空了嗎？",
+                "Day 2 的移動日有點長，準備好你們的八卦庫存了嗎？",
+                "我們即將欣賞世界三大夜景之一，你的心是不是已經飛到函館山了？",
+                "這是給未來的你的提醒：記得多拍一點合照，不要只有風景喔。",
+                "要不要先上網查查奈良美智的「青森犬」？它在美術館等著我們。",
+                "這次租的車就是我們的移動城堡，裡面只裝笑聲。",
+                "這次旅行，我們不談公事、不接電話，只談風月與美食。",
+                "誰先提工作的事，誰就要請吃一支蘋果糖。",
+                "每天看著倒數數字變少，嘴角是不是會不自覺上揚？",
+                "所有的等待，都是為了相遇時的那一刻美好。",
+                "想像一下，此刻的弘前城，雪正靜靜地落下，等待著你的到來。",
+                "在唐吉訶德失心瘋，記得提醒對方：「行李箱還塞得下嗎？」"
+            ],
+            // 00:00 - 07:59 (Night: Rest & Healing)
+            rest: [
+                "剛忙完嗎？閉上眼，想像自己正泡在星野青森屋的露天溫泉裡。",
+                "總是照顧別人的你，這次換青森來好好照顧你。",
+                "今天的交班還順利嗎？把不順心的事都留在台灣，我們去函館看夜景洗眼睛。",
+                "知道你肩膀很重，所以我們安排了溫泉，把那些責任都洗掉。",
+                "閉上眼睛，想像一下零下五度的空氣吸進肺裡，那種乾淨的感覺。",
+                "手指敲鍵盤太久了，它們現在只想握著暖暖的清酒杯。",
+                "逃離那些不講理的人事物，去見見只會點頭吃草的馬兒吧。",
+                "讓弘前城的白色雪景，覆蓋掉腦中那些雜亂的待辦事項。",
+                "你累積的疲憊，需要一碗函館朝市的海鮮丼來進行靜脈注射（誤）。",
+                "暫時把「責任感」調成飛航模式，好嗎？",
+                "你的耐心餘額已不足？沒關係，函館的百萬夜景會幫你充值。",
+                "希望你今晚能一夜好眠，明天醒來離出發又更近一步了。",
+                "你為大家付出的心力，星野青森屋的熱湯會為你補回來。",
+                "把心清空，準備裝滿青森的藍天與白雪。",
+                "現在是屬於你的安靜時間，好好休息，儲備明天的快樂。",
+                "所有的壓力和煩惱，都交給溫泉和拉麵吧！"
+            ]
+        };
+        
+        let lastMessageIndex = -1;
+
+        window.startDynamicText = function() {
+            const textElement = document.getElementById('dynamic-intro-text');
+            let currentCategory = [];
+
+            const updateText = () => {
+                const hour = new Date().getHours();
+                let targetKey;
+
+                if (hour >= 8 && hour <= 17) {
+                    targetKey = 'work'; // 08:00 - 17:59 (白天)
+                } else if (hour >= 18 && hour <= 23) {
+                    targetKey = 'evening'; // 18:00 - 23:59 (傍晚/晚上)
+                } else {
+                    targetKey = 'rest'; // 00:00 - 07:59 (深夜/清晨)
+                }
+                
+                currentCategory = timeSensitiveMessages[targetKey];
+                
+                // --- Selection Logic ---
+                textElement.style.opacity = 0;
+
+                setTimeout(() => {
+                    let newIndex;
+                    do {
+                        newIndex = Math.floor(Math.random() * currentCategory.length);
+                    } while (newIndex === lastMessageIndex && currentCategory.length > 1);
+                    
+                    lastMessageIndex = newIndex;
+                    textElement.innerText = currentCategory[newIndex];
+                    
+                    // Fade in
+                    textElement.style.opacity = 1;
+
+                }, 1000); // 1.5s transition time, wait 1s to switch text for smoothness
+            };
+
+            // Start immediately
+            updateText(); 
+            
+            // Repeat every 30 seconds (30000ms)
+            setInterval(updateText, 30000);
+        }
 
         window.onload = function() {
             // Initialize Firebase setup
@@ -777,6 +944,12 @@
             
             // Set initial view to trip (needed for the hidden fix)
             document.getElementById('view-trip').style.display = 'block';
+
+            // Start dynamic intro text after initial setup
+            // Delayed slightly to let the rest of the intro fade in first
+            setTimeout(() => {
+                window.startDynamicText(); 
+            }, 1000);
         };
         
         // --- EXISTING FUNCTIONS (Copied over for context) ---
