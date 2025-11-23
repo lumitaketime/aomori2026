@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>日光輕井澤冬旅 2026</title>
+    <title>青森函館冬旅 2026</title>
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#FAF9F6">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;900&family=Zen+Maru+Gothic:wght=400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;900&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
     
     <style>
         :root {
@@ -223,7 +223,7 @@
 <body>
 
     <div class="header">
-        <div class="app-title">日光輕井澤冬旅</div>
+        <div class="app-title">青森函館冬旅</div>
         <div class="app-meta">
             <span><i class="fa-solid fa-hourglass-half"></i> <span id="days-left">--</span> Days</span>
             <span><i class="fa-solid fa-yen-sign"></i> <span id="rate-disp">0.22</span></span>
@@ -236,32 +236,32 @@
     <div class="weather-strip" id="weather-strip">
         <div class="w-item">
             <div class="w-time">Now</div>
-            <div class="w-icon"><i class="fa-solid fa-sun"></i></div>
-            <div class="w-temp">12°</div>
+            <div class="w-icon"><i class="fa-solid fa-cloud"></i></div>
+            <div class="w-temp">-2°</div>
         </div>
         <div class="w-item">
             <div class="w-time">13:00</div>
-            <div class="w-icon"><i class="fa-solid fa-cloud-sun"></i></div>
-            <div class="w-temp">13°</div>
+            <div class="w-icon"><i class="fa-regular fa-snowflake"></i></div>
+            <div class="w-temp">-3°</div>
         </div>
         <div class="w-item">
             <div class="w-time">14:00</div>
-            <div class="w-icon"><i class="fa-solid fa-cloud"></i></div>
-            <div class="w-temp">12°</div>
+            <div class="w-icon"><i class="fa-regular fa-snowflake"></i></div>
+            <div class="w-temp">-3°</div>
         </div>
         <div class="w-item">
             <div class="w-time">15:00</div>
             <div class="w-icon"><i class="fa-solid fa-wind"></i></div>
-            <div class="w-temp">11°</div>
+            <div class="w-temp">-4°</div>
         </div>
         <div class="w-item">
             <div class="w-time">16:00</div>
-            <div class="w-icon"><i class="fa-solid fa-cloud-moon"></i></div>
-            <div class="w-temp">9°</div>
+            <div class="w-icon"><i class="fa-solid fa-moon"></i></div>
+            <div class="w-temp">-5°</div>
         </div>
     </div>
 
-    <div id="tab-trip" class="tab-content">
+    <div id="tab-trip" class="tab-content active">
         <div id="timeline-container" class="timeline-container">
             </div>
     </div>
@@ -368,208 +368,263 @@
     </div>
 
     <script>
-        // --- DATA STRUCTURE (Updated for 8.0 - 日光/輕井澤/東京) ---
-        // New start date: 3/26
+        // --- DATA STRUCTURE (Updated Final Aomori/Hakodate) ---
         const tripData = [
             {
-                day: 1, date: "3/26", week: "WED",
+                day: 1, date: "2/2", week: "MON",
                 events: [
                     { 
-                        time: "10:30", title: "成田機場抵達 (T2)", tag: "TRANSPORT", 
-                        desc: "入境後領取行李。換領 JR Tokyo Wide Pass (三日券) 及劃位。",
-                        addr: "Narita Airport Terminal 2",
+                        time: "11:10", title: "抵達函館機場 (HKD)", tag: "TRANSPORT", 
+                        desc: "入境後領取行李。",
+                        addr: "Hakodate Airport",
+                        img: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=800",
+                        pointSpeak: [
+                            { cn: "請問機場巴士在哪？", jp: "空港バス乗り場はどこですか？" }
+                        ]
+                    },
+                    { 
+                        time: "12:30", title: "機場巴士至函館站", tag: "TRANSPORT", 
+                        desc: "搭乘機場巴士前往 JR 函館站。",
+                        addr: "JR Hakodate Station"
+                    },
+                    { 
+                        time: "13:35", title: "採購：UNIQLO & Bic Camera", tag: "SHOPPING",
+                        desc: "從飯店/車站搭計程車出發 (計程車來回，效率最高)。UNIQLO 函館昭和店 & Kojima x Bic Camera 函館店。",
+                        addr: "Kojima x Bic Camera 函館店",
                         img: "https://images.unsplash.com/photo-1542060748-10c28b62716f?q=80&w=800",
                         pointSpeak: [
-                            { cn: "我要換領 JR Tokyo Wide Pass", jp: "JR東京ワイドパスの交換をお願いします" },
-                            { cn: "可以幫我劃位嗎？", jp: "指定席の予約をお願いできますか？" }
+                            { cn: "請載我到 Bic Camera", jp: "ビックカメラまでお願いします" }
                         ]
                     },
                     { 
-                        time: "12:15", title: "搭乘 N'EX 至東京車站", tag: "TRANSPORT",
-                        desc: "N'EX 12:15 發車，13:17 抵達東京。 (JR Pass 啟用日)",
-                        addr: "成田機場 -> 東京車站",
-                        img: "https://images.unsplash.com/photo-1588667319985-e11a629b19e6?q=80&w=800",
+                        time: "15:45", title: "金森紅磚倉庫", tag: "SIGHTSEEING",
+                        desc: "飯店卸貨，搭市電前往。遊覽金森紅磚倉庫區域。",
+                        addr: "金森赤レンガ倉庫",
+                        img: "https://images.unsplash.com/photo-1579500057271-9c6a71cb069b?q=80&w=800"
+                    },
+                    { 
+                        time: "17:00", title: "函館山纜車 (夜景)", tag: "SIGHTSEEING",
+                        desc: "欣賞百萬夜景。纜車人潮可能較多，注意保暖。",
+                        addr: "Hakodate Ropeway",
+                        img: "https://images.unsplash.com/photo-1532236204992-f5e85c024202?q=80&w=800",
+                        gps: "0138-23-3105",
                         pointSpeak: [
-                            { cn: "請問 N'EX 在哪個月台？", jp: "N'EX のホームはどこですか？" }
+                            { cn: "兩張大人票", jp: "大人2枚お願いします" }
                         ]
                     },
                     { 
-                        time: "14:30", title: "JR 新幹線轉往宇都宮", tag: "TRANSPORT",
-                        desc: "東京車站搭乘東北/山形新幹線 (Tsubasa 139) 往宇都宮，14:48 出發，15:35 抵達。",
-                        addr: "東京車站 -> 宇都宮車站",
-                        img: "https://images.unsplash.com/photo-1560931326-03c6838a6a6e?q=80&w=800"
-                    },
-                    { 
-                        time: "16:00", title: "宇都宮餃子晚餐", tag: "FOOD",
-                        desc: "晚餐在宇都宮站前或東口吃餃子。",
-                        addr: "宇都宮車站附近",
+                        time: "晚餐", title: "函館站或灣區用餐", tag: "FOOD",
+                        desc: "步行前往，自由選擇。",
+                        addr: "JR Hakodate Station Area",
                         pointSpeak: [
-                            { cn: "請問有英文菜單嗎？", jp: "英語のメニューはありますか？" },
-                            { cn: "我要這兩種餃子", jp: "この二種類の餃子をください" }
+                            { cn: "有素食嗎？", jp: "ベジタリアン料理はありますか？" }
                         ]
                     },
                     { 
-                        time: "19:00", title: "住宿：東武日光站前飯店", tag: "HOTEL",
-                        desc: "JR 轉東武日光線 (Local) 至東武日光站。飯店在車站對面。",
-                        addr: "Hotel Famitic Nikko",
-                        bookingId: "NKO-FAM-326",
+                        time: "住宿", title: "JR Inn Hakodate", tag: "HOTEL",
+                        desc: "飯店 Check-in。位於函館站旁。",
+                        addr: "JR Inn Hakodate",
+                        bookingId: "HAKO-JRI-202",
                         img: "https://images.unsplash.com/photo-1517840901100-8179e982acb7?q=80&w=800"
                     }
                 ]
             },
             {
-                day: 2, date: "3/27", week: "THU",
+                day: 2, date: "2/3", week: "TUE",
                 events: [
                     { 
-                        time: "09:00", title: "日光東照宮", tag: "SIGHTSEEING",
-                        desc: "世界遺產。必看「三猿」和「睡貓」。預計停留 2 小時。",
-                        addr: "Nikko Toshogu Shrine",
-                        img: "https://images.unsplash.com/photo-1559400287-2f3b9074b1c2?q=80&w=800",
+                        time: "08:00", title: "函館朝市 早餐", tag: "FOOD",
+                        desc: "步行前往。海鮮丼、釣烏賊。",
+                        addr: "Hakodate Morning Market",
+                        img: "https://images.unsplash.com/photo-1559339352-11d035aa65de?q=80&w=800",
+                        gps: "0138-22-7981",
                         pointSpeak: [
-                            { cn: "兩張門票", jp: "入場券を2枚お願いします" },
-                            { cn: "請問東照宮在哪個方向？", jp: "東照宮はどちらの方向ですか？" }
+                            { cn: "釣活烏賊", jp: "活イカ釣り（Ika-tsuri）" },
+                            { cn: "我要海膽", jp: "ウニをください" }
                         ]
                     },
                     { 
-                        time: "12:30", title: "午餐：湯波料理 (豆腐皮)", tag: "FOOD",
-                        desc: "推薦：湯波蕎麥麵或湯波刺身。",
-                        addr: "日光市內 (推薦：油源)",
+                        time: "10:00", title: "新幹線等，移動至青森", tag: "TRANSPORT",
+                        desc: "從函館站出發。JR 新幹線/奧羽本線。",
+                        addr: "JR Hakodate Station -> JR Aomori Station",
+                        img: "https://images.unsplash.com/photo-1560931326-03c6838a6a6e?q=80&w=800"
+                    },
+                    { 
+                        time: "14:15", title: "Dormy Inn 放行李", tag: "HOTEL",
+                        desc: "搭計程車至 Dormy Inn 放行李 (Day 2 無車)。",
+                        addr: "Dormy Inn Aomori",
+                        bookingId: "AOM-DOR-203"
+                    },
+                    { 
+                        time: "14:40", title: "青森縣立美術館", tag: "SIGHTSEEING",
+                        desc: "搭計程車前往。參觀奈良美智的「青森犬」。美術館 17:00 閉館。",
+                        addr: "Aomori Museum of Art",
+                        img: "https://images.unsplash.com/photo-1629012435532-6d2a452d765d?q=80&w=800",
+                        gps: "017-783-3000"
+                    },
+                    { 
+                        time: "18:00", title: "晚餐：青森鄉土料理", tag: "FOOD",
+                        desc: "步行尋找晚餐，推薦青森扇貝小屋或在地居酒屋。",
+                        addr: "Aomori Station Area",
                         pointSpeak: [
-                            { cn: "這是素食嗎？", jp: "これはベジタリアンですか？" }
+                            { cn: "青森扇貝小屋", jp: "あおもり帆立小屋" }
                         ]
                     },
                     { 
-                        time: "14:30", title: "中禪寺湖與華嚴瀑布", tag: "NATURE",
-                        desc: "搭乘東武巴士前往中禪寺湖。瀑布觀景台需另外付費。",
-                        addr: "Lake Chuzenji & Kegon Falls",
-                        img: "https://images.unsplash.com/photo-1536968037341-9c60e0a58e5a?q=80&w=800",
-                        gps: "0288-55-0017"
+                        time: "19:30", title: "唐吉訶德 (購物備案)", tag: "SHOPPING",
+                        desc: "步行前往，離飯店近。",
+                        addr: "ドン・キホーテ 青森新町店"
                     },
                     { 
-                        time: "17:30", title: "日光站前購物", tag: "SHOPPING",
-                        desc: "購買紀念品和當地清酒。",
-                        addr: "東武日光車站周邊",
-                        pointSpeak: [
-                            { cn: "請問有試吃嗎？", jp: "試食はありますか？" }
-                        ]
+                        time: "住宿", title: "Dormy Inn Aomori", tag: "HOTEL",
+                        desc: "享受泡湯、夜鳴拉麵。",
+                        addr: "Dormy Inn Aomori",
+                        img: "https://images.unsplash.com/photo-1517840901100-8179e982acb7?q=80&w=800"
                     }
                 ]
             },
             {
-                day: 3, date: "3/28", week: "FRI",
+                day: 3, date: "2/4", week: "WED",
                 events: [
                     { 
-                        time: "09:15", title: "JR 新幹線至輕井澤", tag: "TRANSPORT",
-                        desc: "JR Pass 最後一天。搭乘新幹線前往輕井澤。預計 11:30 抵達。",
-                        addr: "宇都宮 -> 大宮 -> 輕井澤",
-                        img: "https://images.unsplash.com/photo-1516082470757-c3359d9921b7?q=80&w=800"
-                    },
-                    { 
-                        time: "12:00", title: "輕井澤王子大飯店 Outlet", tag: "SHOPPING",
-                        isSpecial: true, // Special Experience
-                        desc: "輕井澤站南口出站即達。午餐在美食區解決。",
-                        addr: "Karuizawa Prince Shopping Plaza",
-                        img: "https://images.unsplash.com/photo-1567401736780-6060c55f28f0?q=80&w=800",
+                        time: "09:00", title: "青森站取車 (4WD)", tag: "TRANSPORT",
+                        desc: "【租車開始】回飯店載人與行李。",
+                        addr: "JR駅レンタカー青森営業所",
+                        bookingId: "CAR-AOM-0204",
+                        gps: "017-722-3930",
                         pointSpeak: [
-                            { cn: "請問這個有打折嗎？", jp: "これ、割引がありますか？" },
-                            { cn: "試衣間在哪裡？", jp: "試着室はどこですか？" }
+                            { cn: "我有預約", jp: "予約しています" }
                         ]
                     },
                     { 
-                        time: "17:00", title: "雲場池", tag: "NATURE",
-                        desc: "輕井澤的必去景點，有「天鵝湖」美稱。",
-                        addr: "Kumoba Pond, Karuizawa",
-                        gps: "0267-42-5555" // 輕井澤觀光會館電話
+                        time: "10:15", title: "3COINS+plus 採買", tag: "SHOPPING",
+                        desc: "抵達 ELM 購物中心，直奔 3COINS+plus (限時 35 分鐘)。",
+                        addr: "ELM Shopping Center",
+                        img: "https://images.unsplash.com/photo-1519567241046-7f570eee3d9f?q=80&w=800"
                     },
-                    {
-                        time: "19:30", title: "住宿：輕井澤大飯店", tag: "HOTEL",
-                        desc: "Check-in。",
-                        addr: "Karuizawa Hotel",
-                        bookingId: "KRW-328-H",
-                        img: "https://images.unsplash.com/photo-1596701082531-1557995f70b7?q=80&w=800"
+                    { 
+                        time: "12:30", title: "津輕鐵道 「暖爐列車」", tag: "SPECIAL EXPERIENCE",
+                        isSpecial: true,
+                        desc: "【任務 2】烤魷魚體驗。務必確認 2026 年時刻表。",
+                        addr: "津軽五所川原駅",
+                        img: "https://images.unsplash.com/photo-1475738972911-5b44ce984c42?q=80&w=800",
+                        pointSpeak: [
+                            { cn: "請給我烤魷魚", jp: "スルメ（Surume）をください" }
+                        ]
+                    },
+                    { 
+                        time: "15:30", title: "藤田紀念庭園", tag: "SIGHTSEEING",
+                        desc: "【任務 3：CRITICAL】衝刺至大正浪漫喫茶室，16:00 前完成點餐。",
+                        addr: "藤田記念庭園",
+                        img: "https://images.unsplash.com/photo-1568285908272-98c94625579d?q=80&w=800",
+                        gps: "0172-37-5525",
+                        pointSpeak: [
+                            { cn: "我要蘋果派", jp: "アップルパイをください" }
+                        ]
+                    },
+                    { 
+                        time: "17:30", title: "開車返回 Dormy Inn", tag: "TRANSPORT",
+                        desc: "【夜間慢行】預留 1.5 小時雪地車程。",
+                        addr: "弘前 -> Dormy Inn Aomori"
                     }
                 ]
             },
             {
-                day: 4, date: "3/29", week: "SAT",
+                day: 4, date: "2/5", week: "THU",
                 events: [
                     { 
-                        time: "10:00", title: "舊輕井澤銀座街", tag: "SIGHTSEEING",
-                        desc: "逛逛伴手禮店、麵包店。推薦：澤屋果醬。",
-                        addr: "Kyū Karuizawa Ginza-dōri",
-                        img: "https://images.unsplash.com/photo-1582208035889-325b59d6e5c7?q=80&w=800"
-                    },
-                    { 
-                        time: "13:30", title: "搭乘新幹線至橫濱", tag: "TRANSPORT",
-                        desc: "從輕井澤搭乘長野新幹線 (Asama) 至東京，再轉乘 JR 東海道本線往橫濱。 (JR Pass 結束)",
-                        addr: "輕井澤 -> 橫濱",
-                        img: "https://images.unsplash.com/photo-1628169824623-14392f44040f?q=80&w=800"
-                    },
-                    { 
-                        time: "16:00", title: "橫濱紅磚倉庫", tag: "SIGHTSEEING",
-                        desc: "逛街、拍照，感受港口氣氛。",
-                        addr: "Yokohama Red Brick Warehouse",
-                        img: "https://images.unsplash.com/photo-1588667319985-e11a629b19e6?q=80&w=800"
-                    },
-                    {
-                        time: "19:00", title: "橫濱晚餐：中華街", tag: "FOOD",
-                        desc: "在中華街尋找晚餐。可以試試包子或燒賣。",
-                        addr: "Yokohama Chinatown",
+                        time: "09:00", title: "古川市場 のっけ丼 早餐", tag: "FOOD",
+                        desc: "自駕，快去快回。",
+                        addr: "青森魚菜センター",
                         pointSpeak: [
-                            { cn: "我要外帶", jp: "テイクアウトをお願いします" }
+                            { cn: "我要兩個のっけ丼", jp: "のっけ丼を二つお願いします" }
                         ]
+                    },
+                    { 
+                        time: "10:40", title: "八甲田樹冰纜車", tag: "SIGHTSEEING",
+                        desc: "搭纜車看 Snow Monsters。若纜車因強風停駛，執行 B 計畫。",
+                        addr: "八甲田ロープウェー",
+                        img: "https://images.unsplash.com/photo-1483921020237-2ff51e8e4b22?q=80&w=800",
+                        gps: "017-738-0343"
+                    },
+                    { 
+                        time: "13:30", title: "馬門溫泉滑雪場", tag: "ACTIVITY",
+                        desc: "【滑雪體驗】在 8 度緩坡練習滑雪 (租借裝備)。",
+                        addr: "馬門溫泉滑雪場",
+                        gps: "0176-74-2131"
+                    },
+                    { 
+                        time: "16:15", title: "抵達 星野青森屋 Check-in", tag: "HOTEL",
+                        desc: "歸還裝備，開車前往。",
+                        addr: "星野リゾート 青森屋",
+                        bookingId: "HOSHINO-AOM-0205",
+                        gps: "0176-51-1111",
+                        pointSpeak: [
+                            { cn: "我要辦理入住", jp: "チェックインをお願いします" }
+                        ]
+                    },
+                    { 
+                        time: "17:30", title: "晚餐：Nore Sore 食堂", tag: "FOOD",
+                        desc: "已預約自助餐。",
+                        addr: "星野リゾート 青森屋"
                     }
                 ]
             },
             {
-                day: 5, date: "3/30", week: "SUN", events: [
+                day: 5, date: "2/6", week: "FRI",
+                events: [
                     { 
-                        time: "10:00", title: "搭乘 JR 東海道本線往東京", tag: "TRANSPORT", 
-                        desc: "搭乘普通列車，前往東京市區。",
-                        addr: "橫濱 -> 東京"
+                        time: "10:00", title: "暖爐馬車 (Stove Carriage)", tag: "SPECIAL EXPERIENCE",
+                        isSpecial: true,
+                        desc: "【飯店活動】需預約，環繞飯店園區。",
+                        addr: "星野リゾート 青森屋",
+                        img: "https://images.unsplash.com/photo-1517840901100-8179e982acb7?q=80&w=800"
                     },
                     { 
-                        time: "11:30", title: "東京築地場外市場", tag: "FOOD", 
-                        desc: "吃海鮮、玉子燒、草莓大福等小吃。",
-                        addr: "Tsukiji Outer Market",
-                        img: "https://images.unsplash.com/photo-1588667319985-e11a629b19e6?q=80&w=800"
+                        time: "12:00", title: "午餐：八食中心", tag: "FOOD",
+                        desc: "開車前往 (35 分鐘)。七輪炭烤海鮮。",
+                        addr: "八食センター",
+                        gps: "0178-28-9311",
+                        pointSpeak: [
+                            { cn: "我要租炭火爐", jp: "七輪（Shichirin）を使いたいです" }
+                        ]
                     },
-                    {
-                        time: "14:00", title: "澀谷 Shibuya Sky", tag: "SIGHTSEEING", 
-                        desc: "上樓頂觀景台，俯瞰東京城市全景。",
-                        addr: "Shibuya Sky",
-                        img: "https://images.unsplash.com/photo-1586561136582-d0216a7f0e3f?q=80&w=800"
-                    },
-                    {
-                        time: "18:30", title: "新宿晚餐與購物", tag: "SHOPPING", 
-                        desc: "在新宿站周邊的百貨公司逛街、吃晚餐。",
-                        addr: "Shinjuku Station Area"
+                    { 
+                        time: "20:00", title: "陸奧祭典屋 表演", tag: "ACTIVITY",
+                        desc: "【文化體驗】觀賞青森四大祭典表演，需預約。",
+                        addr: "星野リゾート 青森屋"
                     }
                 ]
             },
             {
-                day: 6, date: "3/31", week: "MON", events: [
+                day: 6, date: "2/7", week: "SAT",
+                events: [
                     { 
-                        time: "09:30", title: "淺草寺與雷門", tag: "SIGHTSEEING", 
-                        desc: "早上人潮較少，先去拍照。",
-                        addr: "Senso-ji Temple",
-                        img: "https://images.unsplash.com/photo-1534005825227-f473c330e713?q=80&w=800"
+                        time: "10:00", title: "開車離開飯店 (最終鐵律)", tag: "TRANSPORT",
+                        desc: "【最終鐵律】準時離開，確保充足的雪地緩衝時間 (3.5 小時)。",
+                        addr: "星野リゾート 青森屋 -> 青森空港",
+                        gps: "0176-51-1111"
                     },
                     { 
-                        time: "12:00", title: "東京車站拉麵街午餐", tag: "FOOD", 
-                        desc: "在東京車站地下一樓的拉麵街解決午餐。",
-                        addr: "Tokyo Ramen Street"
+                        time: "13:00", title: "青森機場 (AOJ) 還車", tag: "TRANSPORT",
+                        desc: "抵達青森機場。還車手續，記得加滿油。",
+                        addr: "Aomori Airport"
                     },
-                    {
-                        time: "15:00", title: "搭乘 N'EX 至成田機場", tag: "TRANSPORT", 
-                        desc: "東京站 15:00 發車，15:58 抵達機場。預留充裕時間。",
-                        addr: "東京車站 -> 成田機場",
+                    { 
+                        time: "14:00", title: "免稅店/土產店採買", tag: "SHOPPING",
+                        desc: "【最終任務】採買伴手禮。預留充裕時間。",
+                        addr: "青森空港"
+                    },
+                    { 
+                        time: "15:30", title: "搭機返台 (BR 121)", tag: "TRANSPORT",
+                        desc: "登機手續。",
+                        addr: "青森空港"
                     }
                 ]
             }
         ];
 
-        // --- APP STATE ---
+        // --- GLOBAL VARS ---
         let currentDayIdx = 0;
         let expenses = JSON.parse(localStorage.getItem('trip_v7_expenses')) || [];
         let rate = 0.22;
@@ -587,16 +642,14 @@
                         rate = d.rates.TWD; 
                         document.getElementById('rate-disp').innerText = rate.toFixed(2);
                         document.getElementById('rate-big').innerText = rate.toFixed(3);
-                        renderExpenses(); // Update totals
+                        renderExpenses();
                     }
                 });
         };
 
         function updateMeta() {
-            // Calculate days left until the start date (3/26/2026)
-            const startDate = new Date("2026-03-26");
+            const startDate = new Date("2026-02-02"); // Updated start date
             const today = new Date();
-            // Ensure today is at midnight for accurate calculation
             today.setHours(0, 0, 0, 0); 
             const days = Math.max(0, Math.ceil((startDate - today) / (1000 * 60 * 60 * 24)));
             document.getElementById('days-left').innerText = days;
@@ -614,7 +667,6 @@
                 </div>
             `).join('');
             
-            // Scroll to current date
             const activeItem = document.querySelector('.date-item.active');
             if (activeItem) {
                 const nav = document.getElementById('date-nav');
@@ -669,7 +721,7 @@
             document.getElementById('m-title').innerText = currentEv.title;
             document.getElementById('m-desc').innerText = currentEv.desc;
             document.getElementById('m-addr-text').innerText = currentEv.addr;
-            document.getElementById('m-hero').src = currentEv.img || 'https://images.unsplash.com/photo-1542060748-10c28b62716f?q=80&w=800'; // Fallback image
+            document.getElementById('m-hero').src = currentEv.img || 'https://images.unsplash.com/photo-1542060748-10c28b62716f?q=80&w=800'; 
 
             // Point & Speak
             const psContainer = document.getElementById('ps-container');
@@ -724,7 +776,6 @@
             if(!txt) return;
             openTransModal(txt, "翻譯中...");
             try {
-                // Using a fallback API for translation
                 const res = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(txt)}&langpair=zh-TW|ja`);
                 const data = await res.json();
                 if(data.responseData) document.getElementById('tp-jp').innerText = data.responseData.translatedText;
@@ -756,8 +807,10 @@
         function renderExpenses() {
             const list = document.getElementById('expense-list');
             let total = 0;
+            let totalTWD = 0;
             list.innerHTML = expenses.map((ex,i) => {
                 total += ex.price;
+                totalTWD += (ex.price * rate);
                 return `
                 <div style="display:flex; justify-content:space-between; align-items:center; padding:15px 0; border-bottom:1px solid #EEE;">
                     <div><span style="font-weight:bold;">${ex.item}</span> <span style="font-size:0.8rem; color:#999;">(${ex.who})</span></div>
@@ -769,7 +822,7 @@
                 </div>`;
             }).join('');
             document.getElementById('total-spend').innerText = '¥' + total.toLocaleString();
-            document.getElementById('total-twd').innerText = (total * rate).toFixed(0);
+            document.getElementById('total-twd').innerText = totalTWD.toFixed(0);
             localStorage.setItem('trip_v7_expenses', JSON.stringify(expenses));
         }
         function delEx(i) { if(confirm('確定刪除這筆支出嗎？')){expenses.splice(i,1); renderExpenses();}}
