@@ -3,36 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>L'VOYAGE | 林檎與白雪之旅</title>
+    <title>L'VOYAGE | 函館-青森 林檎之旅</title>
     <meta name="theme-color" content="#1C2541">
-    
-    <!-- Fonts & Icons -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Noto+Serif+TC:wght@300;500;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Noto+Serif+TC:wght@300;500;700&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            /* Palette: Luxury Winter - Refined */
-            --bg-body: #F5F7FA;
+            /* Palette: Luxury Winter */
+            --bg-body: #F9F8F4;
             --bg-card: #FFFFFF;
-            --text-primary: #2C3E50;
-            --text-secondary: #7F8C8D;
-            --accent-main: #1C2541; /* Midnight Blue */
-            --accent-gold: #B49B67; /* Champagne Gold */
-            --accent-red: #C0392B; /* Aomori Apple Red */
-            --line-light: #E0E6ED;
-            
-            /* Effects */
-            --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.05);
-            --shadow-float: 0 10px 30px rgba(28, 37, 65, 0.15);
-            --glass-bg: rgba(255, 255, 255, 0.9);
-            --glass-border: 1px solid rgba(255, 255, 255, 0.5);
-            --blur-val: 12px;
-
-            /* Typography */
+            --text-primary: #1A1A1A;
+            --text-secondary: #666666;
+            --accent-main: #1C2541; /* 午夜藍 */
+            --accent-gold: #B49B67; /* 香檳金 */
+            --accent-red: #D9333F; /* 青森紅 */
+            --line-light: #E0E0E0;
+            --shadow-soft: 0 10px 40px -10px rgba(0,0,0,0.08);
             --font-serif: 'Cormorant Garamond', 'Noto Serif TC', serif;
             --font-sans: 'Noto Sans TC', sans-serif;
-            --safe-bottom: env(safe-area-inset-bottom, 20px);
+            --safe-bottom: env(safe-area-inset-bottom);
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -42,604 +32,324 @@
             background-color: var(--bg-body);
             color: var(--text-primary);
             font-family: var(--font-sans);
-            padding-bottom: calc(110px + var(--safe-bottom)); 
+            padding-bottom: calc(90px + var(--safe-bottom)); /* 底部空間 */
             overflow-x: hidden;
-            -webkit-font-smoothing: antialiased;
         }
 
         h1, h2, h3, .serif { font-family: var(--font-serif); }
-        .hidden { display: none !important; }
-        
-        /* Utility: Image Fallback Styling */
-        .img-fallback-container {
-            background: #E0E6ED;
-            display: flex; align-items: center; justify-content: center;
-            color: #95A5A6; font-family: var(--font-serif);
-            flex-direction: column;
-            height: 220px;
-            border-radius: 20px 20px 0 0;
-            width: 100%;
-        }
+        .hidden { display: none; }
 
-        /* --- INTRO SCREEN --- */
+        /* --- INTRO --- */
         #intro-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
             background: var(--accent-main); color: white;
             z-index: 9999; display: flex; flex-direction: column;
             justify-content: center; align-items: center;
-            transition: transform 0.8s cubic-bezier(0.77, 0, 0.175, 1);
-            padding: 40px;
-            background-image: radial-gradient(circle at top right, #2c3e50 0%, #1C2541 60%);
+            transition: transform 1s cubic-bezier(0.77, 0, 0.175, 1);
+            padding: 0 30px;
         }
         
-        .intro-logo {
-            font-size: 3rem; margin-bottom: 20px; color: var(--accent-gold);
-            letter-spacing: 2px;
-            animation: float 6s ease-in-out infinite;
+        .intro-text {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
 
-        .intro-text { text-align: center; max-width: 400px; width: 100%; }
-        
-        .countdown-value { 
-            font-size: 5rem; line-height: 1; font-weight: 300; 
-            color: var(--accent-gold); font-family: var(--font-serif); 
-            text-shadow: 0 0 30px rgba(180, 155, 103, 0.3);
-        }
-        
+        .intro-countdown-block { margin-bottom: 40px; opacity: 0; animation: fadeIn 1.5s ease forwards 0.3s; text-align: center; }
+        .countdown-value { font-size: 5rem; line-height: 1; font-weight: 300; color: var(--accent-gold); font-family: var(--font-serif); }
         .intro-btn {
-            margin-top: 40px; padding: 16px 48px; 
-            border: 1px solid rgba(255,255,255,0.2);
-            background: rgba(255,255,255,0.05); 
-            color: white; font-family: var(--font-serif);
-            font-size: 1.1rem; letter-spacing: 3px; cursor: pointer; 
-            transition: all 0.3s; border-radius: 50px;
-            backdrop-filter: blur(5px);
+            margin-top: 50px; padding: 15px 40px; border: 1px solid rgba(255,255,255,0.3);
+            background: transparent; color: white; font-family: var(--font-serif);
+            font-size: 1.1rem; letter-spacing: 2px; cursor: pointer; transition: 0.3s;
+            opacity: 0; animation: fadeIn 1.5s ease forwards 1s;
         }
-        .intro-btn:active { transform: scale(0.95); background: rgba(255,255,255,0.1); }
-
-        /* --- HEADER & DATE SCROLLER --- */
-        .elegant-header {
-            padding: 50px 20px 10px;
-            background: linear-gradient(to bottom, var(--bg-body) 80%, rgba(245, 247, 250, 0));
-            position: sticky; top: 0; z-index: 100;
-        }
+        @keyframes fadeIn { to { opacity: 1; } }
         
-        .top-meta { 
-            display: flex; justify-content: space-between; align-items: center; 
-            margin-bottom: 25px; 
-        }
-        .brand-container {
-            display: flex; align-items: center; gap: 12px;
-        }
-        .brand { 
-            font-family: var(--font-serif); font-size: 1.5rem; font-weight: 700; 
-            letter-spacing: 1px; color: var(--accent-main); 
-            padding-bottom: 2px; border-bottom: 2px solid var(--accent-gold);
-        }
-        
-        #header-weather-pill {
-            font-size: 0.85rem;
-            color: var(--text-primary);
+        #dynamic-intro-text {
+            font-family: var(--font-serif);
+            font-size: 1.1rem; 
+            margin-top: 20px; 
+            color: rgba(255,255,255,0.9); 
+            max-width: 320px; 
+            text-align: center; 
+            line-height: 1.6; 
+            min-height: 60px;
             display: flex;
             align-items: center;
-            gap: 6px;
-            padding: 6px 12px;
-            border-radius: 30px;
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(5px);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            border: 1px solid rgba(255,255,255,0.5);
-            transition: all 0.3s;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out;
+            padding: 5px 0;
+            letter-spacing: 1px;
         }
-        #header-weather-pill i { color: var(--accent-gold); font-size: 0.9rem; }
-        #header-weather-pill span { font-weight: 600; font-family: var(--font-sans); }
 
-        .status-container { text-align: right; }
-        .status-value { font-family: var(--font-serif); font-size: 1.8rem; line-height: 1; color: var(--accent-gold); }
-        .status-label { font-size: 0.65rem; letter-spacing: 2px; color: var(--text-secondary); margin-top: 2px; }
-
-        .date-scroller { 
-            display: flex; gap: 12px; overflow-x: auto; padding-bottom: 15px; 
-            scrollbar-width: none; mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
-            -webkit-mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
+        /* --- HEADER --- */
+        .elegant-header {
+            padding: 40px 20px 20px;
+            background: linear-gradient(to bottom, #F9F8F4 90%, rgba(249,248,244,0));
+            position: sticky; top: 0; z-index: 100;
         }
-        .date-scroller::-webkit-scrollbar { display: none; }
+        .top-meta { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 20px; }
+        .brand { font-family: var(--font-serif); font-size: 1.4rem; font-weight: 700; letter-spacing: 1px; color: var(--accent-main); }
         
+        .status-value { font-family: var(--font-serif); font-size: 2rem; line-height: 1; color: var(--accent-gold); text-align: right; }
+        .status-label { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 2px; color: var(--text-secondary); text-align: right; margin-top: 5px; }
+
+        /* DATE SCROLLER */
+        .date-scroller { display: flex; gap: 15px; overflow-x: auto; padding-bottom: 10px; scrollbar-width: none; }
+        .date-scroller::-webkit-scrollbar { display: none; }
         .d-item { 
-            min-width: 60px; height: 80px; 
-            background: white; border-radius: 12px;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            opacity: 0.5; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); cursor: pointer;
-            border: 1px solid transparent; transform: scale(0.95);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+            min-width: 60px; text-align: center; opacity: 0.4; transition: 0.4s; cursor: pointer; 
+            display: flex; flex-direction: column; align-items: center;
         }
-        .d-item.active { 
-            opacity: 1; transform: scale(1.05); 
-            border-color: var(--accent-gold); 
-            box-shadow: 0 8px 20px rgba(180, 155, 103, 0.2);
+        .d-item.active { opacity: 1; transform: scale(1.1); }
+        .d-week { font-size: 0.7rem; letter-spacing: 1px; margin-bottom: 5px; text-transform: uppercase; }
+        .d-num { font-family: var(--font-serif); font-size: 1.5rem; position: relative; }
+        .d-item.active .d-num::after {
+            content: ''; position: absolute; bottom: -5px; left: 50%; transform: translateX(-50%);
+            width: 4px; height: 4px; background: var(--accent-gold); border-radius: 50%;
         }
-        .d-week { font-size: 0.7rem; letter-spacing: 1px; color: var(--text-secondary); margin-bottom: 4px; }
-        .d-num { font-family: var(--font-serif); font-size: 1.8rem; color: var(--accent-main); font-weight: 600; }
 
         /* --- TRIP VIEW --- */
         .container { padding: 0 20px; max-width: 600px; margin: 0 auto; }
         
-        /* Feature 1: Compact Weather Widget */
-        .weather-widget {
-            background: #EAF0F6; border-radius: 12px; padding: 15px; margin-bottom: 25px;
-            display: grid; grid-template-columns: 1fr 1.5fr; gap: 15px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
-            border: 1px solid #DDE4EB;
+        .hero-card {
+            position: relative; height: 280px; border-radius: 4px; overflow: hidden; margin-bottom: 30px;
+            box-shadow: var(--shadow-soft);
         }
-        .weather-col h4 { margin: 0 0 5px 0; font-size: 0.8rem; color: var(--text-secondary); font-weight: 500; text-transform: uppercase; letter-spacing: 1px;}
-        .temp-display { font-size: 2rem; font-family: var(--font-serif); color: var(--accent-main); font-weight: 700; display: flex; align-items: center;}
-        .temp-display i { font-size: 1.3rem; margin-right: 10px; color: var(--accent-gold); }
-        .weather-desc { font-size: 0.85rem; color: var(--text-primary); font-weight: 600; margin-top: 0; }
-        .outfit-advice { font-size: 0.85rem; color: #555; line-height: 1.4; }
+        .hero-img { width: 100%; height: 100%; object-fit: cover; transition: transform 10s ease; }
+        .hero-overlay {
+            position: absolute; bottom: 0; left: 0; width: 100%; padding: 25px;
+            background: linear-gradient(to top, rgba(28,37,65,0.9), transparent); color: white;
+        }
+        .hero-title { font-size: 1.6rem; margin: 0; line-height: 1.3; font-weight: 500; color: white; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
 
-
-        .timeline-block { 
-            position: relative; padding-left: 24px; 
-            border-left: 2px solid var(--line-light); 
-        }
-        
-        /* Slide-up Animation for Events */
-        .event-node { 
-            margin-bottom: 25px; position: relative; opacity: 0; 
-            transform: translateY(30px); /* Start 30px below */
-            transition: opacity 0.4s ease, transform 0.4s ease; /* Adjusted transition */
-        }
-        .event-node.visible { 
-            opacity: 1; 
-            transform: translateY(0); 
-        }
+        .timeline-block { position: relative; padding-left: 20px; border-left: 1px solid var(--line-light); margin-left: 10px; }
+        .event-node { margin-bottom: 35px; position: relative; opacity: 0; transform: translateY(20px); transition: 0.6s ease; }
+        .event-node.visible { opacity: 1; transform: translateY(0); }
         
         .time-dot { 
-            position: absolute; left: -29px; top: 22px; width: 10px; height: 10px; 
-            background: var(--bg-body); border: 3px solid var(--accent-main); border-radius: 50%; 
-            z-index: 2; box-shadow: 0 0 0 4px var(--bg-body);
+            position: absolute; left: -25px; top: 0; width: 9px; height: 9px; 
+            background: var(--bg-body); border: 2px solid var(--accent-main); border-radius: 50%; 
         }
-
         .event-card {
-            background: var(--bg-card); padding: 18px 22px; border-radius: 16px;
-            box-shadow: var(--shadow-card); cursor: pointer; transition: transform 0.2s;
-            border: 1px solid white; position: relative; overflow: hidden;
+            background: var(--bg-card); padding: 20px; border-radius: 4px;
+            box-shadow: var(--shadow-soft); cursor: pointer; transition: 0.3s;
+            border-bottom: 2px solid transparent;
         }
         .event-card:active { transform: scale(0.98); }
+        .event-tag { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 2px; color: var(--text-secondary); margin-bottom: 8px; display: block; }
+        .event-title { font-family: var(--font-serif); font-size: 1.25rem; margin-bottom: 6px; color: var(--accent-main); font-weight: 700; }
         
         .transport-card {
-            background: #EDF2F7;
-            border-left: 4px solid #34495E;
-            border-radius: 12px;
-            padding: 18px 22px;
-        }
-        
-        .event-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
-        .event-time { font-family: var(--font-serif); font-size: 1.3rem; color: var(--accent-main); font-weight: 700; }
-        .event-tag { 
-            font-size: 0.6rem; text-transform: uppercase; letter-spacing: 1px; 
-            padding: 3px 6px; border-radius: 4px; background: rgba(0,0,0,0.05); color: var(--text-secondary); 
-            font-weight: 600;
-        }
-        
-        .event-title { font-size: 1.05rem; color: var(--text-primary); font-weight: 600; line-height: 1.4; margin-bottom: 6px; }
-        .event-meta { display: flex; align-items: center; gap: 8px; font-size: 0.8rem; color: var(--text-secondary); }
-        
-        .day-title {
-            font-family: var(--font-serif);
-            font-size: 1.5rem;
-            color: var(--accent-main);
-            margin-bottom: 15px;
-            padding-left: 5px;
-            border-left: 3px solid var(--accent-gold);
-            line-height: 1;
-            padding-top: 5px;
-        }
-
-        /* --- WALLET REDESIGN --- */
-        /* Premium Summary Card */
-        .wallet-summary-card {
-            background: linear-gradient(135deg, #1C2541 0%, #2C3E50 100%);
-            color: white;
-            padding: 25px;
-            border-radius: 20px;
-            box-shadow: 0 10px 25px rgba(28, 37, 65, 0.3);
-            margin-bottom: 25px;
+            background: #F0F4F8;
+            border-left: 3px solid #4A5672;
             position: relative;
-            overflow: hidden;
+            box-shadow: 0 4px 15px -5px rgba(0,0,0,0.1); 
+            padding: 20px 30px;
         }
-        .wallet-summary-card::before {
-            content: ''; position: absolute; top: -50%; right: -50%; width: 100%; height: 100%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
-            pointer-events: none;
+        .transport-card::before, .transport-card::after {
+            content: ''; position: absolute; top: 50%;
+            width: 24px; height: 24px; background: var(--bg-body);
+            border-radius: 50%; transform: translateY(-50%); z-index: 2; 
+            box-shadow: var(--shadow-soft);
         }
-        .wallet-label { font-size: 0.75rem; opacity: 0.7; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 5px; }
-        .wallet-amount { font-family: var(--font-serif); font-size: 2.8rem; color: #F4E1D2; margin-bottom: 5px; line-height: 1; }
-        .wallet-sub { font-size: 0.9rem; opacity: 0.8; font-weight: 300; }
-        
-        /* Clean Input Area */
-        .wallet-action-area {
-            background: white; border-radius: 20px; padding: 20px;
-            box-shadow: var(--shadow-card); margin-bottom: 25px;
-        }
-        .converter-row {
-            display: flex; align-items: center; justify-content: space-between;
-            background: #F8F9FA; padding: 10px 15px; border-radius: 12px; margin-bottom: 15px;
-        }
-        .conv-group { display: flex; flex-direction: column; align-items: center; flex: 1; }
-        .conv-group input { 
-            width: 100%; background: transparent; border: none; text-align: center; 
-            font-size: 1.2rem; font-weight: 600; color: var(--text-primary); outline: none;
-            border-bottom: 2px solid transparent; transition: 0.3s;
-        }
-        .conv-group input:focus { border-bottom-color: var(--accent-gold); }
-        .conv-label { font-size: 0.65rem; color: var(--text-secondary); letter-spacing: 1px; }
-        
-        .user-select-row { display: flex; gap: 8px; margin-bottom: 15px; }
-        .user-chip {
-            flex: 1; padding: 8px; border: 1px solid #EEE; border-radius: 8px;
-            background: white; color: var(--text-secondary); cursor: pointer; text-align: center;
-            font-size: 0.9rem; transition: 0.2s;
-        }
-        .user-chip.active { background: var(--accent-main); color: white; border-color: var(--accent-main); }
-        
-        .input-elegant {
-            width: 100%; padding: 12px 0; border: none; border-bottom: 1px solid #EEE;
-            font-size: 1rem; margin-bottom: 10px; outline: none; border-radius: 0;
-            background: transparent;
-        }
-        .input-elegant:focus { border-bottom-color: var(--accent-main); }
-        
-        .btn-add-record {
-            width: 100%; padding: 14px; background: var(--accent-main); color: white;
-            border: none; border-radius: 12px; font-size: 1rem; font-weight: 500;
-            margin-top: 10px; cursor: pointer; box-shadow: 0 4px 10px rgba(28, 37, 65, 0.2);
-            transition: all 0.2s;
-        }
-        .btn-add-record:disabled { background: #ccc; cursor: not-allowed; }
+        .transport-card::before { left: -12px; }
+        .transport-card::after { right: -12px; }
 
-        /* Expense List */
-        .expense-list-container { background: white; border-radius: 16px; padding: 10px 20px; box-shadow: var(--shadow-card); }
-        .expense-item { 
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 15px 0; border-bottom: 1px solid #F0F0F0; 
+        .alert-banner {
+            background: rgba(217, 51, 63, 0.08); border-left: 3px solid var(--accent-red);
+            padding: 15px; margin-bottom: 30px; border-radius: 0 4px 4px 0;
+            display: flex; gap: 12px; align-items: flex-start;
         }
-        .expense-item:last-child { border-bottom: none; }
-        .exp-avatar {
-            width: 32px; height: 32px; border-radius: 50%; background: #EDF2F7; 
-            color: var(--accent-main); display: flex; justify-content: center; align-items: center;
-            font-size: 0.8rem; font-weight: 700; margin-right: 12px;
-        }
-        
-        /* --- SHOPPING --- */
-        .shopping-card { 
-            background: white; padding: 20px; border-radius: 16px; 
-            box-shadow: var(--shadow-card); margin-bottom: 24px; 
-        }
-        
-        #shopping-input-container {
-            display: flex; margin-bottom: 15px; gap: 10px;
-        }
-        #shopping-input-container input {
-            flex-grow: 1; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem;
-        }
-        #shopping-input-container button {
-            background: var(--accent-gold); color: white; border: none;
-            padding: 0 20px; border-radius: 8px; cursor: pointer; font-size: 1.2rem;
-        }
-        #shopping-input-container button:disabled { opacity: 0.6; cursor: not-allowed; }
+        .alert-highlight { color: var(--accent-red); font-weight: 700; display: block; margin-top: 4px; font-size: 0.85rem;}
 
-        .shopping-item { 
-            padding: 15px 0; border-bottom: 1px solid var(--line-light);
-            display: flex; justify-content: space-between; align-items: center;
+        /* --- WALLET VIEW --- */
+        .wallet-card { background: white; padding: 25px; border-radius: 8px; box-shadow: var(--shadow-soft); margin-bottom: 20px; }
+        .rate-badge {
+            background: #E8F5E9; color: #2E7D32; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; 
+            display: inline-block; margin-bottom: 10px; font-weight: bold;
         }
-        .shopping-item-title { font-weight: 600; color: var(--text-primary); font-size: 1.05rem; }
-        .shopping-item-meta { font-size: 0.75rem; color: var(--text-secondary); margin-top: 3px; }
-        .shopping-actions button {
-            background: none; border: none; padding: 5px; font-size: 1.2rem; cursor: pointer;
-            transition: color 0.2s; margin-left: 8px;
+        .input-group { margin-bottom: 20px; }
+        .input-elegant { 
+            width: 100%; border: none; border-bottom: 1px solid var(--line-light); 
+            padding: 15px 0; font-size: 1.1rem; background: transparent; outline: none; border-radius: 0;
         }
-        .shopping-actions .btn-bought { color: #D4EDDA; }
-        .shopping-actions .btn-bought.active { color: #155724; }
-        .shopping-actions .btn-delete { color: #E74C3C; opacity: 0.6; }
+        .twd-preview { font-size: 0.9rem; color: var(--accent-gold); margin-top: 5px; text-align: right; font-weight: 500;}
         
-        .bought-item .shopping-item-title { opacity: 0.5; text-decoration: line-through; }
-        
-        /* --- TRANSLATE VIEW --- */
-        .ps-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr; 
-            gap: 15px;
-            padding-bottom: 20px;
+        .user-selector { display: flex; gap: 10px; margin-bottom: 20px; }
+        .user-btn {
+            flex: 1; padding: 10px; border: 1px solid var(--line-light); border-radius: 4px;
+            background: transparent; color: var(--text-secondary); cursor: pointer; transition: 0.2s;
+            font-family: var(--font-serif); font-size: 1rem;
         }
+        .user-btn.active { background: var(--accent-main); color: white; border-color: var(--accent-main); }
         
-        .ps-card {
-            background: white; 
-            padding: 15px; 
-            border-radius: 16px; 
-            box-shadow: var(--shadow-card); 
-            text-align: center; 
-            border: 2px solid transparent; 
-            cursor: pointer; 
-            transition: 0.2s;
+        .expense-item { display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid #EEE; align-items: center; }
+        .exp-user { 
+            width: 30px; height: 30px; border-radius: 50%; background: var(--accent-main); color: white;
+            display: flex; justify-content: center; align-items: center; font-size: 0.7rem; margin-right: 10px;
+        }
+        .exp-meta { display: flex; align-items: center; }
+        .exp-time { font-size: 0.7rem; color: #999; margin-left: 8px; }
+
+        /* 需求3: 縮小精簡版雙向匯率換算 */
+        #currency-converter {
+            background: #F0F4F8; 
+            padding: 12px;
+            border-radius: 8px; 
+            margin-bottom: 20px;
+            border: 1px solid #E0E0E0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+        .conv-col {
+            flex: 1;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            min-height: 120px; 
         }
-        .ps-card.warning { border-color: #E67E22; background: #FEF5E7; }
-        .ps-card.danger { border-color: #E74C3C; background: #FDEDEC; color: #C0392B; }
-        .ps-icon { font-size: 2rem; margin-bottom: 8px; display: block; }
+        .conv-input { 
+            border: none;
+            border-bottom: 1px solid var(--accent-gold);
+            background: transparent;
+            font-size: 1.1rem;
+            font-family: var(--font-serif);
+            text-align: center;
+            padding: 4px 0;
+            width: 100%;
+            color: var(--accent-main);
+            outline: none;
+        }
+        .conv-input:focus { border-bottom: 2px solid var(--accent-main); }
+        .conv-label {
+            font-size: 0.7rem;
+            color: #888;
+            margin-top: 4px;
+            font-weight: 600;
+        }
+        .conv-icon {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            padding: 0 5px;
+        }
 
-        /* --- NAV BAR (5 Buttons - Icon Only) --- */
+
+        /* --- TRANSLATE VIEW --- */
+        .trans-input-area { background: white; padding: 20px; border-radius: 8px; box-shadow: var(--shadow-soft); margin-bottom: 30px; }
+        .trans-btn { width: 100%; padding: 15px; background: var(--accent-main); color: white; border: none; margin-top: 15px; cursor: pointer; border-radius: 4px; }
+        .ps-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .ps-card {
+            background: white; padding: 20px 15px; border-radius: 8px; box-shadow: var(--shadow-soft);
+            text-align: center; border: 1px solid #EEE; cursor: pointer; transition: 0.2s;
+        }
+        .ps-card:active { transform: scale(0.98); border-color: var(--accent-gold); }
+        .ps-icon { font-size: 1.8rem; margin-bottom: 10px; display: block; }
+        .ps-title { font-size: 0.9rem; font-weight: 600; }
+
+        /* --- INFO VIEW --- */
+        .info-card { background: white; padding: 20px; border-radius: 8px; box-shadow: var(--shadow-soft); margin-bottom: 15px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; }
+        .info-icon { width: 40px; height: 40px; border-radius: 50%; background: #F5F5F5; display: flex; justify-content: center; align-items: center; color: var(--accent-main); margin-right: 15px; }
+        .info-text h3 { margin: 0; font-size: 1rem; color: var(--text-primary); }
+        .info-text p { margin: 5px 0 0; font-size: 0.8rem; color: var(--text-secondary); }
+        
+        .map-overview-card {
+            background: white; padding: 15px; border-radius: 8px; box-shadow: var(--shadow-soft); margin-bottom: 20px;
+        }
+        .map-iframe { width: 100%; height: 350px; border: none; border-radius: 4px; }
+
+
+        /* --- NAV BAR (需求2: 僅圖標) --- */
         .glass-nav {
-            position: fixed; bottom: 10px; left: 50%; transform: translateX(-50%);
-            width: 98%; max-width: 500px; 
-            background: rgba(28, 37, 65, 0.95); 
-            backdrop-filter: blur(var(--blur-val));
-            -webkit-backdrop-filter: blur(var(--blur-val));
-            border-radius: 40px; padding: 10px 5px; 
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+            width: auto; /* Auto width based on content */
+            min-width: 280px;
+            background: rgba(28, 37, 65, 0.95); backdrop-filter: blur(10px);
+            border-radius: 50px; /* More rounded */
+            padding: 10px 30px; /* More padding on sides */
             display: flex; justify-content: space-between; align-items: center;
-            box-shadow: var(--shadow-float); z-index: 1000;
-            border: 1px solid rgba(255,255,255,0.15);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3); z-index: 1000;
+            gap: 25px; /* Gap between icons */
         }
         .nav-btn { 
-            color: rgba(255,255,255,0.5); font-size: 1.5rem; /* Increased icon size */
-            cursor: pointer; transition: 0.3s; padding: 8px 0; 
-            display: flex; flex-direction: column; align-items: center; 
-            position: relative; flex: 1; 
+            color: rgba(255,255,255,0.4); 
+            font-size: 1.4rem; /* Larger icons */
+            cursor: pointer; 
+            transition: 0.3s; 
+            position: relative; 
+            padding: 10px; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center;
         }
-        .nav-btn span { display: none; } /* Hide text */
-        .nav-btn.active { color: var(--accent-gold); transform: translateY(-3px); }
-        .nav-btn.active span { opacity: 0; transform: translateY(0); } 
-        
-        /* --- MODAL CARD POP-UP --- */
+        .nav-btn span { display: none; } /* Hide Text */
+        .nav-btn.active { color: var(--accent-gold); transform: translateY(-2px); }
+        .nav-btn.active::after {
+            content: ''; position: absolute; bottom: 0; width: 4px; height: 4px;
+            background: var(--accent-gold); border-radius: 50%;
+        }
+
+        /* --- MODALS --- */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.6); z-index: 1900;
             opacity: 0; pointer-events: none; transition: 0.3s;
-            backdrop-filter: blur(3px);
         }
         .modal-overlay.active { opacity: 1; pointer-events: auto; }
-
         .modal-full {
-            position: fixed; 
-            top: 50%; left: 50%; 
-            width: 90%; max-width: 500px; max-height: 85vh; 
-            background: var(--bg-body); 
-            z-index: 2000; 
-            border-radius: 20px; 
-            transform: translate(-50%, -50%) scale(0.9); 
-            opacity: 0; pointer-events: none; 
-            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s; 
-            overflow-y: auto; 
-            box-shadow: 0 20px 50px rgba(0,0,0,0.3); 
+            position: fixed; bottom: 0; left: 0; width: 100%; height: 90vh;
+            background: var(--bg-body); z-index: 2000; border-radius: 20px 20px 0 0;
+            transform: translateY(100%); transition: 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+            overflow-y: auto; padding-bottom: 40px;
         }
-        .modal-full.active {
-            transform: translate(-50%, -50%) scale(1);
-            opacity: 1;
-            pointer-events: auto; 
-        }
+        .modal-full.active { transform: translateY(0); }
+        .modal-header-img { height: 250px; width: 100%; object-fit: cover; }
+        
+        .modal-content { padding: 0 20px; }
+        .info-group { margin-top: 20px; padding-top: 15px; border-top: 1px dashed var(--line-light); }
+        .info-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; font-size: 0.9rem; }
+        .info-label { color: var(--text-secondary); font-weight: 500; display: flex; align-items: center; gap: 8px; }
+        .info-value { font-weight: 700; color: var(--accent-main); text-align: right; word-break: break-word; }
 
-        /* Fixed the image container issue */
-        #modal-img-container {
-            position: relative;
-            width: 100%;
-            /* min-height: 220px; fallback size */
-        }
-        .modal-header-img { 
-            height: 220px; width: 100%; object-fit: cover; 
-            border-radius: 20px 20px 0 0; 
-            display: block;
-        }
-        .modal-close-btn {
-            position: absolute; top: 15px; right: 15px;
-            width: 36px; height: 36px; border-radius: 50%;
-            background: rgba(255,255,255,0.95); border: none;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-            z-index: 10; font-size: 1.1rem; color: #333;
-            cursor: pointer; display: flex; align-items: center; justify-content: center;
-        }
-
-        /* Full Screen Text Card Fix */
         #fs-text-modal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(255,255,255,0.98); z-index: 2100; 
-            display: flex; flex-direction: column;
-            justify-content: center; align-items: center; padding: 20px;
-            text-align: center; transform: scale(0.95); opacity: 0; 
-            pointer-events: none; transition: 0.3s;
+            background: white; z-index: 2100; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; padding: 40px;
+            text-align: center; transform: scale(0.9); opacity: 0; pointer-events: none; transition: 0.3s;
         }
         #fs-text-modal.active { transform: scale(1); opacity: 1; pointer-events: auto; }
-        .fs-jp { font-size: 3rem; font-weight: 700; margin-bottom: 30px; line-height: 1.3; color: var(--accent-main); word-break: break-all;}
-        .fs-cn { font-size: 1.2rem; color: var(--text-secondary); background: #F0F2F5; padding: 15px 30px; border-radius: 50px; display: inline-block;}
-
-        #detail-modal .container { padding-top: 15px; padding-bottom: 30px; } 
-        
-        .status-badge {
-            display: inline-block; padding: 3px 8px; border-radius: 4px; font-size: 0.75rem;
-            margin-bottom: 5px;
-        }
-        .status-badge.online { background: #D4EDDA; color: #155724; }
-        .status-badge.offline { background: #F8D7DA; color: #721C24; }
+        .fs-jp { font-size: 2.5rem; font-weight: 700; margin-bottom: 20px; line-height: 1.4; color: var(--text-primary); }
+        .fs-cn { font-size: 1.2rem; color: #666; background: #F5F5F5; padding: 10px 20px; border-radius: 20px; }
 
     </style>
 </head>
 <body>
-    <!-- Script Block 1: Shared Data & Config -->
-    <script>
-        // API Configuration (Environment Aware)
-        // 優先使用環境變數，否則使用預留位置
-        const GEMINI_API_KEY = typeof __apiKey !== 'undefined' ? __apiKey : ""; 
-        const GOOGLE_MAPS_API_KEY = "AIzaSyAX9nvh4bJpiM6-oTm8FoUSZeSBpxZBc1E"; 
-        
-        // Firebase Config Logic
-        let FB_CONFIG = {};
-        if (typeof __firebase_config !== 'undefined' && __firebase_config) {
-             try { FB_CONFIG = JSON.parse(__firebase_config); } catch(e) { console.error("Config parse error"); }
-        } else {
-             // Fallback for user provided config
-             FB_CONFIG = {
-                 // User can fill this in manually if downloading
-             };
-        }
 
-        const APP_ID = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-
-        // --- GLOBAL DATA ---
-        // Moved here to be accessible by module and legacy scripts
-        const IMG_MAP = {
-            'hakodate_night': 'photo-1535392460594-553655519f93',
-            'aomori_nebuta': 'photo-1533230554519-5374be216255',
-            'snow_train': 'photo-1475727946784-2890c8fdb9e7',
-            'apple_pie': 'photo-1568571780765-9276ac8b75a2',
-            'onsen': 'photo-1560935105-d1448b11a511',
-            'ramen': 'photo-1549492193-f0270a316223',
-            'snow_monster': 'photo-1517299321609-52687d1bc55a',
-            'seafood': 'photo-1574765798950-c8f7734a36f7',
-            'airport': 'photo-1436491865332-7a61a109cc05',
-            'shopping': 'photo-1441986300917-64674bd600d8',
-            'snow_drive': 'photo-1548777123-e213912bc571',
-            'default': 'photo-1492571350019-22de08371fd3'
-        };
-
-        const TRIP_DATA = [
-            {
-                day: 1, date: "02.02", week: "MON",
-                heroTitle: "函館：百元發熱衣與百萬夜景",
-                heroImg: getImg('hakodate_night'),
-                events: [
-                    { time: "11:10", title: "抵達函館機場 (HKD)", tag: "Flight", desc: "入境手續，領取行李。" },
-                    { time: "12:00", title: "機場巴士 -> JR 函館站", tag: "Transport", desc: "搭乘巴士。約 20-30 分鐘車程。", transport_info: {type: "機場巴士", time_estimate: "20-30分鐘"} },
-                    { time: "12:30", title: "JR Inn Hakodate 寄放行李", tag: "Hotel", desc: "抵達飯店，辦理入住手續或寄放行李。" },
-                    { time: "13:15", title: "UNIQLO 函館昭和店", tag: "Shopping", desc: "採購發熱衣等禦寒裝備。", nav: { mapcode: "86 254 073*65" } },
-                    { time: "16:10", title: "金森紅磚倉庫", tag: "Sightseeing", desc: "簡單逛街、拍照。漫步港灣。" },
-                    { time: "17:15", title: "函館山百萬夜景", tag: "Sightseeing", desc: "日落時間約 16:50。務必搶佔最佳位置。", nav: { mapcode: "86 041 028*25" } },
-                    { time: "19:00", title: "幸運小丑漢堡", tag: "Food", desc: "晚餐：必點中華雞腿堡。" }
-                ]
-            },
-            {
-                day: 2, date: "02.03", week: "TUE",
-                heroTitle: "移動日：跨越津輕海峽",
-                heroImg: getImg('snow_train'),
-                events: [
-                    { time: "08:00", title: "函館朝市 早餐", tag: "Food", desc: "享用海鮮丼/釣烏賊。記得貨比三家。" },
-                    { time: "10:35", title: "北海道新幹線 (隼)", tag: "Transport", desc: "前往「新青森站」 (約 1 小時)。", transport_info: {type: "新幹線", name: "隼 Hayabusa"} },
-                    { time: "14:00", title: "青森縣立美術館", tag: "Art", desc: "必看奈良美智「青森犬」。", nav: { mapcode: "99 489 495*20" } },
-                    { time: "16:40", title: "Dormy Inn Aomori", tag: "Hotel", desc: "正式 Check-in，領取房卡。" },
-                    { time: "22:00", title: "Dormy Inn Aomori 泡湯", tag: "Relax", desc: "天然溫泉，消除疲勞。" }
-                ]
-            },
-            {
-                day: 3, date: "02.04", week: "WED",
-                heroTitle: "自駕：暖爐列車與弘前洋風散策",
-                heroImg: getImg('apple_pie'),
-                events: [
-                    { time: "09:00", title: "青森站前租車行取車", tag: "Drive", desc: "手續約 30 分鐘。請確保雪胎已安裝。", transport_info: {type: "自駕", note: "雪胎確認完畢"} },
-                    { time: "11:50", title: "暖爐列車 (去程)", tag: "Experience", desc: "津輕鐵道。車上可點烤魷魚、喝清酒。" },
-                    { time: "14:30", title: "大正浪漫喫茶室", tag: "Food", desc: "必吃蘋果派。16:00 最後點餐。", nav: { mapcode: "71 071 513*78" } },
-                    { time: "15:30", title: "弘前城 / 弘前公園", tag: "Sightseeing", desc: "欣賞白天雪景、紅橋。" }
-                ]
-            },
-            {
-                day: 4, date: "02.05", week: "THU",
-                heroTitle: "山林：尋找八甲田雪怪",
-                heroImg: getImg('snow_monster'),
-                alert: "冬季國道 103 號封閉。必須原路下山回到青森市外圍，走北邊道路前往三澤。",
-                events: [
-                    { time: "08:30", title: "古川市場 早餐", tag: "Food", desc: "吃「のっけ丼」自選海鮮丼。" },
-                    { time: "11:00", title: "八甲田山纜車", tag: "Nature", desc: "觀賞樹冰 (Snow Monsters)。山頂極冷！", nav: { mapcode: "99 055 336*13" } },
-                    { time: "15:30", title: "星野集團 青森屋", tag: "Resort", desc: "Check-in。享受頂級溫泉與祭典氛圍。" },
-                    { time: "20:00", title: "陸奧祭典屋表演", tag: "Culture", desc: "觀賞青森四大祭典濃縮表演。" }
-                ]
-            },
-            {
-                day: 5, date: "02.06", week: "FRI",
-                heroTitle: "體驗：暖爐馬車與滑雪",
-                heroImg: getImg('snow_drive'),
-                events: [
-                    { time: "10:00", title: "暖爐馬車", tag: "Relax", desc: "【飯店活動】在馬車上享用點心，需事前預約。" },
-                    { time: "11:00", title: "前往滑雪場", tag: "Drive", desc: "距離青森屋約 30 分鐘車程。", transport_info: {type: "自駕", time_estimate: "30分鐘"} },
-                    { time: "13:00", title: "滑雪體驗", tag: "Activity", desc: "初學者建議 2 小時已足夠。" },
-                    { time: "16:00", title: "回飯店休息/泡湯", tag: "Relax", desc: "溫泉是消除滑雪疲勞的最佳方式。" }
-                ]
-            },
-            {
-                day: 6, date: "02.07", week: "SAT",
-                heroTitle: "返程：滿載而歸",
-                heroImg: getImg('airport'),
-                events: [
-                    { time: "10:00", title: "前往青森機場 (AOJ)", tag: "Drive", desc: "預留 2 小時車程以防風雪。", transport_info: {type: "自駕", time_estimate: "1小時 20分鐘"} },
-                    { time: "12:30", title: "辦理還車手續", tag: "Transport", desc: "檢查車況，辦理還車。" },
-                    { time: "13:30", title: "辦理登機手續 (BR 121)", tag: "Flight", desc: "長榮航空櫃檯。" },
-                    { time: "15:30", title: "搭機返台", tag: "Flight", desc: "再見青森，期待下次旅程。" }
-                ]
-            }
-        ];
-
-        function getImg(key) {
-            const id = IMG_MAP[key] || IMG_MAP['default'];
-            return `https://images.unsplash.com/${id}?q=80&w=800&auto=format&fit=crop`;
-        }
-
-        function handleImgError(img) { 
-            img.onerror = null; 
-            const text = "NO IMAGE";
-            // Important fix: Don't replace parent's innerHTML as it wipes out the close button and modal logic
-            // Instead, act on the img-container
-            if (img.parentElement.id === 'modal-img-container') {
-                img.style.display = 'none';
-                img.parentElement.innerHTML = `<div class="img-fallback-container" style="position:absolute; top:0; left:0; width:100%; height:100%;"><div style="font-family:serif;">${text}</div></div>`;
-            }
-        };
-        
-        function getMapUrl(data) {
-             const base = `https://www.google.com/maps/embed/v1/search?key=${GOOGLE_MAPS_API_KEY}`;
-             let query = '';
-             if (data.nav && data.nav.mapcode) {
-                 // Using mapcode often requires converting to coordinates, but here we fallback to title if needed
-                 query = `&q=${encodeURIComponent(data.title + " 日本")}`;
-             } else if (data.title) {
-                 query = `&q=${encodeURIComponent(data.title)}`;
-             } else {
-                 return null;
-             }
-             return base + query;
-        }
-    </script>
-    
     <!-- Intro -->
     <div id="intro-screen">
-        <i class="fa-regular fa-snowflake intro-logo"></i>
         <div class="intro-text">
-            <div style="margin-bottom: 30px;">
+            <div class="intro-countdown-block">
                 <div class="countdown-value" id="days-left">--</div>
-                <div style="font-size: 0.8rem; letter-spacing: 4px; color: rgba(255,255,255,0.6); margin-top: 10px;">DAYS TO DEPARTURE</div>
+                <div style="font-size: 0.9rem; letter-spacing: 3px; color: rgba(255,255,255,0.8);">DAYS LEFT</div>
             </div>
-            <h1 style="font-size: 1.5rem; margin: 0; color: white;">林檎與白雪之旅</h1>
-            <h2 style="font-size: 1rem; font-weight: 400; opacity: 0.8; margin-top: 5px;">Hokkaido & Aomori Winter Adventure</h2>
-            <div id="dynamic-intro-text" style="margin-top: 30px; min-height: 60px; font-size: 0.95rem; line-height: 1.6; opacity: 0.9;"></div>
-            <button class="intro-btn" onclick="enterApp()">開始旅程</button>
+            <div class="intro-title" style="letter-spacing: 3px; font-size: 1.2rem; text-align: center;">函館-青森 林檎之旅</div>
+            <div id="dynamic-intro-text"></div> 
+            <button class="intro-btn" onclick="enterApp()">開啟旅程</button>
         </div>
     </div>
 
     <!-- Main App -->
     <div id="app-container">
+        
         <div class="elegant-header">
             <div class="top-meta">
-                <div class="brand-container">
-                    <div class="brand">L'VOYAGE</div>
-                    <!-- Header Weather Widget -->
-                    <div id="header-weather-pill">
-                        <i id="header-weather-icon" class="fa-solid fa-spinner fa-spin"></i>
-                        <span id="header-weather-temp">--</span>
-                    </div>
-                </div>
-                <div class="status-container">
+                <div class="brand">L'VOYAGE</div>
+                <div style="text-align: right;">
                     <div class="status-value" id="header-days">--</div>
-                    <div class="status-label">DAYS LEFT</div>
+                    <div class="status-label">DAYS TO GO</div>
                 </div>
             </div>
             <div class="date-scroller" id="date-nav">
@@ -657,650 +367,762 @@
         <!-- 2. WALLET VIEW -->
         <div id="view-wallet" class="view-section hidden">
             <div class="container">
-                <!-- Redesigned Wallet Summary -->
-                <div class="wallet-summary-card">
-                    <div class="wallet-label">CURRENT BUDGET STATUS</div>
-                    <div class="wallet-amount" id="total-jpy">¥0</div>
-                    <div class="wallet-sub">≈ TWD <span id="total-twd">0</span></div>
+                <div class="wallet-card" style="text-align: center; background: #1C2541; color: white;">
+                    <div style="font-size: 0.8rem; color: #AAA; letter-spacing: 1px; margin-bottom: 5px;">ESTIMATED TOTAL</div>
+                    <div class="serif" style="font-size: 2.5rem; color: #B49B67;" id="total-jpy">¥0</div>
+                    <div style="color: #EEE; font-size: 0.9rem;">≈ TWD <span id="total-twd">0</span></div>
                 </div>
 
-                <!-- Clean Action Area -->
-                <div class="wallet-action-area">
-                    <div class="converter-row">
-                        <div class="conv-group">
-                            <input type="number" id="conv-jpy" placeholder="0" oninput="convert('jpy')">
-                            <div class="conv-label">JPY</div>
-                        </div>
-                        <i class="fa-solid fa-arrow-right-arrow-left" style="color:#ccc; font-size:0.8rem; margin:0 10px;"></i>
-                        <div class="conv-group">
-                            <input type="number" id="conv-twd" placeholder="0" oninput="convert('twd')">
-                            <div class="conv-label">TWD</div>
-                        </div>
-                    </div>
-                    <div style="font-size: 0.75rem; color: #999; text-align: center; margin-bottom: 15px;" id="current-rate-display">Rate: Loading...</div>
+                <div class="wallet-card">
+                    <div class="rate-badge">即時匯率: <span id="current-rate">Loading...</span></div>
                     
-                    <div class="user-select-row">
-                        <div class="user-chip active" onclick="selectUser('YK', this)">YK</div>
-                        <div class="user-chip" onclick="selectUser('YY', this)">YY</div>
-                        <div class="user-chip" onclick="selectUser('YS', this)">YS</div>
+                    <!-- 需求3: 雙向換算、縮小版面 -->
+                    <div id="currency-converter">
+                        <div class="conv-col">
+                            <input type="tel" id="calc-jpy" class="conv-input" placeholder="0" oninput="calcFromJpy(this.value)">
+                            <div class="conv-label">JPY ¥</div>
+                        </div>
+                        <i class="fa-solid fa-arrow-right-arrow-left conv-icon"></i>
+                        <div class="conv-col">
+                            <input type="tel" id="calc-twd" class="conv-input" placeholder="0" oninput="calcFromTwd(this.value)">
+                            <div class="conv-label">TWD $</div>
+                        </div>
                     </div>
 
-                    <input type="text" id="ex-item" class="input-elegant" placeholder="項目名稱 (例如: 蘋果派)">
-                    <input type="number" id="ex-price" class="input-elegant" placeholder="金額 (JPY)">
-                    <button id="btn-add-expense" class="btn-add-record" onclick="addExpense()">新增紀錄</button>
+                    <div class="user-selector">
+                        <button class="user-btn active" onclick="selectUser('YK', this)">YK</button>
+                        <button class="user-btn" onclick="selectUser('YY', this)">YY</button>
+                        <button class="user-btn" onclick="selectUser('YS', this)">YS</button>
+                    </div>
+
+                    <div class="input-group">
+                        <input type="text" id="ex-item" class="input-elegant" placeholder="項目 (例如：蘋果派)">
+                    </div>
+                    <div class="input-group">
+                        <input type="tel" id="ex-price" class="input-elegant" placeholder="金額 (日幣)" oninput="calculatePreview(this.value)">
+                        <div class="twd-preview" id="preview-twd">≈ TWD 0</div>
+                    </div>
+                    
+                    <button class="intro-btn" style="width: 100%; margin-top: 10px; border-color: #1C2541; color: #1C2541;" onclick="addExpense()">記錄支出</button>
                 </div>
                 
-                <h3 class="serif" style="margin-left: 10px; color: var(--text-secondary);">Recent History</h3>
-                <div id="expense-list" class="expense-list-container"></div>
-            </div>
-        </div>
-        
-        <!-- 3. SHOPPING VIEW -->
-        <div id="view-shopping" class="view-section hidden">
-            <div class="container">
-                <div class="shopping-card"> 
-                    <h3 class="serif" style="margin-top: 0; color: var(--accent-main); margin-bottom: 15px;">新增任務</h3>
-                    <div id="shopping-input-container">
-                        <input type="text" id="shop-item" placeholder="欲購物品名稱">
-                        <button id="btn-add-shop" onclick="addShoppingItem()"><i class="fa-solid fa-plus"></i></button>
-                    </div>
-                </div>
-                <h3 class="serif" style="margin-left: 10px; color: var(--text-secondary);">Shared Checklist</h3>
-                <div id="shopping-list-container" style="background: white; border-radius: 16px; padding: 0 20px; box-shadow: var(--shadow-card);"></div>
+                <h3 class="serif" style="padding-left: 10px; margin-bottom: 15px;">近期支出 History</h3>
+                <div id="expense-list"></div>
             </div>
         </div>
 
-        <!-- 4. TRANSLATE VIEW -->
+        <!-- 3. TRANSLATE VIEW -->
         <div id="view-trans" class="view-section hidden">
             <div class="container">
-                <div class="wallet-card" style="background:white; padding:20px; border-radius:16px; box-shadow:var(--shadow-card); margin-bottom:20px;">
+                <div class="trans-input-area">
                     <h3 class="serif" style="margin-top:0;">即時翻譯</h3>
-                    <div style="position: relative;">
-                        <textarea id="trans-input" rows="3" placeholder="輸入中文..." style="width:100%; border:1px solid #eee; padding:15px; border-radius:12px; font-size:1rem; resize:none; background:#FAFAFA;"></textarea>
-                        <button onclick="translateNow()" style="position:absolute; bottom:10px; right:10px; background:var(--accent-gold); color:white; border:none; padding:8px 15px; border-radius:20px; cursor:pointer;">翻譯</button>
+                    <textarea id="trans-input" class="input-elegant" rows="3" placeholder="輸入中文... (例如：請問這個多少錢？)" style="border: 1px solid #EEE; padding: 10px;"></textarea>
+                    <button class="trans-btn" onclick="translateNow()">
+                        <i class="fa-solid fa-language"></i> 翻譯成日文
+                    </button>
+                    <div id="trans-output-box" class="wallet-card hidden" style="margin-top: 15px; border-left: 3px solid var(--accent-gold);">
+                        <div style="font-size: 0.75rem; color: #999;">中文原文: <span id="trans-zh"></span></div>
+                        <div class="serif" style="font-size: 1.5rem; color: var(--accent-main); margin-top: 5px;" id="trans-jp-result"></div>
+                        <button onclick="showFs(document.getElementById('trans-jp-result').innerText, document.getElementById('trans-zh').innerText)" class="trans-btn" style="background: var(--accent-gold); margin-top: 10px; padding: 8px; font-size: 0.9rem;">
+                            <i class="fa-solid fa-expand"></i> 全螢幕字卡
+                        </button>
                     </div>
                 </div>
-                <h3 class="serif" style="margin: 25px 0 15px; padding-left:10px;">指差確認 Point & Speak</h3>
+
+                <h3 class="serif" style="margin: 30px 0 15px;">指差確認</h3>
                 <div class="ps-grid">
-                    <div class="ps-card warning" onclick="showFs('牛肉と豚肉は食べられません。', '我不吃牛、豬肉')">
+                    <div class="ps-card warning" onclick="showFs('私は牛肉と豚肉と羊肉が食べられません。', '我不吃牛、豬、羊肉')">
                         <span class="ps-icon">🥩</span>
-                        <div style="font-weight:600;">不吃紅肉</div>
+                        <div class="ps-title">不吃紅肉</div>
                     </div>
-                    <div class="ps-card" onclick="showFs('スープに肉のエキスは入っていますか？', '湯頭含肉嗎？')">
+                    <div class="ps-card" onclick="showFs('スープに牛や豚のエキスは入っていますか？', '湯頭含肉嗎？')">
                         <span class="ps-icon">🍜</span>
-                        <div style="font-weight:600;">湯頭確認</div>
+                        <div class="ps-title">湯頭確認</div>
                     </div>
                     <div class="ps-card" onclick="showFs('お会計をお願いします。', '麻煩結帳')">
                         <span class="ps-icon">💳</span>
-                        <div style="font-weight:600;">結帳</div>
+                        <div class="ps-title">結帳</div>
                     </div>
                     <div class="ps-card" onclick="showFs('これをください。', '我要這個')">
                         <span class="ps-icon">👉</span>
-                        <div style="font-weight:600;">我要這個</div>
+                        <div class="ps-title">我要這個</div>
                     </div>
                     <div class="ps-card" onclick="showFs('トイレはどこですか？', '廁所在哪？')">
                         <span class="ps-icon">🚻</span>
-                        <div style="font-weight:600;">找廁所</div>
+                        <div class="ps-title">找廁所</div>
                     </div>
-                    <div class="ps-card danger" onclick="showFs('助けて！警察を呼んで！', '救命！幫我叫警察')">
+                    <div class="ps-card danger" onclick="showFs('助けてください！', '救命！')">
                         <span class="ps-icon">🆘</span>
-                        <div style="font-weight:600;">緊急求救</div>
+                        <div class="ps-title">緊急求救</div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- 5. INFO VIEW -->
+        <!-- 4. INFO VIEW -->
         <div id="view-info" class="view-section hidden">
             <div class="container">
-                <div class="wallet-card" style="padding: 0; overflow: hidden; margin-top:20px; background:white; border-radius:16px; box-shadow:var(--shadow-card);">
-                    <div style="padding: 20px; background: #F8F9FA; border-bottom: 1px solid #eee;">
-                         <h3 class="serif" style="margin:0; color:var(--accent-main);">全域地圖 Map</h3>
-                    </div>
-                    <iframe id="trip-map-overview-iframe" style="width:100%; height:350px; border:none;" loading="lazy"></iframe>
+                
+                <!-- 需求4: Google Map 插件範圍調整 -->
+                <div class="map-overview-card" style="margin-top: 20px;">
+                    <h2 class="serif" style="margin-top: 0; color: var(--accent-main); font-size: 1.3rem;">旅行總覽地圖</h2>
+                    <p style="color: #666; font-size: 0.9rem; margin-bottom: 10px;">範圍：八戶、青森、函館、弘前</p>
+                    <iframe id="trip-map-overview-iframe" 
+                            class="map-iframe"
+                            allowfullscreen="" 
+                            loading="lazy" 
+                            referrerpolicy="no-referrer-when-downgrade">
+                    </iframe>
                 </div>
-                <div id="firebase-status" style="margin: 10px 20px; font-size:0.8rem; color:#999;">連線狀態偵測中...</div>
-                <h3 class="serif" style="margin: 20px 0 15px; padding-left:10px;">緊急聯絡 Emergency</h3>
-                <div class="ps-grid" style="grid-template-columns: 1fr;">
-                    <div class="ps-card" style="flex-direction: row; justify-content: flex-start; height: auto; text-align: left;" onclick="window.location.href='tel:+81-11-222-2930'">
-                        <div class="ps-icon" style="margin:0 20px 0 0; font-size: 1.8rem; color: #1565C0;"><i class="fa-solid fa-building-flag"></i></div>
-                        <div>
-                            <div style="font-weight:700; font-size:1.1rem;">駐日代表處 (札幌)</div>
-                            <div style="font-size:0.8rem; color:#666;">+81-11-222-2930</div>
+
+                <div class="wallet-card">
+                    <h2 class="serif" style="margin-top: 0; color: var(--accent-main);">重要資訊彙整</h2>
+                    <p style="color: #666; font-size: 0.9rem;">緊急時刻與通關必備</p>
+                </div>
+
+                <div class="info-card" onclick="window.open('https://vjw-lp.digital.go.jp/zh-hant/', '_blank')">
+                    <div style="display:flex; align-items:center;">
+                        <div class="info-icon" style="background: #FFF3E0; color: #E65100;"><i class="fa-solid fa-passport"></i></div>
+                        <div class="info-text">
+                            <h3>Visit Japan Web</h3>
+                            <p>入境審查 & 海關申報 QR Code</p>
                         </div>
                     </div>
-                    <div class="ps-card" style="flex-direction: row; justify-content: flex-start; height: auto; text-align: left;" onclick="window.location.href='tel:119'">
-                        <div class="ps-icon" style="margin:0 20px 0 0; font-size: 1.8rem; color: var(--accent-red);"><i class="fa-solid fa-truck-medical"></i></div>
-                        <div>
-                            <div style="font-weight:700; font-size:1.1rem;">救護車/火警 119</div>
-                            <div style="font-size:0.8rem; color:#666;">急病或火災</div>
+                    <i class="fa-solid fa-chevron-right" style="color:#CCC;"></i>
+                </div>
+
+                <div class="info-card" onclick="window.location.href='tel:110'">
+                    <div style="display:flex; align-items:center;">
+                        <div class="info-icon" style="background: #FFEBEE; color: #D32F2F;"><i class="fa-solid fa-shield-halved"></i></div>
+                        <div class="info-text">
+                            <h3>日本報警 110</h3>
+                            <p>遇到事故或犯罪時</p>
                         </div>
                     </div>
-                    <div class="ps-card" style="flex-direction: row; justify-content: flex-start; height: auto; text-align: left;" onclick="window.location.href='tel:110'">
-                        <div class="ps-icon" style="margin:0 20px 0 0; font-size: 1.8rem; color: var(--accent-red);"><i class="fa-solid fa-bell"></i></div>
-                        <div>
-                            <div style="font-weight:700; font-size:1.1rem;">警察局 110</div>
-                            <div style="font-size:0.8rem; color:#666;">遇事故或犯罪</div>
+                    <i class="fa-solid fa-phone" style="color:var(--accent-red);"></i>
+                </div>
+
+                <div class="info-card" onclick="window.location.href='tel:119'">
+                    <div style="display:flex; align-items:center;">
+                        <div class="info-icon" style="background: #FFEBEE; color: #D32F2F;"><i class="fa-solid fa-truck-medical"></i></div>
+                        <div class="info-text">
+                            <h3>火警/救護車 119</h3>
+                            <p>急病或受傷時</p>
                         </div>
                     </div>
-                    <div class="ps-card" style="flex-direction: row; justify-content: flex-start; height: auto; text-align: left;" onclick="window.location.href='tel:0570008139'">
-                        <div class="ps-icon" style="margin:0 20px 0 0; font-size: 1.8rem; color: #1565C0;"><i class="fa-solid fa-car-on"></i></div>
-                        <div>
-                            <div style="font-weight:700; font-size:1.1rem;">道路救援 (JAF)</div>
-                            <div style="font-size:0.8rem; color:#666;">#8139 (撥打 JAF) 或 0570-00-8139</div>
+                    <i class="fa-solid fa-phone" style="color:var(--accent-red);"></i>
+                </div>
+
+                <div class="info-card" onclick="window.location.href='tel:+81-11-222-2930'">
+                    <div style="display:flex; align-items:center;">
+                        <div class="info-icon" style="background: #E3F2FD; color: #1565C0;"><i class="fa-solid fa-building-flag"></i></div>
+                        <div class="info-text">
+                            <h3>駐日代表處 (札幌分處)</h3>
+                            <p>北海道/青森緊急聯絡: +81-11-222-2930</p>
                         </div>
                     </div>
+                    <i class="fa-solid fa-phone" style="color:#1565C0);"></i>
                 </div>
             </div>
         </div>
+
     </div>
 
-    <!-- Navigation -->
+    <!-- 需求2: 僅保留 Icon 的導航欄 -->
     <div class="glass-nav">
-        <div class="nav-btn active" onclick="switchView('trip', this)"><i class="fa-solid fa-map"></i></div>
-        <div class="nav-btn" onclick="switchView('wallet', this)"><i class="fa-solid fa-wallet"></i></div>
-        <div class="nav-btn" onclick="switchView('shopping', this)"><i class="fa-solid fa-list-check"></i></div>
-        <div class="nav-btn" onclick="switchView('trans', this)"><i class="fa-solid fa-comments"></i></div>
-        <div class="nav-btn" onclick="switchView('info', this)"><i class="fa-solid fa-circle-info"></i></div>
+        <div class="nav-btn active" onclick="switchView('trip', this)">
+            <i class="fa-solid fa-map-location-dot"></i>
+        </div>
+        <div class="nav-btn" onclick="switchView('wallet', this)">
+            <i class="fa-solid fa-wallet"></i>
+        </div>
+        <div class="nav-btn" onclick="switchView('trans', this)">
+            <i class="fa-solid fa-comments"></i>
+        </div>
+        <div class="nav-btn" onclick="switchView('info', this)">
+            <i class="fa-solid fa-circle-info"></i>
+        </div>
     </div>
 
-    <!-- Detail Modal (Card Style) -->
+    <!-- Detail Modal -->
     <div class="modal-overlay" onclick="closeModal()"></div>
     <div class="modal-full" id="detail-modal">
-        <button class="modal-close-btn" onclick="closeModal()"><i class="fa-solid fa-times"></i></button>
-        <!-- Fixed: Wrapped image in a container so handleImgError doesn't destroy the modal -->
-        <div id="modal-img-container">
-            <img src="" id="m-img" class="modal-header-img" onerror="handleImgError(this)">
+        <div style="position: sticky; top: 0; padding: 10px; text-align: right; z-index: 10;">
+            <button onclick="closeModal()" style="background: white; border: none; width: 36px; height: 36px; border-radius: 50%; box-shadow: 0 2px 10px rgba(0,0,0,0.1); color: #333;"><i class="fa-solid fa-times"></i></button>
         </div>
-        <div class="container">
-            <div id="m-tag" style="font-size: 0.7rem; letter-spacing: 2px; color: var(--accent-gold); text-transform: uppercase; font-weight:700;">TAG</div>
-            <h2 id="m-title" class="serif" style="font-size: 2rem; margin: 5px 0 20px 0; line-height: 1.2; color: var(--accent-main);">Title</h2>
-            <div id="m-gmap-preview" class="hidden" style="margin-top: 20px; text-align: center;">
-                <iframe id="m-gmap-iframe" style="width: 100%; height: 250px; border: none; border-radius: 8px;" allowfullscreen="" loading="lazy"></iframe>
-            </div>
-            <div id="m-map-section" class="hidden" style="background: #F0F4F8; padding: 20px; border-radius: 12px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+        <img src="" id="m-img" class="modal-header-img" onerror="this.onerror=null; this.src='https://placehold.co/800x600?text=No+Image';">
+        <div class="modal-content">
+            <span id="m-tag" style="font-size: 0.7rem; letter-spacing: 2px; color: var(--accent-gold); text-transform: uppercase;">TAG</span>
+            <h2 id="m-title" class="serif" style="font-size: 1.8rem; margin: 5px 0 20px 0; line-height: 1.2;">Title</h2>
+            
+            <div id="m-map-section" style="background: #F0F4F8; padding: 15px; border-radius: 8px; margin-top: 20px; display: flex; justify-content: space-between; align-items: center;" class="hidden">
                 <div>
-                    <div style="font-size: 0.7rem; color: #666; letter-spacing: 1px; margin-bottom: 4px;">NAVIGATE (MAPCODE)</div>
-                    <div id="m-mapcode" style="font-family: monospace; font-size: 1.4rem; font-weight: 700; color: var(--accent-main); letter-spacing: 2px;">--</div>
+                    <div style="font-size: 0.7rem; color: #666; letter-spacing: 1px;">NAVIGATE (MAPCODE)</div>
+                    <div id="m-mapcode" style="font-family: monospace; font-size: 1.2rem; font-weight: 700; color: var(--accent-main);">--</div>
                 </div>
-                <button onclick="copyMapCode()" style="background: white; color: var(--accent-main); border: 1px solid #ddd; padding: 8px 16px; border-radius: 6px; font-weight: 600;">複製</button>
+                <button onclick="copyMapCode()" style="background: var(--accent-main); color: white; border: none; padding: 8px 15px; border-radius: 4px;">複製</button>
             </div>
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:20px; border-top: 1px dashed var(--line-light); padding-top:15px;">
-                <h4 class="serif" style="margin: 0; color: var(--accent-main); font-size:1.2rem;">筆記 Note (同步雲端)</h4>
-                <button id="edit-toggle-btn" onclick="toggleEditMode()" style="background:none; border:none; color:var(--accent-gold); font-size:1.1rem; cursor:pointer;"><i class="fa-solid fa-pen-to-square"></i></button>
+            
+            <div id="m-gmap-preview" class="hidden" style="margin-top: 20px; text-align: center;">
+                <iframe id="m-gmap-iframe" class="map-iframe" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                <button onclick="openExternalMap()" style="background: #333; color: white; padding: 8px 15px; border-radius: 4px; margin-top: 10px;">
+                    <i class="fa-solid fa-location-arrow"></i> 在 Google 地圖中開啟
+                </button>
             </div>
-            <p id="m-desc" style="font-size: 1.05rem; line-height: 1.8; color: #555; margin-top:15px;">Description</p>
-            <div id="editing-area" class="hidden" style="margin-top: 20px; padding-top: 15px; border-top: 1px solid #EEE;">
-                <textarea id="m-edit-note" rows="5" placeholder="輸入筆記..." style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; resize: none; margin-bottom: 10px;"></textarea>
-                <button onclick="saveDetailNote()" style="width: 100%; padding: 12px; background: var(--accent-red); color: white; border: none; border-radius: 8px; font-weight: 600;">儲存筆記 (同步雲端)</button>
+
+            <div id="m-detail-info" class="hidden info-group">
+                <h3 class="serif" style="font-size: 1.2rem; margin-bottom: 15px; color: var(--accent-main);">預訂 / 交通資訊</h3>
             </div>
-            <div id="m-detail-info" style="margin-top: 30px; border-top: 1px dashed var(--line-light); padding-top: 20px;"></div>
+
+            <p id="m-desc" style="font-size: 1rem; line-height: 1.8; color: #555; margin-top: 25px;">Description</p>
         </div>
     </div>
 
-    <!-- FS Text Modal -->
+    <!-- Full Screen Text Modal -->
     <div id="fs-text-modal" onclick="closeFs()">
         <div class="fs-jp" id="fs-jp">--</div>
         <div class="fs-cn" id="fs-cn">--</div>
-        <div style="position: absolute; bottom: 50px; color: #999; font-size: 0.8rem; letter-spacing: 1px;">TAP ANYWHERE TO CLOSE</div>
+        <div class="fs-close" style="position: absolute; bottom: 50px; color: #999; font-size: 0.9rem;">點擊任意處關閉</div>
     </div>
+
+    <script>
+        const GOOGLE_MAPS_API_KEY = "AIzaSyAX9nvh4bJpiM6-oTm8FoUSZeSBpxZBc1E"; 
+    </script>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, query, onSnapshot, addDoc, serverTimestamp, setDoc, doc, updateDoc, deleteDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, collection, query, orderBy, onSnapshot, addDoc, serverTimestamp, setDoc, doc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // Global State Variables (accessible within module scope)
-        let apiKey = GEMINI_API_KEY; 
-        let currentRate = 0.2215; // Fallback rate
+        let db;
+        let auth;
+        let expensesRef;
+        let currentRate = 0.22;
         let currentIdx = 0;
         let currentUser = 'YK';
-        let expenses = []; 
-        let shoppingList = []; 
-        let db, auth, expensesRef, shoppingRef, tripNotesRef;
-        let weatherCache = { hakodate: { temp: '--', summary: '' }, aomori: { temp: '--', summary: '' } };
-        let currentModalData = null;
-        let hasAlertedAuthError = false; 
-
-        // --- REAL-TIME DATA FETCHING ---
-        async function fetchRealData() {
-            if(!apiKey) {
-                console.log("No API Key set. Using offline defaults.");
-                document.getElementById('current-rate-display').innerText = `即時匯率: 1 JPY = ${currentRate.toFixed(4)} TWD (離線)`;
-                return;
-            }
-
-            const payload = {
-                contents: [{ 
-                    parts: [{ text: `Get the current temperature and very short weather summary for Hakodate and Aomori, Japan. Also get current JPY to TWD exchange rate.` }] 
-                }],
-                tools: [{ "google_search": {} }],
-                generationConfig: {
-                    responseMimeType: "application/json",
-                    responseSchema: {
-                        type: "OBJECT",
-                        properties: {
-                            "hakodate_temp": { "type": "STRING" },
-                            "hakodate_summary": { "type": "STRING" },
-                            "aomori_temp": { "type": "STRING" },
-                            "aomori_summary": { "type": "STRING" },
-                            "jpy_twd_rate": { "type": "NUMBER" }
-                        }
-                    }
-                }
-            };
-            // Use specific preview model
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
-            
-            try {
-                const response = await fetch(apiUrl, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload) });
-                
-                if (response.status === 400 || response.status === 401) {
-                    console.error("API Error: Check Key or Quota.");
-                    throw new Error(`API status: ${response.status}. Please check your Gemini API Key.`);
-                }
-                if (!response.ok) throw new Error(`API status: ${response.status}`);
-                
-                const result = await response.json();
-                const jsonText = result.candidates?.[0]?.content?.parts?.[0]?.text;
-                if (!jsonText) throw new Error("Missing JSON payload");
-                const data = JSON.parse(jsonText);
-                
-                if(data.jpy_twd_rate) currentRate = data.jpy_twd_rate;
-                weatherCache.hakodate = { temp: data.hakodate_temp || '--', summary: data.hakodate_summary || '無法連線' };
-                weatherCache.aomori = { temp: data.aomori_temp || '--', summary: data.aomori_summary || '無法連線' };
-                
-                document.getElementById('current-rate-display').innerText = `即時匯率: 1 JPY = ${currentRate.toFixed(4)} TWD`;
-                window.renderTrip(); 
-                
-            } catch(e) { 
-                console.error("Data fetch failed:", e);
-                document.getElementById('current-rate-display').innerText = `即時匯率: 1 JPY = ${currentRate.toFixed(4)} TWD (連線失敗)`;
-                document.getElementById('header-weather-icon').className = 'fa-solid fa-cloud-sun-rain';
-                document.getElementById('header-weather-temp').innerText = '離線';
-                weatherCache.hakodate = { temp: '--', summary: '無法連線' };
-                weatherCache.aomori = { temp: '--', summary: '無法連線' };
-                window.renderTrip();
-            }
-        }
-
-        // Explicitly attach to window for HTML click handlers
-        window.enterApp = function() { 
-            document.getElementById('intro-screen').style.transform = 'translateY(-100%)';
-            window.renderTrip();
-            setupFirebase();
-            fetchRealData();
-        };
-
-        // --- WEATHER HELPERS ---
-        function getIcon(s) {
-            if(!s) return 'fa-cloud';
-            s = s.toLowerCase();
-            if(s.includes('snow')||s.includes('雪')) return 'fa-snowflake';
-            if(s.includes('sun')||s.includes('clear')||s.includes('晴')) return 'fa-sun';
-            if(s.includes('rain')||s.includes('drizzle')||s.includes('雨')) return 'fa-cloud-rain';
-            return 'fa-cloud-meatball';
-        }
-
-        function getWeather(day) {
-            const locKey = day.day <= 2 ? 'hakodate' : 'aomori';
-            const data = weatherCache[locKey];
-            const tempVal = parseInt(data.temp);
-            
-            const headerIcon = document.getElementById('header-weather-icon');
-            const headerTemp = document.getElementById('header-weather-temp');
-            if(day.day === currentIdx + 1) { 
-                headerIcon.className = `fa-solid ${getIcon(data.summary)}`;
-                headerTemp.innerText = data.temp;
-            }
-
-            let outfit = "請穿著防風外套。";
-            if (!isNaN(tempVal) && tempVal < 0) outfit = "極寒！請務必穿著發熱衣、手套與毛帽。";
-            
-            return {
-                loc: locKey === 'hakodate' ? '函館' : '青森',
-                icon: getIcon(data.summary),
-                temp: data.temp,
-                text: data.summary,
-                outfit: outfit
-            };
-        }
-
-        // --- FIREBASE ---
-        // LocalStorage Mock for fallback
-        class LocalStore {
-            constructor(key) { this.key = key; }
-            get() { return JSON.parse(localStorage.getItem(this.key) || '[]'); }
-            add(item) { const d = this.get(); item.id = Date.now().toString(); d.push(item); localStorage.setItem(this.key, JSON.stringify(d)); return item; }
-            update(id, data) { const d = this.get(); const idx = d.findIndex(i => i.id === id); if(idx > -1) { d[idx] = {...d[idx], ...data}; localStorage.setItem(this.key, JSON.stringify(d)); } }
-            delete(id) { const d = this.get().filter(i => i.id !== id); localStorage.setItem(this.key, JSON.stringify(d)); }
-        }
+        let expenses = [];
+        
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
 
         const setupFirebase = async () => {
-            // Strict Auth Rule: Auth must be initialized BEFORE checking user
-            if (!FB_CONFIG || Object.keys(FB_CONFIG).length === 0 || !FB_CONFIG.projectId) {
-                console.log("Using LocalStorage Mode (No Config)");
-                document.getElementById('firebase-status').innerHTML = "<span class='status-badge offline'>離線模式 (本地存儲)</span>";
-                initListeners(false); // Init local listeners
-                return;
-            }
-
             try {
-                const app = initializeApp(FB_CONFIG);
+                const app = initializeApp(firebaseConfig);
                 db = getFirestore(app);
                 auth = getAuth(app);
                 
-                // Auth Rule: Await sign-in logic
                 if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
                     await signInWithCustomToken(auth, __initial_auth_token);
                 } else {
                     await signInAnonymously(auth);
                 }
-                
+
                 onAuthStateChanged(auth, (user) => {
-                    if(user) {
-                        document.getElementById('firebase-status').innerHTML = "<span class='status-badge online'>已連線 Firebase</span>";
-                        // Strict Path Rule
-                        expensesRef = collection(db, `artifacts/${APP_ID}/public/data/expenses`);
-                        shoppingRef = collection(db, `artifacts/${APP_ID}/public/data/shopping_list`);
-                        tripNotesRef = collection(db, `artifacts/${APP_ID}/public/data/trip_notes`);
-                        initListeners(true);
-                    }
+                    const userId = auth.currentUser?.uid || crypto.randomUUID(); 
+                    const collectionPath = `artifacts/${appId}/public/data/expenses`;
+                    expensesRef = collection(db, collectionPath);
+                    subscribeToExpenses();
                 });
-            } catch (e) {
-                console.log("Firebase init failed, falling back to local", e);
-                document.getElementById('firebase-status').innerHTML = "<span class='status-badge offline'>連線失敗 (使用離線模式)</span>";
-                initListeners(false);
+
+            } catch (error) {
+                console.error("Firebase Error:", error);
+                window.renderTrip();
             }
         };
 
-        const initListeners = (isOnline) => {
-            if(isOnline && expensesRef) {
-                onSnapshot(query(expensesRef), (sn) => {
-                    expenses = sn.docs.map(d => ({id:d.id, ...d.data()})).sort((a,b) => (b.timestamp?.toMillis()||0)-(a.timestamp?.toMillis()||0));
-                    window.renderExpenses();
-                }, (err) => { console.error("Exp Error", err); handleAuthError(); });
-
-                onSnapshot(query(shoppingRef), (sn) => {
-                    shoppingList = sn.docs.map(d => ({id:d.id, ...d.data()})).sort((a,b) => (b.timestamp?.toMillis()||0)-(a.timestamp?.toMillis()||0));
-                    window.renderShoppingList();
-                }, (err) => { console.error("Shop Error", err); handleAuthError(); });
-            } else {
-                const lsE = new LocalStore('local_expenses');
-                expenses = lsE.get();
-                window.renderExpenses();
+        const subscribeToExpenses = () => {
+            const q = query(expensesRef);
+            onSnapshot(q, (snapshot) => {
+                expenses = snapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
                 
-                const lsS = new LocalStore('local_shopping');
-                shoppingList = lsS.get();
-                window.renderShoppingList();
-            }
-        }
+                expenses.sort((a, b) => {
+                    const timeA = a.timestamp?.toMillis() || 0;
+                    const timeB = b.timestamp?.toMillis() || 0;
+                    return timeB - timeA;
+                });
+                
+                window.renderExpenses();
+            }, (error) => {
+                console.error("Error subscribing:", error);
+            });
+        };
 
-        // Helper to handle auth errors gracefully
-        function handleAuthError() {
-            if (!hasAlertedAuthError) {
-                hasAlertedAuthError = true;
-                document.getElementById('firebase-status').innerHTML = "<span class='status-badge offline'>權限錯誤！自動切換離線模式。</span>";
-                expensesRef = null;
-                shoppingRef = null;
-                tripNotesRef = null; 
-                initListeners(false);
-            }
-        }
-
-        // --- GLOBAL FNS ---
-        window.addExpense = async () => {
+        window.addExpense = async function() {
             const item = document.getElementById('ex-item').value;
             const price = parseInt(document.getElementById('ex-price').value);
-            const btn = document.getElementById('btn-add-expense');
             
-            if(item && price && !isNaN(price)) { 
-                btn.disabled = true;
-                if (expensesRef) {
-                      try { 
-                          if(!auth.currentUser) throw new Error("No Auth");
-                          await addDoc(expensesRef, {user: currentUser, item, price, timestamp: serverTimestamp(), rate: currentRate}); 
-                      }
-                      catch(e) { console.error("Write error:", e); handleAuthError(); }
-                }
-                else { 
-                    const ls = new LocalStore('local_expenses'); 
-                    ls.add({user: currentUser, item, price, timestamp: {toMillis: ()=>Date.now()}, rate: currentRate}); 
-                    expenses = ls.get(); // Refresh local list immediately
-                    window.renderExpenses(); 
-                }
-                document.getElementById('ex-item').value=''; document.getElementById('ex-price').value=''; 
-                btn.disabled = false;
+            if(!item || !price || price <= 0) {
+                if (window.confirm) window.confirm("請輸入有效的項目名稱和金額。");
+                return;
             }
-        };
-        window.renderExpenses = () => {
-            let total=0;
-            const html = expenses.map(e => { total+=e.price; return `<div class="expense-item"><div style="display:flex;align-items:center;"><div class="exp-avatar">${e.user}</div><div><div style="font-weight:500;">${e.item}</div></div></div><div class="serif" style="font-weight:600;">¥${e.price.toLocaleString()}</div></div>`; }).join('');
+            
+            if (!expensesRef) return;
+
+            try {
+                await addDoc(expensesRef, {
+                    user: currentUser,
+                    item, 
+                    price,
+                    timestamp: serverTimestamp(),
+                    rate: currentRate,
+                });
+                
+                document.getElementById('ex-item').value = '';
+                document.getElementById('ex-price').value = '';
+                document.getElementById('preview-twd').innerText = "≈ TWD 0";
+
+            } catch (error) {
+                console.error("Error adding document:", error);
+            }
+        }
+        
+        window.renderExpenses = function() {
+            let total = 0;
+            expenses.forEach(e => { total += e.price; });
+            
+            document.getElementById('total-jpy').innerText = "¥" + total.toLocaleString();
+            document.getElementById('total-twd').innerText = (total * currentRate).toFixed(0);
+
+            const html = expenses.map(e => {
+                const dateObj = e.timestamp ? e.timestamp.toDate() : new Date();
+                const timeString = dateObj.getHours().toString().padStart(2,'0') + ":" + dateObj.getMinutes().toString().padStart(2,'0');
+                const dateString = (dateObj.getMonth()+1) + "/" + dateObj.getDate();
+                
+                return `
+                    <div class="expense-item">
+                        <div class="exp-meta">
+                            <div class="exp-user">${e.user}</div>
+                            <div>
+                                <div style="font-weight:500;">${e.item}</div>
+                                <div style="font-size:0.75rem; color:#999;">${dateString} ${timeString}</div>
+                            </div>
+                        </div>
+                        <div class="serif">¥${e.price.toLocaleString()}</div>
+                    </div>
+                `;
+            }).join('');
             document.getElementById('expense-list').innerHTML = html;
-            document.getElementById('total-jpy').innerText = "¥"+total.toLocaleString();
-            document.getElementById('total-twd').innerText = Math.round(total*currentRate).toLocaleString();
-        };
-        
-        window.addShoppingItem = async () => {
-            const item = document.getElementById('shop-item').value;
-            const btn = document.getElementById('btn-add-shop');
-            if(item) { 
-                btn.disabled = true;
-                if (shoppingRef) {
-                    try { 
-                        if(!auth.currentUser) throw new Error("No Auth");
-                        await addDoc(shoppingRef, {item, is_bought:false, assigned_user:currentUser, timestamp:serverTimestamp()}); 
-                    }
-                    catch(e) { console.error("Write error:", e); handleAuthError(); }
-                }
-                else { 
-                    const ls = new LocalStore('local_shopping'); 
-                    ls.add({item, is_bought:false, assigned_user:currentUser, timestamp:{toMillis: ()=>Date.now()}}); 
-                    shoppingList = ls.get();
-                    window.renderShoppingList(); 
-                }
-                document.getElementById('shop-item').value=''; 
-                btn.disabled = false;
-            }
-        };
-        window.toggleBought = async (id, val) => { 
-            if (shoppingRef) {
-                try { 
-                    if(!auth.currentUser) throw new Error("No Auth");
-                    await updateDoc(doc(shoppingRef, id), {is_bought: !val}); 
-                }
-                catch(e) { console.error("Update error:", e); handleAuthError(); }
-            }
-            else { 
-                const ls = new LocalStore('local_shopping'); 
-                ls.update(id, {is_bought: !val}); 
-                shoppingList = ls.get();
-                window.renderShoppingList(); 
-            }
-        };
-        window.deleteShoppingItem = async (id) => { 
-            if (shoppingRef) {
-                try { 
-                    if(!auth.currentUser) throw new Error("No Auth");
-                    await deleteDoc(doc(shoppingRef, id)); 
-                }
-                catch(e) { console.error("Delete error:", e); handleAuthError(); }
-            }
-            else { 
-                const ls = new LocalStore('local_shopping'); 
-                ls.delete(id); 
-                shoppingList = ls.get();
-                window.renderShoppingList(); 
-            }
-        };
-        window.renderShoppingList = () => {
-            document.getElementById('shopping-list-container').innerHTML = shoppingList.map(i => `<div class="shopping-item ${i.is_bought?'bought-item':''}"><div style="flex-grow:1; display:flex; align-items:center;"><button class="shopping-actions btn-bought${i.is_bought?' active':''}" onclick="toggleBought('${i.id}', ${i.is_bought})"><i class="fa-solid fa-check"></i></button><div style="margin-left:15px;"><div class="shopping-item-title">${i.item}</div><div class="shopping-item-meta">${i.is_bought?'已購買':'未完成'} (${i.assigned_user})</div></div></div><div class="shopping-actions"><button class="btn-delete" onclick="deleteShoppingItem('${i.id}')"><i class="fa-solid fa-trash"></i></button></div></div>`).join('') || '<div style="padding:20px;text-align:center;color:#ccc;">清單為空 Empty</div>';
+        }
+
+        window.translateNow = async function() {
+            const input = document.getElementById('trans-input').value.trim();
+            const outputBox = document.getElementById('trans-output-box');
+            if (!input) return;
+
+            document.getElementById('trans-zh').innerText = input;
+            document.getElementById('trans-jp-result').innerText = "正在翻譯...";
+            outputBox.classList.remove('hidden');
+
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            document.getElementById('trans-jp-result').innerText = "翻譯服務串接中...請暫時使用字卡。"; 
+            window.showFs(document.getElementById('trans-jp-result').innerText, input);
+        }
+
+        window.enterApp = function() {
+            document.getElementById('intro-screen').style.transform = 'translateY(-100%)';
+            window.renderTrip();
+            window.fetchRate();
+            window.renderFullTripMap();
         };
 
-        window.renderTrip = () => {
-            const day = TRIP_DATA[currentIdx];
-            const w = getWeather(day);
+        // 雙向匯率換算邏輯
+        window.calcFromJpy = function(val) {
+            if(!val) {
+                document.getElementById('calc-twd').value = "";
+                return;
+            }
+            const jpy = parseFloat(val);
+            const twd = Math.round(jpy * currentRate);
+            document.getElementById('calc-twd').value = twd;
+        }
+
+        window.calcFromTwd = function(val) {
+            if(!val) {
+                document.getElementById('calc-jpy').value = "";
+                return;
+            }
+            const twd = parseFloat(val);
+            const jpy = Math.round(twd / currentRate);
+            document.getElementById('calc-jpy').value = jpy;
+        }
+
+        const timeSensitiveMessages = {
+            work: [
+                "今天的任務再多也沒關係，想想函館山的百萬夜景在等你。",
+                "工作很累對吧？再撐一下，青森的蘋果派會治癒這一切。",
+                "薪水就是為了變成機票和海鮮丼而存在的，再撐一下！"
+            ],
+            evening: [
+                "想像一下，幸運小丑漢堡淋上特製醬汁的那一瞬間...",
+                "在暖爐列車上烤魷魚的香氣，你想好要配哪一款清酒了嗎？",
+                "所有的等待，都是為了相遇時的那一刻美好。"
+            ],
+            rest: [
+                "剛忙完嗎？閉上眼，想像自己正泡在星野青森屋的露天溫泉裡。",
+                "希望你今晚能一夜好眠，明天醒來離出發又更近一步了。",
+                "把心清空，準備裝滿青森的藍天與白雪。"
+            ]
+        };
+        
+        window.startDynamicText = function() {
+            const textElement = document.getElementById('dynamic-intro-text');
+            const hour = new Date().getHours();
+            let key = (hour >= 8 && hour <= 17) ? 'work' : (hour >= 18 && hour <= 23 ? 'evening' : 'rest');
+            const messages = timeSensitiveMessages[key];
+            const msg = messages[Math.floor(Math.random() * messages.length)];
+            textElement.innerText = msg;
+            textElement.style.opacity = 1;
+        }
+
+        window.onload = function() {
+            setupFirebase();
+            const start = new Date("2026-02-02").getTime();
+            const now = new Date().getTime();
+            const days = Math.ceil((start - now) / (1000 * 60 * 60 * 24));
+            document.getElementById('days-left').innerText = days > 0 ? days : 0;
+            document.getElementById('header-days').innerText = days > 0 ? days : 0;
+            document.getElementById('view-trip').style.display = 'block';
+            setTimeout(window.startDynamicText, 1000);
+        };
+        
+        window.fetchRate = function() {
+            fetch('https://api.exchangerate-api.com/v4/latest/JPY')
+                .then(response => response.json())
+                .then(data => {
+                    if(data && data.rates && data.rates.TWD) {
+                        currentRate = data.rates.TWD;
+                        document.getElementById('current-rate').innerText = "1 JPY = " + currentRate.toFixed(4) + " TWD";
+                        window.renderExpenses();
+                    }
+                })
+                .catch(err => {
+                    document.getElementById('current-rate').innerText = "離線匯率: " + currentRate;
+                });
+        }
+        
+        window.selectUser = function(user, btn) {
+            currentUser = user;
+            document.querySelectorAll('.user-btn').forEach(el => el.classList.remove('active'));
+            btn.classList.add('active');
+        }
+
+        window.calculatePreview = function(val) {
+            if(!val) {
+                document.getElementById('preview-twd').innerText = "≈ TWD 0";
+                return;
+            }
+            const twd = Math.round(parseInt(val) * currentRate);
+            document.getElementById('preview-twd').innerText = "≈ TWD " + twd.toLocaleString();
+        }
+
+        // 需求1: 移除了事件中的圖片屬性
+        const tripData = [
+            {
+                day: 1, date: "02.02", week: "MON",
+                heroTitle: "函館：百元發熱衣與百萬夜景",
+                heroImg: "https://images.unsplash.com/photo-1542640244-7e67286feb8f?q=80&w=800&auto=format&fit=crop&w=800&h=600", 
+                events: [
+                    { time: "11:10", title: "抵達函館機場 (HKD)", tag: "Transport", desc: "入境手續，領取行李。", detail: "重點提示：函館機場規模精巧，入境速度快。請預留時間準備搭乘巴士。", to: "JR函館站" },
+                    { time: "12:00", title: "機場巴士 -> JR 函館站", tag: "Transport", desc: "搭乘巴士。約 20-30 分鐘車程。", detail: "這是最經濟的移動方式。", from: "函館機場", to: "JR函館站", transport_info: {type: "機場巴士", departure: "12:00", arrival: "12:30"} },
+                    { time: "12:30", title: "JR Inn Hakodate 寄放行李", tag: "Hotel", desc: "抵達飯店，辦理入住手續或寄放行李。", detail: "JR Inn Hakodate 位於函館站旁。", reservation_info: { type: "Hotel", number: "JRIH-2026", name: "YK", check_in: "15:00", guests: "3名成人" } },
+                    { time: "12:45", title: "計程車前往 UNIQLO 昭和店", tag: "Transport", desc: "從飯店搭計程車出發。", detail: "UNIQLO 函館昭和店離市區較遠。", from: "JR函館站", to: "UNIQLO 函館昭和店", transport_info: { type: "計程車", time_estimate: "20-25分鐘" } },
+                    { time: "13:15", title: "UNIQLO 函館昭和店", tag: "Shopping", desc: "【購物任務】採購發熱衣。", nav: { mapcode: "86 254 073*65" }, detail: "【導遊知識】郊區店鋪款式齊全。", to: "JR Inn Hakodate" },
+                    { time: "14:45", title: "計程車返回飯店", tag: "Transport", desc: "請店員幫忙叫車返回飯店。", from: "UNIQLO 函館昭和店", to: "JR Inn Hakodate", transport_info: { type: "計程車", time_estimate: "25分鐘" } },
+                    { time: "15:45", title: "市電至十字街站", tag: "Transport", desc: "搭乘市電至「十字街站」。", from: "函館站前", to: "十字街站", transport_info: { type: "市電", time_estimate: "10分鐘" } },
+                    { time: "16:10", title: "金森紅磚倉庫", tag: "Sightseeing", desc: "簡單逛街、拍照。", detail: "【歷史底蘊】這是明治時期的古老倉庫群。", to: "函館山纜車站" },
+                    { time: "16:50", title: "步行至函館山纜車站", tag: "Transport", desc: "雪地步行約 10-15 分鐘。", from: "金森紅磚倉庫", to: "函館山纜車站", transport_info: { type: "步行", time_estimate: "15分鐘" } },
+                    { time: "17:15", title: "函館山百萬夜景", tag: "Sightseeing", desc: "日落時間約 16:50。", nav: { mapcode: "86 041 028*25" }, detail: "【知性探索】夜景的獨特之處在於兩側海灣收束的沙頸岬地形。", to: "幸運小丑漢堡" },
+                    { time: "19:00", title: "幸運小丑漢堡", tag: "Food", desc: "晚餐：必點中華雞腿堡。", detail: "【在地特色】這家漢堡店是函館的驕傲。" },
+                    { time: "20:30", title: "JR Inn Hakodate", tag: "Hotel", desc: "Day 1 結束，休息。", detail: "早點休息，為隔天的長途移動做準備。" }
+                ]
+            },
+            {
+                day: 2, date: "02.03", week: "TUE",
+                heroTitle: "移動日：跨越津輕海峽",
+                heroImg: "https://images.unsplash.com/photo-1532236395709-7d70320fec2d?q=80&w=800&auto=format&fit=crop&w=800&h=600",
+                events: [
+                    { time: "08:00", title: "函館朝市早餐", tag: "Food", desc: "享用海鮮丼/釣烏賊。", detail: "【趣味】朝市裡最有名的體驗是『釣烏賊』。", to: "JR函館站" },
+                    { time: "10:35", title: "北海道新幹線 (隼 Hayabusa)", tag: "Transport", desc: "前往「新青森站」。", from: "新函館北斗站", to: "新青森站", transport_info: { type: "新幹線", name_jp: "はやぶさ", departure: "10:35", arrival: "11:35" } },
+                    { time: "12:00", title: "抵達 JR 青森站", tag: "Transport", desc: "出站，準備午餐與寄物。", detail: "青森站是市區中心。" },
+                    { time: "12:40", title: "青森站附近午餐", tag: "Food", desc: "推薦：味噌咖哩牛奶拉麵。", detail: "【在地特色】青森的獨創美食。" },
+                    { time: "14:00", title: "青森縣立美術館", tag: "Art", desc: "必看奈良美智「青森犬」。", nav: { mapcode: "99 489 495*20" }, detail: "【藝術底蘊】奈良美智的『青森犬』高達 8.5 公尺。", to: "Dormy Inn Aomori" },
+                    { time: "16:40", title: "Dormy Inn Aomori Check-in", tag: "Hotel", desc: "正式 Check-in。", reservation_info: { type: "Hotel", number: "DMAO-10023", name: "YK", check_in: "15:00" } },
+                    { time: "18:00", title: "青森鄉土料理晚餐", tag: "Food", desc: "津輕三味線居酒屋。", detail: "【趣味】帆立貝是青森的代表海產。" },
+                    { time: "19:30", title: "唐吉訶德 青森千刈店", tag: "Shopping", desc: "購物。建議計程車。", to: "Dormy Inn Aomori" },
+                    { time: "22:00", title: "Dormy Inn Aomori 泡湯", tag: "Relax", desc: "天然溫泉。", detail: "消除一天的疲勞。" }
+                ]
+            },
+            {
+                day: 3, date: "02.04", week: "WED",
+                heroTitle: "暖爐列車與蘋果派",
+                heroImg: "https://images.unsplash.com/photo-1549643276-fbc2bd5f4038?q=80&w=800&auto=format&fit=crop&w=800&h=600",
+                events: [
+                    { time: "09:00", title: "青森站前租車", tag: "Transport", desc: "【租車開始】手續約 30 分鐘。", from: "Dormy Inn Aomori", to: "ELM購物中心", transport_info: { type: "自駕", car_type: "雪胎確認" } },
+                    { time: "10:45", title: "3COINS+plus (ELM)", tag: "Shopping", desc: "【任務 1】快速買相機。", nav: { mapcode: "168 649 346*52" }, detail: "ELM 購物中心很大。", to: "津輕五所川原站" },
+                    { time: "11:50", title: "暖爐列車 (去程)", tag: "Experience", desc: "搭乘津輕鐵道至金木站。", from: "津輕五所川原站", to: "金木站", transport_info: { type: "津輕鐵道", departure: "11:50", arrival: "12:15" } },
+                    { time: "14:30", title: "大正浪漫喫茶室", tag: "Food", desc: "【CRITICAL】必吃蘋果派。", nav: { mapcode: "71 071 513*78" }, detail: "【歷史底蘊】弘前是蘋果派聖地。", to: "弘前城" },
+                    { time: "15:30", title: "弘前城 / 弘前公園", tag: "Sightseeing", desc: "欣賞白天雪景、紅橋。", detail: "【知性探索】東北唯一保有天守閣的城堡。", to: "星巴克 弘前公園前店" },
+                    { time: "17:30", title: "開車返回青森市", tag: "Transport", desc: "夜間雪地慢行。", from: "弘前", to: "Dormy Inn Aomori", transport_info: { type: "自駕", time_estimate: "1小時" } }
+                ]
+            },
+            {
+                day: 4, date: "02.05", week: "THU",
+                heroTitle: "山林：尋找八甲田雪怪",
+                heroImg: "https://images.unsplash.com/photo-1487667258413-5a089052b658?q=80&w=800&auto=format&fit=crop&w=800&h=600",
+                alert: "⚠️ 安全警示：若纜車停駛，請務必原路下山！",
+                events: [
+                    { time: "08:30", title: "古川市場 早餐", tag: "Food", desc: "吃「のっけ丼 (Nokkedon)」。", detail: "【趣味】自由搭配海鮮。", to: "八甲田纜車站" },
+                    { time: "11:00", title: "搭乘纜車賞樹冰", tag: "Nature", desc: "山頂極冷，注意保暖。", detail: "【知性探索】樹冰的形成需要極端條件。", to: "星野青森屋" },
+                    { time: "13:30", title: "前往星野青森屋", tag: "Drive", desc: "【保命路線】走陸奥收費道路。", from: "八甲田", to: "星野 青森屋", transport_info: { type: "自駕", time_estimate: "2小時" } },
+                    { time: "15:30", title: "星野 青森屋 Check-in", tag: "Hotel", desc: "享受頂級溫泉與祭典。", nav: { mapcode: "84 583 002*44" }, reservation_info: { type: "Resort", number: "HOS-AOM-1234", name: "YK", check_in: "15:30" } },
+                    { time: "20:00", title: "陸奧祭典屋表演", tag: "Culture", desc: "觀賞青森睡魔祭表演。", detail: "【文化體驗】濃縮青森四大祭典。" }
+                ]
+            },
+            {
+                day: 5, date: "02.06", week: "FRI",
+                heroTitle: "體驗：暖爐馬車與滑雪",
+                heroImg: "https://images.unsplash.com/photo-1548777123-e213912bc571?q=80&w=800&auto=format&fit=crop&w=800&h=600",
+                events: [
+                    { time: "10:00", title: "暖爐馬車", tag: "Relax", desc: "在馬車上享用點心。", detail: "【知性探索】在雪中公園搭馬車。", to: "滑雪場" },
+                    { time: "13:00", title: "滑雪體驗", tag: "Activity", desc: "初學者建議 2 小時。", nav: { phone: "0175-63-4848" }, detail: "町營滑雪場坡度較緩。", to: "青森屋" },
+                    { time: "20:00", title: "陸奧祭典屋表演", tag: "Culture", desc: "再次觀賞或自由活動。", detail: "享受最後一晚。" }
+                ]
+            },
+            {
+                day: 6, date: "02.07", week: "SAT",
+                heroTitle: "滿載而歸",
+                heroImg: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=800&auto=format&fit=crop&w=800&h=600",
+                events: [
+                    { time: "10:00", title: "Check-out，準時出發", tag: "Transport", desc: "開車離開飯店。", from: "星野 青森屋", to: "青森機場", transport_info: { type: "自駕", time_estimate: "1.5小時" } },
+                    { time: "12:30", title: "辦理還車手續", tag: "Transport", desc: "檢查車況，辦理還車。", from: "還車點", to: "機場航廈" },
+                    { time: "13:30", title: "辦理登機手續 (BR 121)", tag: "Flight", desc: "長榮航空櫃檯。", reservation_info: { type: "Flight", number: "BR121", departure: "15:30" } },
+                    { time: "15:30", title: "搭機返台", tag: "Flight", desc: "再見青森，期待下次旅程。" }
+                ]
+            }
+        ];
+
+        window.switchDay = function(i) {
+            if(i === currentIdx) return;
+            currentIdx = i;
+            if (document.getElementById('view-trip').style.display === 'none') {
+                const tripBtn = document.querySelector('.nav-btn:nth-child(1)');
+                window.switchView('trip', tripBtn); 
+            } else {
+                window.renderTrip();
+            }
+        }
+
+        window.switchView = function(view, btn) {
+            document.querySelectorAll('.view-section').forEach(el => el.style.display = 'none');
+            document.getElementById('view-' + view).style.display = 'block';
+            document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+            btn.classList.add('active');
+            
+            if(view === 'wallet') window.renderExpenses(); 
+            if(view === 'info') window.renderFullTripMap();
+            window.scrollTo(0,0);
+        }
+        
+        window.renderTrip = function() {
             const nav = document.getElementById('date-nav');
-            nav.innerHTML = TRIP_DATA.map((d, i) => `<div class="d-item ${i === currentIdx ? 'active' : ''}" onclick="switchDay(${i})"><div class="d-week">${d.week}</div><div class="d-num">${d.date.split('.')[1]}</div></div>`).join('');
-            
-            // Auto scroll to active day
-            setTimeout(() => {
-                const activeEl = nav.querySelector('.active');
-                if(activeEl) activeEl.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-            }, 100);
+            nav.innerHTML = tripData.map((d, i) => `
+                <div class="d-item ${i === currentIdx ? 'active' : ''}" onclick="switchDay(${i})">
+                    <div class="d-week">${d.week}</div>
+                    <div class="d-num">${d.date.split('.')[1]}</div>
+                </div>
+            `).join('');
 
-            let html = `<div class="day-title">DAY ${day.day} · ${day.week}</div>`;
+            const day = tripData[currentIdx];
+            const container = document.getElementById('timeline-container');
             
-            html += `<div class="container weather-widget"><div class="weather-col"><h4>${w.loc} 現在天氣</h4><div class="temp-display"><i class="fa-solid ${w.icon}"></i>${w.temp}</div><div class="weather-desc">${w.text}</div></div><div class="weather-col" style="border-left:1px solid #DDE4EB; padding-left:15px;"><h4>穿搭建議</h4><div class="outfit-advice">${w.outfit}</div></div></div>`;
-            
-            if(day.alert) html += `<div style="background:#FDEDEC; border-left:4px solid var(--accent-red); padding:15px; border-radius:8px; margin-bottom:25px; display:flex; align-items:flex-start;"><i class="fa-solid fa-triangle-exclamation" style="color:var(--accent-red); margin-top:3px; margin-right:10px;"></i><div style="font-size:0.9rem; color:#C0392B; font-weight:500;">${day.alert}</div></div>`;
-            
-            html += `<div class="timeline-block">` + day.events.map((ev, i) => {
-                const data = encodeURIComponent(JSON.stringify({...ev, dI: currentIdx, eI: i}));
-                const cardClass = ['Transport','Drive','Flight'].includes(ev.tag) ? 'transport-card' : '';
-                return `<div class="event-node visible" style="transition-delay: ${i*0.1}s"><div class="time-dot"></div><div class="event-card ${cardClass}" onclick="openDetail('${data}')"><div class="event-header"><span class="event-time">${ev.time}</span><span class="event-tag">${ev.tag}</span></div><div class="event-title">${ev.title}</div><div class="event-meta"><i class="fa-solid fa-circle"></i><span>${ev.desc}</span></div></div></div>`;
-            }).join('') + `</div><div style="height:50px;"></div>`;
-            
-            document.getElementById('timeline-container').innerHTML = html;
-        };
+            let alertHtml = '';
+            if (day.alert) {
+                alertHtml = `<div class="alert-banner"><i class="fa-solid fa-triangle-exclamation" style="color:#D9333F; margin-top:3px;"></i><div style="margin-left:10px;"><div style="color:var(--accent-main); font-weight:500;">今日安全警示</div><span class="alert-highlight">${day.alert}</span></div></div>`;
+            }
 
-        window.switchDay = (i) => { currentIdx = i; window.switchView('trip', document.querySelector('.nav-btn')); window.renderTrip(); window.scrollTo({top:0, behavior:'smooth'}); };
-        window.switchView = (id, btn) => {
-            document.querySelectorAll('.view-section').forEach(e=>e.classList.add('hidden')); document.getElementById('view-'+id).classList.remove('hidden');
-            document.querySelectorAll('.nav-btn').forEach(e=>e.classList.remove('active')); if(btn) btn.classList.add('active');
-            if(id==='info') document.getElementById('trip-map-overview-iframe').src = `https://www.google.com/maps/embed/v1/view?key=${GOOGLE_MAPS_API_KEY}&center=40.7831,140.7431&zoom=8`;
-        };
+            let html = `
+                <div class="hero-card">
+                    <img src="${day.heroImg}" class="hero-img">
+                    <div class="hero-overlay">
+                        <div class="hero-title">${day.heroTitle}</div>
+                    </div>
+                </div>
+                ${alertHtml}
+                <div class="timeline-block">
+            `;
+
+            html += day.events.map((ev, i) => {
+                const data = encodeURIComponent(JSON.stringify(ev));
+                const delay = i * 0.1;
+                let icon = 'fa-circle';
+                if (ev.tag === 'Transport' || ev.tag === 'Drive' || ev.tag === 'Flight') icon = 'fa-car-side';
+                if (ev.tag === 'Hotel' || ev.tag === 'Check-in') icon = 'fa-bed';
+                if (ev.tag === 'Shopping') icon = 'fa-bag-shopping';
+                if (ev.tag === 'Food' || ev.tag === 'Cuisine') icon = 'fa-utensils';
+                if (ev.tag.match(/Sightseeing|Nature|Art|Experience|景點/)) icon = 'fa-map-pin';
+                if (ev.tag.match(/Activity|Relax|Culture|體驗/)) icon = 'fa-person-skiing';
+                if (ev.tag === 'Flight') icon = 'fa-plane';
+                
+                const cardClass = (ev.tag === 'Transport' || ev.tag === 'Drive' || ev.tag === 'Flight') ? 'transport-card' : '';
+
+                return `
+                    <div class="event-node visible" style="transition-delay: ${delay}s">
+                        <div class="time-dot"></div>
+                        <div class="event-card ${cardClass}" onclick="openDetail('${data}')">
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <span class="event-tag">${ev.tag}</span>
+                                <span style="font-family: var(--font-serif); font-weight: 700; color: var(--accent-red); font-size: 1.1rem;">${ev.time}</span>
+                            </div>
+                            <div class="event-title">${ev.title}</div>
+                            <div style="font-size:0.7rem; color:#888; margin-top:5px; display:flex; align-items:center; gap:8px;">
+                                <i class="fa-solid ${icon}"></i> 
+                                <span>${ev.desc}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            html += `</div>`;
+
+            container.innerHTML = html;
+        }
+
+        function getMapUrl(data) {
+             const base = `https://www.google.com/maps/embed/v1/`;
+             if (data.from && data.to) return `${base}directions?key=${GOOGLE_MAPS_API_KEY}&origin=${encodeURIComponent(data.from)}&destination=${encodeURIComponent(data.to)}&mode=driving`;
+             if (data.title) return `${base}search?key=${GOOGLE_MAPS_API_KEY}&q=${encodeURIComponent(data.title)}`;
+             return null;
+        }
+
+        // 需求4: 調整地圖顯示範圍
+        window.renderFullTripMap = function() {
+            const mapIframe = document.getElementById('trip-map-overview-iframe');
+            // 使用 search mode 並指定多個地點，或是使用 view mode + 邊界 (但 Embed API 對多點支援最好用 view mode)
+            // 這裡使用 'place' 或 'search' 只能標記一個點。
+            // 使用 'view' mode 可以設定 center 和 zoom，但為了確保涵蓋所有點，我們可以嘗試用 query
+            // 不過 Embed API 的 view mode 主要是用來顯示地圖區域。
+            // 為了最好的效果，我們將中心點設在這些區域的中間 (青森市附近)，並調整 Zoom level。
+            // 青森(40.8) 函館(41.7) 弘前(40.6) 八戶(40.5)
+            // 中心點大約在 41.2, 140.7 左右
+            
+            // 另一種方式：列出關鍵地點
+            const places = "Hakodate+Aomori+Hirosaki+Hachinohe";
+            const embedUrl = `https://www.google.com/maps/embed/v1/search?key=${GOOGLE_MAPS_API_KEY}&q=${places}&zoom=8`;
+            // 注意：Search mode 搜尋多個地點時，Google Maps 有時只會顯示其中一個或搜尋結果。
+            // 為了更精準的"範圍顯示"，我們使用 View mode 並手動設定中心與縮放。
+            const centerLat = 41.1;
+            const centerLng = 140.7;
+            const zoom = 8;
+            const viewUrl = `https://www.google.com/maps/embed/v1/view?key=${GOOGLE_MAPS_API_KEY}&center=${centerLat},${centerLng}&zoom=${zoom}`;
+
+            mapIframe.src = viewUrl;
+        }
         
-        window.openDetail = async (str) => {
-            const data = JSON.parse(decodeURIComponent(str));
-            currentModalData = data;
-            
-            // Safe assignment for core elements
-            const titleEl = document.getElementById('m-title');
-            if(titleEl) titleEl.innerText = data.title;
-            const tagEl = document.getElementById('m-tag');
-            if(tagEl) tagEl.innerText = data.tag;
-            const descEl = document.getElementById('m-desc');
-            if(descEl) descEl.innerText = data.desc;
-            
-            // Reset state
-            const editNoteEl = document.getElementById('m-edit-note');
-            if(editNoteEl) editNoteEl.value = "";
+        window.openExternalMap = function() {
+            const currentTitle = document.getElementById('m-title').innerText;
+            window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(currentTitle)}`, '_blank');
+        }
 
-            if(tripNotesRef && !hasAlertedAuthError) {
-                try {
-                    const noteId = `n_${data.dI}_${data.eI}`;
-                    const docSnap = await getDoc(doc(tripNotesRef, noteId));
-                    if (docSnap.exists()) {
-                        const noteVal = docSnap.data().note;
-                        if(descEl) descEl.innerText = noteVal;
-                        if(editNoteEl) editNoteEl.value = noteVal;
-                    } else {
-                        if(editNoteEl) editNoteEl.value = data.desc;
-                    }
-                } catch(e) { console.error(e); handleAuthError(); }
-            }
+        function createInfoItem(icon, label, value) {
+            if (!value) return '';
+            return `
+                <div class="info-item">
+                    <div class="info-label"><i class="fa-solid ${icon}"></i><span>${label}</span></div>
+                    <div class="info-value">${value}</div>
+                </div>
+            `;
+        }
 
-            // Safe Access to TRIP_DATA using window or global const
-            const currentDayImg = TRIP_DATA[currentIdx].heroImg;
+        window.openDetail = function(dataStr) {
+            const data = JSON.parse(decodeURIComponent(dataStr));
+            document.getElementById('m-title').innerText = data.title;
+            document.getElementById('m-desc').innerHTML = `
+                <h3 class="serif" style="font-size: 1.2rem; margin-bottom: 10px; color: var(--accent-main); border-bottom: 1px solid #EEE;">導遊筆記 / Local Insight</h3>
+                <p style="white-space: pre-wrap;">${data.detail || data.desc}</p>
+            `;
+            document.getElementById('m-tag').innerText = data.tag;
             
-            // Handle Image Reset Safe Logic
-            const mImg = document.getElementById('m-img');
-            const imgContainer = document.getElementById('modal-img-container');
-            
-            if(mImg) {
-                mImg.style.display = 'block';
-                mImg.src = currentDayImg;
-            }
-            if(imgContainer) {
-                // Remove fallback if exists from previous error state
-                const fallback = imgContainer.querySelector('.img-fallback-container');
-                if(fallback) fallback.remove();
-            }
+            // Image handling: 雖然資料中刪除了 img，但為了相容性或 Hero fallback，這裡做個簡單處理
+            document.getElementById('m-img').src = data.img || 'https://placehold.co/800x600?text=No+Preview';
+            if(!data.img) document.getElementById('m-img').style.display = 'none'; // 若無圖片則隱藏 header img
+            else document.getElementById('m-img').style.display = 'block';
 
+            const infoGroup = document.getElementById('m-detail-info');
+            let infoHtml = '';
+            const headerHtml = `<h3 class="serif" style="font-size: 1.2rem; margin-bottom: 15px; color: var(--accent-main);">預訂 / 交通資訊</h3>`;
+
+            if (data.reservation_info) {
+                const res = data.reservation_info;
+                infoGroup.classList.remove('hidden');
+                infoHtml += createInfoItem('fa-hashtag', '預訂編號', res.number);
+                infoHtml += createInfoItem('fa-user', '預訂人', res.name);
+                infoHtml += createInfoItem('fa-calendar-check', '入住/時間', res.check_in || res.departure);
+                infoHtml += createInfoItem('fa-users', '人數', res.guests);
+            } else if (data.transport_info) {
+                const trans = data.transport_info;
+                infoGroup.classList.remove('hidden');
+                infoHtml += createInfoItem('fa-train-subway', '類型', trans.type);
+                infoHtml += createInfoItem('fa-clock', '出發', trans.departure);
+                infoHtml += createInfoItem('fa-clock-rotate-left', '抵達', trans.arrival);
+                infoHtml += createInfoItem('fa-road', '備註', trans.note || trans.time_estimate);
+            } else {
+                infoGroup.classList.add('hidden');
+            }
+            infoGroup.innerHTML = headerHtml + infoHtml;
+
+            const mapSec = document.getElementById('m-map-section');
+            if (data.nav && data.nav.mapcode) {
+                mapSec.classList.remove('hidden');
+                document.getElementById('m-mapcode').innerText = data.nav.mapcode;
+            } else {
+                mapSec.classList.add('hidden');
+            }
+            
+            const gmapPreview = document.getElementById('m-gmap-preview');
+            const gmapIframe = document.getElementById('m-gmap-iframe');
             const mapUrl = getMapUrl(data);
-            const mapFrame = document.getElementById('m-gmap-iframe');
-            const mapPreview = document.getElementById('m-gmap-preview');
-            const mapCodeSec = document.getElementById('m-map-section');
             
             if (mapUrl) {
-                if(mapFrame) mapFrame.src = mapUrl;
-                if(mapPreview) mapPreview.classList.remove('hidden');
+                gmapPreview.classList.remove('hidden');
+                gmapIframe.src = mapUrl;
             } else {
-                if(mapPreview) mapPreview.classList.add('hidden');
+                gmapPreview.classList.add('hidden');
             }
 
-            if(data.nav && data.nav.mapcode) {
-                 const mapCodeEl = document.getElementById('m-mapcode');
-                 if(mapCodeEl) mapCodeEl.innerText = data.nav.mapcode;
-                 if(mapCodeSec) mapCodeSec.classList.remove('hidden');
-            } else {
-                 if(mapCodeSec) mapCodeSec.classList.add('hidden');
-            }
-            
             document.getElementById('detail-modal').classList.add('active');
             document.querySelector('.modal-overlay').classList.add('active');
-        };
-        
-        window.saveDetailNote = async () => {
-            const newNote = document.getElementById('m-edit-note').value;
-            if(tripNotesRef && currentModalData && !hasAlertedAuthError) {
-                const noteId = `n_${currentModalData.dI}_${currentModalData.eI}`;
-                try {
-                    if(!auth.currentUser) throw new Error("No Auth");
-                    await setDoc(doc(tripNotesRef, noteId), { note: newNote, updatedAt: serverTimestamp() });
-                    document.getElementById('m-desc').innerText = newNote;
-                    window.toggleEditMode();
-                } catch(e) { console.error("Save error:", e); handleAuthError(); }
-            } else {
-                 document.getElementById('m-desc').innerText = newNote;
-                 window.toggleEditMode();
-            }
-        };
-        
-        window.closeModal = () => { document.getElementById('detail-modal').classList.remove('active'); document.querySelector('.modal-overlay').classList.remove('active'); };
-        window.showFs = (j,c) => { document.getElementById('fs-jp').innerText=j; document.getElementById('fs-cn').innerText=c; document.getElementById('fs-text-modal').classList.add('active'); };
-        window.closeFs = () => document.getElementById('fs-text-modal').classList.remove('active');
-        window.convert = (s) => {
-            const j = document.getElementById('conv-jpy'), t = document.getElementById('conv-twd');
-            if(s==='jpy') t.value = Math.round(j.value * currentRate); else j.value = Math.round(t.value / currentRate);
-        };
-        window.selectUser = (u, b) => { currentUser=u; document.querySelectorAll('.user-chip').forEach(e=>{e.classList.remove('active')}); b.classList.add('active'); };
-        window.toggleEditMode = () => { const e=document.getElementById('editing-area'), d=document.getElementById('m-desc'); if(e.classList.contains('hidden')){e.classList.remove('hidden');d.classList.add('hidden');}else{e.classList.add('hidden');d.classList.remove('hidden');} };
-        window.translateNow = () => { alert("翻譯 API 需金鑰，此為演示模式 (離線)。"); };
-        window.copyMapCode = () => { 
-            const code = document.getElementById('m-mapcode').innerText; 
-            if (navigator.clipboard) {
-                navigator.clipboard.writeText(code);
-                alert('MapCode 已複製！');
-            } else {
-                const textArea = document.createElement('textarea');
-                textArea.value = code;
-                document.body.appendChild(textArea);
-                textArea.select();
-                document.execCommand('copy');
-                document.body.removeChild(textArea);
-                alert('MapCode 已複製！');
-            }
-        };
+        }
 
-        window.onload = () => {
-            // Fix Date timezone issue by setting hours to 0
-            const targetDate = new Date("2026-02-02T00:00:00");
-            const today = new Date();
-            today.setHours(0,0,0,0);
-            
-            const diff = Math.ceil((targetDate - today) / (1000 * 60 * 60 * 24));
-            document.getElementById('days-left').innerText = diff > 0 ? diff : 0;
-            document.getElementById('header-days').innerText = diff > 0 ? diff : 0;
-            document.getElementById('dynamic-intro-text').innerText = "準備好迎接青森的雪了嗎？";
-            
-             if(FB_CONFIG && FB_CONFIG.projectId) {
-                 document.getElementById('firebase-status').innerHTML = "<span class='status-badge online'>已連線 Firebase</span>";
-             } else {
-                 document.getElementById('firebase-status').innerHTML = "<span class='status-badge offline'>未設定 Config (單機模式)</span>";
-             }
-        };
+        window.closeModal = function() {
+            document.getElementById('detail-modal').classList.remove('active');
+            document.querySelector('.modal-overlay').classList.remove('active');
+        }
+
+        window.copyMapCode = function() {
+            const code = document.getElementById('m-mapcode').innerText;
+            const textArea = document.createElement('textarea');
+            textArea.value = code;
+            document.body.appendChild(textArea);
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                if (window.confirm) window.confirm('MapCode 已複製！');
+            } catch (err) {}
+            document.body.removeChild(textArea);
+        }
+
+        window.showFs = function(jp, cn) {
+            document.getElementById('fs-jp').innerText = jp;
+            document.getElementById('fs-cn').innerText = cn;
+            document.getElementById('fs-text-modal').classList.add('active');
+        }
+        window.closeFs = function() {
+            document.getElementById('fs-text-modal').classList.remove('active');
+        }
+
     </script>
 </body>
 </html>
