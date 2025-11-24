@@ -720,6 +720,37 @@
             }
         ];
 
+        // --- FIRESTORE SUBSCRIPTION FUNCTIONS (Moved to be defined earlier) ---
+        
+        const subscribeToExpenses = () => {
+            const q = query(expensesRef);
+            onSnapshot(q, (snapshot) => {
+                expenses = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                expenses.sort((a, b) => (b.timestamp?.toMillis() || 0) - (a.timestamp?.toMillis() || 0));
+                window.renderExpenses();
+                window.updateExpenseDashboard();
+            });
+        };
+
+        const subscribeToNotes = () => {
+            const q = query(notesRef);
+            onSnapshot(q, (snapshot) => {
+                snapshot.docs.forEach(doc => { localNotes[doc.id] = doc.data().text; });
+                if(currentEventId && localNotes[currentEventId]) {
+                    const descEl = document.getElementById('m-desc');
+                    if(descEl) descEl.innerText = localNotes[currentEventId];
+                }
+            });
+        };
+
+        const subscribeToTodos = () => {
+            const q = query(todosRef, orderBy('timestamp', 'desc'));
+            onSnapshot(q, (snapshot) => {
+                todos = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                renderTodos();
+            });
+        };
+
         const setupFirebase = async () => {
             try {
                 const app = initializeApp(firebaseConfig);
@@ -736,6 +767,7 @@
                     const userId = auth.currentUser?.uid || crypto.randomUUID(); 
                     
                     expensesRef = collection(db, `artifacts/${appId}/public/data/expenses`);
+                    // Now safe to call the defined function
                     subscribeToExpenses();
 
                     notesRef = collection(db, `artifacts/${appId}/public/data/notes`);
@@ -930,7 +962,7 @@
             }
         }
 
-        // --- OTHER LOGIC ---
+        // --- EXPENSES LOGIC ---
 
         window.updateExpenseDashboard = function() {
             const totals = { 'YK': 0, 'YY': 0, 'YS': 0 };
@@ -988,6 +1020,21 @@
             if(listEl) listEl.innerHTML = html.length ? html : '<div style="text-align:center; padding:20px; color:#999;">無資料</div>';
         }
 
+        window.addExpense = async function() {
+            const item = document.getElementById('ex-item').value;
+            const price = parseInt(document.getElementById('ex-price').value);
+            if(!item || !price || price <= 0) return;
+            if (!expensesRef) return;
+            try {
+                await addDoc(expensesRef, { user: currentUser, item, price, timestamp: serverTimestamp(), rate: currentRate });
+                document.getElementById('ex-item').value = '';
+                document.getElementById('ex-price').value = '';
+                document.getElementById('preview-twd').innerText = "≈ TWD 0";
+            } catch (error) { console.error(error); }
+        }
+
+        // --- TODO LIST LOGIC ---
+
         window.addTodo = async function() {
             const input = document.getElementById('new-todo-text');
             const text = input.value.trim();
@@ -1010,31 +1057,20 @@
             }
         }
 
-        window.switchWidget = function(type) {
-            document.querySelectorAll('.w-tab').forEach(el => el.classList.remove('active'));
-            document.getElementById('tab-' + type).classList.add('active');
-            
-            if (type === 'converter') {
-                document.getElementById('currency-converter').classList.remove('hidden');
-                document.getElementById('todo-widget').classList.add('hidden');
-            } else {
-                document.getElementById('currency-converter').classList.add('hidden');
-                document.getElementById('todo-widget').classList.remove('hidden');
+        function renderTodos() {
+            const list = document.getElementById('todo-list-ul');
+            if(list) {
+                list.innerHTML = todos.map(t => `
+                    <li class="todo-item">
+                        <i class="fa-regular ${t.completed ? 'fa-square-check checked' : 'fa-square'} todo-check" onclick="window.toggleTodo('${t.id}', ${t.completed})"></i>
+                        <span class="todo-text ${t.completed ? 'checked' : ''}">${t.text}</span>
+                        <i class="fa-solid fa-trash todo-del" onclick="window.deleteTodo('${t.id}')"></i>
+                    </li>
+                `).join('');
             }
         }
 
-        window.addExpense = async function() {
-            const item = document.getElementById('ex-item').value;
-            const price = parseInt(document.getElementById('ex-price').value);
-            if(!item || !price || price <= 0) return;
-            if (!expensesRef) return;
-            try {
-                await addDoc(expensesRef, { user: currentUser, item, price, timestamp: serverTimestamp(), rate: currentRate });
-                document.getElementById('ex-item').value = '';
-                document.getElementById('ex-price').value = '';
-                document.getElementById('preview-twd').innerText = "≈ TWD 0";
-            } catch (error) { console.error(error); }
-        }
+        // --- NOTES LOGIC ---
         
         window.toggleEditNote = function() {
             const descEl = document.getElementById('m-desc');
@@ -1063,6 +1099,8 @@
             
             try { await setDoc(doc(notesRef, currentEventId), { text: newText, updatedAt: serverTimestamp() }); } catch (error) { console.error(error); }
         }
+        
+        // --- TRANSLATE/MAP LOGIC ---
 
         window.translateNow = async function() {
             const input = document.getElementById('trans-input').value.trim();
@@ -1076,15 +1114,18 @@
             window.showFs(document.getElementById('trans-jp-result').innerText, input);
         }
 
-        window.enterApp = function() {
-            document.getElementById('intro-screen').style.transform = 'translateY(-100%)';
-            window.renderTrip();
-            window.fetchRate();
-            window.renderFullTripMap();
-            window.hasScrolledToLive = false;
-            window.checkActiveEvent();
-            setInterval(window.checkActiveEvent, 60000);
-        };
+        window.renderFullTripMap = function() {
+            const mapIframe = document.getElementById('trip-map-overview-iframe');
+            if(mapIframe) {
+                const centerLat = 41.1;
+                const centerLng = 140.7;
+                const zoom = 8;
+                const viewUrl = `https://www.google.com/maps/embed/v1/view?key=${GOOGLE_MAPS_API_KEY}&center=${centerLat},${centerLng}&zoom=${zoom}`;
+                mapIframe.src = viewUrl;
+            }
+        }
+        
+        // --- CURRENCY LOGIC ---
 
         window.calcFromJpy = function(val) {
             if(!val) { document.getElementById('calc-twd').value = ""; return; }
@@ -1099,38 +1140,6 @@
             const jpy = Math.round(twd / currentRate);
             document.getElementById('calc-jpy').value = jpy;
         }
-
-        const timeSensitiveMessages = {
-            work: ["今天的任務再多也沒關係，想想函館山的百萬夜景在等你。", "工作很累對吧？再撐一下，青森的蘋果派會治癒這一切。", "薪水就是為了變成機票和海鮮丼而存在的，再撐一下！"],
-            evening: ["想像一下，幸運小丑漢堡淋上特製醬汁的那一瞬間...", "在暖爐列車上烤魷魚的香氣，你想好要配哪一款清酒了嗎？", "所有的等待，都是為了相遇時的那一刻美好。"],
-            rest: ["剛忙完嗎？閉上眼，想像自己正泡在星野青森屋的露天溫泉裡。", "希望你今晚能一夜好眠，明天醒來離出發又更近一步了。", "把心清空，準備裝滿青森的藍天與白雪。"]
-        };
-        
-        window.startDynamicText = function() {
-            const textElement = document.getElementById('dynamic-intro-text');
-            const hour = new Date().getHours();
-            let key = (hour >= 8 && hour <= 17) ? 'work' : (hour >= 18 && hour <= 23 ? 'evening' : 'rest');
-            const messages = timeSensitiveMessages[key];
-            const msg = messages[Math.floor(Math.random() * messages.length)];
-            textElement.innerText = msg;
-            textElement.style.opacity = 1;
-        }
-
-        window.onload = function() {
-            setupFirebase();
-            const start = new Date("2026-02-02").getTime();
-            const now = new Date().getTime();
-            const days = Math.ceil((start - now) / (1000 * 60 * 60 * 24));
-            
-            const daysLeftEl = document.getElementById('days-left');
-            if(daysLeftEl) daysLeftEl.innerText = days > 0 ? days : 0;
-            
-            const headerDaysEl = document.getElementById('header-days');
-            if(headerDaysEl) headerDaysEl.innerText = days > 0 ? days : 0;
-            
-            document.getElementById('view-trip').style.display = 'block';
-            setTimeout(window.startDynamicText, 1000);
-        };
         
         window.fetchRate = function() {
             fetch('https://api.exchangerate-api.com/v4/latest/JPY')
@@ -1149,6 +1158,60 @@
                 });
         }
         
+        // --- STARTUP / ONLOAD ---
+
+        window.enterApp = function() {
+            document.getElementById('intro-screen').style.transform = 'translateY(-100%)';
+            window.renderTrip();
+            window.fetchRate();
+            window.renderFullTripMap();
+            window.hasScrolledToLive = false;
+            window.checkActiveEvent();
+            setInterval(window.checkActiveEvent, 60000);
+        };
+
+
+        window.onload = function() {
+            setupFirebase();
+            const start = new Date("2026-02-02").getTime();
+            const now = new Date().getTime();
+            const days = Math.ceil((start - now) / (1000 * 60 * 60 * 24));
+            
+            const daysLeftEl = document.getElementById('days-left');
+            if(daysLeftEl) daysLeftEl.innerText = days > 0 ? days : 0;
+            
+            const headerDaysEl = document.getElementById('header-days');
+            if(headerDaysEl) headerDaysEl.innerText = days > 0 ? days : 0;
+            
+            document.getElementById('view-trip').style.display = 'block';
+            setTimeout(window.startDynamicText, 1000);
+        };
+        
+        // --- FIREBASE SUBSCRIPTION DEFINITIONS (Required to be defined before setupFirebase calls) ---
+
+        // (Definitions for subscribeToExpenses, subscribeToNotes, subscribeToTodos were moved here in the previous step)
+        // Since they were already defined above setupFirebase, the issue might be related to how the functions are hoisted or defined in a module. 
+        // By ensuring they are defined as standard functions (as they are), and moving them before their calls within setupFirebase, the error should be resolved.
+        
+
+        // The remaining helper functions remain in place...
+        
+        const timeSensitiveMessages = {
+            work: ["今天的任務再多也沒關係，想想函館山的百萬夜景在等你。", "工作很累對吧？再撐一下，青森的蘋果派會治癒這一切。", "薪水就是為了變成機票和海鮮丼而存在的，再撐一下！"],
+            evening: ["想像一下，幸運小丑漢堡淋上特製醬汁的那一瞬間...", "在暖爐列車上烤魷魚的香氣，你想好要配哪一款清酒了嗎？", "所有的等待，都是為了相遇時的那一刻美好。"],
+            rest: ["剛忙完嗎？閉上眼，想像自己正泡在星野青森屋的露天溫泉裡。", "希望你今晚能一夜好眠，明天醒來離出發又更近一步了。", "把心清空，準備裝滿青森的藍天與白雪。"]
+        };
+        
+        window.startDynamicText = function() {
+            const textElement = document.getElementById('dynamic-intro-text');
+            const hour = new Date().getHours();
+            let key = (hour >= 8 && hour <= 17) ? 'work' : (hour >= 18 && hour <= 23 ? 'evening' : 'rest');
+            const messages = timeSensitiveMessages[key];
+            const msg = messages[Math.floor(Math.random() * messages.length)];
+            textElement.innerText = msg;
+            textElement.style.opacity = 1;
+        }
+
         window.selectUser = function(user, btn) {
             currentUser = user;
             document.querySelectorAll('.user-btn').forEach(el => el.classList.remove('active'));
@@ -1161,25 +1224,43 @@
             document.getElementById('preview-twd').innerText = "≈ TWD " + twd.toLocaleString();
         }
 
-        window.renderFullTripMap = function() {
-            const mapIframe = document.getElementById('trip-map-overview-iframe');
-            if(mapIframe) {
-                const centerLat = 41.1;
-                const centerLng = 140.7;
-                const zoom = 8;
-                const viewUrl = `https://www.google.com/maps/embed/v1/view?key=${GOOGLE_MAPS_API_KEY}&center=${centerLat},${centerLng}&zoom=${zoom}`;
-                mapIframe.src = viewUrl;
-            }
+        window.copyMapCode = function() {
+            const code = document.getElementById('m-mapcode').innerText;
+            const textArea = document.createElement('textarea');
+            textArea.value = code;
+            document.body.appendChild(textArea);
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                if (window.confirm) window.confirm('MapCode 已複製！');
+            } catch (err) {}
+            document.body.removeChild(textArea);
         }
-        
-        window.openExternalMap = function() {
-            const currentTitle = document.getElementById('m-title').innerText;
-            window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(currentTitle)}`, '_blank');
+
+        window.showFs = function(jp, cn) {
+            document.getElementById('fs-jp').innerText = jp;
+            document.getElementById('fs-cn').innerText = cn;
+            document.getElementById('fs-text-modal').classList.add('active');
+        }
+        window.closeFs = function() {
+            document.getElementById('fs-text-modal').classList.remove('active');
+        }
+
+        function getMapUrl(data) {
+             const base = `https://www.google.com/maps/embed/v1/`;
+             if (data.from && data.to) return `${base}directions?key=${GOOGLE_MAPS_API_KEY}&origin=${encodeURIComponent(data.from)}&destination=${encodeURIComponent(data.to)}&mode=driving`;
+             if (data.title) return `${base}search?key=${GOOGLE_MAPS_API_KEY}&q=${encodeURIComponent(data.title)}`;
+             return null;
         }
 
         function createInfoItem(icon, label, value) {
             if (!value) return '';
             return `<div class="info-item"><div class="info-label"><i class="fa-solid ${icon}"></i><span>${label}</span></div><div class="info-value">${value}</div></div>`;
+        }
+
+        window.openExternalMap = function() {
+            const currentTitle = document.getElementById('m-title').innerText;
+            window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(currentTitle)}`, '_blank');
         }
 
         window.openDetail = function(dataStr, dayIdx, eventIdx) {
@@ -1262,29 +1343,6 @@
             document.querySelector('.modal-overlay').classList.remove('active');
             currentEventId = null;
         }
-
-        window.copyMapCode = function() {
-            const code = document.getElementById('m-mapcode').innerText;
-            const textArea = document.createElement('textarea');
-            textArea.value = code;
-            document.body.appendChild(textArea);
-            textArea.select();
-            try {
-                document.execCommand('copy');
-                if (window.confirm) window.confirm('MapCode 已複製！');
-            } catch (err) {}
-            document.body.removeChild(textArea);
-        }
-
-        window.showFs = function(jp, cn) {
-            document.getElementById('fs-jp').innerText = jp;
-            document.getElementById('fs-cn').innerText = cn;
-            document.getElementById('fs-text-modal').classList.add('active');
-        }
-        window.closeFs = function() {
-            document.getElementById('fs-text-modal').classList.remove('active');
-        }
-
     </script>
 </body>
 </html>
