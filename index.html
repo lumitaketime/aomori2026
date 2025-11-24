@@ -37,7 +37,7 @@
         }
 
         h1, h2, h3, .serif { font-family: var(--font-serif); }
-        .hidden { display: none; }
+        .hidden { display: none !important; }
 
         /* --- INTRO --- */
         #intro-screen {
@@ -165,139 +165,106 @@
         }
         .alert-highlight { color: var(--accent-red); font-weight: 700; display: block; margin-top: 4px; font-size: 0.85rem;}
 
+        /* --- ACTIVE EVENT GLOW EFFECT --- */
+        @keyframes breathing {
+            0% { box-shadow: 0 0 5px rgba(180, 155, 103, 0.2); border-color: rgba(180, 155, 103, 0.4); }
+            50% { box-shadow: 0 0 20px rgba(180, 155, 103, 0.6); border-color: rgba(180, 155, 103, 1); }
+            100% { box-shadow: 0 0 5px rgba(180, 155, 103, 0.2); border-color: rgba(180, 155, 103, 0.4); }
+        }
+        .active-event .event-card {
+            border: 1px solid var(--accent-gold);
+            animation: breathing 3s infinite ease-in-out;
+            background: rgba(255, 255, 255, 0.95);
+            transform: scale(1.02);
+        }
+        .active-event .time-dot {
+            background: var(--accent-gold);
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 10px var(--accent-gold);
+        }
+        .active-label {
+            display: inline-block; background: var(--accent-gold); color: white;
+            font-size: 0.6rem; padding: 2px 6px; border-radius: 4px; margin-left: 8px;
+            vertical-align: middle; letter-spacing: 1px;
+        }
+
         /* --- WALLET VIEW --- */
         .wallet-card { background: white; padding: 25px; border-radius: 8px; box-shadow: var(--shadow-soft); margin-bottom: 20px; }
-        .rate-badge {
-            background: #E8F5E9; color: #2E7D32; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; 
-            display: inline-block; margin-bottom: 10px; font-weight: bold;
-        }
-        .input-group { margin-bottom: 20px; }
-        .input-elegant { 
-            width: 100%; border: none; border-bottom: 1px solid var(--line-light); 
-            padding: 15px 0; font-size: 1.1rem; background: transparent; outline: none; border-radius: 0;
-        }
+        .rate-badge { background: #E8F5E9; color: #2E7D32; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; display: inline-block; margin-bottom: 10px; font-weight: bold; }
+        .input-elegant { width: 100%; border: none; border-bottom: 1px solid var(--line-light); padding: 15px 0; font-size: 1.1rem; background: transparent; outline: none; border-radius: 0; }
         .twd-preview { font-size: 0.9rem; color: var(--accent-gold); margin-top: 5px; text-align: right; font-weight: 500;}
         
         .user-selector { display: flex; gap: 10px; margin-bottom: 20px; }
-        .user-btn {
-            flex: 1; padding: 10px; border: 1px solid var(--line-light); border-radius: 4px;
-            background: transparent; color: var(--text-secondary); cursor: pointer; transition: 0.2s;
-            font-family: var(--font-serif); font-size: 1rem;
-        }
+        .user-btn { flex: 1; padding: 10px; border: 1px solid var(--line-light); border-radius: 4px; background: transparent; color: var(--text-secondary); cursor: pointer; transition: 0.2s; font-family: var(--font-serif); font-size: 1rem; }
         .user-btn.active { background: var(--accent-main); color: white; border-color: var(--accent-main); }
         
+        /* EXPENSE DASHBOARD */
+        .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 25px; }
+        .dashboard-item { 
+            background: white; padding: 15px 5px; border-radius: 8px; text-align: center; 
+            border: 1px solid #EEE; cursor: pointer; transition: 0.3s; 
+        }
+        .dashboard-item.active { border-color: var(--accent-gold); background: #FFF9F0; }
+        .dash-avatar { width: 32px; height: 32px; background: var(--accent-main); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 8px; font-size: 0.8rem; }
+        .dash-total { font-family: var(--font-serif); font-size: 1.1rem; color: var(--accent-main); font-weight: bold; }
+        .dash-label { font-size: 0.7rem; color: #999; margin-top: 2px; }
+
         .expense-item { display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid #EEE; align-items: center; }
-        .exp-user { 
-            width: 30px; height: 30px; border-radius: 50%; background: var(--accent-main); color: white;
-            display: flex; justify-content: center; align-items: center; font-size: 0.7rem; margin-right: 10px;
-        }
+        .exp-user { width: 30px; height: 30px; border-radius: 50%; background: var(--accent-main); color: white; display: flex; justify-content: center; align-items: center; font-size: 0.7rem; margin-right: 10px; }
         .exp-meta { display: flex; align-items: center; }
-        .exp-time { font-size: 0.7rem; color: #999; margin-left: 8px; }
+        
+        /* WIDGET TABS */
+        .widget-tabs { display: flex; background: #EEE; border-radius: 20px; padding: 4px; margin-bottom: 15px; }
+        .w-tab { flex: 1; text-align: center; padding: 8px 0; font-size: 0.85rem; color: #666; border-radius: 16px; cursor: pointer; transition: 0.3s; }
+        .w-tab.active { background: white; color: var(--accent-main); font-weight: bold; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
 
-        /* 需求3: 縮小精簡版雙向匯率換算 */
-        #currency-converter {
-            background: #F0F4F8; 
-            padding: 12px;
-            border-radius: 8px; 
-            margin-bottom: 20px;
-            border: 1px solid #E0E0E0;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 10px;
-        }
-        .conv-col {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .conv-input { 
-            border: none;
-            border-bottom: 1px solid var(--accent-gold);
-            background: transparent;
-            font-size: 1.1rem;
-            font-family: var(--font-serif);
-            text-align: center;
-            padding: 4px 0;
-            width: 100%;
-            color: var(--accent-main);
-            outline: none;
-        }
-        .conv-input:focus { border-bottom: 2px solid var(--accent-main); }
-        .conv-label {
-            font-size: 0.7rem;
-            color: #888;
-            margin-top: 4px;
-            font-weight: 600;
-        }
-        .conv-icon {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            padding: 0 5px;
-        }
+        /* CURRENCY CONVERTER */
+        #currency-converter { background: #F0F4F8; padding: 12px; border-radius: 8px; margin-bottom: 10px; border: 1px solid #E0E0E0; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+        .conv-col { flex: 1; display: flex; flex-direction: column; align-items: center; }
+        .conv-input { border: none; border-bottom: 1px solid var(--accent-gold); background: transparent; font-size: 1.1rem; font-family: var(--font-serif); text-align: center; padding: 4px 0; width: 100%; color: var(--accent-main); outline: none; }
+        .conv-label { font-size: 0.7rem; color: #888; margin-top: 4px; font-weight: 600; }
 
+        /* TO-DO LIST */
+        #todo-widget { background: #FFF; border: 1px solid #EEE; border-radius: 8px; padding: 15px; margin-bottom: 20px; }
+        .todo-input-row { display: flex; gap: 10px; margin-bottom: 15px; }
+        .todo-input { flex: 1; border: none; border-bottom: 1px solid #DDD; padding: 8px; font-size: 0.95rem; outline: none; }
+        .todo-add-btn { background: var(--accent-main); color: white; border: none; border-radius: 4px; width: 36px; height: 36px; cursor: pointer; }
+        .todo-list { list-style: none; padding: 0; margin: 0; }
+        .todo-item { display: flex; align-items: center; padding: 10px 0; border-bottom: 1px solid #F5F5F5; }
+        .todo-check { margin-right: 12px; cursor: pointer; color: #DDD; font-size: 1.2rem; }
+        .todo-check.checked { color: var(--accent-gold); }
+        .todo-text { flex: 1; font-size: 0.95rem; color: #333; }
+        .todo-text.checked { text-decoration: line-through; color: #AAA; }
+        .todo-del { color: #DDD; cursor: pointer; padding: 5px; }
+        .todo-del:hover { color: var(--accent-red); }
 
-        /* --- TRANSLATE VIEW --- */
+        /* --- OTHER VIEWS --- */
         .trans-input-area { background: white; padding: 20px; border-radius: 8px; box-shadow: var(--shadow-soft); margin-bottom: 30px; }
         .trans-btn { width: 100%; padding: 15px; background: var(--accent-main); color: white; border: none; margin-top: 15px; cursor: pointer; border-radius: 4px; }
         .ps-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .ps-card {
-            background: white; padding: 20px 15px; border-radius: 8px; box-shadow: var(--shadow-soft);
-            text-align: center; border: 1px solid #EEE; cursor: pointer; transition: 0.2s;
-        }
-        .ps-card:active { transform: scale(0.98); border-color: var(--accent-gold); }
+        .ps-card { background: white; padding: 20px 15px; border-radius: 8px; box-shadow: var(--shadow-soft); text-align: center; border: 1px solid #EEE; cursor: pointer; transition: 0.2s; }
         .ps-icon { font-size: 1.8rem; margin-bottom: 10px; display: block; }
-        .ps-title { font-size: 0.9rem; font-weight: 600; }
 
-        /* --- INFO VIEW --- */
         .info-card { background: white; padding: 20px; border-radius: 8px; box-shadow: var(--shadow-soft); margin-bottom: 15px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; }
         .info-icon { width: 40px; height: 40px; border-radius: 50%; background: #F5F5F5; display: flex; justify-content: center; align-items: center; color: var(--accent-main); margin-right: 15px; }
-        .info-text h3 { margin: 0; font-size: 1rem; color: var(--text-primary); }
-        .info-text p { margin: 5px 0 0; font-size: 0.8rem; color: var(--text-secondary); }
-        
-        .map-overview-card {
-            background: white; padding: 15px; border-radius: 8px; box-shadow: var(--shadow-soft); margin-bottom: 20px;
-        }
+        .map-overview-card { background: white; padding: 15px; border-radius: 8px; box-shadow: var(--shadow-soft); margin-bottom: 20px; }
         .map-iframe { width: 100%; height: 350px; border: none; border-radius: 4px; }
 
-
-        /* --- NAV BAR (需求2: 僅圖標) --- */
+        /* --- NAV BAR --- */
         .glass-nav {
             position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
-            width: auto; /* Auto width based on content */
-            min-width: 280px;
+            width: auto; min-width: 280px;
             background: rgba(28, 37, 65, 0.95); backdrop-filter: blur(10px);
-            border-radius: 50px; /* More rounded */
-            padding: 10px 30px; /* More padding on sides */
+            border-radius: 50px; padding: 10px 30px;
             display: flex; justify-content: space-between; align-items: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3); z-index: 1000;
-            gap: 25px; /* Gap between icons */
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3); z-index: 1000; gap: 25px;
         }
-        .nav-btn { 
-            color: rgba(255,255,255,0.4); 
-            font-size: 1.4rem; /* Larger icons */
-            cursor: pointer; 
-            transition: 0.3s; 
-            position: relative; 
-            padding: 10px; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center;
-        }
-        .nav-btn span { display: none; } /* Hide Text */
+        .nav-btn { color: rgba(255,255,255,0.4); font-size: 1.4rem; cursor: pointer; transition: 0.3s; position: relative; padding: 10px; display: flex; justify-content: center; align-items: center; }
         .nav-btn.active { color: var(--accent-gold); transform: translateY(-2px); }
-        .nav-btn.active::after {
-            content: ''; position: absolute; bottom: 0; width: 4px; height: 4px;
-            background: var(--accent-gold); border-radius: 50%;
-        }
+        .nav-btn.active::after { content: ''; position: absolute; bottom: 0; width: 4px; height: 4px; background: var(--accent-gold); border-radius: 50%; }
 
         /* --- MODALS --- */
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6); z-index: 1900;
-            opacity: 0; pointer-events: none; transition: 0.3s;
-        }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1900; opacity: 0; pointer-events: none; transition: 0.3s; }
         .modal-overlay.active { opacity: 1; pointer-events: auto; }
         .modal-full {
             position: fixed; bottom: 0; left: 0; width: 100%; height: 90vh;
@@ -307,23 +274,17 @@
         }
         .modal-full.active { transform: translateY(0); }
         .modal-header-img { height: 250px; width: 100%; object-fit: cover; }
-        
         .modal-content { padding: 0 20px; }
-        .info-group { margin-top: 20px; padding-top: 15px; border-top: 1px dashed var(--line-light); }
-        .info-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; font-size: 0.9rem; }
-        .info-label { color: var(--text-secondary); font-weight: 500; display: flex; align-items: center; gap: 8px; }
-        .info-value { font-weight: 700; color: var(--accent-main); text-align: right; word-break: break-word; }
+        
+        .note-edit-area { width: 100%; padding: 10px; border: 1px solid var(--accent-gold); border-radius: 4px; font-family: var(--font-sans); margin-bottom: 10px; font-size: 1rem; line-height: 1.5; }
+        .note-save-btn { background: var(--accent-gold); color: white; border: none; padding: 8px 20px; border-radius: 4px; cursor: pointer; font-size: 0.9rem; }
+        .snowflake-icon { color: #B49B67; font-size: 1.1rem; cursor: pointer; margin-left: 10px; transition: transform 0.3s; display: inline-block; }
+        .snowflake-icon:hover { transform: rotate(45deg); }
 
-        #fs-text-modal {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: white; z-index: 2100; display: flex; flex-direction: column;
-            justify-content: center; align-items: center; padding: 40px;
-            text-align: center; transform: scale(0.9); opacity: 0; pointer-events: none; transition: 0.3s;
-        }
+        #fs-text-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 2100; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 40px; text-align: center; transform: scale(0.9); opacity: 0; pointer-events: none; transition: 0.3s; }
         #fs-text-modal.active { transform: scale(1); opacity: 1; pointer-events: auto; }
         .fs-jp { font-size: 2.5rem; font-weight: 700; margin-bottom: 20px; line-height: 1.4; color: var(--text-primary); }
         .fs-cn { font-size: 1.2rem; color: #666; background: #F5F5F5; padding: 10px 20px; border-radius: 20px; }
-
     </style>
 </head>
 <body>
@@ -337,7 +298,7 @@
             </div>
             <div class="intro-title" style="letter-spacing: 3px; font-size: 1.2rem; text-align: center;">函館-青森 林檎之旅</div>
             <div id="dynamic-intro-text"></div> 
-            <button class="intro-btn" onclick="enterApp()">開啟旅程</button>
+            <button class="intro-btn" onclick="window.enterApp()">開啟旅程</button>
         </div>
     </div>
 
@@ -373,37 +334,81 @@
                     <div style="color: #EEE; font-size: 0.9rem;">≈ TWD <span id="total-twd">0</span></div>
                 </div>
 
+                <!-- Expense Dashboard (Filter) -->
+                <div class="dashboard-grid">
+                    <div class="dashboard-item" onclick="window.filterExpenses('YK')">
+                        <div class="dash-avatar">YK</div>
+                        <div class="dash-total" id="dash-yk">¥0</div>
+                        <div class="dash-label">Total</div>
+                    </div>
+                    <div class="dashboard-item" onclick="window.filterExpenses('YY')">
+                        <div class="dash-avatar">YY</div>
+                        <div class="dash-total" id="dash-yy">¥0</div>
+                        <div class="dash-label">Total</div>
+                    </div>
+                    <div class="dashboard-item" onclick="window.filterExpenses('YS')">
+                        <div class="dash-avatar">YS</div>
+                        <div class="dash-total" id="dash-ys">¥0</div>
+                        <div class="dash-label">Total</div>
+                    </div>
+                </div>
+                <!-- Reset Filter Button (Hidden by default) -->
+                <div id="reset-filter-btn" class="hidden" style="text-align: center; margin-bottom: 15px;">
+                    <button onclick="window.filterExpenses(null)" style="background: #EEE; border:none; padding: 5px 15px; border-radius: 20px; color: #666; font-size: 0.8rem;">
+                        <i class="fa-solid fa-times"></i> 清除篩選 (顯示全部)
+                    </button>
+                </div>
+
+                <!-- Widget Tabs -->
+                <div class="widget-tabs">
+                    <div class="w-tab active" id="tab-converter" onclick="window.switchWidget('converter')">匯率換算</div>
+                    <div class="w-tab" id="tab-todo" onclick="window.switchWidget('todo')">待辦清單</div>
+                </div>
+
                 <div class="wallet-card">
-                    <div class="rate-badge">即時匯率: <span id="current-rate">Loading...</span></div>
-                    
-                    <!-- 需求3: 雙向換算、縮小版面 -->
+                    <!-- Widget 1: Converter -->
                     <div id="currency-converter">
                         <div class="conv-col">
-                            <input type="tel" id="calc-jpy" class="conv-input" placeholder="0" oninput="calcFromJpy(this.value)">
+                            <input type="tel" id="calc-jpy" class="conv-input" placeholder="0" oninput="window.calcFromJpy(this.value)">
                             <div class="conv-label">JPY ¥</div>
                         </div>
                         <i class="fa-solid fa-arrow-right-arrow-left conv-icon"></i>
                         <div class="conv-col">
-                            <input type="tel" id="calc-twd" class="conv-input" placeholder="0" oninput="calcFromTwd(this.value)">
+                            <input type="tel" id="calc-twd" class="conv-input" placeholder="0" oninput="window.calcFromTwd(this.value)">
                             <div class="conv-label">TWD $</div>
                         </div>
                     </div>
+                    <!-- Current Rate Display -->
+                    <div class="rate-badge" style="width:100%; text-align:center; margin-top:5px;">即時匯率: <span id="current-rate">Loading...</span></div>
+
+                    <!-- Widget 2: To-Do List -->
+                    <div id="todo-widget" class="hidden">
+                        <div class="todo-input-row">
+                            <input type="text" id="new-todo-text" class="todo-input" placeholder="新增待辦 (例如: 買蘋果派)...">
+                            <button class="todo-add-btn" onclick="window.addTodo()"><i class="fa-solid fa-plus"></i></button>
+                        </div>
+                        <ul id="todo-list-ul" class="todo-list">
+                            <!-- JS Generated -->
+                        </ul>
+                    </div>
+
+                    <div style="border-top: 1px dashed #EEE; margin: 15px 0;"></div>
 
                     <div class="user-selector">
-                        <button class="user-btn active" onclick="selectUser('YK', this)">YK</button>
-                        <button class="user-btn" onclick="selectUser('YY', this)">YY</button>
-                        <button class="user-btn" onclick="selectUser('YS', this)">YS</button>
+                        <button class="user-btn active" onclick="window.selectUser('YK', this)">YK</button>
+                        <button class="user-btn" onclick="window.selectUser('YY', this)">YY</button>
+                        <button class="user-btn" onclick="window.selectUser('YS', this)">YS</button>
                     </div>
 
                     <div class="input-group">
                         <input type="text" id="ex-item" class="input-elegant" placeholder="項目 (例如：蘋果派)">
                     </div>
                     <div class="input-group">
-                        <input type="tel" id="ex-price" class="input-elegant" placeholder="金額 (日幣)" oninput="calculatePreview(this.value)">
+                        <input type="tel" id="ex-price" class="input-elegant" placeholder="金額 (日幣)" oninput="window.calculatePreview(this.value)">
                         <div class="twd-preview" id="preview-twd">≈ TWD 0</div>
                     </div>
                     
-                    <button class="intro-btn" style="width: 100%; margin-top: 10px; border-color: #1C2541; color: #1C2541;" onclick="addExpense()">記錄支出</button>
+                    <button class="intro-btn" style="width: 100%; margin-top: 10px; border-color: #1C2541; color: #1C2541;" onclick="window.addExpense()">記錄支出</button>
                 </div>
                 
                 <h3 class="serif" style="padding-left: 10px; margin-bottom: 15px;">近期支出 History</h3>
@@ -417,13 +422,13 @@
                 <div class="trans-input-area">
                     <h3 class="serif" style="margin-top:0;">即時翻譯</h3>
                     <textarea id="trans-input" class="input-elegant" rows="3" placeholder="輸入中文... (例如：請問這個多少錢？)" style="border: 1px solid #EEE; padding: 10px;"></textarea>
-                    <button class="trans-btn" onclick="translateNow()">
+                    <button class="trans-btn" onclick="window.translateNow()">
                         <i class="fa-solid fa-language"></i> 翻譯成日文
                     </button>
                     <div id="trans-output-box" class="wallet-card hidden" style="margin-top: 15px; border-left: 3px solid var(--accent-gold);">
                         <div style="font-size: 0.75rem; color: #999;">中文原文: <span id="trans-zh"></span></div>
                         <div class="serif" style="font-size: 1.5rem; color: var(--accent-main); margin-top: 5px;" id="trans-jp-result"></div>
-                        <button onclick="showFs(document.getElementById('trans-jp-result').innerText, document.getElementById('trans-zh').innerText)" class="trans-btn" style="background: var(--accent-gold); margin-top: 10px; padding: 8px; font-size: 0.9rem;">
+                        <button onclick="window.showFs(document.getElementById('trans-jp-result').innerText, document.getElementById('trans-zh').innerText)" class="trans-btn" style="background: var(--accent-gold); margin-top: 10px; padding: 8px; font-size: 0.9rem;">
                             <i class="fa-solid fa-expand"></i> 全螢幕字卡
                         </button>
                     </div>
@@ -431,27 +436,27 @@
 
                 <h3 class="serif" style="margin: 30px 0 15px;">指差確認</h3>
                 <div class="ps-grid">
-                    <div class="ps-card warning" onclick="showFs('私は牛肉と豚肉と羊肉が食べられません。', '我不吃牛、豬、羊肉')">
+                    <div class="ps-card warning" onclick="window.showFs('私は牛肉と豚肉と羊肉が食べられません。', '我不吃牛、豬、羊肉')">
                         <span class="ps-icon">🥩</span>
                         <div class="ps-title">不吃紅肉</div>
                     </div>
-                    <div class="ps-card" onclick="showFs('スープに牛や豚のエキスは入っていますか？', '湯頭含肉嗎？')">
+                    <div class="ps-card" onclick="window.showFs('スープに牛や豚のエキスは入っていますか？', '湯頭含肉嗎？')">
                         <span class="ps-icon">🍜</span>
                         <div class="ps-title">湯頭確認</div>
                     </div>
-                    <div class="ps-card" onclick="showFs('お会計をお願いします。', '麻煩結帳')">
+                    <div class="ps-card" onclick="window.showFs('お会計をお願いします。', '麻煩結帳')">
                         <span class="ps-icon">💳</span>
                         <div class="ps-title">結帳</div>
                     </div>
-                    <div class="ps-card" onclick="showFs('これをください。', '我要這個')">
+                    <div class="ps-card" onclick="window.showFs('これをください。', '我要這個')">
                         <span class="ps-icon">👉</span>
                         <div class="ps-title">我要這個</div>
                     </div>
-                    <div class="ps-card" onclick="showFs('トイレはどこですか？', '廁所在哪？')">
+                    <div class="ps-card" onclick="window.showFs('トイレはどこですか？', '廁所在哪？')">
                         <span class="ps-icon">🚻</span>
                         <div class="ps-title">找廁所</div>
                     </div>
-                    <div class="ps-card danger" onclick="showFs('助けてください！', '救命！')">
+                    <div class="ps-card danger" onclick="window.showFs('助けてください！', '救命！')">
                         <span class="ps-icon">🆘</span>
                         <div class="ps-title">緊急求救</div>
                     </div>
@@ -463,7 +468,6 @@
         <div id="view-info" class="view-section hidden">
             <div class="container">
                 
-                <!-- 需求4: Google Map 插件範圍調整 -->
                 <div class="map-overview-card" style="margin-top: 20px;">
                     <h2 class="serif" style="margin-top: 0; color: var(--accent-main); font-size: 1.3rem;">旅行總覽地圖</h2>
                     <p style="color: #666; font-size: 0.9rem; margin-bottom: 10px;">範圍：八戶、青森、函館、弘前</p>
@@ -528,27 +532,27 @@
 
     </div>
 
-    <!-- 需求2: 僅保留 Icon 的導航欄 -->
+    <!-- Nav Bar -->
     <div class="glass-nav">
-        <div class="nav-btn active" onclick="switchView('trip', this)">
+        <div class="nav-btn active" onclick="window.switchView('trip', this)">
             <i class="fa-solid fa-map-location-dot"></i>
         </div>
-        <div class="nav-btn" onclick="switchView('wallet', this)">
+        <div class="nav-btn" onclick="window.switchView('wallet', this)">
             <i class="fa-solid fa-wallet"></i>
         </div>
-        <div class="nav-btn" onclick="switchView('trans', this)">
+        <div class="nav-btn" onclick="window.switchView('trans', this)">
             <i class="fa-solid fa-comments"></i>
         </div>
-        <div class="nav-btn" onclick="switchView('info', this)">
+        <div class="nav-btn" onclick="window.switchView('info', this)">
             <i class="fa-solid fa-circle-info"></i>
         </div>
     </div>
 
     <!-- Detail Modal -->
-    <div class="modal-overlay" onclick="closeModal()"></div>
+    <div class="modal-overlay" onclick="window.closeModal()"></div>
     <div class="modal-full" id="detail-modal">
         <div style="position: sticky; top: 0; padding: 10px; text-align: right; z-index: 10;">
-            <button onclick="closeModal()" style="background: white; border: none; width: 36px; height: 36px; border-radius: 50%; box-shadow: 0 2px 10px rgba(0,0,0,0.1); color: #333;"><i class="fa-solid fa-times"></i></button>
+            <button onclick="window.closeModal()" style="background: white; border: none; width: 36px; height: 36px; border-radius: 50%; box-shadow: 0 2px 10px rgba(0,0,0,0.1); color: #333;"><i class="fa-solid fa-times"></i></button>
         </div>
         <img src="" id="m-img" class="modal-header-img" onerror="this.onerror=null; this.src='https://placehold.co/800x600?text=No+Image';">
         <div class="modal-content">
@@ -560,12 +564,12 @@
                     <div style="font-size: 0.7rem; color: #666; letter-spacing: 1px;">NAVIGATE (MAPCODE)</div>
                     <div id="m-mapcode" style="font-family: monospace; font-size: 1.2rem; font-weight: 700; color: var(--accent-main);">--</div>
                 </div>
-                <button onclick="copyMapCode()" style="background: var(--accent-main); color: white; border: none; padding: 8px 15px; border-radius: 4px;">複製</button>
+                <button onclick="window.copyMapCode()" style="background: var(--accent-main); color: white; border: none; padding: 8px 15px; border-radius: 4px;">複製</button>
             </div>
             
             <div id="m-gmap-preview" class="hidden" style="margin-top: 20px; text-align: center;">
                 <iframe id="m-gmap-iframe" class="map-iframe" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-                <button onclick="openExternalMap()" style="background: #333; color: white; padding: 8px 15px; border-radius: 4px; margin-top: 10px;">
+                <button onclick="window.openExternalMap()" style="background: #333; color: white; padding: 8px 15px; border-radius: 4px; margin-top: 10px;">
                     <i class="fa-solid fa-location-arrow"></i> 在 Google 地圖中開啟
                 </button>
             </div>
@@ -574,12 +578,31 @@
                 <h3 class="serif" style="font-size: 1.2rem; margin-bottom: 15px; color: var(--accent-main);">預訂 / 交通資訊</h3>
             </div>
 
-            <p id="m-desc" style="font-size: 1rem; line-height: 1.8; color: #555; margin-top: 25px;">Description</p>
+            <!-- 導遊筆記區塊 (Modified) -->
+            <div style="margin-top: 25px;">
+                <div style="display:flex; align-items:center; margin-bottom: 10px; border-bottom: 1px solid #EEE; padding-bottom: 5px;">
+                    <h3 class="serif" style="font-size: 1.2rem; margin: 0; color: var(--accent-main);">導遊筆記 / Local Insight</h3>
+                    <!-- 雪花編輯按鈕 -->
+                    <i class="fa-regular fa-snowflake snowflake-icon" onclick="window.toggleEditNote()"></i>
+                </div>
+                
+                <!-- 顯示區域 -->
+                <p id="m-desc" style="font-size: 1rem; line-height: 1.8; color: #555; white-space: pre-wrap; display: block;">Description</p>
+                
+                <!-- 編輯區域 (預設隱藏) -->
+                <div id="m-note-edit" class="hidden">
+                    <textarea id="m-note-input" class="note-edit-area" rows="6"></textarea>
+                    <div style="text-align: right;">
+                        <button class="note-save-btn" onclick="window.saveNote()">儲存筆記</button>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 
     <!-- Full Screen Text Modal -->
-    <div id="fs-text-modal" onclick="closeFs()">
+    <div id="fs-text-modal" onclick="window.closeFs()">
         <div class="fs-jp" id="fs-jp">--</div>
         <div class="fs-cn" id="fs-cn">--</div>
         <div class="fs-close" style="position: absolute; bottom: 50px; color: #999; font-size: 0.9rem;">點擊任意處關閉</div>
@@ -592,18 +615,110 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, query, orderBy, onSnapshot, addDoc, serverTimestamp, setDoc, doc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, collection, query, orderBy, onSnapshot, addDoc, serverTimestamp, setDoc, doc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         let db;
         let auth;
         let expensesRef;
+        let notesRef; // New Ref for Notes
+        let todosRef;
         let currentRate = 0.22;
         let currentIdx = 0;
         let currentUser = 'YK';
         let expenses = [];
+        let localNotes = {}; // Local cache for notes
+        let todos = [];
+        let currentEventId = null; // Track which event is open in modal
+        let currentFilterUser = null; // null means show all
         
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
         const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+
+        // --- TRIP DATA WITH IMAGES ---
+        const tripData = [
+            {
+                day: 1, date: "02.02", week: "MON",
+                heroTitle: "函館：百元發熱衣與百萬夜景",
+                heroImg: "https://i.imgur.com/RTJNqwv.jpg", 
+                fallbackImg: "https://images.unsplash.com/photo-1542640244-7e67286feb8f?q=80&w=800&auto=format&fit=crop", 
+                events: [
+                    { time: "11:10", title: "抵達函館機場 (HKD)", tag: "Transport", desc: "入境手續，領取行李。", to: "JR函館站" },
+                    { time: "12:00", title: "機場巴士 -> JR 函館站", tag: "Transport", desc: "搭乘巴士。約 20-30 分鐘車程。", transport_info: {type: "機場巴士", departure: "12:00", arrival: "12:30"} },
+                    { time: "12:30", title: "JR Inn Hakodate 寄放行李", tag: "Hotel", desc: "抵達飯店，辦理入住手續。", reservation_info: { type: "Hotel", number: "JRIH-2026", name: "YK", check_in: "15:00", guests: "3名成人" } },
+                    { time: "13:15", title: "UNIQLO 函館昭和店", tag: "Shopping", desc: "【購物任務】採購發熱衣。", nav: { mapcode: "86 254 073*65" } },
+                    { time: "15:45", title: "市電至十字街站", tag: "Transport", desc: "搭乘市電至「十字街站」。" },
+                    { time: "17:15", title: "函館山百萬夜景", tag: "Sightseeing", desc: "日落時間約 16:50。", nav: { mapcode: "86 041 028*25" } },
+                    { time: "19:00", title: "幸運小丑漢堡", tag: "Food", desc: "晚餐：必點中華雞腿堡。" },
+                    { time: "20:30", title: "JR Inn Hakodate", tag: "Hotel", desc: "Day 1 結束，休息。" }
+                ]
+            },
+            {
+                day: 2, date: "02.03", week: "TUE",
+                heroTitle: "移動日：跨越津輕海峽",
+                heroImg: "https://i.imgur.com/iqO53uS.jpg", 
+                fallbackImg: "https://images.unsplash.com/photo-1532236395709-7d70320fec2d?q=80&w=800",
+                events: [
+                    { time: "08:00", title: "函館朝市早餐", tag: "Food", desc: "享用海鮮丼/釣烏賊。" },
+                    { time: "10:35", title: "北海道新幹線 (隼 Hayabusa)", tag: "Transport", desc: "前往「新青森站」。", transport_info: { type: "新幹線", name_jp: "はやぶさ", departure: "10:35", arrival: "11:35" } },
+                    { time: "12:40", title: "青森站附近午餐", tag: "Food", desc: "推薦：味噌咖哩牛奶拉麵。" },
+                    { time: "14:00", title: "青森縣立美術館", tag: "Art", desc: "必看奈良美智「青森犬」。", nav: { mapcode: "99 489 495*20" } },
+                    { time: "16:40", title: "Dormy Inn Aomori Check-in", tag: "Hotel", desc: "正式 Check-in。", reservation_info: { type: "Hotel", number: "DMAO-10023", name: "YK", check_in: "15:00" } },
+                    { time: "18:00", title: "青森鄉土料理晚餐", tag: "Food", desc: "津輕三味線居酒屋。" },
+                    { time: "22:00", title: "Dormy Inn Aomori 泡湯", tag: "Relax", desc: "天然溫泉。" }
+                ]
+            },
+            {
+                day: 3, date: "02.04", week: "WED",
+                heroTitle: "暖爐列車與蘋果派",
+                heroImg: "https://i.imgur.com/M2AVCI5.jpg", 
+                fallbackImg: "https://images.unsplash.com/photo-1549643276-fbc2bd5f4038?q=80&w=800&auto=format&fit=crop",
+                events: [
+                    { time: "09:00", title: "青森站前租車", tag: "Transport", desc: "【租車開始】手續約 30 分鐘。", transport_info: { type: "自駕", car_type: "雪胎確認" } },
+                    { time: "10:45", title: "3COINS+plus (ELM)", tag: "Shopping", desc: "【任務 1】快速買相機。", nav: { mapcode: "168 649 346*52" } },
+                    { time: "11:50", title: "暖爐列車 (去程)", tag: "Experience", desc: "搭乘津輕鐵道至金木站。", transport_info: { type: "津輕鐵道", departure: "11:50", arrival: "12:15" } },
+                    { time: "14:30", title: "大正浪漫喫茶室", tag: "Food", desc: "【CRITICAL】必吃蘋果派。", nav: { mapcode: "71 071 513*78" } },
+                    { time: "15:30", title: "弘前城 / 弘前公園", tag: "Sightseeing", desc: "欣賞白天雪景、紅橋。" },
+                    { time: "17:30", title: "開車返回青森市", tag: "Transport", desc: "夜間雪地慢行。" }
+                ]
+            },
+            {
+                day: 4, date: "02.05", week: "THU",
+                heroTitle: "山林：尋找八甲田雪怪",
+                heroImg: "https://i.imgur.com/xOsZDUG.jpg", 
+                fallbackImg: "https://images.unsplash.com/photo-1487667258413-5a089052b658?q=80&w=800",
+                alert: "⚠️ 安全警示：若纜車停駛，請務必原路下山！",
+                events: [
+                    { time: "08:30", title: "古川市場 早餐", tag: "Food", desc: "吃「のっけ丼 (Nokkedon)」。" },
+                    { time: "11:00", title: "搭乘纜車賞樹冰", tag: "Nature", desc: "山頂極冷，注意保暖。" },
+                    { time: "13:30", title: "前往星野青森屋", tag: "Drive", desc: "【保命路線】走陸奥收費道路。", transport_info: { type: "自駕", time_estimate: "2小時" } },
+                    { time: "15:30", title: "星野 青森屋 Check-in", tag: "Hotel", desc: "享受頂級溫泉與祭典。", nav: { mapcode: "84 583 002*44" }, reservation_info: { type: "Resort", number: "HOS-AOM-1234", name: "YK", check_in: "15:30" } },
+                    { time: "20:00", title: "陸奧祭典屋表演", tag: "Culture", desc: "觀賞青森睡魔祭表演。" }
+                ]
+            },
+            {
+                day: 5, date: "02.06", week: "FRI",
+                heroTitle: "體驗：暖爐馬車與滑雪",
+                heroImg: "https://i.imgur.com/ViOh2sW.jpg", // Keep the correct image
+                fallbackImg: "https://images.unsplash.com/photo-1548777123-e213912bc571?q=80&w=800",
+                events: [
+                    { time: "10:00", title: "暖爐馬車", tag: "Relax", desc: "在馬車上享用點心。" },
+                    { time: "13:00", title: "滑雪體驗", tag: "Activity", desc: "初學者建議 2 小時。", nav: { phone: "0175-63-4848" } },
+                    { time: "20:00", title: "陸奧祭典屋表演", tag: "Culture", desc: "再次觀賞或自由活動。" }
+                ]
+            },
+            {
+                day: 6, date: "02.07", week: "SAT",
+                heroTitle: "滿載而歸",
+                heroImg: "https://i.imgur.com/edlDbD7.jpg", 
+                fallbackImg: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=800",
+                events: [
+                    { time: "10:00", title: "Check-out，準時出發", tag: "Transport", desc: "開車離開飯店。" },
+                    { time: "12:30", title: "辦理還車手續", tag: "Transport", desc: "檢查車況，辦理還車。" },
+                    { time: "13:30", title: "辦理登機手續 (BR 121)", tag: "Flight", desc: "長榮航空櫃檯。", reservation_info: { type: "Flight", number: "BR121", departure: "15:30" } },
+                    { time: "15:30", title: "搭機返台", tag: "Flight", desc: "再見青森，期待下次旅程。" }
+                ]
+            }
+        ];
 
         const setupFirebase = async () => {
             try {
@@ -619,9 +734,15 @@
 
                 onAuthStateChanged(auth, (user) => {
                     const userId = auth.currentUser?.uid || crypto.randomUUID(); 
-                    const collectionPath = `artifacts/${appId}/public/data/expenses`;
-                    expensesRef = collection(db, collectionPath);
+                    
+                    expensesRef = collection(db, `artifacts/${appId}/public/data/expenses`);
                     subscribeToExpenses();
+
+                    notesRef = collection(db, `artifacts/${appId}/public/data/notes`);
+                    subscribeToNotes();
+
+                    todosRef = collection(db, `artifacts/${appId}/public/data/todos`);
+                    subscribeToTodos();
                 });
 
             } catch (error) {
@@ -630,306 +751,13 @@
             }
         };
 
-        const subscribeToExpenses = () => {
-            const q = query(expensesRef);
-            onSnapshot(q, (snapshot) => {
-                expenses = snapshot.docs.map(doc => ({
-                    id: doc.id,
-                    ...doc.data()
-                }));
-                
-                expenses.sort((a, b) => {
-                    const timeA = a.timestamp?.toMillis() || 0;
-                    const timeB = b.timestamp?.toMillis() || 0;
-                    return timeB - timeA;
-                });
-                
-                window.renderExpenses();
-            }, (error) => {
-                console.error("Error subscribing:", error);
-            });
-        };
+        // --- GLOBAL HELPER FUNCTIONS ---
+        // Define these early to ensure availability
 
-        window.addExpense = async function() {
-            const item = document.getElementById('ex-item').value;
-            const price = parseInt(document.getElementById('ex-price').value);
-            
-            if(!item || !price || price <= 0) {
-                if (window.confirm) window.confirm("請輸入有效的項目名稱和金額。");
-                return;
-            }
-            
-            if (!expensesRef) return;
-
-            try {
-                await addDoc(expensesRef, {
-                    user: currentUser,
-                    item, 
-                    price,
-                    timestamp: serverTimestamp(),
-                    rate: currentRate,
-                });
-                
-                document.getElementById('ex-item').value = '';
-                document.getElementById('ex-price').value = '';
-                document.getElementById('preview-twd').innerText = "≈ TWD 0";
-
-            } catch (error) {
-                console.error("Error adding document:", error);
-            }
-        }
-        
-        window.renderExpenses = function() {
-            let total = 0;
-            expenses.forEach(e => { total += e.price; });
-            
-            document.getElementById('total-jpy').innerText = "¥" + total.toLocaleString();
-            document.getElementById('total-twd').innerText = (total * currentRate).toFixed(0);
-
-            const html = expenses.map(e => {
-                const dateObj = e.timestamp ? e.timestamp.toDate() : new Date();
-                const timeString = dateObj.getHours().toString().padStart(2,'0') + ":" + dateObj.getMinutes().toString().padStart(2,'0');
-                const dateString = (dateObj.getMonth()+1) + "/" + dateObj.getDate();
-                
-                return `
-                    <div class="expense-item">
-                        <div class="exp-meta">
-                            <div class="exp-user">${e.user}</div>
-                            <div>
-                                <div style="font-weight:500;">${e.item}</div>
-                                <div style="font-size:0.75rem; color:#999;">${dateString} ${timeString}</div>
-                            </div>
-                        </div>
-                        <div class="serif">¥${e.price.toLocaleString()}</div>
-                    </div>
-                `;
-            }).join('');
-            document.getElementById('expense-list').innerHTML = html;
-        }
-
-        window.translateNow = async function() {
-            const input = document.getElementById('trans-input').value.trim();
-            const outputBox = document.getElementById('trans-output-box');
-            if (!input) return;
-
-            document.getElementById('trans-zh').innerText = input;
-            document.getElementById('trans-jp-result').innerText = "正在翻譯...";
-            outputBox.classList.remove('hidden');
-
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            document.getElementById('trans-jp-result').innerText = "翻譯服務串接中...請暫時使用字卡。"; 
-            window.showFs(document.getElementById('trans-jp-result').innerText, input);
-        }
-
-        window.enterApp = function() {
-            document.getElementById('intro-screen').style.transform = 'translateY(-100%)';
-            window.renderTrip();
-            window.fetchRate();
-            window.renderFullTripMap();
-        };
-
-        // 雙向匯率換算邏輯
-        window.calcFromJpy = function(val) {
-            if(!val) {
-                document.getElementById('calc-twd').value = "";
-                return;
-            }
-            const jpy = parseFloat(val);
-            const twd = Math.round(jpy * currentRate);
-            document.getElementById('calc-twd').value = twd;
-        }
-
-        window.calcFromTwd = function(val) {
-            if(!val) {
-                document.getElementById('calc-jpy').value = "";
-                return;
-            }
-            const twd = parseFloat(val);
-            const jpy = Math.round(twd / currentRate);
-            document.getElementById('calc-jpy').value = jpy;
-        }
-
-        const timeSensitiveMessages = {
-            work: [
-                "今天的任務再多也沒關係，想想函館山的百萬夜景在等你。",
-                "工作很累對吧？再撐一下，青森的蘋果派會治癒這一切。",
-                "薪水就是為了變成機票和海鮮丼而存在的，再撐一下！"
-            ],
-            evening: [
-                "想像一下，幸運小丑漢堡淋上特製醬汁的那一瞬間...",
-                "在暖爐列車上烤魷魚的香氣，你想好要配哪一款清酒了嗎？",
-                "所有的等待，都是為了相遇時的那一刻美好。"
-            ],
-            rest: [
-                "剛忙完嗎？閉上眼，想像自己正泡在星野青森屋的露天溫泉裡。",
-                "希望你今晚能一夜好眠，明天醒來離出發又更近一步了。",
-                "把心清空，準備裝滿青森的藍天與白雪。"
-            ]
-        };
-        
-        window.startDynamicText = function() {
-            const textElement = document.getElementById('dynamic-intro-text');
-            const hour = new Date().getHours();
-            let key = (hour >= 8 && hour <= 17) ? 'work' : (hour >= 18 && hour <= 23 ? 'evening' : 'rest');
-            const messages = timeSensitiveMessages[key];
-            const msg = messages[Math.floor(Math.random() * messages.length)];
-            textElement.innerText = msg;
-            textElement.style.opacity = 1;
-        }
-
-        window.onload = function() {
-            setupFirebase();
-            const start = new Date("2026-02-02").getTime();
-            const now = new Date().getTime();
-            const days = Math.ceil((start - now) / (1000 * 60 * 60 * 24));
-            document.getElementById('days-left').innerText = days > 0 ? days : 0;
-            document.getElementById('header-days').innerText = days > 0 ? days : 0;
-            document.getElementById('view-trip').style.display = 'block';
-            setTimeout(window.startDynamicText, 1000);
-        };
-        
-        window.fetchRate = function() {
-            fetch('https://api.exchangerate-api.com/v4/latest/JPY')
-                .then(response => response.json())
-                .then(data => {
-                    if(data && data.rates && data.rates.TWD) {
-                        currentRate = data.rates.TWD;
-                        document.getElementById('current-rate').innerText = "1 JPY = " + currentRate.toFixed(4) + " TWD";
-                        window.renderExpenses();
-                    }
-                })
-                .catch(err => {
-                    document.getElementById('current-rate').innerText = "離線匯率: " + currentRate;
-                });
-        }
-        
-        window.selectUser = function(user, btn) {
-            currentUser = user;
-            document.querySelectorAll('.user-btn').forEach(el => el.classList.remove('active'));
-            btn.classList.add('active');
-        }
-
-        window.calculatePreview = function(val) {
-            if(!val) {
-                document.getElementById('preview-twd').innerText = "≈ TWD 0";
-                return;
-            }
-            const twd = Math.round(parseInt(val) * currentRate);
-            document.getElementById('preview-twd').innerText = "≈ TWD " + twd.toLocaleString();
-        }
-
-        // 需求1: 移除了事件中的圖片屬性
-        const tripData = [
-            {
-                day: 1, date: "02.02", week: "MON",
-                heroTitle: "函館：百元發熱衣與百萬夜景",
-                heroImg: "https://images.unsplash.com/photo-1542640244-7e67286feb8f?q=80&w=800&auto=format&fit=crop&w=800&h=600", 
-                events: [
-                    { time: "11:10", title: "抵達函館機場 (HKD)", tag: "Transport", desc: "入境手續，領取行李。", detail: "重點提示：函館機場規模精巧，入境速度快。請預留時間準備搭乘巴士。", to: "JR函館站" },
-                    { time: "12:00", title: "機場巴士 -> JR 函館站", tag: "Transport", desc: "搭乘巴士。約 20-30 分鐘車程。", detail: "這是最經濟的移動方式。", from: "函館機場", to: "JR函館站", transport_info: {type: "機場巴士", departure: "12:00", arrival: "12:30"} },
-                    { time: "12:30", title: "JR Inn Hakodate 寄放行李", tag: "Hotel", desc: "抵達飯店，辦理入住手續或寄放行李。", detail: "JR Inn Hakodate 位於函館站旁。", reservation_info: { type: "Hotel", number: "JRIH-2026", name: "YK", check_in: "15:00", guests: "3名成人" } },
-                    { time: "12:45", title: "計程車前往 UNIQLO 昭和店", tag: "Transport", desc: "從飯店搭計程車出發。", detail: "UNIQLO 函館昭和店離市區較遠。", from: "JR函館站", to: "UNIQLO 函館昭和店", transport_info: { type: "計程車", time_estimate: "20-25分鐘" } },
-                    { time: "13:15", title: "UNIQLO 函館昭和店", tag: "Shopping", desc: "【購物任務】採購發熱衣。", nav: { mapcode: "86 254 073*65" }, detail: "【導遊知識】郊區店鋪款式齊全。", to: "JR Inn Hakodate" },
-                    { time: "14:45", title: "計程車返回飯店", tag: "Transport", desc: "請店員幫忙叫車返回飯店。", from: "UNIQLO 函館昭和店", to: "JR Inn Hakodate", transport_info: { type: "計程車", time_estimate: "25分鐘" } },
-                    { time: "15:45", title: "市電至十字街站", tag: "Transport", desc: "搭乘市電至「十字街站」。", from: "函館站前", to: "十字街站", transport_info: { type: "市電", time_estimate: "10分鐘" } },
-                    { time: "16:10", title: "金森紅磚倉庫", tag: "Sightseeing", desc: "簡單逛街、拍照。", detail: "【歷史底蘊】這是明治時期的古老倉庫群。", to: "函館山纜車站" },
-                    { time: "16:50", title: "步行至函館山纜車站", tag: "Transport", desc: "雪地步行約 10-15 分鐘。", from: "金森紅磚倉庫", to: "函館山纜車站", transport_info: { type: "步行", time_estimate: "15分鐘" } },
-                    { time: "17:15", title: "函館山百萬夜景", tag: "Sightseeing", desc: "日落時間約 16:50。", nav: { mapcode: "86 041 028*25" }, detail: "【知性探索】夜景的獨特之處在於兩側海灣收束的沙頸岬地形。", to: "幸運小丑漢堡" },
-                    { time: "19:00", title: "幸運小丑漢堡", tag: "Food", desc: "晚餐：必點中華雞腿堡。", detail: "【在地特色】這家漢堡店是函館的驕傲。" },
-                    { time: "20:30", title: "JR Inn Hakodate", tag: "Hotel", desc: "Day 1 結束，休息。", detail: "早點休息，為隔天的長途移動做準備。" }
-                ]
-            },
-            {
-                day: 2, date: "02.03", week: "TUE",
-                heroTitle: "移動日：跨越津輕海峽",
-                heroImg: "https://images.unsplash.com/photo-1532236395709-7d70320fec2d?q=80&w=800&auto=format&fit=crop&w=800&h=600",
-                events: [
-                    { time: "08:00", title: "函館朝市早餐", tag: "Food", desc: "享用海鮮丼/釣烏賊。", detail: "【趣味】朝市裡最有名的體驗是『釣烏賊』。", to: "JR函館站" },
-                    { time: "10:35", title: "北海道新幹線 (隼 Hayabusa)", tag: "Transport", desc: "前往「新青森站」。", from: "新函館北斗站", to: "新青森站", transport_info: { type: "新幹線", name_jp: "はやぶさ", departure: "10:35", arrival: "11:35" } },
-                    { time: "12:00", title: "抵達 JR 青森站", tag: "Transport", desc: "出站，準備午餐與寄物。", detail: "青森站是市區中心。" },
-                    { time: "12:40", title: "青森站附近午餐", tag: "Food", desc: "推薦：味噌咖哩牛奶拉麵。", detail: "【在地特色】青森的獨創美食。" },
-                    { time: "14:00", title: "青森縣立美術館", tag: "Art", desc: "必看奈良美智「青森犬」。", nav: { mapcode: "99 489 495*20" }, detail: "【藝術底蘊】奈良美智的『青森犬』高達 8.5 公尺。", to: "Dormy Inn Aomori" },
-                    { time: "16:40", title: "Dormy Inn Aomori Check-in", tag: "Hotel", desc: "正式 Check-in。", reservation_info: { type: "Hotel", number: "DMAO-10023", name: "YK", check_in: "15:00" } },
-                    { time: "18:00", title: "青森鄉土料理晚餐", tag: "Food", desc: "津輕三味線居酒屋。", detail: "【趣味】帆立貝是青森的代表海產。" },
-                    { time: "19:30", title: "唐吉訶德 青森千刈店", tag: "Shopping", desc: "購物。建議計程車。", to: "Dormy Inn Aomori" },
-                    { time: "22:00", title: "Dormy Inn Aomori 泡湯", tag: "Relax", desc: "天然溫泉。", detail: "消除一天的疲勞。" }
-                ]
-            },
-            {
-                day: 3, date: "02.04", week: "WED",
-                heroTitle: "暖爐列車與蘋果派",
-                heroImg: "https://images.unsplash.com/photo-1549643276-fbc2bd5f4038?q=80&w=800&auto=format&fit=crop&w=800&h=600",
-                events: [
-                    { time: "09:00", title: "青森站前租車", tag: "Transport", desc: "【租車開始】手續約 30 分鐘。", from: "Dormy Inn Aomori", to: "ELM購物中心", transport_info: { type: "自駕", car_type: "雪胎確認" } },
-                    { time: "10:45", title: "3COINS+plus (ELM)", tag: "Shopping", desc: "【任務 1】快速買相機。", nav: { mapcode: "168 649 346*52" }, detail: "ELM 購物中心很大。", to: "津輕五所川原站" },
-                    { time: "11:50", title: "暖爐列車 (去程)", tag: "Experience", desc: "搭乘津輕鐵道至金木站。", from: "津輕五所川原站", to: "金木站", transport_info: { type: "津輕鐵道", departure: "11:50", arrival: "12:15" } },
-                    { time: "14:30", title: "大正浪漫喫茶室", tag: "Food", desc: "【CRITICAL】必吃蘋果派。", nav: { mapcode: "71 071 513*78" }, detail: "【歷史底蘊】弘前是蘋果派聖地。", to: "弘前城" },
-                    { time: "15:30", title: "弘前城 / 弘前公園", tag: "Sightseeing", desc: "欣賞白天雪景、紅橋。", detail: "【知性探索】東北唯一保有天守閣的城堡。", to: "星巴克 弘前公園前店" },
-                    { time: "17:30", title: "開車返回青森市", tag: "Transport", desc: "夜間雪地慢行。", from: "弘前", to: "Dormy Inn Aomori", transport_info: { type: "自駕", time_estimate: "1小時" } }
-                ]
-            },
-            {
-                day: 4, date: "02.05", week: "THU",
-                heroTitle: "山林：尋找八甲田雪怪",
-                heroImg: "https://images.unsplash.com/photo-1487667258413-5a089052b658?q=80&w=800&auto=format&fit=crop&w=800&h=600",
-                alert: "⚠️ 安全警示：若纜車停駛，請務必原路下山！",
-                events: [
-                    { time: "08:30", title: "古川市場 早餐", tag: "Food", desc: "吃「のっけ丼 (Nokkedon)」。", detail: "【趣味】自由搭配海鮮。", to: "八甲田纜車站" },
-                    { time: "11:00", title: "搭乘纜車賞樹冰", tag: "Nature", desc: "山頂極冷，注意保暖。", detail: "【知性探索】樹冰的形成需要極端條件。", to: "星野青森屋" },
-                    { time: "13:30", title: "前往星野青森屋", tag: "Drive", desc: "【保命路線】走陸奥收費道路。", from: "八甲田", to: "星野 青森屋", transport_info: { type: "自駕", time_estimate: "2小時" } },
-                    { time: "15:30", title: "星野 青森屋 Check-in", tag: "Hotel", desc: "享受頂級溫泉與祭典。", nav: { mapcode: "84 583 002*44" }, reservation_info: { type: "Resort", number: "HOS-AOM-1234", name: "YK", check_in: "15:30" } },
-                    { time: "20:00", title: "陸奧祭典屋表演", tag: "Culture", desc: "觀賞青森睡魔祭表演。", detail: "【文化體驗】濃縮青森四大祭典。" }
-                ]
-            },
-            {
-                day: 5, date: "02.06", week: "FRI",
-                heroTitle: "體驗：暖爐馬車與滑雪",
-                heroImg: "https://images.unsplash.com/photo-1548777123-e213912bc571?q=80&w=800&auto=format&fit=crop&w=800&h=600",
-                events: [
-                    { time: "10:00", title: "暖爐馬車", tag: "Relax", desc: "在馬車上享用點心。", detail: "【知性探索】在雪中公園搭馬車。", to: "滑雪場" },
-                    { time: "13:00", title: "滑雪體驗", tag: "Activity", desc: "初學者建議 2 小時。", nav: { phone: "0175-63-4848" }, detail: "町營滑雪場坡度較緩。", to: "青森屋" },
-                    { time: "20:00", title: "陸奧祭典屋表演", tag: "Culture", desc: "再次觀賞或自由活動。", detail: "享受最後一晚。" }
-                ]
-            },
-            {
-                day: 6, date: "02.07", week: "SAT",
-                heroTitle: "滿載而歸",
-                heroImg: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=800&auto=format&fit=crop&w=800&h=600",
-                events: [
-                    { time: "10:00", title: "Check-out，準時出發", tag: "Transport", desc: "開車離開飯店。", from: "星野 青森屋", to: "青森機場", transport_info: { type: "自駕", time_estimate: "1.5小時" } },
-                    { time: "12:30", title: "辦理還車手續", tag: "Transport", desc: "檢查車況，辦理還車。", from: "還車點", to: "機場航廈" },
-                    { time: "13:30", title: "辦理登機手續 (BR 121)", tag: "Flight", desc: "長榮航空櫃檯。", reservation_info: { type: "Flight", number: "BR121", departure: "15:30" } },
-                    { time: "15:30", title: "搭機返台", tag: "Flight", desc: "再見青森，期待下次旅程。" }
-                ]
-            }
-        ];
-
-        window.switchDay = function(i) {
-            if(i === currentIdx) return;
-            currentIdx = i;
-            if (document.getElementById('view-trip').style.display === 'none') {
-                const tripBtn = document.querySelector('.nav-btn:nth-child(1)');
-                window.switchView('trip', tripBtn); 
-            } else {
-                window.renderTrip();
-            }
-        }
-
-        window.switchView = function(view, btn) {
-            document.querySelectorAll('.view-section').forEach(el => el.style.display = 'none');
-            document.getElementById('view-' + view).style.display = 'block';
-            document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
-            btn.classList.add('active');
-            
-            if(view === 'wallet') window.renderExpenses(); 
-            if(view === 'info') window.renderFullTripMap();
-            window.scrollTo(0,0);
-        }
-        
         window.renderTrip = function() {
             const nav = document.getElementById('date-nav');
             nav.innerHTML = tripData.map((d, i) => `
-                <div class="d-item ${i === currentIdx ? 'active' : ''}" onclick="switchDay(${i})">
+                <div class="d-item ${i === currentIdx ? 'active' : ''}" onclick="window.switchDay(${i})">
                     <div class="d-week">${d.week}</div>
                     <div class="d-num">${d.date.split('.')[1]}</div>
                 </div>
@@ -943,9 +771,11 @@
                 alertHtml = `<div class="alert-banner"><i class="fa-solid fa-triangle-exclamation" style="color:#D9333F; margin-top:3px;"></i><div style="margin-left:10px;"><div style="color:var(--accent-main); font-weight:500;">今日安全警示</div><span class="alert-highlight">${day.alert}</span></div></div>`;
             }
 
+            const imgUrl = day.heroImg || day.fallbackImg;
+
             let html = `
                 <div class="hero-card">
-                    <img src="${day.heroImg}" class="hero-img">
+                    <img src="${imgUrl}" class="hero-img" onerror="this.onerror=null;this.src='${day.fallbackImg}';">
                     <div class="hero-overlay">
                         <div class="hero-title">${day.heroTitle}</div>
                     </div>
@@ -971,7 +801,7 @@
                 return `
                     <div class="event-node visible" style="transition-delay: ${delay}s">
                         <div class="time-dot"></div>
-                        <div class="event-card ${cardClass}" onclick="openDetail('${data}')">
+                        <div class="event-card ${cardClass}" onclick="window.openDetail('${data}', ${currentIdx}, ${i})">
                             <div style="display:flex; justify-content:space-between; align-items:center;">
                                 <span class="event-tag">${ev.tag}</span>
                                 <span style="font-family: var(--font-serif); font-weight: 700; color: var(--accent-red); font-size: 1.1rem;">${ev.time}</span>
@@ -990,35 +820,356 @@
             container.innerHTML = html;
         }
 
-        function getMapUrl(data) {
-             const base = `https://www.google.com/maps/embed/v1/`;
-             if (data.from && data.to) return `${base}directions?key=${GOOGLE_MAPS_API_KEY}&origin=${encodeURIComponent(data.from)}&destination=${encodeURIComponent(data.to)}&mode=driving`;
-             if (data.title) return `${base}search?key=${GOOGLE_MAPS_API_KEY}&q=${encodeURIComponent(data.title)}`;
-             return null;
+        window.checkActiveEvent = function() {
+            const now = new Date();
+            // DEBUG: Uncomment below line to simulate being on Day 1 at 16:30 for testing
+            // const now = new Date("2026-02-02T16:30:00"); 
+
+            let activeDayIndex = -1;
+            tripData.forEach((day, idx) => {
+                const parts = day.date.split('.');
+                const m = parseInt(parts[0], 10);
+                const d = parseInt(parts[1], 10);
+                const currentM = now.getMonth() + 1;
+                const currentD = now.getDate();
+                if (currentM === m && currentD === d) {
+                    activeDayIndex = idx;
+                }
+            });
+
+            if (activeDayIndex === -1) return;
+
+            const currentDayEvents = tripData[activeDayIndex].events;
+            const currentHour = now.getHours();
+            const currentMin = now.getMinutes();
+            const currentTimeVal = currentHour * 60 + currentMin;
+
+            document.querySelectorAll('.active-event').forEach(el => el.classList.remove('active-event'));
+            document.querySelectorAll('.active-label').forEach(el => el.remove());
+
+            if (currentIdx === activeDayIndex) {
+                 currentDayEvents.forEach((ev, idx) => {
+                    const [h, m] = ev.time.split(':').map(Number);
+                    const eventTimeVal = h * 60 + m;
+                    
+                    let nextEventTimeVal = 9999;
+                    if (idx < currentDayEvents.length - 1) {
+                        const [nh, nm] = currentDayEvents[idx+1].time.split(':').map(Number);
+                        nextEventTimeVal = nh * 60 + nm;
+                    } else {
+                        nextEventTimeVal = eventTimeVal + 90;
+                    }
+
+                    if (currentTimeVal >= eventTimeVal && currentTimeVal < nextEventTimeVal) {
+                        const card = document.querySelectorAll('.event-node')[idx];
+                        if(card) {
+                            card.classList.add('active-event');
+                            const tag = card.querySelector('.event-tag');
+                            if(tag && !card.querySelector('.active-label')) {
+                                tag.innerHTML += `<span class="active-label">LIVE</span>`;
+                            }
+                            if (!window.hasScrolledToLive) {
+                                card.scrollIntoView({behavior: "smooth", block: "center"});
+                                window.hasScrolledToLive = true;
+                            }
+                        }
+                    }
+                 });
+            }
         }
 
-        // 需求4: 調整地圖顯示範圍
+        // Function to switch views correctly handling hidden classes
+        window.switchView = function(view, btn) {
+            // Hide all views by adding .hidden class and forcing display none
+            document.querySelectorAll('.view-section').forEach(el => {
+                el.classList.add('hidden');
+                el.style.display = 'none';
+            });
+
+            // Show target view by removing .hidden class and forcing display block
+            const target = document.getElementById('view-' + view);
+            if(target) {
+                target.classList.remove('hidden');
+                target.style.display = 'block';
+            }
+
+            // Update Nav Buttons
+            document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+            if(btn) {
+                btn.classList.add('active');
+            } else {
+                // Fallback if no button passed
+                const map = {'trip':0, 'wallet':1, 'trans':2, 'info':3};
+                const navs = document.querySelectorAll('.nav-btn');
+                if(navs[map[view]]) navs[map[view]].classList.add('active');
+            }
+            
+            // Callbacks for rendering dynamic content
+            if(view === 'wallet') { 
+                if(window.renderExpenses) window.renderExpenses(); 
+                if(window.updateExpenseDashboard) window.updateExpenseDashboard(); 
+            }
+            if(view === 'info') {
+                if(window.renderFullTripMap) window.renderFullTripMap();
+            }
+            
+            window.scrollTo(0,0);
+        }
+
+        window.switchDay = function(i) {
+            if(i === currentIdx) return;
+            currentIdx = i;
+            
+            // Ensure we are on trip view
+            const tripView = document.getElementById('view-trip');
+            if (tripView.classList.contains('hidden') || tripView.style.display === 'none') {
+                window.switchView('trip'); 
+            } else {
+                window.renderTrip();
+                window.checkActiveEvent();
+            }
+        }
+
+        // --- OTHER LOGIC ---
+
+        window.updateExpenseDashboard = function() {
+            const totals = { 'YK': 0, 'YY': 0, 'YS': 0 };
+            expenses.forEach(e => {
+                if (totals[e.user] !== undefined) totals[e.user] += e.price;
+            });
+            
+            const ykEl = document.getElementById('dash-yk');
+            if(ykEl) ykEl.innerText = "¥" + totals['YK'].toLocaleString();
+            
+            const yyEl = document.getElementById('dash-yy');
+            if(yyEl) yyEl.innerText = "¥" + totals['YY'].toLocaleString();
+            
+            const ysEl = document.getElementById('dash-ys');
+            if(ysEl) ysEl.innerText = "¥" + totals['YS'].toLocaleString();
+        }
+
+        window.filterExpenses = function(user) {
+            currentFilterUser = user;
+            document.querySelectorAll('.dashboard-item').forEach(el => el.classList.remove('active'));
+            if (user) {
+                if(user === 'YK') document.querySelector('.dashboard-item:nth-child(1)').classList.add('active');
+                if(user === 'YY') document.querySelector('.dashboard-item:nth-child(2)').classList.add('active');
+                if(user === 'YS') document.querySelector('.dashboard-item:nth-child(3)').classList.add('active');
+                document.getElementById('reset-filter-btn').classList.remove('hidden');
+            } else {
+                document.getElementById('reset-filter-btn').classList.add('hidden');
+            }
+            window.renderExpenses();
+        }
+
+        window.renderExpenses = function() {
+            let filteredList = expenses;
+            if (currentFilterUser) {
+                filteredList = expenses.filter(e => e.user === currentFilterUser);
+            }
+
+            let total = 0;
+            filteredList.forEach(e => { total += e.price; });
+            
+            const totalJpyEl = document.getElementById('total-jpy');
+            if(totalJpyEl) totalJpyEl.innerText = "¥" + total.toLocaleString();
+            
+            const totalTwdEl = document.getElementById('total-twd');
+            if(totalTwdEl) totalTwdEl.innerText = (total * currentRate).toFixed(0);
+
+            const html = filteredList.map(e => {
+                const dateObj = e.timestamp ? e.timestamp.toDate() : new Date();
+                const timeString = dateObj.getHours().toString().padStart(2,'0') + ":" + dateObj.getMinutes().toString().padStart(2,'0');
+                const dateString = (dateObj.getMonth()+1) + "/" + dateObj.getDate();
+                return `<div class="expense-item"><div class="exp-meta"><div class="exp-user">${e.user}</div><div><div style="font-weight:500;">${e.item}</div><div style="font-size:0.75rem; color:#999;">${dateString} ${timeString}</div></div></div><div class="serif">¥${e.price.toLocaleString()}</div></div>`;
+            }).join('');
+            
+            const listEl = document.getElementById('expense-list');
+            if(listEl) listEl.innerHTML = html.length ? html : '<div style="text-align:center; padding:20px; color:#999;">無資料</div>';
+        }
+
+        window.addTodo = async function() {
+            const input = document.getElementById('new-todo-text');
+            const text = input.value.trim();
+            if (!text || !todosRef) return;
+            try {
+                await addDoc(todosRef, { text: text, completed: false, timestamp: serverTimestamp() });
+                input.value = '';
+            } catch (e) { console.error(e); }
+        }
+
+        window.toggleTodo = async function(id, currentStatus) {
+            if (!todosRef) return;
+            try { await updateDoc(doc(todosRef, id), { completed: !currentStatus }); } catch (e) { console.error(e); }
+        }
+
+        window.deleteTodo = async function(id) {
+            if (!todosRef) return;
+            if (confirm('確定刪除此事項？')) {
+                try { await deleteDoc(doc(todosRef, id)); } catch (e) { console.error(e); }
+            }
+        }
+
+        window.switchWidget = function(type) {
+            document.querySelectorAll('.w-tab').forEach(el => el.classList.remove('active'));
+            document.getElementById('tab-' + type).classList.add('active');
+            
+            if (type === 'converter') {
+                document.getElementById('currency-converter').classList.remove('hidden');
+                document.getElementById('todo-widget').classList.add('hidden');
+            } else {
+                document.getElementById('currency-converter').classList.add('hidden');
+                document.getElementById('todo-widget').classList.remove('hidden');
+            }
+        }
+
+        window.addExpense = async function() {
+            const item = document.getElementById('ex-item').value;
+            const price = parseInt(document.getElementById('ex-price').value);
+            if(!item || !price || price <= 0) return;
+            if (!expensesRef) return;
+            try {
+                await addDoc(expensesRef, { user: currentUser, item, price, timestamp: serverTimestamp(), rate: currentRate });
+                document.getElementById('ex-item').value = '';
+                document.getElementById('ex-price').value = '';
+                document.getElementById('preview-twd').innerText = "≈ TWD 0";
+            } catch (error) { console.error(error); }
+        }
+        
+        window.toggleEditNote = function() {
+            const descEl = document.getElementById('m-desc');
+            const editEl = document.getElementById('m-note-edit');
+            const inputEl = document.getElementById('m-note-input');
+            
+            if (editEl.classList.contains('hidden')) {
+                inputEl.value = descEl.innerText;
+                descEl.classList.add('hidden');
+                editEl.classList.remove('hidden');
+            } else {
+                editEl.classList.add('hidden');
+                descEl.classList.remove('hidden');
+            }
+        }
+
+        window.saveNote = async function() {
+            const newText = document.getElementById('m-note-input').value;
+            if (!currentEventId || !notesRef) return;
+            
+            const descEl = document.getElementById('m-desc');
+            if(descEl) descEl.innerText = newText;
+            
+            document.getElementById('m-note-edit').classList.add('hidden');
+            if(descEl) descEl.classList.remove('hidden');
+            
+            try { await setDoc(doc(notesRef, currentEventId), { text: newText, updatedAt: serverTimestamp() }); } catch (error) { console.error(error); }
+        }
+
+        window.translateNow = async function() {
+            const input = document.getElementById('trans-input').value.trim();
+            const outputBox = document.getElementById('trans-output-box');
+            if (!input) return;
+            document.getElementById('trans-zh').innerText = input;
+            document.getElementById('trans-jp-result').innerText = "正在翻譯...";
+            outputBox.classList.remove('hidden');
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            document.getElementById('trans-jp-result').innerText = "翻譯服務串接中...請暫時使用字卡。"; 
+            window.showFs(document.getElementById('trans-jp-result').innerText, input);
+        }
+
+        window.enterApp = function() {
+            document.getElementById('intro-screen').style.transform = 'translateY(-100%)';
+            window.renderTrip();
+            window.fetchRate();
+            window.renderFullTripMap();
+            window.hasScrolledToLive = false;
+            window.checkActiveEvent();
+            setInterval(window.checkActiveEvent, 60000);
+        };
+
+        window.calcFromJpy = function(val) {
+            if(!val) { document.getElementById('calc-twd').value = ""; return; }
+            const jpy = parseFloat(val);
+            const twd = Math.round(jpy * currentRate);
+            document.getElementById('calc-twd').value = twd;
+        }
+
+        window.calcFromTwd = function(val) {
+            if(!val) { document.getElementById('calc-jpy').value = ""; return; }
+            const twd = parseFloat(val);
+            const jpy = Math.round(twd / currentRate);
+            document.getElementById('calc-jpy').value = jpy;
+        }
+
+        const timeSensitiveMessages = {
+            work: ["今天的任務再多也沒關係，想想函館山的百萬夜景在等你。", "工作很累對吧？再撐一下，青森的蘋果派會治癒這一切。", "薪水就是為了變成機票和海鮮丼而存在的，再撐一下！"],
+            evening: ["想像一下，幸運小丑漢堡淋上特製醬汁的那一瞬間...", "在暖爐列車上烤魷魚的香氣，你想好要配哪一款清酒了嗎？", "所有的等待，都是為了相遇時的那一刻美好。"],
+            rest: ["剛忙完嗎？閉上眼，想像自己正泡在星野青森屋的露天溫泉裡。", "希望你今晚能一夜好眠，明天醒來離出發又更近一步了。", "把心清空，準備裝滿青森的藍天與白雪。"]
+        };
+        
+        window.startDynamicText = function() {
+            const textElement = document.getElementById('dynamic-intro-text');
+            const hour = new Date().getHours();
+            let key = (hour >= 8 && hour <= 17) ? 'work' : (hour >= 18 && hour <= 23 ? 'evening' : 'rest');
+            const messages = timeSensitiveMessages[key];
+            const msg = messages[Math.floor(Math.random() * messages.length)];
+            textElement.innerText = msg;
+            textElement.style.opacity = 1;
+        }
+
+        window.onload = function() {
+            setupFirebase();
+            const start = new Date("2026-02-02").getTime();
+            const now = new Date().getTime();
+            const days = Math.ceil((start - now) / (1000 * 60 * 60 * 24));
+            
+            const daysLeftEl = document.getElementById('days-left');
+            if(daysLeftEl) daysLeftEl.innerText = days > 0 ? days : 0;
+            
+            const headerDaysEl = document.getElementById('header-days');
+            if(headerDaysEl) headerDaysEl.innerText = days > 0 ? days : 0;
+            
+            document.getElementById('view-trip').style.display = 'block';
+            setTimeout(window.startDynamicText, 1000);
+        };
+        
+        window.fetchRate = function() {
+            fetch('https://api.exchangerate-api.com/v4/latest/JPY')
+                .then(response => response.json())
+                .then(data => {
+                    if(data && data.rates && data.rates.TWD) {
+                        currentRate = data.rates.TWD;
+                        const rateEl = document.getElementById('current-rate');
+                        if(rateEl) rateEl.innerText = "1 JPY = " + currentRate.toFixed(4) + " TWD";
+                        window.renderExpenses();
+                    }
+                })
+                .catch(err => { 
+                    const rateEl = document.getElementById('current-rate');
+                    if(rateEl) rateEl.innerText = "離線匯率: " + currentRate; 
+                });
+        }
+        
+        window.selectUser = function(user, btn) {
+            currentUser = user;
+            document.querySelectorAll('.user-btn').forEach(el => el.classList.remove('active'));
+            btn.classList.add('active');
+        }
+
+        window.calculatePreview = function(val) {
+            if(!val) { document.getElementById('preview-twd').innerText = "≈ TWD 0"; return; }
+            const twd = Math.round(parseInt(val) * currentRate);
+            document.getElementById('preview-twd').innerText = "≈ TWD " + twd.toLocaleString();
+        }
+
         window.renderFullTripMap = function() {
             const mapIframe = document.getElementById('trip-map-overview-iframe');
-            // 使用 search mode 並指定多個地點，或是使用 view mode + 邊界 (但 Embed API 對多點支援最好用 view mode)
-            // 這裡使用 'place' 或 'search' 只能標記一個點。
-            // 使用 'view' mode 可以設定 center 和 zoom，但為了確保涵蓋所有點，我們可以嘗試用 query
-            // 不過 Embed API 的 view mode 主要是用來顯示地圖區域。
-            // 為了最好的效果，我們將中心點設在這些區域的中間 (青森市附近)，並調整 Zoom level。
-            // 青森(40.8) 函館(41.7) 弘前(40.6) 八戶(40.5)
-            // 中心點大約在 41.2, 140.7 左右
-            
-            // 另一種方式：列出關鍵地點
-            const places = "Hakodate+Aomori+Hirosaki+Hachinohe";
-            const embedUrl = `https://www.google.com/maps/embed/v1/search?key=${GOOGLE_MAPS_API_KEY}&q=${places}&zoom=8`;
-            // 注意：Search mode 搜尋多個地點時，Google Maps 有時只會顯示其中一個或搜尋結果。
-            // 為了更精準的"範圍顯示"，我們使用 View mode 並手動設定中心與縮放。
-            const centerLat = 41.1;
-            const centerLng = 140.7;
-            const zoom = 8;
-            const viewUrl = `https://www.google.com/maps/embed/v1/view?key=${GOOGLE_MAPS_API_KEY}&center=${centerLat},${centerLng}&zoom=${zoom}`;
-
-            mapIframe.src = viewUrl;
+            if(mapIframe) {
+                const centerLat = 41.1;
+                const centerLng = 140.7;
+                const zoom = 8;
+                const viewUrl = `https://www.google.com/maps/embed/v1/view?key=${GOOGLE_MAPS_API_KEY}&center=${centerLat},${centerLng}&zoom=${zoom}`;
+                mapIframe.src = viewUrl;
+            }
         }
         
         window.openExternalMap = function() {
@@ -1028,27 +1179,36 @@
 
         function createInfoItem(icon, label, value) {
             if (!value) return '';
-            return `
-                <div class="info-item">
-                    <div class="info-label"><i class="fa-solid ${icon}"></i><span>${label}</span></div>
-                    <div class="info-value">${value}</div>
-                </div>
-            `;
+            return `<div class="info-item"><div class="info-label"><i class="fa-solid ${icon}"></i><span>${label}</span></div><div class="info-value">${value}</div></div>`;
         }
 
-        window.openDetail = function(dataStr) {
+        window.openDetail = function(dataStr, dayIdx, eventIdx) {
             const data = JSON.parse(decodeURIComponent(dataStr));
-            document.getElementById('m-title').innerText = data.title;
-            document.getElementById('m-desc').innerHTML = `
-                <h3 class="serif" style="font-size: 1.2rem; margin-bottom: 10px; color: var(--accent-main); border-bottom: 1px solid #EEE;">導遊筆記 / Local Insight</h3>
-                <p style="white-space: pre-wrap;">${data.detail || data.desc}</p>
-            `;
-            document.getElementById('m-tag').innerText = data.tag;
             
-            // Image handling: 雖然資料中刪除了 img，但為了相容性或 Hero fallback，這裡做個簡單處理
-            document.getElementById('m-img').src = data.img || 'https://placehold.co/800x600?text=No+Preview';
-            if(!data.img) document.getElementById('m-img').style.display = 'none'; // 若無圖片則隱藏 header img
-            else document.getElementById('m-img').style.display = 'block';
+            currentEventId = `d${dayIdx}_e${eventIdx}`;
+            
+            const mTitle = document.getElementById('m-title');
+            if(mTitle) mTitle.innerText = data.title;
+            
+            let displayNote = data.detail || data.desc;
+            if(localNotes[currentEventId]) displayNote = localNotes[currentEventId];
+            
+            const mDesc = document.getElementById('m-desc');
+            if(mDesc) mDesc.innerText = displayNote;
+            
+            const mNoteEdit = document.getElementById('m-note-edit');
+            if(mNoteEdit) mNoteEdit.classList.add('hidden');
+            if(mDesc) mDesc.classList.remove('hidden');
+
+            const mTag = document.getElementById('m-tag');
+            if(mTag) mTag.innerText = data.tag;
+            
+            const mImg = document.getElementById('m-img');
+            if(mImg) {
+                mImg.src = data.img || 'https://placehold.co/800x600?text=No+Preview';
+                if(!data.img) mImg.style.display = 'none';
+                else mImg.style.display = 'block';
+            }
 
             const infoGroup = document.getElementById('m-detail-info');
             let infoHtml = '';
@@ -1076,7 +1236,8 @@
             const mapSec = document.getElementById('m-map-section');
             if (data.nav && data.nav.mapcode) {
                 mapSec.classList.remove('hidden');
-                document.getElementById('m-mapcode').innerText = data.nav.mapcode;
+                const mcEl = document.getElementById('m-mapcode');
+                if(mcEl) mcEl.innerText = data.nav.mapcode;
             } else {
                 mapSec.classList.add('hidden');
             }
@@ -1099,6 +1260,7 @@
         window.closeModal = function() {
             document.getElementById('detail-modal').classList.remove('active');
             document.querySelector('.modal-overlay').classList.remove('active');
+            currentEventId = null;
         }
 
         window.copyMapCode = function() {
