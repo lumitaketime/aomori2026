@@ -620,21 +620,21 @@
         let db;
         let auth;
         let expensesRef;
-        let notesRef; // New Ref for Notes
+        let notesRef; 
         let todosRef;
         let currentRate = 0.22;
         let currentIdx = 0;
         let currentUser = 'YK';
         let expenses = [];
-        let localNotes = {}; // Local cache for notes
+        let localNotes = {}; 
         let todos = [];
-        let currentEventId = null; // Track which event is open in modal
-        let currentFilterUser = null; // null means show all
+        let currentEventId = null; 
+        let currentFilterUser = null; 
         
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
         const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
 
-        // --- TRIP DATA WITH IMAGES ---
+        // --- TRIP DATA WITH UPDATED ITINERARY ---
         const tripData = [
             {
                 day: 1, date: "02.02", week: "MON",
@@ -643,92 +643,109 @@
                 fallbackImg: "https://images.unsplash.com/photo-1542640244-7e67286feb8f?q=80&w=800&auto=format&fit=crop", 
                 events: [
                     { time: "11:10", title: "抵達函館機場 (HKD)", tag: "Transport", desc: "入境手續，領取行李。", to: "JR函館站" },
-                    { time: "12:00", title: "機場巴士 -> JR 函館站", tag: "Transport", desc: "搭乘巴士。約 20-30 分鐘車程。", transport_info: {type: "機場巴士", departure: "12:00", arrival: "12:30"} },
-                    { time: "12:30", title: "JR Inn Hakodate 寄放行李", tag: "Hotel", desc: "抵達飯店，辦理入住手續。", reservation_info: { type: "Hotel", number: "JRIH-2026", name: "YK", check_in: "15:00", guests: "3名成人" } },
-                    { time: "13:15", title: "UNIQLO 函館昭和店", tag: "Shopping", desc: "【購物任務】採購發熱衣。", nav: { mapcode: "86 254 073*65" } },
-                    { time: "15:45", title: "市電至十字街站", tag: "Transport", desc: "搭乘市電至「十字街站」。" },
-                    { time: "17:15", title: "函館山百萬夜景", tag: "Sightseeing", desc: "日落時間約 16:50。", nav: { mapcode: "86 041 028*25" } },
-                    { time: "19:00", title: "幸運小丑漢堡", tag: "Food", desc: "晚餐：必點中華雞腿堡。" },
-                    { time: "20:30", title: "JR Inn Hakodate", tag: "Hotel", desc: "Day 1 結束，休息。" }
+                    { time: "12:30", title: "搭乘機場巴士前往 JR 函館站", tag: "Transport", desc: "入住 JR Inn Hakodate 放行李。", to: "JR Inn Hakodate", transport_info: {type: "機場巴士", departure: "12:30"} },
+                    { time: "13:15", title: "【購物任務】出發", tag: "Transport", desc: "從飯店/車站搭計程車出發 (計程車來回，效率最高)。", transport_info: { type: "計程車", note: "來回" } },
+                    { time: "13:35", title: "UNIQLO 函館昭和店", tag: "Shopping", desc: "採購：13:35-15:15。", nav: { mapcode: "86 254 073*65" } },
+                    { time: "15:45", title: "飯店卸貨 -> 金森紅磚倉庫", tag: "Transport", desc: "搭市電 (路面電車) 前往。", transport_info: { type: "市電" } },
+                    { time: "17:00", title: "函館山纜車", tag: "Sightseeing", desc: "欣賞夜景。", nav: { mapcode: "86 041 028*25" } },
+                    { time: "18:30", title: "晚餐：幸運小丑漢堡", tag: "Food", desc: "函館站前店。" },
+                    { time: "20:30", title: "住宿：JR Inn Hakodate", tag: "Hotel", desc: "Day 1 結束。" }
                 ]
             },
             {
                 day: 2, date: "02.03", week: "TUE",
-                heroTitle: "移動日：跨越津輕海峽",
+                heroTitle: "乘著隼-飛越大海到蘋果之鄉",
                 heroImg: "https://i.imgur.com/iqO53uS.jpg", 
                 fallbackImg: "https://images.unsplash.com/photo-1532236395709-7d70320fec2d?q=80&w=800",
                 events: [
-                    { time: "08:00", title: "函館朝市早餐", tag: "Food", desc: "享用海鮮丼/釣烏賊。" },
-                    { time: "10:35", title: "北海道新幹線 (隼 Hayabusa)", tag: "Transport", desc: "前往「新青森站」。", transport_info: { type: "新幹線", name_jp: "はやぶさ", departure: "10:35", arrival: "11:35" } },
-                    { time: "12:40", title: "青森站附近午餐", tag: "Food", desc: "推薦：味噌咖哩牛奶拉麵。" },
-                    { time: "14:00", title: "青森縣立美術館", tag: "Art", desc: "必看奈良美智「青森犬」。", nav: { mapcode: "99 489 495*20" } },
-                    { time: "16:40", title: "Dormy Inn Aomori Check-in", tag: "Hotel", desc: "正式 Check-in。", reservation_info: { type: "Hotel", number: "DMAO-10023", name: "YK", check_in: "15:00" } },
-                    { time: "18:00", title: "青森鄉土料理晚餐", tag: "Food", desc: "津輕三味線居酒屋。" },
-                    { time: "22:00", title: "Dormy Inn Aomori 泡湯", tag: "Relax", desc: "天然溫泉。" }
+                    { time: "08:00", title: "函館朝市 早餐", tag: "Food", desc: "海鮮丼 (步行前往)。" },
+                    { time: "10:00", title: "移動至青森", tag: "Transport", desc: "搭乘新幹線等 (JR 新幹線 / 奧羽本線)。", transport_info: { type: "新幹線/JR", departure: "10:00", note: "往青森" } },
+                    { time: "13:45", title: "抵達 青森站", tag: "Transport", desc: "到達本州。" },
+                    { time: "14:15", title: "前往 Dormy Inn 放行李", tag: "Transport", desc: "搭計程車。", transport_info: { type: "計程車" } },
+                    { time: "14:40", title: "前往 青森縣立美術館", tag: "Transport", desc: "搭計程車。", transport_info: { type: "計程車" } },
+                    { time: "16:40", title: "返回市區", tag: "Transport", desc: "搭計程車。", transport_info: { type: "計程車" } },
+                    { time: "18:00", title: "晚餐：青森鄉土料理", tag: "Food", desc: "享用在地美食。" },
+                    { time: "19:30", title: "逛唐吉訶德", tag: "Shopping", desc: "離飯店近。" },
+                    { time: "21:30", title: "Dormy Inn Aomori", tag: "Hotel", desc: "記得吃免費拉麵、泡湯。", reservation_info: { type: "Hotel", number: "DMAO-10023", name: "YK", check_in: "15:00" } }
                 ]
             },
             {
                 day: 3, date: "02.04", week: "WED",
-                heroTitle: "暖爐列車與蘋果派",
+                heroTitle: "津輕鐵道與弘前雪景",
                 heroImg: "https://i.imgur.com/M2AVCI5.jpg", 
                 fallbackImg: "https://images.unsplash.com/photo-1549643276-fbc2bd5f4038?q=80&w=800&auto=format&fit=crop",
                 events: [
-                    { time: "09:00", title: "青森站前租車", tag: "Transport", desc: "【租車開始】手續約 30 分鐘。", transport_info: { type: "自駕", car_type: "雪胎確認" } },
-                    { time: "10:45", title: "3COINS+plus (ELM)", tag: "Shopping", desc: "【任務 1】快速買相機。", nav: { mapcode: "168 649 346*52" } },
-                    { time: "11:50", title: "暖爐列車 (去程)", tag: "Experience", desc: "搭乘津輕鐵道至金木站。", transport_info: { type: "津輕鐵道", departure: "11:50", arrival: "12:15" } },
-                    { time: "14:30", title: "大正浪漫喫茶室", tag: "Food", desc: "【CRITICAL】必吃蘋果派。", nav: { mapcode: "71 071 513*78" } },
-                    { time: "15:30", title: "弘前城 / 弘前公園", tag: "Sightseeing", desc: "欣賞白天雪景、紅橋。" },
-                    { time: "17:30", title: "開車返回青森市", tag: "Transport", desc: "夜間雪地慢行。" }
+                    { time: "09:00", title: "【租車開始】青森站取車", tag: "Transport", desc: "回飯店載人與行李 (開始自駕)。", transport_info: { type: "自駕", car_type: "雪胎確認" } },
+                    { time: "10:15", title: "【任務 1】3COINS+plus", tag: "Shopping", desc: "ELM 購物中心買相機 (自駕)。", nav: { mapcode: "168 649 346*52" } },
+                    { time: "11:10", title: "抵達 津輕五所川原站", tag: "Transport", desc: "停車，買票，等等 (自駕)。" },
+                    { time: "12:30", title: "【任務 2】搭乘「暖爐列車」", tag: "Experience", desc: "津輕鐵道。" },
+                    { time: "14:15", title: "取車，開往弘前市", tag: "Transport", desc: "自駕前往弘前。", transport_info: { type: "自駕" } },
+                    { time: "15:30", title: "【任務 3：必吃的蘋果派】", tag: "Food", desc: "抵達 藤田紀念庭園 (自駕)。", nav: { mapcode: "71 071 513*78" } },
+                    { time: "15:30", title: "大正浪漫喫茶室", tag: "Food", desc: "16:00 前完成點餐。" },
+                    { time: "16:30", title: "弘前城 散步", tag: "Sightseeing", desc: "欣賞白天雪景 (步行)。" },
+                    { time: "17:30", title: "【夜間慢行】返回青森", tag: "Transport", desc: "開車返回 Dormy Inn Aomori (自駕)。", transport_info: { type: "自駕" } },
+                    { time: "20:00", title: "Dormy Inn Aomori", tag: "Hotel", desc: "記得吃免費拉麵、泡湯。" }
                 ]
             },
             {
                 day: 4, date: "02.05", week: "THU",
-                heroTitle: "山林：尋找八甲田雪怪",
+                heroTitle: "八甲田：登上纜車去看看雪怪",
                 heroImg: "https://i.imgur.com/xOsZDUG.jpg", 
                 fallbackImg: "https://images.unsplash.com/photo-1487667258413-5a089052b658?q=80&w=800",
                 alert: "⚠️ 安全警示：若纜車停駛，請務必原路下山！",
                 events: [
-                    { time: "08:30", title: "古川市場 早餐", tag: "Food", desc: "吃「のっけ丼 (Nokkedon)」。" },
-                    { time: "11:00", title: "搭乘纜車賞樹冰", tag: "Nature", desc: "山頂極冷，注意保暖。" },
-                    { time: "13:30", title: "前往星野青森屋", tag: "Drive", desc: "【保命路線】走陸奥收費道路。", transport_info: { type: "自駕", time_estimate: "2小時" } },
-                    { time: "15:30", title: "星野 青森屋 Check-in", tag: "Hotel", desc: "享受頂級溫泉與祭典。", nav: { mapcode: "84 583 002*44" }, reservation_info: { type: "Resort", number: "HOS-AOM-1234", name: "YK", check_in: "15:30" } },
-                    { time: "20:00", title: "陸奧祭典屋表演", tag: "Culture", desc: "觀賞青森睡魔祭表演。" }
+                    { time: "09:00", title: "古川市場 早餐", tag: "Food", desc: "吃「のっけ丼」 (自駕，快去快回)。" },
+                    { time: "09:30", title: "開車上山前往 八甲田", tag: "Drive", desc: "自駕。" },
+                    { time: "10:40", title: "抵達八甲田纜車站", tag: "Transport", desc: "自駕抵達。" },
+                    { time: "11:00", title: "【樹冰觀光】", tag: "Nature", desc: "11:00-12:00 搭纜車看雪怪 (纜車)。" },
+                    { time: "12:30", title: "午餐", tag: "Food", desc: "在八甲田附近或返回三澤的路上 (自駕)。" },
+                    { time: "14:00", title: "前往 星野集團 青森屋", tag: "Drive", desc: "約 2 小時車程 (自駕)。", transport_info: { type: "自駕", time_estimate: "2小時" } },
+                    { time: "16:00", title: "抵達 星野集團 青森屋", tag: "Hotel", desc: "Check-in。", nav: { mapcode: "84 583 002*44" }, reservation_info: { type: "Resort", number: "HOS-AOM-1234", name: "YK", check_in: "16:00" } },
+                    { time: "17:30", title: "晚餐：Nore Sore 食堂", tag: "Food", desc: "自助餐 (飯店內)。" }
                 ]
             },
             {
                 day: 5, date: "02.06", week: "FRI",
-                heroTitle: "體驗：暖爐馬車與滑雪",
-                heroImg: "https://i.imgur.com/ViOh2sW.jpg", // Keep the correct image
+                heroTitle: "星野青森屋 與 雪地華爾茲",
+                heroImg: "https://i.imgur.com/ViOh2sW.jpg", 
                 fallbackImg: "https://images.unsplash.com/photo-1548777123-e213912bc571?q=80&w=800",
                 events: [
-                    { time: "10:00", title: "暖爐馬車", tag: "Relax", desc: "在馬車上享用點心。" },
-                    { time: "13:00", title: "滑雪體驗", tag: "Activity", desc: "初學者建議 2 小時。", nav: { phone: "0175-63-4848" } },
-                    { time: "20:00", title: "陸奧祭典屋表演", tag: "Culture", desc: "再次觀賞或自由活動。" }
+                    { time: "10:00", title: "【飯店活動】暖爐馬車", tag: "Relax", desc: "參加 Stove Carriage (步行，飯店內)。" },
+                    { time: "11:30", title: "出發前往滑雪場", tag: "Drive", desc: "從青森屋出發 (自駕)。" },
+                    { time: "13:00", title: "抵達 滑雪場", tag: "Activity", desc: "綠之大地與羅曼之森公園町營滑雪場。" },
+                    { time: "13:00", title: "午餐", tag: "Food", desc: "13:00-14:00 在滑雪場用餐。" },
+                    { time: "14:00", title: "【滑雪體驗】", tag: "Activity", desc: "14:00-16:00 在滑雪場練習滑雪 (租借裝備)。" },
+                    { time: "16:00", title: "返回星野集團 青森屋", tag: "Drive", desc: "16:00-17:30 自駕返回。", transport_info: { type: "自駕", time_estimate: "1.5小時" } },
+                    { time: "17:30", title: "飯店內活動/休息", tag: "Relax", desc: "可利用時間前往溫泉。" },
+                    { time: "20:00", title: "【文化體驗】陸奧祭典屋", tag: "Culture", desc: "觀賞表演 (步行，飯店內)。" }
                 ]
             },
             {
                 day: 6, date: "02.07", week: "SAT",
-                heroTitle: "滿載而歸",
+                heroTitle: "返程-踏著雪花滿載而歸",
                 heroImg: "https://i.imgur.com/edlDbD7.jpg", 
                 fallbackImg: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=800",
                 events: [
-                    { time: "10:00", title: "Check-out，準時出發", tag: "Transport", desc: "開車離開飯店。" },
-                    { time: "12:30", title: "辦理還車手續", tag: "Transport", desc: "檢查車況，辦理還車。" },
-                    { time: "13:30", title: "辦理登機手續 (BR 121)", tag: "Flight", desc: "長榮航空櫃檯。", reservation_info: { type: "Flight", number: "BR121", departure: "15:30" } },
-                    { time: "15:30", title: "搭機返台", tag: "Flight", desc: "再見青森，期待下次旅程。" }
+                    { time: "10:00", title: "【返程】開車離開飯店", tag: "Transport", desc: "務必準時 (自駕)。" },
+                    { time: "10:00", title: "前往 青森機場 (AOJ)", tag: "Drive", desc: "10:00-12:30 行駛收費道路等 (自駕，注意安全駕駛)。", transport_info: { type: "自駕", time_estimate: "2.5小時" } },
+                    { time: "13:00", title: "抵達 青森機場 (AOJ)", tag: "Transport", desc: "抵達機場。" },
+                    { time: "13:00", title: "還車", tag: "Transport", desc: "13:00-13:30 加滿油，還車手續。" },
+                    { time: "14:00", title: "【最終任務】採買伴手禮", tag: "Shopping", desc: "機場免稅店/土產店 (機場內)。" },
+                    { time: "15:30", title: "搭機返台", tag: "Flight", desc: "BR 121。", reservation_info: { type: "Flight", number: "BR121", departure: "15:30" } }
                 ]
             }
         ];
 
-        // --- FIRESTORE SUBSCRIPTION FUNCTIONS (Moved to be defined earlier) ---
+        // --- FIRESTORE SUBSCRIPTION FUNCTIONS (Defined early for reliability) ---
         
         const subscribeToExpenses = () => {
             const q = query(expensesRef);
             onSnapshot(q, (snapshot) => {
                 expenses = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 expenses.sort((a, b) => (b.timestamp?.toMillis() || 0) - (a.timestamp?.toMillis() || 0));
-                window.renderExpenses();
-                window.updateExpenseDashboard();
+                // FIXED: Direct call to locally defined function
+                renderExpenses();
+                updateExpenseDashboard();
             });
         };
 
@@ -750,43 +767,35 @@
                 renderTodos();
             });
         };
+        
+        // --- CORE LOGIC FUNCTIONS (Defined as local functions) ---
 
-        const setupFirebase = async () => {
-            try {
-                const app = initializeApp(firebaseConfig);
-                db = getFirestore(app);
-                auth = getAuth(app);
-                
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await signInWithCustomToken(auth, __initial_auth_token);
-                } else {
-                    await signInAnonymously(auth);
-                }
-
-                onAuthStateChanged(auth, (user) => {
-                    const userId = auth.currentUser?.uid || crypto.randomUUID(); 
-                    
-                    expensesRef = collection(db, `artifacts/${appId}/public/data/expenses`);
-                    // Now safe to call the defined function
-                    subscribeToExpenses();
-
-                    notesRef = collection(db, `artifacts/${appId}/public/data/notes`);
-                    subscribeToNotes();
-
-                    todosRef = collection(db, `artifacts/${appId}/public/data/todos`);
-                    subscribeToTodos();
-                });
-
-            } catch (error) {
-                console.error("Firebase Error:", error);
-                window.renderTrip();
+        function renderTodos() {
+            const list = document.getElementById('todo-list-ul');
+            if(list) {
+                list.innerHTML = todos.map(t => `
+                    <li class="todo-item">
+                        <i class="fa-regular ${t.completed ? 'fa-square-check checked' : 'fa-square'} todo-check" onclick="window.toggleTodo('${t.id}', ${t.completed})"></i>
+                        <span class="todo-text ${t.completed ? 'checked' : ''}">${t.text}</span>
+                        <i class="fa-solid fa-trash todo-del" onclick="window.deleteTodo('${t.id}')"></i>
+                    </li>
+                `).join('');
             }
-        };
+        }
+        
+        function getMapUrl(data) {
+             const base = `https://www.google.com/maps/embed/v1/`;
+             if (data.from && data.to) return `${base}directions?key=${GOOGLE_MAPS_API_KEY}&origin=${encodeURIComponent(data.from)}&destination=${encodeURIComponent(data.to)}&mode=driving`;
+             if (data.title) return `${base}search?key=${GOOGLE_MAPS_API_KEY}&q=${encodeURIComponent(data.title)}`;
+             return null;
+        }
 
-        // --- GLOBAL HELPER FUNCTIONS ---
-        // Define these early to ensure availability
+        function createInfoItem(icon, label, value) {
+            if (!value) return '';
+            return `<div class="info-item"><div class="info-label"><i class="fa-solid ${icon}"></i><span>${label}</span></div><div class="info-value">${value}</div></div>`;
+        }
 
-        window.renderTrip = function() {
+        function renderTrip() {
             const nav = document.getElementById('date-nav');
             nav.innerHTML = tripData.map((d, i) => `
                 <div class="d-item ${i === currentIdx ? 'active' : ''}" onclick="window.switchDay(${i})">
@@ -852,11 +861,8 @@
             container.innerHTML = html;
         }
 
-        window.checkActiveEvent = function() {
+        function checkActiveEvent() {
             const now = new Date();
-            // DEBUG: Uncomment below line to simulate being on Day 1 at 16:30 for testing
-            // const now = new Date("2026-02-02T16:30:00"); 
-
             let activeDayIndex = -1;
             tripData.forEach((day, idx) => {
                 const parts = day.date.split('.');
@@ -910,61 +916,52 @@
             }
         }
 
-        // Function to switch views correctly handling hidden classes
-        window.switchView = function(view, btn) {
-            // Hide all views by adding .hidden class and forcing display none
+        function switchView(view, btn) {
             document.querySelectorAll('.view-section').forEach(el => {
                 el.classList.add('hidden');
                 el.style.display = 'none';
             });
 
-            // Show target view by removing .hidden class and forcing display block
             const target = document.getElementById('view-' + view);
             if(target) {
                 target.classList.remove('hidden');
                 target.style.display = 'block';
             }
 
-            // Update Nav Buttons
             document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
             if(btn) {
                 btn.classList.add('active');
             } else {
-                // Fallback if no button passed
                 const map = {'trip':0, 'wallet':1, 'trans':2, 'info':3};
                 const navs = document.querySelectorAll('.nav-btn');
                 if(navs[map[view]]) navs[map[view]].classList.add('active');
             }
             
-            // Callbacks for rendering dynamic content
             if(view === 'wallet') { 
-                if(window.renderExpenses) window.renderExpenses(); 
-                if(window.updateExpenseDashboard) window.updateExpenseDashboard(); 
+                renderExpenses(); 
+                updateExpenseDashboard(); 
             }
             if(view === 'info') {
-                if(window.renderFullTripMap) window.renderFullTripMap();
+                renderFullTripMap();
             }
             
             window.scrollTo(0,0);
         }
 
-        window.switchDay = function(i) {
+        function switchDay(i) {
             if(i === currentIdx) return;
             currentIdx = i;
             
-            // Ensure we are on trip view
             const tripView = document.getElementById('view-trip');
             if (tripView.classList.contains('hidden') || tripView.style.display === 'none') {
-                window.switchView('trip'); 
+                switchView('trip'); 
             } else {
-                window.renderTrip();
-                window.checkActiveEvent();
+                renderTrip();
+                checkActiveEvent();
             }
         }
 
-        // --- EXPENSES LOGIC ---
-
-        window.updateExpenseDashboard = function() {
+        function updateExpenseDashboard() {
             const totals = { 'YK': 0, 'YY': 0, 'YS': 0 };
             expenses.forEach(e => {
                 if (totals[e.user] !== undefined) totals[e.user] += e.price;
@@ -980,21 +977,7 @@
             if(ysEl) ysEl.innerText = "¥" + totals['YS'].toLocaleString();
         }
 
-        window.filterExpenses = function(user) {
-            currentFilterUser = user;
-            document.querySelectorAll('.dashboard-item').forEach(el => el.classList.remove('active'));
-            if (user) {
-                if(user === 'YK') document.querySelector('.dashboard-item:nth-child(1)').classList.add('active');
-                if(user === 'YY') document.querySelector('.dashboard-item:nth-child(2)').classList.add('active');
-                if(user === 'YS') document.querySelector('.dashboard-item:nth-child(3)').classList.add('active');
-                document.getElementById('reset-filter-btn').classList.remove('hidden');
-            } else {
-                document.getElementById('reset-filter-btn').classList.add('hidden');
-            }
-            window.renderExpenses();
-        }
-
-        window.renderExpenses = function() {
+        function renderExpenses() {
             let filteredList = expenses;
             if (currentFilterUser) {
                 filteredList = expenses.filter(e => e.user === currentFilterUser);
@@ -1020,59 +1003,137 @@
             if(listEl) listEl.innerHTML = html.length ? html : '<div style="text-align:center; padding:20px; color:#999;">無資料</div>';
         }
 
-        window.addExpense = async function() {
+        function renderFullTripMap() {
+            const mapIframe = document.getElementById('trip-map-overview-iframe');
+            if(mapIframe) {
+                const centerLat = 41.1;
+                const centerLng = 140.7;
+                const zoom = 8;
+                const viewUrl = `https://www.google.com/maps/embed/v1/view?key=${GOOGLE_MAPS_API_KEY}&center=${centerLat},${centerLng}&zoom=${zoom}`;
+                mapIframe.src = viewUrl;
+            }
+        }
+
+        // --- FIREBASE SETUP ---
+        async function setupFirebase() { 
+            try {
+                const app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+                
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+
+                onAuthStateChanged(auth, (user) => {
+                    const userId = auth.currentUser?.uid || crypto.randomUUID(); 
+                    
+                    expensesRef = collection(db, `artifacts/${appId}/public/data/expenses`);
+                    subscribeToExpenses();
+
+                    notesRef = collection(db, `artifacts/${appId}/public/data/notes`);
+                    subscribeToNotes();
+
+                    todosRef = collection(db, `artifacts/${appId}/public/data/todos`);
+                    subscribeToTodos();
+                });
+
+            } catch (error) {
+                console.error("Firebase Error:", error);
+                renderTrip();
+            }
+        };
+
+        // --- STARTUP LOGIC ---
+
+        function startDynamicText() {
+            const textElement = document.getElementById('dynamic-intro-text');
+            const hour = new Date().getHours();
+            let key = (hour >= 8 && hour <= 17) ? 'work' : (hour >= 18 && hour <= 23 ? 'evening' : 'rest');
+            const messages = timeSensitiveMessages[key];
+            const msg = messages[Math.floor(Math.random() * messages.length)];
+            textElement.innerText = msg;
+            textElement.style.opacity = 1;
+        }
+
+        function enterApp() {
+            document.getElementById('intro-screen').style.transform = 'translateY(-100%)';
+            renderTrip();
+            fetchRate();
+            renderFullTripMap();
+            window.hasScrolledToLive = false;
+            checkActiveEvent();
+            setInterval(checkActiveEvent, 60000);
+        }
+
+        // --- ALL OTHER EXPOSED FUNCTIONS ---
+        // (Defined as local functions)
+
+        function filterExpenses(user) {
+            currentFilterUser = user;
+            document.querySelectorAll('.dashboard-item').forEach(el => el.classList.remove('active'));
+            if (user) {
+                if(user === 'YK') document.querySelector('.dashboard-item:nth-child(1)').classList.add('active');
+                if(user === 'YY') document.querySelector('.dashboard-item:nth-child(2)').classList.add('active');
+                if(user === 'YS') document.querySelector('.dashboard-item:nth-child(3)').classList.add('active');
+                document.getElementById('reset-filter-btn').classList.remove('hidden');
+            } else {
+                document.getElementById('reset-filter-btn').classList.add('hidden');
+            }
+            renderExpenses();
+        }
+
+        function addTodo() {
+            const input = document.getElementById('new-todo-text');
+            const text = input.value.trim();
+            if (!text || !todosRef) return;
+            try {
+                addDoc(todosRef, { text: text, completed: false, timestamp: serverTimestamp() });
+                input.value = '';
+            } catch (e) { console.error(e); }
+        }
+
+        function toggleTodo(id, currentStatus) {
+            if (!todosRef) return;
+            try { updateDoc(doc(todosRef, id), { completed: !currentStatus }); } catch (e) { console.error(e); }
+        }
+
+        function deleteTodo(id) {
+            if (!todosRef) return;
+            if (confirm('確定刪除此事項？')) {
+                try { deleteDoc(doc(todosRef, id)); } catch (e) { console.error(e); }
+            }
+        }
+        
+        function switchWidget(type) {
+            document.querySelectorAll('.w-tab').forEach(el => el.classList.remove('active'));
+            document.getElementById('tab-' + type).classList.add('active');
+            
+            if (type === 'converter') {
+                document.getElementById('currency-converter').classList.remove('hidden');
+                document.getElementById('todo-widget').classList.add('hidden');
+            } else {
+                document.getElementById('currency-converter').classList.add('hidden');
+                document.getElementById('todo-widget').classList.remove('hidden');
+            }
+        }
+
+        function addExpense() {
             const item = document.getElementById('ex-item').value;
             const price = parseInt(document.getElementById('ex-price').value);
             if(!item || !price || price <= 0) return;
             if (!expensesRef) return;
             try {
-                await addDoc(expensesRef, { user: currentUser, item, price, timestamp: serverTimestamp(), rate: currentRate });
+                addDoc(expensesRef, { user: currentUser, item, price, timestamp: serverTimestamp(), rate: currentRate });
                 document.getElementById('ex-item').value = '';
                 document.getElementById('ex-price').value = '';
                 document.getElementById('preview-twd').innerText = "≈ TWD 0";
             } catch (error) { console.error(error); }
         }
-
-        // --- TODO LIST LOGIC ---
-
-        window.addTodo = async function() {
-            const input = document.getElementById('new-todo-text');
-            const text = input.value.trim();
-            if (!text || !todosRef) return;
-            try {
-                await addDoc(todosRef, { text: text, completed: false, timestamp: serverTimestamp() });
-                input.value = '';
-            } catch (e) { console.error(e); }
-        }
-
-        window.toggleTodo = async function(id, currentStatus) {
-            if (!todosRef) return;
-            try { await updateDoc(doc(todosRef, id), { completed: !currentStatus }); } catch (e) { console.error(e); }
-        }
-
-        window.deleteTodo = async function(id) {
-            if (!todosRef) return;
-            if (confirm('確定刪除此事項？')) {
-                try { await deleteDoc(doc(todosRef, id)); } catch (e) { console.error(e); }
-            }
-        }
-
-        function renderTodos() {
-            const list = document.getElementById('todo-list-ul');
-            if(list) {
-                list.innerHTML = todos.map(t => `
-                    <li class="todo-item">
-                        <i class="fa-regular ${t.completed ? 'fa-square-check checked' : 'fa-square'} todo-check" onclick="window.toggleTodo('${t.id}', ${t.completed})"></i>
-                        <span class="todo-text ${t.completed ? 'checked' : ''}">${t.text}</span>
-                        <i class="fa-solid fa-trash todo-del" onclick="window.deleteTodo('${t.id}')"></i>
-                    </li>
-                `).join('');
-            }
-        }
-
-        // --- NOTES LOGIC ---
         
-        window.toggleEditNote = function() {
+        function toggleEditNote() {
             const descEl = document.getElementById('m-desc');
             const editEl = document.getElementById('m-note-edit');
             const inputEl = document.getElementById('m-note-input');
@@ -1087,7 +1148,7 @@
             }
         }
 
-        window.saveNote = async function() {
+        function saveNote() {
             const newText = document.getElementById('m-note-input').value;
             if (!currentEventId || !notesRef) return;
             
@@ -1097,51 +1158,38 @@
             document.getElementById('m-note-edit').classList.add('hidden');
             if(descEl) descEl.classList.remove('hidden');
             
-            try { await setDoc(doc(notesRef, currentEventId), { text: newText, updatedAt: serverTimestamp() }); } catch (error) { console.error(error); }
+            try { setDoc(doc(notesRef, currentEventId), { text: newText, updatedAt: serverTimestamp() }); } catch (error) { console.error(error); }
         }
-        
-        // --- TRANSLATE/MAP LOGIC ---
 
-        window.translateNow = async function() {
+        function translateNow() {
             const input = document.getElementById('trans-input').value.trim();
             const outputBox = document.getElementById('trans-output-box');
             if (!input) return;
             document.getElementById('trans-zh').innerText = input;
             document.getElementById('trans-jp-result').innerText = "正在翻譯...";
             outputBox.classList.remove('hidden');
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            document.getElementById('trans-jp-result').innerText = "翻譯服務串接中...請暫時使用字卡。"; 
-            window.showFs(document.getElementById('trans-jp-result').innerText, input);
+            new Promise(resolve => setTimeout(resolve, 1000))
+                .then(() => {
+                    document.getElementById('trans-jp-result').innerText = "翻譯服務串接中...請暫時使用字卡。"; 
+                    showFs(document.getElementById('trans-jp-result').innerText, input);
+                });
         }
 
-        window.renderFullTripMap = function() {
-            const mapIframe = document.getElementById('trip-map-overview-iframe');
-            if(mapIframe) {
-                const centerLat = 41.1;
-                const centerLng = 140.7;
-                const zoom = 8;
-                const viewUrl = `https://www.google.com/maps/embed/v1/view?key=${GOOGLE_MAPS_API_KEY}&center=${centerLat},${centerLng}&zoom=${zoom}`;
-                mapIframe.src = viewUrl;
-            }
-        }
-        
-        // --- CURRENCY LOGIC ---
-
-        window.calcFromJpy = function(val) {
+        function calcFromJpy(val) {
             if(!val) { document.getElementById('calc-twd').value = ""; return; }
             const jpy = parseFloat(val);
             const twd = Math.round(jpy * currentRate);
             document.getElementById('calc-twd').value = twd;
         }
 
-        window.calcFromTwd = function(val) {
+        function calcFromTwd(val) {
             if(!val) { document.getElementById('calc-jpy').value = ""; return; }
             const twd = parseFloat(val);
             const jpy = Math.round(twd / currentRate);
             document.getElementById('calc-jpy').value = jpy;
         }
         
-        window.fetchRate = function() {
+        function fetchRate() {
             fetch('https://api.exchangerate-api.com/v4/latest/JPY')
                 .then(response => response.json())
                 .then(data => {
@@ -1149,7 +1197,7 @@
                         currentRate = data.rates.TWD;
                         const rateEl = document.getElementById('current-rate');
                         if(rateEl) rateEl.innerText = "1 JPY = " + currentRate.toFixed(4) + " TWD";
-                        window.renderExpenses();
+                        renderExpenses();
                     }
                 })
                 .catch(err => { 
@@ -1158,74 +1206,31 @@
                 });
         }
         
-        // --- STARTUP / ONLOAD ---
-
-        window.enterApp = function() {
-            document.getElementById('intro-screen').style.transform = 'translateY(-100%)';
-            window.renderTrip();
-            window.fetchRate();
-            window.renderFullTripMap();
-            window.hasScrolledToLive = false;
-            window.checkActiveEvent();
-            setInterval(window.checkActiveEvent, 60000);
-        };
-
-
-        window.onload = function() {
-            setupFirebase();
-            const start = new Date("2026-02-02").getTime();
-            const now = new Date().getTime();
-            const days = Math.ceil((start - now) / (1000 * 60 * 60 * 24));
-            
-            const daysLeftEl = document.getElementById('days-left');
-            if(daysLeftEl) daysLeftEl.innerText = days > 0 ? days : 0;
-            
-            const headerDaysEl = document.getElementById('header-days');
-            if(headerDaysEl) headerDaysEl.innerText = days > 0 ? days : 0;
-            
-            document.getElementById('view-trip').style.display = 'block';
-            setTimeout(window.startDynamicText, 1000);
-        };
-        
-        // --- FIREBASE SUBSCRIPTION DEFINITIONS (Required to be defined before setupFirebase calls) ---
-
-        // (Definitions for subscribeToExpenses, subscribeToNotes, subscribeToTodos were moved here in the previous step)
-        // Since they were already defined above setupFirebase, the issue might be related to how the functions are hoisted or defined in a module. 
-        // By ensuring they are defined as standard functions (as they are), and moving them before their calls within setupFirebase, the error should be resolved.
-        
-
-        // The remaining helper functions remain in place...
-        
-        const timeSensitiveMessages = {
-            work: ["今天的任務再多也沒關係，想想函館山的百萬夜景在等你。", "工作很累對吧？再撐一下，青森的蘋果派會治癒這一切。", "薪水就是為了變成機票和海鮮丼而存在的，再撐一下！"],
-            evening: ["想像一下，幸運小丑漢堡淋上特製醬汁的那一瞬間...", "在暖爐列車上烤魷魚的香氣，你想好要配哪一款清酒了嗎？", "所有的等待，都是為了相遇時的那一刻美好。"],
-            rest: ["剛忙完嗎？閉上眼，想像自己正泡在星野青森屋的露天溫泉裡。", "希望你今晚能一夜好眠，明天醒來離出發又更近一步了。", "把心清空，準備裝滿青森的藍天與白雪。"]
-        };
-        
-        window.startDynamicText = function() {
-            const textElement = document.getElementById('dynamic-intro-text');
-            const hour = new Date().getHours();
-            let key = (hour >= 8 && hour <= 17) ? 'work' : (hour >= 18 && hour <= 23 ? 'evening' : 'rest');
-            const messages = timeSensitiveMessages[key];
-            const msg = messages[Math.floor(Math.random() * messages.length)];
-            textElement.innerText = msg;
-            textElement.style.opacity = 1;
-        }
-
-        window.selectUser = function(user, btn) {
+        function selectUser(user, btn) {
             currentUser = user;
             document.querySelectorAll('.user-btn').forEach(el => el.classList.remove('active'));
             btn.classList.add('active');
         }
 
-        window.calculatePreview = function(val) {
+        function calculatePreview(val) {
             if(!val) { document.getElementById('preview-twd').innerText = "≈ TWD 0"; return; }
             const twd = Math.round(parseInt(val) * currentRate);
             document.getElementById('preview-twd').innerText = "≈ TWD " + twd.toLocaleString();
         }
-
-        window.copyMapCode = function() {
-            const code = document.getElementById('m-mapcode').innerText;
+        
+        function openExternalMap() {
+            const mTitle = document.getElementById('m-title');
+            const currentTitle = mTitle ? mTitle.innerText : '';
+            if(currentTitle) {
+                window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(currentTitle)}`, '_blank');
+            }
+        }
+        
+        function copyMapCode() {
+            const mcEl = document.getElementById('m-mapcode');
+            const code = mcEl ? mcEl.innerText : '';
+            if (!code) return;
+            
             const textArea = document.createElement('textarea');
             textArea.value = code;
             document.body.appendChild(textArea);
@@ -1237,33 +1242,23 @@
             document.body.removeChild(textArea);
         }
 
-        window.showFs = function(jp, cn) {
+        function showFs(jp, cn) {
             document.getElementById('fs-jp').innerText = jp;
             document.getElementById('fs-cn').innerText = cn;
             document.getElementById('fs-text-modal').classList.add('active');
         }
-        window.closeFs = function() {
+
+        function closeFs() {
             document.getElementById('fs-text-modal').classList.remove('active');
         }
 
-        function getMapUrl(data) {
-             const base = `https://www.google.com/maps/embed/v1/`;
-             if (data.from && data.to) return `${base}directions?key=${GOOGLE_MAPS_API_KEY}&origin=${encodeURIComponent(data.from)}&destination=${encodeURIComponent(data.to)}&mode=driving`;
-             if (data.title) return `${base}search?key=${GOOGLE_MAPS_API_KEY}&q=${encodeURIComponent(data.title)}`;
-             return null;
+        function closeModal() {
+            document.getElementById('detail-modal').classList.remove('active');
+            document.querySelector('.modal-overlay').classList.remove('active');
+            currentEventId = null;
         }
 
-        function createInfoItem(icon, label, value) {
-            if (!value) return '';
-            return `<div class="info-item"><div class="info-label"><i class="fa-solid ${icon}"></i><span>${label}</span></div><div class="info-value">${value}</div></div>`;
-        }
-
-        window.openExternalMap = function() {
-            const currentTitle = document.getElementById('m-title').innerText;
-            window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(currentTitle)}`, '_blank');
-        }
-
-        window.openDetail = function(dataStr, dayIdx, eventIdx) {
+        function openDetail(dataStr, dayIdx, eventIdx) {
             const data = JSON.parse(decodeURIComponent(dataStr));
             
             currentEventId = `d${dayIdx}_e${eventIdx}`;
@@ -1338,11 +1333,62 @@
             document.querySelector('.modal-overlay').classList.add('active');
         }
 
-        window.closeModal = function() {
-            document.getElementById('detail-modal').classList.remove('active');
-            document.querySelector('.modal-overlay').classList.remove('active');
-            currentEventId = null;
-        }
+        // --- GLOBAL ASSIGNMENT (EXPOSE FUNCTIONS TO WINDOW) ---
+        // This is the crucial step for fixing the "is not a function" error when called from HTML onclick.
+        window.enterApp = enterApp;
+        window.switchView = switchView;
+        window.switchDay = switchDay;
+        window.filterExpenses = filterExpenses;
+        window.switchWidget = switchWidget;
+        window.calcFromJpy = calcFromJpy;
+        window.calcFromTwd = calcFromTwd;
+        window.selectUser = selectUser; 
+        window.calculatePreview = calculatePreview; 
+        window.addExpense = addExpense;
+        window.addTodo = addTodo;
+        window.toggleTodo = toggleTodo;
+        window.deleteTodo = deleteTodo;
+        window.translateNow = translateNow;
+        window.showFs = showFs;
+        window.closeFs = closeFs;
+        window.toggleEditNote = toggleEditNote;
+        window.saveNote = saveNote;
+        window.openDetail = openDetail;
+        window.openExternalMap = openExternalMap;
+        window.copyMapCode = copyMapCode;
+        window.closeModal = closeModal;
+        window.renderTrip = renderTrip; 
+        window.checkActiveEvent = checkActiveEvent; 
+        window.updateExpenseDashboard = updateExpenseDashboard; 
+
+        // --- ONLOAD EXECUTION ---
+
+        window.onload = function() {
+            setupFirebase();
+            const start = new Date("2026-02-02").getTime();
+            const now = new Date().getTime();
+            const days = Math.ceil((start - now) / (1000 * 60 * 60 * 24));
+            
+            const daysLeftEl = document.getElementById('days-left');
+            if(daysLeftEl) daysLeftEl.innerText = days > 0 ? days : 0;
+            
+            const headerDaysEl = document.getElementById('header-days');
+            if(headerDaysEl) headerDaysEl.innerText = days > 0 ? days : 0;
+            
+            const tripView = document.getElementById('view-trip');
+            if(tripView) tripView.style.display = 'block'; // Ensure trip view is initially visible
+            
+            setTimeout(startDynamicText, 1000);
+        };
+        
+        // --- CONSTANT DATA AND REMAINING LOCAL FUNCTIONS ---
+        
+        const timeSensitiveMessages = {
+            work: ["今天的任務再多也沒關係，想想函館山的百萬夜景在等你。", "工作很累對吧？再撐一下，青森的蘋果派會治癒這一切。", "薪水就是為了變成機票和海鮮丼而存在的，再撐一下！"],
+            evening: ["想像一下，幸運小丑漢堡淋上特製醬汁的那一瞬間...", "在暖爐列車上烤魷魚的香氣，你想好要配哪一款清酒了嗎？", "所有的等待，都是為了相遇時的那一刻美好。"],
+            rest: ["剛忙完嗎？閉上眼，想像自己正泡在星野青森屋的露天溫泉裡。", "希望你今晚能一夜好眠，明天醒來離出發又更近一步了。", "把心清空，準備裝滿青森的藍天與白雪。"]
+        };
+        
     </script>
 </body>
 </html>
