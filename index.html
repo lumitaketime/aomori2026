@@ -50,6 +50,14 @@
             text-decoration-color: var(--accent-gold);
             text-underline-offset: 3px;
         }
+        
+        /* Utility styles for detail info */
+        .info-group { padding: 15px 0; border-top: 1px solid #EEE; border-bottom: 1px solid #EEE; }
+        .info-item { display: flex; justify-content: space-between; margin-bottom: 10px; align-items: center; }
+        .info-label { font-size: 0.85rem; color: #888; display: flex; align-items: center; }
+        .info-label i { margin-right: 8px; color: var(--accent-gold); }
+        .info-value { font-size: 0.95rem; font-weight: 500; color: var(--accent-main); text-align: right; }
+
 
         /* --- INTRO --- */
         #intro-screen {
@@ -76,6 +84,7 @@
             font-size: 1.1rem; letter-spacing: 2px; cursor: pointer; transition: 0.3s;
             opacity: 0; animation: fadeIn 1.5s ease forwards 1s;
         }
+        .intro-btn:active { background: rgba(255,255,255,0.1); }
         @keyframes fadeIn { to { opacity: 1; } }
         
         #dynamic-intro-text {
@@ -114,20 +123,24 @@
         .d-item { 
             min-width: 60px; text-align: center; opacity: 0.4; transition: 0.4s; cursor: pointer; 
             display: flex; flex-direction: column; align-items: center;
+            user-select: none;
         }
         .d-item.active { opacity: 1; transform: scale(1.1); }
         .d-week { font-size: 0.7rem; letter-spacing: 1px; margin-bottom: 5px; text-transform: uppercase; }
-        .d-num { font-family: var(--font-serif); font-size: 1.5rem; position: relative; }
+        .d-num { font-family: var(--font-serif); font-size: 1.5rem; position: relative; line-height: 1;}
         .d-item.active .d-num::after {
             content: ''; position: absolute; bottom: -5px; left: 50%; transform: translateX(-50%);
             width: 4px; height: 4px; background: var(--accent-gold); border-radius: 50%;
         }
+        .d-weather { font-size: 0.6rem; margin-top: 8px; color: var(--text-secondary); display: flex; flex-direction: column; align-items: center; gap: 2px; min-height: 25px; }
+        .d-weather i { font-size: 0.8rem; margin-bottom: 2px; }
+        .d-item.active .d-weather { color: var(--accent-main); font-weight: 600; }
 
         /* --- TRIP VIEW --- */
         .container { padding: 0 20px; max-width: 600px; margin: 0 auto; }
         
         .hero-card {
-            position: relative; height: 280px; border-radius: 4px; overflow: hidden; margin-bottom: 30px;
+            position: relative; height: 280px; border-radius: 4px; overflow: hidden; margin-bottom: 20px;
             box-shadow: var(--shadow-soft);
         }
         .hero-img { width: 100%; height: 100%; object-fit: cover; transition: transform 10s ease; }
@@ -138,7 +151,7 @@
         .hero-title { font-size: 1.6rem; margin: 0; line-height: 1.3; font-weight: 500; color: white; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
 
         .timeline-block { position: relative; padding-left: 20px; border-left: 1px solid var(--line-light); margin-left: 10px; }
-        .event-node { margin-bottom: 35px; position: relative; opacity: 0; transform: translateY(20px); transition: 0.6s ease; }
+        .event-node { position: relative; opacity: 0; transform: translateY(20px); transition: 0.6s ease; margin-bottom: 35px; }
         .event-node.visible { opacity: 1; transform: translateY(0); }
         
         .time-dot { 
@@ -172,7 +185,7 @@
 
         .alert-banner {
             background: rgba(217, 51, 63, 0.08); border-left: 3px solid var(--accent-red);
-            padding: 15px; margin-bottom: 30px; border-radius: 0 4px 4px 0;
+            padding: 15px; margin-bottom: 20px; border-radius: 0 4px 4px 0;
             display: flex; gap: 12px; align-items: flex-start;
         }
         .alert-highlight { color: var(--accent-red); font-weight: 700; display: block; margin-top: 4px; font-size: 0.85rem;}
@@ -227,7 +240,7 @@
         
         /* WIDGET TABS */
         .widget-tabs { display: flex; background: #EEE; border-radius: 20px; padding: 4px; margin-bottom: 15px; }
-        .w-tab { flex: 1; text-align: center; padding: 8px 0; font-size: 0.85rem; color: #666; border-radius: 16px; cursor: pointer; transition: 0.3s; }
+        .w-tab { flex: 1; text-align: center; padding: 8px 0; font-size: 0.85rem; color: #666; border-radius: 16px; cursor: pointer; transition: 0.3s; user-select: none; }
         .w-tab.active { background: white; color: var(--accent-main); font-weight: bold; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
 
         /* CURRENCY CONVERTER */
@@ -259,8 +272,14 @@
 
         .info-card { background: white; padding: 20px; border-radius: 8px; box-shadow: var(--shadow-soft); margin-bottom: 15px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; }
         .info-icon { width: 40px; height: 40px; border-radius: 50%; background: #F5F5F5; display: flex; justify-content: center; align-items: center; color: var(--accent-main); margin-right: 15px; }
-        .map-overview-card { background: white; padding: 15px; border-radius: 8px; box-shadow: var(--shadow-soft); margin-bottom: 20px; }
+        .map-overview-card { background: white; padding: 15px; border-radius: 8px; box-shadow: var(--shadow-soft); margin-bottom: 30px; }
         .map-iframe { width: 100%; height: 350px; border: none; border-radius: 4px; }
+        .loading-overlay { 
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0; 
+            background: rgba(255, 255, 255, 0.8); z-index: 50; 
+            display: flex; justify-content: center; align-items: center; 
+            font-size: 1.2rem; color: var(--accent-main);
+        }
 
         /* --- NAV BAR --- */
         .glass-nav {
@@ -338,7 +357,7 @@
         </div>
 
         <!-- 2. WALLET VIEW -->
-        <div id="view-wallet" class="view-section hidden">
+        <div id="view-wallet" class="view-section hidden" style="position:relative;">
             <div class="container">
                 <div class="wallet-card" style="text-align: center; background: #1C2541; color: white;">
                     <div style="font-size: 0.8rem; color: #AAA; letter-spacing: 1px; margin-bottom: 5px;">ESTIMATED TOTAL</div>
@@ -424,7 +443,12 @@
                 </div>
                 
                 <h3 class="serif" style="padding-left: 10px; margin-bottom: 15px;">近期支出 History</h3>
-                <div id="expense-list"></div>
+                <div id="expense-list">
+                    <!-- Loading state for expenses -->
+                    <div class="loading-overlay" style="position: static; margin-top: 20px; min-height: 100px;">
+                        <i class="fa-solid fa-spinner fa-spin" style="margin-right: 10px;"></i> 正在載入支出...
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -626,13 +650,18 @@
     </div>
 
     <script>
+        // NOTE: In a real app, this API key should be securely handled server-side.
+        // For this single-file environment, we use a mock key structure.
         const GOOGLE_MAPS_API_KEY = "AIzaSyAX9nvh4bJpiM6-oTm8FoUSZeSBpxZBc1E"; 
     </script>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, query, orderBy, onSnapshot, addDoc, serverTimestamp, setDoc, doc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, collection, query, onSnapshot, addDoc, serverTimestamp, setDoc, doc, deleteDoc, updateDoc, setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Set log level to debug for firebase errors
+        setLogLevel('debug');
 
         // --- DATA & MESSAGES (Moved to top for readability) ---
         const tripData = [
@@ -640,19 +669,22 @@
                 day: 1, date: "02.02", week: "MON",
                 heroTitle: "函館：百元發熱衣與百萬夜景",
                 heroImg: "https://i.imgur.com/RTJNqwv.jpg", 
-                fallbackImg: "https://images.unsplash.com/photo-1542640244-7e67286feb8f?q=80&w=800&auto=format&fit=crop", 
+                fallbackImg: "https://images.unsplash.com/photo-1542640244-7e67286feb8f?q=80&w=800&auto=format&fit=crop",
+                weather: { icon: "fa-spinner fa-spin", temp: "Loading..." }, // Placeholder
                 events: [
                     { 
                         time: "11:10", title: "抵達函館機場 (HKD)", tag: "Arrival", 
                         desc: "入境手續，領取行李。", 
                         detail: "地點：函館機場 (HKD)<br>提醒：記得準備好QR code (Visit Japan Web)", 
-                        to: "JR函館站" 
+                        to: "JR函館站", 
+                        location: "Hakodate Airport, Japan"
                     },
                     { 
                         time: "12:30", title: "機場巴士 -> JR 函館站", tag: "Transport", 
                         desc: "JR Inn Hakodate 入住放行李。", 
                         detail: "交通方式：搭乘機場巴士。<br>下車點：JR 函館站前。<br>飯店：JR Inn Hakodate (就在車站旁，交通極便利)。",
                         navLink: "https://maps.app.goo.gl/SgEccLta3MTxhD4d9?g_st=ac",
+                        from: "Hakodate Airport",
                         to: "JR Inn Hakodate", 
                         transport_info: {type: "機場巴士", departure: "12:30"} 
                     },
@@ -677,7 +709,8 @@
                         time: "13:30", title: "採購：UNIQLO 函館昭和店", tag: "Shopping", 
                         desc: "13:30-14:30 採購。", 
                         detail: "UNIQLO 函館昭和店 (路邊店，品項較齊全)。<br>必買：極暖發熱衣 (Heattech Extra Warm/Ultra Warm) 為接下來的行程做準備。",
-                        navLink: "https://maps.app.goo.gl/sDqtgs3kxsz7nGKU9" 
+                        navLink: "https://maps.app.goo.gl/sDqtgs3kxsz7nGKU9",
+                        location: "UNIQLO Hakodate Showa"
                     },
                     {
                         time: "14:30", title: "返回飯店 Check-in", tag: "Hotel",
@@ -692,22 +725,26 @@
                         desc: "16:00-16:30 欣賞夜景。", 
                         detail: "世界三大夜景之一。<br>預計日落時間：16:53 (2026/02/02)。<br>建議提早抵達卡位。<br>纜車官網：<a href='https://334.co.jp/cht/' target='_blank'>營運狀況確認</a>",
                         navLink: "https://maps.app.goo.gl/qcq17CBzd3miW9rM6",
+                        location: "Mt. Hakodate Observation Deck",
                         nav: { mapcode: "86 041 028*25" } 
                     },
                     { 
                         time: "18:30", title: "前往 金森紅磚倉庫", tag: "Sightseeing", 
                         desc: "營業時間：09:30–19:00", 
-                        detail: "明治時代的紅磚倉庫群，現為購物中心。<br>官網：<a href='https://hakodate-kanemori.com/tw' target='_blank'>金森紅磚倉庫</a><br>地址：北海道函館市末廣町14番12號 (TEL：0138-27-5530)<br>商店〈購物店〉10:00～19:00<br>函館啤酒館 [平日]11:30〜21:30 [國定假日]11:00〜21:30",
-                        navLink: "https://maps.app.goo.gl/psd5nq2yRDC5zD3W6" 
+                        detail: "明治時代的紅磚倉庫群，現為購物中心。<br>官網：<a href='https://hakodate-kanemori.com/tw' target='_blank'>金森紅磚倉庫</a><br>地址：北海道函館市末廣町14番12號 (TEL：0138-27-5530)<br>商店〈購物店〉10:00～19:00<br>函館啤酒館 [平日]11:30〜21:30 [國定假日]11:00〜21:00",
+                        navLink: "https://maps.app.goo.gl/psd5nq2yRDC5zD3W6",
+                        location: "Kanemori Red Brick Warehouse" 
                     },
                     { 
                         time: "19:30", title: "晚餐：幸運小丑漢堡", tag: "Food", 
                         desc: "晚餐時段。", 
-                        detail: "函館必吃名物！分店資訊：<br>- <a href='https://maps.app.goo.gl/Uugj9UD1sZWSvL3r5' target='_blank'>海灣地區本店</a><br>- <a href='https://maps.app.goo.gl/aADDixCzhZDB4dEQ6' target='_blank'>碼頭末廣店</a><br>- <a href='https://maps.app.goo.gl/kdh8oY6iqtx1vt4n7' target='_blank'>函館站前店</a>" 
+                        detail: "函館必吃名物！分店資訊：<br>- <a href='https://maps.app.goo.gl/Uugj9UD1sZWSvL3r5' target='_blank'>海灣地區本店</a><br>- <a href='https://maps.app.goo.gl/aADDixCzhZDB4dEQ6' target='_blank'>碼頭末廣店</a><br>- <a href='https://maps.app.goo.gl/kdh8oY6iqtx1vt4n7' target='_blank'>函館站前店</a>",
+                        location: "Lucky Pierrot Bay Area Main Store"
                     },
                     { 
                         time: "20:30", title: "住宿：JR Inn Hakodate", tag: "Hotel", 
-                        desc: "Day 1 結束，休息。" 
+                        desc: "Day 1 結束，休息。",
+                        location: "JR Inn Hakodate" 
                     }
                 ]
             },
@@ -716,16 +753,17 @@
                 heroTitle: "乘著隼-飛越大海到蘋果之鄉",
                 heroImg: "https://i.imgur.com/iqO53uS.jpg", 
                 fallbackImg: "https://images.unsplash.com/photo-1532236395709-7d70320fec2d?q=80&w=800",
+                weather: { icon: "fa-spinner fa-spin", temp: "Loading..." },
                 events: [
-                    { time: "08:00", title: "函館朝市 早餐", tag: "Food", desc: "海鮮丼 (步行前往)。" },
-                    { time: "10:00", title: "移動至青森", tag: "Transport", desc: "搭乘新幹線等 (JR 新幹線 / 奧羽本線)。", transport_info: { type: "新幹線/JR", departure: "10:00", note: "往青森" } },
-                    { time: "13:45", title: "抵達 青森站", tag: "Transport", desc: "到達本州。" },
-                    { time: "14:15", title: "前往 Dormy Inn 放行李", tag: "Transport", desc: "搭計程車。", transport_info: { type: "計程車" } },
-                    { time: "14:40", title: "前往 青森縣立美術館", tag: "Transport", desc: "搭計程車。", transport_info: { type: "計程車" } },
-                    { time: "16:40", title: "返回市區", tag: "Transport", desc: "搭計程車。", transport_info: { type: "計程車" } },
-                    { time: "18:00", title: "晚餐：青森鄉土料理", tag: "Food", desc: "享用在地美食。" },
-                    { time: "19:30", title: "逛唐吉訶德", tag: "Shopping", desc: "離飯店近。" },
-                    { time: "21:30", title: "Dormy Inn Aomori", tag: "Hotel", desc: "記得吃免費拉麵、泡湯。", reservation_info: { type: "Hotel", number: "DMAO-10023", name: "YK", check_in: "15:00" } }
+                    { time: "08:00", title: "函館朝市 早餐", tag: "Food", desc: "海鮮丼 (步行前往)。", location: "Hakodate Morning Market" },
+                    { time: "10:00", title: "移動至青森", tag: "Transport", desc: "搭乘新幹線等 (JR 新幹線 / 奧羽本線)。", transport_info: { type: "新幹線/JR", departure: "10:00", note: "往青森" }, from: "JR Hakodate Station", to: "JR Aomori Station" },
+                    { time: "13:45", title: "抵達 青森站", tag: "Transport", desc: "到達本州。", location: "JR Aomori Station" },
+                    { time: "14:15", title: "前往 Dormy Inn 放行李", tag: "Transport", desc: "搭計程車。", transport_info: { type: "計程車" }, from: "JR Aomori Station", to: "Dormy Inn Aomori" },
+                    { time: "14:40", title: "前往 青森縣立美術館", tag: "Transport", desc: "搭計程車。", transport_info: { type: "計程車" }, from: "Dormy Inn Aomori", to: "Aomori Museum of Art" },
+                    { time: "16:40", title: "返回市區", tag: "Transport", desc: "搭計程車。", transport_info: { type: "計程車" }, from: "Aomori Museum of Art", to: "Dormy Inn Aomori" },
+                    { time: "18:00", title: "晚餐：青森鄉土料理", tag: "Food", desc: "享用在地美食。", location: "Aomori City Center" },
+                    { time: "19:30", title: "逛唐吉訶德", tag: "Shopping", desc: "離飯店近。", location: "Don Quijote Aomori" },
+                    { time: "21:30", title: "Dormy Inn Aomori", tag: "Hotel", desc: "記得吃免費拉麵、泡湯。", reservation_info: { type: "Hotel", number: "DMAO-10023", name: "YK", check_in: "15:00" }, location: "Dormy Inn Aomori" }
                 ]
             },
             {
@@ -733,17 +771,18 @@
                 heroTitle: "津輕鐵道與弘前雪景",
                 heroImg: "https://i.imgur.com/M2AVCI5.jpg", 
                 fallbackImg: "https://images.unsplash.com/photo-1549643276-fbc2bd5f4038?q=80&w=800&auto=format&fit=crop",
+                weather: { icon: "fa-spinner fa-spin", temp: "Loading..." },
                 events: [
-                    { time: "09:00", title: "【租車開始】青森站取車", tag: "Transport", desc: "回飯店載人與行李 (開始自駕)。", transport_info: { type: "自駕", car_type: "雪胎確認" } },
-                    { time: "10:15", title: "【任務 1】3COINS+plus", tag: "Shopping", desc: "ELM 購物中心買相機 (自駕)。", nav: { mapcode: "168 649 346*52" } },
-                    { time: "11:10", title: "抵達 津輕五所川原站", tag: "Transport", desc: "停車，買票，等等 (自駕)。" },
-                    { time: "12:30", title: "【任務 2】搭乘「暖爐列車」", tag: "Experience", desc: "津輕鐵道。" },
-                    { time: "14:15", title: "取車，開往弘前市", tag: "Transport", desc: "自駕前往弘前。", transport_info: { type: "自駕" } },
-                    { time: "15:30", title: "【任務 3：必吃的蘋果派】", tag: "Food", desc: "抵達 藤田紀念庭園 (自駕)。", nav: { mapcode: "71 071 513*78" } },
-                    { time: "15:30", title: "大正浪漫喫茶室", tag: "Food", desc: "16:00 前完成點餐。" },
-                    { time: "16:30", title: "弘前城 散步", tag: "Sightseeing", desc: "欣賞白天雪景 (步行)。" },
-                    { time: "17:30", title: "【夜間慢行】返回青森", tag: "Transport", desc: "開車返回 Dormy Inn Aomori (自駕)。", transport_info: { type: "自駕" } },
-                    { time: "20:00", title: "Dormy Inn Aomori", tag: "Hotel", desc: "記得吃免費拉麵、泡湯。" }
+                    { time: "09:00", title: "【租車開始】青森站取車", tag: "Transport", desc: "回飯店載人與行李 (開始自駕)。", transport_info: { type: "自駕", car_type: "雪胎確認" }, from: "Dormy Inn Aomori", to: "Aomori Rental Car" },
+                    { time: "10:15", title: "【任務 1】3COINS+plus", tag: "Shopping", desc: "ELM 購物中心買相機 (自駕)。", nav: { mapcode: "168 649 346*52" }, location: "ELM Shopping Center, Goshogawara" },
+                    { time: "11:10", title: "抵達 津輕五所川原站", tag: "Transport", desc: "停車，買票，等等 (自駕)。", location: "Tsugaru Goshogawara Station" },
+                    { time: "12:30", title: "【任務 2】搭乘「暖爐列車」", tag: "Experience", desc: "津輕鐵道。", location: "Tsugaru Railway" },
+                    { time: "14:15", title: "取車，開往弘前市", tag: "Transport", desc: "自駕前往弘前。", transport_info: { type: "自駕" }, from: "Tsugaru Goshogawara Station", to: "Hirosaki City" },
+                    { time: "15:30", title: "【任務 3：必吃的蘋果派】", tag: "Food", desc: "抵達 藤田紀念庭園 (自駕)。", nav: { mapcode: "71 071 513*78" }, location: "Fujita Memorial Garden, Hirosaki" },
+                    { time: "15:30", title: "大正浪漫喫茶室", tag: "Food", desc: "16:00 前完成點餐。", location: "Taisho Roman Tea Room, Hirosaki" },
+                    { time: "16:30", title: "弘前城 散步", tag: "Sightseeing", desc: "欣賞白天雪景 (步行)。", location: "Hirosaki Castle" },
+                    { time: "17:30", title: "【夜間慢行】返回青森", tag: "Transport", desc: "開車返回 Dormy Inn Aomori (自駕)。", transport_info: { type: "自駕" }, from: "Hirosaki", to: "Dormy Inn Aomori" },
+                    { time: "20:00", title: "Dormy Inn Aomori", tag: "Hotel", desc: "記得吃免費拉麵、泡湯。", location: "Dormy Inn Aomori" }
                 ]
             },
             {
@@ -752,15 +791,16 @@
                 heroImg: "https://i.imgur.com/xOsZDUG.jpg", 
                 fallbackImg: "https://images.unsplash.com/photo-1487667258413-5a089052b658?q=80&w=800",
                 alert: "⚠️ 安全警示：若纜車停駛，請務必原路下山！",
+                weather: { icon: "fa-spinner fa-spin", temp: "Loading..." },
                 events: [
-                    { time: "09:00", title: "古川市場 早餐", tag: "Food", desc: "吃「のっけ丼」 (自駕，快去快回)。" },
-                    { time: "09:30", title: "開車上山前往 八甲田", tag: "Drive", desc: "自駕。" },
-                    { time: "10:40", title: "抵達八甲田纜車站", tag: "Transport", desc: "自駕抵達。" },
-                    { time: "11:00", title: "【樹冰觀光】", tag: "Nature", desc: "11:00-12:00 搭纜車看雪怪 (纜車)。" },
-                    { time: "12:30", title: "午餐", tag: "Food", desc: "在八甲田附近或返回三澤的路上 (自駕)。" },
-                    { time: "14:00", title: "前往 星野集團 青森屋", tag: "Drive", desc: "約 2 小時車程 (自駕)。", transport_info: { type: "自駕", time_estimate: "2小時" } },
-                    { time: "16:00", title: "抵達 星野集團 青森屋", tag: "Hotel", desc: "Check-in。", nav: { mapcode: "84 583 002*44" }, reservation_info: { type: "Resort", number: "HOS-AOM-1234", name: "YK", check_in: "16:00" } },
-                    { time: "17:30", title: "晚餐：Nore Sore 食堂", tag: "Food", desc: "自助餐 (飯店內)。" }
+                    { time: "09:00", title: "古川市場 早餐", tag: "Food", desc: "吃「のっけ丼」 (自駕，快去快回)。", location: "Furukawa Market, Aomori" },
+                    { time: "09:30", title: "開車上山前往 八甲田", tag: "Drive", desc: "自駕。", from: "Aomori City", to: "Hakkoda Ropeway" },
+                    { time: "10:40", title: "抵達八甲田纜車站", tag: "Transport", desc: "自駕抵達。", location: "Hakkoda Ropeway Station" },
+                    { time: "11:00", title: "【樹冰觀光】", tag: "Nature", desc: "11:00-12:00 搭纜車看雪怪 (纜車)。", location: "Hakkoda Juhyo (Snow Monsters)" },
+                    { time: "12:30", title: "午餐", tag: "Food", desc: "在八甲田附近或返回三澤的路上 (自駕)。", location: "Hakkoda Mountain Area" },
+                    { time: "14:00", title: "前往 星野集團 青森屋", tag: "Drive", desc: "約 2 小時車程 (自駕)。", transport_info: { type: "自駕", time_estimate: "2小時" }, from: "Hakkoda", to: "Hoshino Resorts Aomoriya" },
+                    { time: "16:00", title: "抵達 星野集團 青森屋", tag: "Hotel", desc: "Check-in。", nav: { mapcode: "84 583 002*44" }, reservation_info: { type: "Resort", number: "HOS-AOM-1234", name: "YK", check_in: "16:00" }, location: "Hoshino Resorts Aomoriya" },
+                    { time: "17:30", title: "晚餐：Nore Sore 食堂", tag: "Food", desc: "自助餐 (飯店內)。", location: "Nore Sore Dining, Aomoriya" }
                 ]
             },
             {
@@ -768,15 +808,16 @@
                 heroTitle: "星野青森屋 與 雪地華爾茲",
                 heroImg: "https://i.imgur.com/ViOh2sW.jpg", 
                 fallbackImg: "https://images.unsplash.com/photo-1548777123-e213912bc571?q=80&w=800",
+                weather: { icon: "fa-spinner fa-spin", temp: "Loading..." },
                 events: [
-                    { time: "10:00", title: "【飯店活動】暖爐馬車", tag: "Relax", desc: "參加 Stove Carriage (步行，飯店內)。" },
-                    { time: "11:30", title: "出發前往滑雪場", tag: "Drive", desc: "從青森屋出發 (自駕)。" },
-                    { time: "13:00", title: "抵達 滑雪場", tag: "Activity", desc: "綠之大地與羅曼之森公園町營滑雪場。" },
-                    { time: "13:00", title: "午餐", tag: "Food", desc: "13:00-14:00 在滑雪場用餐。" },
-                    { time: "14:00", title: "【滑雪體驗】", tag: "Activity", desc: "14:00-16:00 在滑雪場練習滑雪 (租借裝備)。" },
-                    { time: "16:00", title: "返回星野集團 青森屋", tag: "Drive", desc: "16:00-17:30 自駕返回。", transport_info: { type: "自駕", time_estimate: "1.5小時" } },
-                    { time: "17:30", title: "飯店內活動/休息", tag: "Relax", desc: "可利用時間前往溫泉。" },
-                    { time: "20:00", title: "【文化體驗】陸奧祭典屋", tag: "Culture", desc: "觀賞表演 (步行，飯店內)。" }
+                    { time: "10:00", title: "【飯店活動】暖爐馬車", tag: "Relax", desc: "參加 Stove Carriage (步行，飯店內)。", location: "Stove Carriage Experience, Aomoriya" },
+                    { time: "11:30", title: "出發前往滑雪場", tag: "Drive", desc: "從青森屋出發 (自駕)。", from: "Hoshino Resorts Aomoriya", to: "Skylight Ski Area" },
+                    { time: "13:00", title: "抵達 滑雪場", tag: "Activity", desc: "綠之大地與羅曼之森公園町營滑雪場。", location: "Skylight Ski Area" },
+                    { time: "13:00", title: "午餐", tag: "Food", desc: "13:00-14:00 在滑雪場用餐。", location: "Skylight Ski Area" },
+                    { time: "14:00", title: "【滑雪體驗】", tag: "Activity", desc: "14:00-16:00 在滑雪場練習滑雪 (租借裝備)。", location: "Skylight Ski Area" },
+                    { time: "16:00", title: "返回星野集團 青森屋", tag: "Drive", desc: "16:00-17:30 自駕返回。", transport_info: { type: "自駕", time_estimate: "1.5小時" }, from: "Skylight Ski Area", to: "Hoshino Resorts Aomoriya" },
+                    { time: "17:30", title: "飯店內活動/休息", tag: "Relax", desc: "可利用時間前往溫泉。", location: "Hoshino Resorts Aomoriya" },
+                    { time: "20:00", title: "【文化體驗】陸奧祭典屋", tag: "Culture", desc: "觀賞表演 (步行，飯店內)。", location: "Michinoku Festival Arts, Aomoriya" }
                 ]
             },
             {
@@ -784,13 +825,14 @@
                 heroTitle: "返程-踏著雪花滿載而歸",
                 heroImg: "https://i.imgur.com/edlDbD7.jpg", 
                 fallbackImg: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=800",
+                weather: { icon: "fa-spinner fa-spin", temp: "Loading..." },
                 events: [
-                    { time: "10:00", title: "【返程】開車離開飯店", tag: "Transport", desc: "務必準時 (自駕)。" },
-                    { time: "10:00", title: "前往 青森機場 (AOJ)", tag: "Drive", desc: "10:00-12:30 行駛收費道路等 (自駕，注意安全駕駛)。", transport_info: { type: "自駕", time_estimate: "2.5小時" } },
-                    { time: "13:00", title: "抵達 青森機場 (AOJ)", tag: "Transport", desc: "抵達機場。" },
-                    { time: "13:00", title: "還車", tag: "Transport", desc: "13:00-13:30 加滿油，還車手續。" },
-                    { time: "14:00", title: "【最終任務】採買伴手禮", tag: "Shopping", desc: "機場免稅店/土產店 (機場內)。" },
-                    { time: "15:30", title: "搭機返台", tag: "Flight", desc: "BR 121。", reservation_info: { type: "Flight", number: "BR121", departure: "15:30" } }
+                    { time: "10:00", title: "【返程】開車離開飯店", tag: "Transport", desc: "務必準時 (自駕)。", from: "Hoshino Resorts Aomoriya" },
+                    { time: "10:00", title: "前往 青森機場 (AOJ)", tag: "Drive", desc: "10:00-12:30 行駛收費道路等 (自駕，注意安全駕駛)。", transport_info: { type: "自駕", time_estimate: "2.5小時" }, from: "Hoshino Resorts Aomoriya", to: "Aomori Airport" },
+                    { time: "13:00", title: "抵達 青森機場 (AOJ)", tag: "Transport", desc: "抵達機場。", location: "Aomori Airport" },
+                    { time: "13:00", title: "還車", tag: "Transport", desc: "13:00-13:30 加滿油，還車手續。", location: "Aomori Airport Car Rental" },
+                    { time: "14:00", title: "【最終任務】採買伴手禮", tag: "Shopping", desc: "機場免稅店/土產店 (機場內)。", location: "Aomori Airport Duty Free" },
+                    { time: "15:30", title: "搭機返台", tag: "Flight", desc: "BR 121。", reservation_info: { type: "Flight", number: "BR121", departure: "15:30" }, location: "Aomori Airport" }
                 ]
             }
         ];
@@ -908,11 +950,26 @@
         // --- FIRESTORE SUBSCRIPTION FUNCTIONS ---
         const subscribeToExpenses = () => {
             const q = query(expensesRef);
+            const expenseListEl = document.getElementById('expense-list');
+
+            if (expenseListEl) {
+                // Initial loading state
+                expenseListEl.innerHTML = `
+                    <div class="loading-overlay" style="position: static; margin-top: 20px; min-height: 100px;">
+                        <i class="fa-solid fa-spinner fa-spin" style="margin-right: 10px;"></i> 正在載入支出...
+                    </div>
+                `;
+            }
+
             onSnapshot(q, (snapshot) => {
                 expenses = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                // Sort by timestamp descending (newest first)
                 expenses.sort((a, b) => (b.timestamp?.toMillis() || 0) - (a.timestamp?.toMillis() || 0));
                 renderExpenses();
                 updateExpenseDashboard();
+            }, (error) => {
+                console.error("Error subscribing to expenses:", error);
+                if (expenseListEl) expenseListEl.innerHTML = '<div style="text-align:center; padding:20px; color:var(--accent-red);">載入支出資料失敗。</div>';
             });
         };
 
@@ -920,18 +977,36 @@
             const q = query(notesRef);
             onSnapshot(q, (snapshot) => {
                 snapshot.docs.forEach(doc => { localNotes[doc.id] = doc.data().text; });
-                if(currentEventId && localNotes[currentEventId]) {
+                
+                // Re-render modal content if it is currently open and corresponds to a modified note
+                if(currentEventId) {
                     const descEl = document.getElementById('m-desc');
-                    if(descEl) descEl.innerHTML = localNotes[currentEventId]; 
+                    const noteInModal = localNotes[currentEventId];
+                    if(descEl && noteInModal) {
+                        descEl.innerHTML = noteInModal; 
+                    } else if (descEl) {
+                        // Fallback to original data if note was deleted/empty
+                        const day = tripData[currentIdx];
+                        const event = day.events.find((_, i) => `d${currentIdx}_e${i}` === currentEventId);
+                        if(event) descEl.innerHTML = event.detail || event.desc;
+                    }
                 }
+            }, (error) => {
+                console.error("Error subscribing to notes:", error);
             });
         };
 
         const subscribeToTodos = () => {
-            const q = query(todosRef, orderBy('timestamp', 'desc'));
+            // NOTE: Firestore does not support orderBy without explicit index in the environment,
+            // so we will rely on client-side sorting or fetch order. Using simple query for stability.
+            const q = query(todosRef); 
             onSnapshot(q, (snapshot) => {
                 todos = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                // Client-side sort by timestamp descending
+                todos.sort((a, b) => (b.timestamp?.toMillis() || 0) - (a.timestamp?.toMillis() || 0));
                 renderTodos();
+            }, (error) => {
+                console.error("Error subscribing to todos:", error);
             });
         };
         
@@ -939,20 +1014,20 @@
         function renderTodos() {
             const list = document.getElementById('todo-list-ul');
             if(list) {
-                list.innerHTML = todos.map(t => `
-                    <li class="todo-item">
+                const todoHtml = todos.map(t => `<li class="todo-item">
                         <i class="fa-regular ${t.completed ? 'fa-square-check checked' : 'fa-square'} todo-check" onclick="window.toggleTodo('${t.id}', ${t.completed})"></i>
                         <span class="todo-text ${t.completed ? 'checked' : ''}">${t.text}</span>
                         <i class="fa-solid fa-trash todo-del" onclick="window.deleteTodo('${t.id}')"></i>
                     </li>
                 `).join('');
+                list.innerHTML = todoHtml || '<div style="text-align:center; padding:10px; color:#AAA;">沒有待辦事項了，真棒！</div>';
             }
         }
         
         function getMapUrl(data) {
              const base = `https://www.google.com/maps/embed/v1/`;
              
-             // Priority 1: Explicit location string provided in data.location
+             // Priority 1: Explicit location string provided in data.location (Search)
              if (data.location) {
                  return `${base}search?key=${GOOGLE_MAPS_API_KEY}&q=${encodeURIComponent(data.location)}`;
              }
@@ -962,7 +1037,7 @@
                  return `${base}directions?key=${GOOGLE_MAPS_API_KEY}&origin=${encodeURIComponent(data.from)}&destination=${encodeURIComponent(data.to)}&mode=driving`;
              } 
              
-             // Priority 3: Fallback to title (search)
+             // Priority 3: Fallback to title (Search)
              if (data.title) {
                  return `${base}search?key=${GOOGLE_MAPS_API_KEY}&q=${encodeURIComponent(data.title)}`;
              }
@@ -976,10 +1051,13 @@
 
         function renderTrip() {
             const nav = document.getElementById('date-nav');
-            nav.innerHTML = tripData.map((d, i) => `
-                <div class="d-item ${i === currentIdx ? 'active' : ''}" onclick="window.switchDay(${i})">
+            nav.innerHTML = tripData.map((d, i) => `<div class="d-item ${i === currentIdx ? 'active' : ''}" onclick="window.switchDay(${i})">
                     <div class="d-week">${d.week}</div>
                     <div class="d-num">${d.date.split('.')[1]}</div>
+                    <div class="d-weather">
+                        <i class="fa-solid ${d.weather.icon}"></i>
+                        <span>${d.weather.temp}</span>
+                    </div>
                 </div>
             `).join('');
 
@@ -993,8 +1071,24 @@
 
             const imgUrl = day.heroImg || day.fallbackImg;
 
-            // FIX: Encode single quotes in JSON string before putting into HTML attribute
-            // This prevents syntax errors when data contains single quotes (like in HTML attributes inside JSON values)
+            // Generate Daily Map URL
+            const dailyLocations = day.events.filter(e => e.location).map(e => e.location);
+            let dailyMapUrl = '';
+            if (dailyLocations.length > 0) {
+                if (dailyLocations.length === 1) {
+                    dailyMapUrl = `https://www.google.com/maps/embed/v1/search?key=${GOOGLE_MAPS_API_KEY}&q=${encodeURIComponent(dailyLocations[0])}`;
+                } else {
+                    // Route: Origin -> Waypoints -> Destination
+                    const origin = encodeURIComponent(dailyLocations[0]);
+                    const destination = encodeURIComponent(dailyLocations[dailyLocations.length - 1]);
+                    // Google Maps Embed API allows waypoints separated by pipe char
+                    const waypoints = dailyLocations.slice(1, -1).map(l => encodeURIComponent(l)).join('|');
+                    
+                    dailyMapUrl = `https://www.google.com/maps/embed/v1/directions?key=${GOOGLE_MAPS_API_KEY}&origin=${origin}&destination=${destination}&waypoints=${waypoints}&mode=driving`;
+                }
+            }
+
+            // Utility to safely stringify and encode for HTML attribute
             const safeStringify = (obj) => {
                 return encodeURIComponent(JSON.stringify(obj)).replace(/'/g, "%27");
             };
@@ -1007,17 +1101,31 @@
                     </div>
                 </div>
                 ${alertHtml}
-                <div class="timeline-block">
             `;
 
+            // Add Daily Map Card if URL exists
+            if (dailyMapUrl) {
+                html += `
+                    <div class="map-overview-card" style="margin-bottom: 30px;">
+                        <div style="font-size: 0.8rem; color: #888; margin-bottom: 10px; display:flex; align-items:center; gap:6px;">
+                            <i class="fa-solid fa-route" style="color:var(--accent-gold);"></i>
+                            <span>本日路線預覽 Route Preview</span>
+                        </div>
+                        <iframe class="map-iframe" style="height: 200px;" src="${dailyMapUrl}" allowfullscreen loading="lazy"></iframe>
+                    </div>
+                `;
+            }
+
+            html += `<div class="timeline-block">`;
+
             html += day.events.map((ev, i) => {
-                const data = safeStringify(ev); // Use safe stringify
+                const data = safeStringify(ev); 
                 const delay = i * 0.1;
                 let icon = 'fa-circle';
                 if (ev.tag === 'Transport' || ev.tag === 'Drive' || ev.tag === 'Flight') icon = 'fa-car-side';
-                if (ev.tag === 'Hotel' || ev.tag === 'Check-in') icon = 'fa-bed';
+                if (ev.tag === 'Hotel') icon = 'fa-bed';
                 if (ev.tag === 'Shopping') icon = 'fa-bag-shopping';
-                if (ev.tag === 'Food' || ev.tag === 'Cuisine') icon = 'fa-utensils';
+                if (ev.tag === 'Food') icon = 'fa-utensils';
                 if (ev.tag.match(/Sightseeing|Nature|Art|Experience|景點/)) icon = 'fa-map-pin';
                 if (ev.tag.match(/Activity|Relax|Culture|體驗/)) icon = 'fa-person-skiing';
                 if (ev.tag === 'Flight') icon = 'fa-plane';
@@ -1025,8 +1133,7 @@
                 
                 const cardClass = (ev.tag === 'Transport' || ev.tag === 'Drive' || ev.tag === 'Flight') ? 'transport-card' : '';
 
-                return `
-                    <div class="event-node visible" style="transition-delay: ${delay}s">
+                return `<div class="event-node visible" style="transition-delay: ${delay}s">
                         <div class="time-dot"></div>
                         <div class="event-card ${cardClass}" onclick="window.openDetail('${data}', ${currentIdx}, ${i})">
                             <div style="display:flex; justify-content:space-between; align-items:center;">
@@ -1050,18 +1157,21 @@
         function checkActiveEvent() {
             const now = new Date();
             let activeDayIndex = -1;
+            
+            // Find the index of the current trip day
             tripData.forEach((day, idx) => {
-                const parts = day.date.split('.'); 
-                const m = parseInt(parts[0], 10);
-                const d = parseInt(parts[1], 10);
-                const currentM = now.getMonth() + 1;
-                const currentD = now.getDate();
-                if (currentM === m && currentD === d) {
+                // Assuming trip date format is "MM.DD" in current year (2025 for now)
+                const year = now.getFullYear(); // Use current year for comparison
+                const tripDate = new Date(`${year}-${day.date.replace('.', '-')}`);
+                const currentDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+                // Normalize date objects for comparison
+                if (tripDate.toDateString() === currentDate.toDateString()) {
                     activeDayIndex = idx;
                 }
             });
             
-            if (activeDayIndex === -1) return;
+            if (activeDayIndex === -1) return; // Not traveling today
 
             const currentDayEvents = tripData[activeDayIndex].events;
             const currentHour = now.getHours();
@@ -1081,6 +1191,7 @@
                         const [nh, nm] = currentDayEvents[idx+1].time.split(':').map(Number);
                         nextEventTimeVal = nh * 60 + nm;
                     } else {
+                        // Assume event lasts 90 minutes if it's the last one
                         nextEventTimeVal = eventTimeVal + 90;
                     }
 
@@ -1124,6 +1235,7 @@
             }
             
             if(view === 'wallet') { 
+                // Ensure expense list is visible on wallet view
                 renderExpenses(); 
                 updateExpenseDashboard(); 
             }
@@ -1176,7 +1288,7 @@
             if(totalJpyEl) totalJpyEl.innerText = "¥" + total.toLocaleString();
             
             const totalTwdEl = document.getElementById('total-twd');
-            if(totalTwdEl) totalTwdEl.innerText = (total * currentRate).toFixed(0);
+            if(totalTwdEl) totalTwdEl.innerText = (total * currentRate).toFixed(0).toLocaleString();
 
             const html = filteredList.map(e => {
                 const dateObj = e.timestamp ? e.timestamp.toDate() : new Date();
@@ -1192,7 +1304,8 @@
         function renderFullTripMap() {
             const mapIframe = document.getElementById('trip-map-overview-iframe');
             if(mapIframe) {
-                const centerLat = 41.1;
+                // Coordinates covering Hakodate (South) to Aomori (North) region
+                const centerLat = 40.7;
                 const centerLng = 140.7;
                 const zoom = 8;
                 const viewUrl = `https://www.google.com/maps/embed/v1/view?key=${GOOGLE_MAPS_API_KEY}&center=${centerLat},${centerLng}&zoom=${zoom}`;
@@ -1206,27 +1319,29 @@
                 db = getFirestore(app);
                 auth = getAuth(app);
                 
+                // Sign in with custom token or anonymously
                 if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
                     await signInWithCustomToken(auth, __initial_auth_token);
                 } else {
                     await signInAnonymously(auth);
                 }
 
-                onAuthStateChanged(auth, (user) => {
-                    const userId = auth.currentUser?.uid || crypto.randomUUID(); 
-                    
-                    expensesRef = collection(db, `artifacts/${appId}/public/data/expenses`);
-                    subscribeToExpenses();
-
-                    notesRef = collection(db, `artifacts/${appId}/public/data/notes`);
-                    subscribeToNotes();
-
-                    todosRef = collection(db, `artifacts/${appId}/public/data/todos`);
-                    subscribeToTodos();
-                });
+                // Get userId after authentication
+                const userId = auth.currentUser?.uid || crypto.randomUUID(); 
+                
+                // Define public collections
+                expensesRef = collection(db, `artifacts/${appId}/public/data/expenses`);
+                notesRef = collection(db, `artifacts/${appId}/public/data/notes`);
+                todosRef = collection(db, `artifacts/${appId}/public/data/todos`);
+                
+                // Start listeners
+                subscribeToExpenses();
+                subscribeToNotes();
+                subscribeToTodos();
 
             } catch (error) {
-                console.error("Firebase Error:", error);
+                console.error("Firebase Initialization Error:", error);
+                // Fallback to local rendering if firebase fails
                 renderTrip();
             }
         };
@@ -1234,30 +1349,129 @@
         function startDynamicText() {
             const textElement = document.getElementById('dynamic-intro-text');
             const hour = new Date().getHours();
-            let key = (hour >= 8 && hour <= 17) ? 'work' : (hour >= 18 && hour <= 23 ? 'evening' : 'rest');
+            let key = 'rest'; // Default to rest
+            if (hour >= 8 && hour <= 17) key = 'work';
+            else if (hour >= 18 && hour <= 23) key = 'evening';
+
             const messages = timeSensitiveMessages[key];
             const msg = messages[Math.floor(Math.random() * messages.length)];
             textElement.innerText = msg;
             textElement.style.opacity = 1;
         }
 
+        // --- REAL WEATHER FETCHING ---
+        function getIconClass(wmoCode) {
+            // WMO Weather interpretation codes (WW)
+            // 0: Clear
+            // 1, 2, 3: Cloud
+            // 45, 48: Fog
+            // 51-55: Drizzle
+            // 61-65: Rain
+            // 71-77: Snow
+            // 80-82: Showers
+            // 95-99: Thunderstorm
+            if (wmoCode === 0) return "fa-sun";
+            if (wmoCode >= 1 && wmoCode <= 3) return "fa-cloud-sun";
+            if (wmoCode === 45 || wmoCode === 48) return "fa-smog";
+            if (wmoCode >= 51 && wmoCode <= 55) return "fa-cloud-rain";
+            if (wmoCode >= 61 && wmoCode <= 65) return "fa-cloud-showers-heavy";
+            if (wmoCode >= 71 && wmoCode <= 77) return "fa-snowflake";
+            if (wmoCode >= 80 && wmoCode <= 82) return "fa-cloud-rain";
+            if (wmoCode >= 95 && wmoCode <= 99) return "fa-bolt";
+            return "fa-cloud";
+        }
+
+        function getMonday(d) {
+            d = new Date(d);
+            const day = d.getDay();
+            const diff = d.getDate() - day + (day === 0 ? -6 : 1); // adjust when day is sunday
+            return new Date(d.setDate(diff));
+        }
+
+        async function fetchWeather() {
+            try {
+                // Calculate current week Monday and Saturday
+                const today = new Date();
+                const monday = getMonday(today);
+                const saturday = new Date(monday);
+                saturday.setDate(monday.getDate() + 5);
+
+                // Format dates for API: YYYY-MM-DD
+                const formatDate = (date) => date.toISOString().split('T')[0];
+                const startStr = formatDate(monday);
+                const endStr = formatDate(saturday);
+
+                // Hakodate: 41.7687, 140.7290 (Day 1)
+                // Aomori: 40.8244, 140.7400 (Day 2-6)
+                
+                // Open-Meteo API URLs
+                const urlHakodate = `https://api.open-meteo.com/v1/forecast?latitude=41.7687&longitude=140.7290&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&start_date=${startStr}&end_date=${endStr}`;
+                const urlAomori = `https://api.open-meteo.com/v1/forecast?latitude=40.8244&longitude=140.7400&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&start_date=${startStr}&end_date=${endStr}`;
+
+                const [resHak, resAom] = await Promise.all([
+                    fetch(urlHakodate).then(r => r.json()),
+                    fetch(urlAomori).then(r => r.json())
+                ]);
+
+                if (!resHak.daily || !resAom.daily) throw new Error("Weather API data incomplete");
+
+                // Map data to tripData
+                // Logic: Day 1 gets Hakodate[0], Days 2-6 get Aomori[1..5]
+                // Open-Meteo returns array of 6 days (Mon-Sat) based on our request
+                
+                tripData.forEach((day, index) => {
+                    let source = (index === 0) ? resHak : resAom;
+                    let i = index; // 0 to 5
+                    
+                    if(source.daily.temperature_2m_max[i] !== undefined) {
+                        const max = Math.round(source.daily.temperature_2m_max[i]);
+                        const min = Math.round(source.daily.temperature_2m_min[i]);
+                        const code = source.daily.weather_code[i];
+                        
+                        day.weather = {
+                            icon: getIconClass(code),
+                            temp: `${min}° / ${max}°`
+                        };
+                    }
+                });
+
+                // Re-render if timeline is active
+                if(currentIdx !== -1) renderTrip();
+                // Re-render navbar
+                const nav = document.getElementById('date-nav');
+                if(nav) nav.innerHTML = tripData.map((d, i) => `<div class="d-item ${i === currentIdx ? 'active' : ''}" onclick="window.switchDay(${i})">
+                        <div class="d-week">${d.week}</div>
+                        <div class="d-num">${d.date.split('.')[1]}</div>
+                        <div class="d-weather">
+                            <i class="fa-solid ${d.weather.icon}"></i>
+                            <span>${d.weather.temp}</span>
+                        </div>
+                    </div>
+                `).join('');
+
+            } catch (e) {
+                console.error("Weather Fetch Error:", e);
+            }
+        }
+
         function enterApp() {
             document.getElementById('intro-screen').style.transform = 'translateY(-100%)';
             renderTrip();
             fetchRate();
+            fetchWeather(); // Start fetching real weather
             renderFullTripMap();
             window.hasScrolledToLive = false;
             checkActiveEvent();
-            setInterval(checkActiveEvent, 60000);
+            // Check active event every minute
+            setInterval(checkActiveEvent, 60000); 
         }
 
         function filterExpenses(user) {
             currentFilterUser = user;
             document.querySelectorAll('.dashboard-item').forEach(el => el.classList.remove('active'));
             if (user) {
-                if(user === 'YK') document.querySelector('.dashboard-item:nth-child(1)').classList.add('active');
-                if(user === 'YY') document.querySelector('.dashboard-item:nth-child(2)').classList.add('active');
-                if(user === 'YS') document.querySelector('.dashboard-item:nth-child(3)').classList.add('active');
+                const index = ['YK', 'YY', 'YS'].indexOf(user);
+                if(index !== -1) document.querySelector(`.dashboard-item:nth-child(${index + 1})`).classList.add('active');
                 document.getElementById('reset-filter-btn').classList.remove('hidden');
             } else {
                 document.getElementById('reset-filter-btn').classList.add('hidden');
@@ -1272,18 +1486,18 @@
             try {
                 addDoc(todosRef, { text: text, completed: false, timestamp: serverTimestamp() });
                 input.value = '';
-            } catch (e) { console.error(e); }
+            } catch (e) { console.error("Error adding todo:", e); }
         }
 
         function toggleTodo(id, currentStatus) {
             if (!todosRef) return;
-            try { updateDoc(doc(todosRef, id), { completed: !currentStatus }); } catch (e) { console.error(e); }
+            try { updateDoc(doc(todosRef, id), { completed: !currentStatus }); } catch (e) { console.error("Error toggling todo:", e); }
         }
 
         // Modified: Removed confirm() to comply with environment rules
         function deleteTodo(id) {
             if (!todosRef) return;
-            try { deleteDoc(doc(todosRef, id)); } catch (e) { console.error(e); }
+            try { deleteDoc(doc(todosRef, id)); } catch (e) { console.error("Error deleting todo:", e); }
         }
         
         function switchWidget(type) {
@@ -1300,16 +1514,16 @@
         }
 
         function addExpense() {
-            const item = document.getElementById('ex-item').value;
+            const item = document.getElementById('ex-item').value.trim();
             const price = parseInt(document.getElementById('ex-price').value);
-            if(!item || !price || price <= 0) return;
+            if(!item || isNaN(price) || price <= 0) return;
             if (!expensesRef) return;
             try {
                 addDoc(expensesRef, { user: currentUser, item, price, timestamp: serverTimestamp(), rate: currentRate });
                 document.getElementById('ex-item').value = '';
                 document.getElementById('ex-price').value = '';
                 document.getElementById('preview-twd').innerText = "≈ TWD 0";
-            } catch (error) { console.error(error); }
+            } catch (error) { console.error("Error adding expense:", error); }
         }
         
         function toggleEditNote() {
@@ -1318,7 +1532,8 @@
             const inputEl = document.getElementById('m-note-input');
             
             if (editEl.classList.contains('hidden')) {
-                inputEl.value = descEl.innerText;
+                // Set input value to current display value (allowing for HTML content)
+                inputEl.value = descEl.innerText.trim();
                 descEl.classList.add('hidden');
                 editEl.classList.remove('hidden');
             } else {
@@ -1332,12 +1547,13 @@
             if (!currentEventId || !notesRef) return;
             
             const descEl = document.getElementById('m-desc');
-            if(descEl) descEl.innerHTML = newText; 
+            // Allow HTML content in saved note for rich text/links if user uses them
+            if(descEl) descEl.innerHTML = newText.replace(/\n/g, '<br>'); 
             
             document.getElementById('m-note-edit').classList.add('hidden');
             if(descEl) descEl.classList.remove('hidden');
             
-            try { setDoc(doc(notesRef, currentEventId), { text: newText, updatedAt: serverTimestamp() }); } catch (error) { console.error(error); }
+            try { setDoc(doc(notesRef, currentEventId), { text: newText.replace(/\n/g, '<br>'), updatedAt: serverTimestamp() }); } catch (error) { console.error("Error saving note:", error); }
         }
 
         function translateNow() {
@@ -1345,24 +1561,26 @@
             const outputBox = document.getElementById('trans-output-box');
             if (!input) return;
             document.getElementById('trans-zh').innerText = input;
-            document.getElementById('trans-jp-result').innerText = "正在翻譯...";
+            document.getElementById('trans-jp-result').innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> 正在翻譯...";
             outputBox.classList.remove('hidden');
+            
+            // Simulating API call failure and defaulting to local phrase card suggestion
             setTimeout(() => {
-                document.getElementById('trans-jp-result').innerText = "翻譯服務串接中...請暫時使用字卡。"; 
-                showFs(document.getElementById('trans-jp-result').innerText, input);
+                document.getElementById('trans-jp-result').innerHTML = "翻譯服務串接中...請暫時使用字卡。"; 
+                showFs("翻譯服務串接中...請暫時使用字卡。", input);
             }, 1000);
         }
 
         function calcFromJpy(val) {
-            if(!val) { document.getElementById('calc-twd').value = ""; return; }
             const jpy = parseFloat(val);
+            if(isNaN(jpy) || jpy === 0) { document.getElementById('calc-twd').value = ""; return; }
             const twd = Math.round(jpy * currentRate);
             document.getElementById('calc-twd').value = twd;
         }
 
         function calcFromTwd(val) {
-            if(!val) { document.getElementById('calc-jpy').value = ""; return; }
             const twd = parseFloat(val);
+            if(isNaN(twd) || twd === 0) { document.getElementById('calc-jpy').value = ""; return; }
             const jpy = Math.round(twd / currentRate);
             document.getElementById('calc-jpy').value = jpy;
         }
@@ -1376,11 +1594,12 @@
                         const rateEl = document.getElementById('current-rate');
                         if(rateEl) rateEl.innerText = "1 JPY = " + currentRate.toFixed(4) + " TWD";
                         renderExpenses();
+                        calculatePreview(document.getElementById('ex-price').value);
                     }
                 })
                 .catch(err => { 
                     const rateEl = document.getElementById('current-rate');
-                    if(rateEl) rateEl.innerText = "離線匯率: " + currentRate; 
+                    if(rateEl) rateEl.innerText = "離線匯率: " + currentRate.toFixed(4); 
                 });
         }
         
@@ -1391,8 +1610,9 @@
         }
 
         function calculatePreview(val) {
-            if(!val) { document.getElementById('preview-twd').innerText = "≈ TWD 0"; return; }
-            const twd = Math.round(parseInt(val) * currentRate);
+            const jpy = parseInt(val);
+            if(isNaN(jpy) || jpy === 0) { document.getElementById('preview-twd').innerText = "≈ TWD 0"; return; }
+            const twd = Math.round(jpy * currentRate);
             document.getElementById('preview-twd').innerText = "≈ TWD " + twd.toLocaleString();
         }
         
@@ -1400,6 +1620,7 @@
             const mTitle = document.getElementById('m-title');
             const currentTitle = mTitle ? mTitle.innerText : '';
             if(currentTitle) {
+                // Use the generic search intent
                 window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(currentTitle)}`, '_blank');
             }
         }
@@ -1422,9 +1643,11 @@
             textArea.select();
             try {
                 document.execCommand('copy');
-                // Could add a toast notification here later
-                console.log('MapCode copied');
-            } catch (err) {}
+                // Note: In a production app, use a toast/snackbar for confirmation
+                console.log('MapCode copied:', code);
+            } catch (err) {
+                 console.error('Failed to copy MapCode:', err);
+            }
             document.body.removeChild(textArea);
         }
 
@@ -1453,11 +1676,13 @@
             if(mTitle) mTitle.innerText = data.title;
             
             let displayNote = data.detail || data.desc;
+            // Use local/synced note if available
             if(localNotes[currentEventId]) displayNote = localNotes[currentEventId];
             
             const mDesc = document.getElementById('m-desc');
             if(mDesc) mDesc.innerHTML = displayNote; 
             
+            // Reset note editor state
             const mNoteEdit = document.getElementById('m-note-edit');
             if(mNoteEdit) mNoteEdit.classList.add('hidden');
             if(mDesc) mDesc.classList.remove('hidden');
@@ -1476,6 +1701,7 @@
             let infoHtml = '';
             const headerHtml = `<h3 class="serif" style="font-size: 1.2rem; margin-bottom: 15px; color: var(--accent-main);">預訂 / 交通資訊</h3>`;
 
+            // Reservation Info
             if (data.reservation_info) {
                 const res = data.reservation_info;
                 infoGroup.classList.remove('hidden');
@@ -1483,17 +1709,23 @@
                 infoHtml += createInfoItem('fa-user', '預訂人', res.name);
                 infoHtml += createInfoItem('fa-calendar-check', '入住/時間', res.check_in || res.departure);
                 infoHtml += createInfoItem('fa-users', '人數', res.guests);
-            } else if (data.transport_info) {
+            } 
+            
+            // Transport Info
+            if (data.transport_info) {
                 const trans = data.transport_info;
                 infoGroup.classList.remove('hidden');
                 infoHtml += createInfoItem('fa-train-subway', '類型', trans.type);
                 infoHtml += createInfoItem('fa-clock', '出發', trans.departure);
-                infoHtml += createInfoItem('fa-clock-rotate-left', '抵達', trans.arrival);
-                infoHtml += createInfoItem('fa-road', '備註', trans.note || trans.time_estimate);
-            } else {
-                infoGroup.classList.add('hidden');
+                infoHtml += createInfoItem('fa-clock-rotate-left', '預計時長', trans.time_estimate);
+                infoHtml += createInfoItem('fa-road', '備註', trans.note);
+            } 
+            
+            if (!data.reservation_info && !data.transport_info) {
+                 infoGroup.classList.add('hidden');
             }
             infoGroup.innerHTML = headerHtml + infoHtml;
+
 
             const mapSec = document.getElementById('m-map-section');
             if (data.nav && data.nav.mapcode) {
@@ -1515,6 +1747,7 @@
 
             const gmapPreview = document.getElementById('m-gmap-preview');
             const gmapIframe = document.getElementById('m-gmap-iframe');
+            
             const mapUrl = getMapUrl(data);
             
             if (mapUrl) {
@@ -1528,7 +1761,7 @@
             document.querySelector('.modal-overlay').classList.add('active');
         }
 
-        // --- GLOBAL ASSIGNMENT ---
+        // --- GLOBAL ASSIGNMENT (Make functions accessible from HTML) ---
         window.enterApp = enterApp;
         window.switchView = switchView;
         window.switchDay = switchDay;
@@ -1559,7 +1792,7 @@
         // --- ONLOAD EXECUTION ---
         window.onload = function() {
             setupFirebase();
-            const start = new Date("2026-02-02").getTime();
+            const start = new Date("2026-02-02").getTime(); // Assuming 2026 for trip start
             const now = new Date().getTime();
             const days = Math.ceil((start - now) / (1000 * 60 * 60 * 24));
             
