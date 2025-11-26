@@ -173,6 +173,7 @@
             position: relative;
             box-shadow: 0 4px 15px -5px rgba(0,0,0,0.1); 
             padding: 20px 30px;
+            margin-left: 10px; /* 縮排效果 */
         }
         .transport-card::before, .transport-card::after {
             content: ''; position: absolute; top: 50%;
@@ -359,13 +360,14 @@
         <!-- 2. WALLET VIEW -->
         <div id="view-wallet" class="view-section hidden" style="position:relative;">
             <div class="container">
-                <div class="wallet-card" style="text-align: center; background: #1C2541; color: white;">
+                <!-- 1. Summary Section -->
+                <div class="wallet-card" style="text-align: center; background: #1C2541; color: white; margin-bottom: 15px;">
                     <div style="font-size: 0.8rem; color: #AAA; letter-spacing: 1px; margin-bottom: 5px;">ESTIMATED TOTAL</div>
                     <div class="serif" style="font-size: 2.5rem; color: #B49B67;" id="total-jpy">¥0</div>
                     <div style="color: #EEE; font-size: 0.9rem;">≈ TWD <span id="total-twd">0</span></div>
                 </div>
 
-                <!-- Expense Dashboard (Filter) -->
+                <!-- 2. Filter/Dashboard Section -->
                 <div class="dashboard-grid">
                     <div class="dashboard-item" onclick="window.filterExpenses('YK')">
                         <div class="dash-avatar">YK</div>
@@ -390,13 +392,17 @@
                     </button>
                 </div>
 
-                <!-- Widget Tabs -->
-                <div class="widget-tabs">
-                    <div class="w-tab active" id="tab-converter" onclick="window.switchWidget('converter')">匯率換算</div>
-                    <div class="w-tab" id="tab-todo" onclick="window.switchWidget('todo')">待辦清單</div>
-                </div>
+                <!-- 3. Tools/Widgets Section (Separated) -->
+                <div class="wallet-card" style="padding-top: 15px; padding-bottom: 15px;">
+                    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;">
+                        <h3 class="serif" style="margin:0; font-size:1.1rem; color:var(--accent-main);">旅行工具 Tools</h3>
+                        <!-- Widget Tabs Inline -->
+                        <div class="widget-tabs" style="margin:0; width: 60%; background: #F5F5F5;">
+                            <div class="w-tab active" id="tab-converter" onclick="window.switchWidget('converter')" style="font-size:0.75rem; padding: 4px 0;">匯率</div>
+                            <div class="w-tab" id="tab-todo" onclick="window.switchWidget('todo')" style="font-size:0.75rem; padding: 4px 0;">待辦</div>
+                        </div>
+                    </div>
 
-                <div class="wallet-card">
                     <!-- Widget 1: Converter -->
                     <div id="currency-converter">
                         <div class="conv-col">
@@ -410,7 +416,7 @@
                         </div>
                     </div>
                     <!-- Current Rate Display -->
-                    <div class="rate-badge" style="width:100%; text-align:center; margin-top:5px;">即時匯率: <span id="current-rate">Loading...</span></div>
+                    <div class="rate-badge" style="width:100%; text-align:center; margin-top:5px; margin-bottom: 0;">即時匯率: <span id="current-rate">Loading...</span></div>
 
                     <!-- Widget 2: To-Do List -->
                     <div id="todo-widget" class="hidden">
@@ -422,9 +428,12 @@
                             <!-- JS Generated -->
                         </ul>
                     </div>
+                </div>
 
-                    <div style="border-top: 1px dashed #EEE; margin: 15px 0;"></div>
-
+                <!-- 4. Add Expense Section (Separated) -->
+                <div class="wallet-card">
+                    <h3 class="serif" style="margin:0 0 15px 0; font-size:1.1rem; color:var(--accent-main);">新增支出 Add Expense</h3>
+                    
                     <div class="user-selector">
                         <button class="user-btn active" onclick="window.selectUser('YK', this)">YK</button>
                         <button class="user-btn" onclick="window.selectUser('YY', this)">YY</button>
@@ -439,9 +448,10 @@
                         <div class="twd-preview" id="preview-twd">≈ TWD 0</div>
                     </div>
                     
-                    <button class="intro-btn" style="width: 100%; margin-top: 10px; border-color: #1C2541; color: #1C2541;" onclick="window.addExpense()">記錄支出</button>
+                    <button class="intro-btn" style="width: 100%; margin-top: 20px; border-color: #1C2541; background: #1C2541; color: white;" onclick="window.addExpense()">記錄支出</button>
                 </div>
                 
+                <!-- 5. History Section -->
                 <h3 class="serif" style="padding-left: 10px; margin-bottom: 15px;">近期支出 History</h3>
                 <div id="expense-list">
                     <!-- Loading state for expenses -->
@@ -663,176 +673,246 @@
         // Set log level to debug for firebase errors
         setLogLevel('debug');
 
-        // --- DATA & MESSAGES (Moved to top for readability) ---
+        // --- DATA & MESSAGES (Updated Itinerary) ---
         const tripData = [
             {
                 day: 1, date: "02.02", week: "MON",
                 heroTitle: "函館：百元發熱衣與百萬夜景",
                 heroImg: "https://i.imgur.com/RTJNqwv.jpg", 
                 fallbackImg: "https://images.unsplash.com/photo-1542640244-7e67286feb8f?q=80&w=800&auto=format&fit=crop",
-                weather: { icon: "fa-spinner fa-spin", temp: "Loading..." }, // Placeholder
+                weather: { icon: "fa-spinner fa-spin", temp: "Loading..." },
                 events: [
                     { 
-                        time: "11:10", title: "抵達函館機場 (HKD)", tag: "Arrival", 
-                        desc: "入境手續，領取行李。", 
-                        detail: "地點：函館機場 (HKD)<br>提醒：記得準備好QR code (Visit Japan Web)", 
-                        to: "JR函館站", 
+                        time: "11:10", title: "抵達 函館機場 (HKD)", tag: "Arrival", 
+                        desc: "入境與準備。", 
+                        detail: "【導遊筆記】函館機場雖小，但冬季運作非常有秩序。下機後的體感溫差會讓您瞬間清醒。入境審查通常很快，出關後，別急著離開，深呼吸一口北國冷冽的空氣，這就是北海道的味道。", 
+                        to: "JR 函館站", 
                         location: "Hakodate Airport, Japan"
                     },
                     { 
-                        time: "12:30", title: "機場巴士 -> JR 函館站", tag: "Transport", 
-                        desc: "JR Inn Hakodate 入住放行李。", 
-                        detail: "交通方式：搭乘機場巴士。<br>下車點：JR 函館站前。<br>飯店：JR Inn Hakodate (就在車站旁，交通極便利)。",
+                        time: "12:00", title: "機場巴士 (往 JR 函館站)", tag: "Transport", 
+                        desc: "移動至市區。", 
+                        detail: "【導遊筆記】上車時請注意，日本巴士是「後門上車、前門下車」。沿途您會看到著名的「湯之川溫泉」區，若看到海邊有冒煙的景象，那就是溫泉流進海裡的證明。",
                         navLink: "https://maps.app.goo.gl/SgEccLta3MTxhD4d9?g_st=ac",
                         from: "Hakodate Airport",
                         to: "JR Inn Hakodate", 
-                        transport_info: {type: "機場巴士", departure: "12:30"} 
+                        transport_info: {type: "機場巴士", departure: "12:00"} 
                     },
                     { 
-                        time: "12:45", title: "飯店寄放行李", tag: "Hotel", 
-                        desc: "JR Inn Hakodate 寄放行李。", 
-                        detail: "地點：JR Inn Hakodate (就在車站旁)。先寄放行李，輕裝去購物。", 
+                        time: "12:30", title: "JR Inn Hakodate (寄放)", tag: "Hotel", 
+                        desc: "寄放行李。", 
+                        detail: "【導遊筆記】選擇這間飯店是絕對正確的戰略！它與車站直結，不用拖著行李在雪地裡掙扎。寄放行李時，請順便確認一下大廳提供的「枕頭挑選區」，晚上下手太慢就被搶光了。", 
                         location: "JR Inn Hakodate",
                         navLink: "https://maps.app.goo.gl/SgEccLta3MTxhD4d9?g_st=ac",
                         to: "JR Inn Hakodate" 
                     },
                     { 
-                        time: "13:15", title: "【購物任務】出發", tag: "Transport", 
-                        desc: "從飯店/車站搭計程車出發。", 
-                        detail: "建議計程車來回，效率最高。<br>目的地：UNIQLO 函館昭和店 (Town Plaza)。",
+                        time: "12:50", title: "計程車 (趕時間首選)", tag: "Transport", 
+                        desc: "前往 UNIQLO。", 
+                        detail: "【導遊筆記】為了省下寶貴的 30-40 分鐘，這 2,500 日圓的車資絕對值得。去 UNIQLO 昭和店的巴士班次在離峰時間很稀疏。",
                         navLink: "https://maps.app.goo.gl/s85bmZtawnf7EQY26?g_st=ac",
                         from: "JR Inn Hakodate",
                         to: "UNIQLO 函館昭和店",
-                        transport_info: { type: "計程車", note: "來回" } 
+                        transport_info: { type: "計程車", note: "約2500日圓" } 
                     },
                     { 
-                        time: "13:30", title: "採購：UNIQLO 函館昭和店", tag: "Shopping", 
-                        desc: "13:30-14:30 採購。", 
-                        detail: "UNIQLO 函館昭和店 (路邊店，品項較齊全)。<br>必買：極暖發熱衣 (Heattech Extra Warm/Ultra Warm) 為接下來的行程做準備。",
+                        time: "13:15", title: "任務 1：UNIQLO 昭和店", tag: "Shopping", 
+                        desc: "採購發熱衣。", 
+                        detail: "【導遊筆記】這是北海道的大型路面店，庫存通常比市區百貨店齊全。務必入手「超極暖 (Ultra Warm)」系列的發熱衣與發熱褲，這是為了全世界降雪量最大的青森做做的必要準備。",
                         navLink: "https://maps.app.goo.gl/sDqtgs3kxsz7nGKU9",
                         location: "UNIQLO Hakodate Showa"
                     },
                     {
-                        time: "14:30", title: "返回飯店 Check-in", tag: "Hotel",
-                        desc: "14:30-15:45 辦理入住與卸貨。",
-                        detail: "確認碼：5041223136<br>Pin碼：6993<br>交通方式：從 UNIQLO Town Plaza店 到 函館Jr inn",
-                        location: "JR Inn Hakodate",
-                        navLink: "https://maps.app.goo.gl/SgEccLta3MTxhD4d9?g_st=ac",
+                        time: "14:45", title: "計程車 (返回飯店卸貨)", tag: "Transport",
+                        desc: "回 JR Inn。",
+                        detail: "【導遊筆記】既然買了很多，我們直接搭車回 JR Inn。把戰利品丟回房間（或櫃台），一身輕便再出門。飯店門口排班計程車多，對接下來的行程更方便。",
+                        transport_info: { type: "計程車", note: "返回飯店" },
+                        from: "UNIQLO 函館昭和店",
                         to: "JR Inn Hakodate"
+                    },
+                    {
+                        time: "15:15", title: "飯店卸貨 & 稍作整裝", tag: "Hotel",
+                        desc: "快速整裝。",
+                        detail: "【導遊提醒】動作要快，放好東西、上個廁所，15:30 準時出發，才趕得上夜景的最佳卡位時間。",
+                        location: "JR Inn Hakodate"
+                    },
+                    {
+                        time: "15:30", title: "計程車 (前往纜車站)", tag: "Transport",
+                        desc: "JR 函館站 -> 纜車山麓站。",
+                        detail: "【行程】約 10-15 分鐘車程。",
+                        transport_info: { type: "計程車", note: "往纜車站" },
+                        from: "JR Inn Hakodate",
+                        to: "Hakodate Ropeway"
                     },
                     { 
                         time: "16:00", title: "函館山百萬夜景", tag: "Sightseeing", 
-                        desc: "16:00-16:30 欣賞夜景。", 
-                        detail: "世界三大夜景之一。<br>預計日落時間：16:53 (2026/02/02)。<br>建議提早抵達卡位。<br>纜車官網：<a href='https://334.co.jp/cht/' target='_blank'>營運狀況確認</a>",
+                        desc: "日落 Blue Hour。", 
+                        detail: "【導遊筆記】冬天的日落約在 16:50。一定要待到日落後 20-30 分鐘，這時天空呈現深藍色 (Blue Hour)。記得帶暖暖包貼在手機背面。<br><br>【老鳥說故事】<br>函館夜景被稱為「百萬夜景」的關鍵在於絕無僅有的「地理奇蹟」。左邊是「津輕海峽」，右邊是「函館灣」，這兩片漆黑的大海將發光的城市夾在中間，形成了一個像是女性纖細腰身的形狀（扇形海峽）。冬天的夜景因為雪地反射，亮度提升了 30% 以上。",
                         navLink: "https://maps.app.goo.gl/qcq17CBzd3miW9rM6",
                         location: "Mt. Hakodate Observation Deck",
                         nav: { mapcode: "86 041 028*25" } 
                     },
                     { 
-                        time: "18:30", title: "前往 金森紅磚倉庫", tag: "Sightseeing", 
-                        desc: "營業時間：09:30–19:00", 
-                        detail: "明治時代的紅磚倉庫群，現為購物中心。<br>官網：<a href='https://hakodate-kanemori.com/tw' target='_blank'>金森紅磚倉庫</a><br>地址：北海道函館市末廣町14番12號 (TEL：0138-27-5530)<br>商店〈購物店〉10:00～19:00<br>函館啤酒館 [平日]11:30〜21:30 [國定假日]11:00〜21:00",
+                        time: "17:30", title: "纜車下山 -> 前往金森倉庫", tag: "Transport", 
+                        desc: "步行或計程車。", 
+                        detail: "【導遊筆記】下山時人潮會瞬間爆發。如果纜車排隊超過 30 分鐘，且戶外風雪不大，其實可以考慮搭乘巴士下山。下山後，金森倉庫就在山腳下不遠處。",
+                        transport_info: { type: "纜車/步行" },
+                        to: "Kanemori Red Brick Warehouse"
+                    },
+                    { 
+                        time: "18:00", title: "金森紅磚倉庫群", tag: "Sightseeing", 
+                        desc: "晚餐：幸運小丑漢堡。", 
+                        detail: "【導遊筆記】這裡的紅磚在白雪覆蓋下，有一種歐洲聖誕市集的氛圍。著名的「幸運小丑漢堡」碼頭末廣店，座位數多且有無敵海景。強烈建議現在就吃！點人氣 No.1 的「中華雞腿漢堡」。",
                         navLink: "https://maps.app.goo.gl/psd5nq2yRDC5zD3W6",
                         location: "Kanemori Red Brick Warehouse" 
                     },
                     { 
-                        time: "19:30", title: "晚餐：幸運小丑漢堡", tag: "Food", 
-                        desc: "晚餐時段。", 
-                        detail: "函館必吃名物！分店資訊：<br>- <a href='https://maps.app.goo.gl/Uugj9UD1sZWSvL3r5' target='_blank'>海灣地區本店</a><br>- <a href='https://maps.app.goo.gl/aADDixCzhZDB4dEQ6' target='_blank'>碼頭末廣店</a><br>- <a href='https://maps.app.goo.gl/kdh8oY6iqtx1vt4n7' target='_blank'>函館站前店</a>",
-                        location: "Lucky Pierrot Bay Area Main Store"
+                        time: "18:15", title: "Pastry Snaffle's", tag: "Food", 
+                        desc: "金森洋物館店。", 
+                        detail: "【導遊筆記】抵達倉庫後請先衝這裡！買一顆「Catch Cake (起司歐姆蕾)」，這不是普通起司蛋糕，口感像舒芙蕾般入口即化。不要買整盒，直接在櫃台買單顆站著現吃，這是函館限定的「黃金一口」。",
+                        location: "Pastry Snaffle's Kanemori"
                     },
                     { 
-                        time: "20:30", title: "住宿：JR Inn Hakodate", tag: "Hotel", 
-                        desc: "Day 1 結束，休息。",
+                        time: "19:30", title: "返回飯店", tag: "Transport", 
+                        desc: "散步或計程車。", 
+                        detail: "【導遊筆記】吃飽後，沿著海邊或搭車回飯店。",
+                        transport_info: { type: "計程車/散步" },
+                        to: "JR Inn Hakodate"
+                    },
+                    { 
+                        time: "20:00", title: "休息與大浴場", tag: "Hotel", 
+                        desc: "JR Inn Hakodate。",
+                        detail: "【導遊筆記】經過寒風吹拂，現在最需要的是熱食與熱水。直奔頂樓大浴場，那裡的休息室有一整面的落地窗可以看到列車進出站的軌道夜景，配上一支冰牛奶，這才是完美的 Ending。",
                         location: "JR Inn Hakodate" 
                     }
                 ]
             },
             {
                 day: 2, date: "02.03", week: "TUE",
-                heroTitle: "乘著隼-飛越大海到蘋果之鄉",
+                heroTitle: "新幹線跨海，拜訪奈良美智",
                 heroImg: "https://i.imgur.com/iqO53uS.jpg", 
                 fallbackImg: "https://images.unsplash.com/photo-1532236395709-7d70320fec2d?q=80&w=800",
                 weather: { icon: "fa-spinner fa-spin", temp: "Loading..." },
                 events: [
-                    { time: "08:00", title: "函館朝市 早餐", tag: "Food", desc: "海鮮丼 (步行前往)。", location: "Hakodate Morning Market" },
-                    { time: "10:00", title: "移動至青森", tag: "Transport", desc: "搭乘新幹線等 (JR 新幹線 / 奧羽本線)。", transport_info: { type: "新幹線/JR", departure: "10:00", note: "往青森" }, from: "JR Hakodate Station", to: "JR Aomori Station" },
-                    { time: "13:45", title: "抵達 青森站", tag: "Transport", desc: "到達本州。", location: "JR Aomori Station" },
-                    { time: "14:15", title: "前往 Dormy Inn 放行李", tag: "Transport", desc: "搭計程車。", transport_info: { type: "計程車" }, from: "JR Aomori Station", to: "Dormy Inn Aomori" },
-                    { time: "14:40", title: "前往 青森縣立美術館", tag: "Transport", desc: "搭計程車。", transport_info: { type: "計程車" }, from: "Dormy Inn Aomori", to: "Aomori Museum of Art" },
-                    { time: "16:40", title: "返回市區", tag: "Transport", desc: "搭計程車。", transport_info: { type: "計程車" }, from: "Aomori Museum of Art", to: "Dormy Inn Aomori" },
-                    { time: "18:00", title: "晚餐：青森鄉土料理", tag: "Food", desc: "享用在地美食。", location: "Aomori City Center" },
-                    { time: "19:30", title: "逛唐吉訶德", tag: "Shopping", desc: "離飯店近。", location: "Don Quijote Aomori" },
-                    { time: "21:30", title: "Dormy Inn Aomori", tag: "Hotel", desc: "記得吃免費拉麵、泡湯。", reservation_info: { type: "Hotel", number: "DMAO-10023", name: "YK", check_in: "15:00" }, location: "Dormy Inn Aomori" }
+                    { time: "07:30", title: "函館朝市 早餐", tag: "Food", desc: "釣烏賊體驗。", detail: "【導遊筆記】雖然說是觀光客聖地，但「釣烏賊」體驗真的很有趣，現釣現殺的烏賊肉是透明且爽脆的，完全沒有腥味。", location: "Hakodate Morning Market" },
+                    { time: "09:30", title: "步行回飯店取行李", tag: "Transport", desc: "前往車站。", detail: "【導遊筆記】吃飽喝足散步回飯店拿行李。", from: "Hakodate Morning Market", to: "JR Hakodate Station", transport_info: { type: "步行" } },
+                    { 
+                        time: "10:00", title: "跨海移動：函館 -> 青森", tag: "Transport", 
+                        desc: "三段式接力。", 
+                        detail: "【導遊筆記】這是今天的重頭戲！<br>1. 函館 Liner：普通電車，搶窗邊位置看最後風景。<br>2. 新幹線隼號：全車指定席！鑽進「青函隧道」時會有廣播，這時您正位於深海之下。<br>3. 奧羽本線：抵達新青森後轉乘在來線，6分鐘到市區。", 
+                        transport_info: { type: "JR/新幹線", departure: "10:00", note: "青函隧道" }, 
+                        from: "JR Hakodate Station", 
+                        to: "JR Aomori Station" 
+                    },
+                    { time: "12:15", title: "午餐：青森站周邊", tag: "Food", desc: "Osanai 食堂。", detail: "【導遊筆記】「Osanai (おさない)」是這裡的傳奇食堂，必點「帆立貝味噌燒」。", location: "Osanai Aomori" },
+                    { time: "13:30", title: "計程車 (直奔美術館)", tag: "Transport", desc: "前往美術館。", detail: "【導遊筆記】不建議搭巴士，班距長。計程車費約 2000 多日圓。", transport_info: { type: "計程車" }, from: "JR Aomori Station", to: "Aomori Museum of Art" },
+                    { 
+                        time: "14:00", title: "青森縣立美術館", tag: "Sightseeing", 
+                        desc: "奈良美智與青森犬。", 
+                        detail: "【導遊筆記】這座美術館本身就是一件藝術品。一定要去看奈良美智的「青森犬」，冬天時工作人員會幫大狗戴上一頂「雪帽」！<br><br>【老鳥說故事】<br>美術館的設計理念非常深奧，它是由知名建築師青木淳所設計的。整座美術館並不是「蓋在地上」，而是「埋在土裡」的（靈感來自三內丸山遺跡的壕溝 Trench）。在館內行走像是在探險。那隻巨大的「青森犬」低著頭，在雪地中顯得特別孤獨卻又療癒。", 
+                        location: "Aomori Museum of Art" 
+                    },
+                    { time: "16:00", title: "計程車 (前往 A-FACTORY)", tag: "Transport", desc: "前往港邊。", detail: "【導遊筆記】直接請美術館櫃檯叫車前往青森車站旁的 A-FACTORY。", transport_info: { type: "計程車" }, from: "Aomori Museum of Art", to: "A-FACTORY" },
+                    { 
+                        time: "16:30", title: "A-FACTORY (蘋果工廠)", tag: "Shopping", 
+                        desc: "Cidre 試喝。", 
+                        detail: "【導遊筆記】傍晚點燈後的氣氛極佳。這裡可以慢慢試喝不同濃度的 Cidre (蘋果酒)。<br><br>【老鳥說故事】<br>A-FACTORY 是青森蘋果的「文藝復興」。這棟在海邊發光的房子，代表青森從單純的「農業大縣」華麗轉身為「時尚品牌」。當您喝下那杯蘋果酒，您喝下的不只是酒，而是青森人為了生存與榮耀，在傳統中淬鍊出的新滋味。", 
+                        location: "A-FACTORY" 
+                    },
+                    { time: "17:00", title: "ラグノオ (Raguenau)", tag: "Food", desc: "Polo Chocolat。", detail: "【導遊筆記】就在 A-FACTORY 賣場裡。雖然到處都有賣，但它是青森在地廠商做的，口感紮實濃郁，CP 值極高。", location: "A-FACTORY" },
+                    { time: "17:30", title: "取行李 -> 計程車", tag: "Transport", desc: "前往飯店。", transport_info: { type: "計程車" }, to: "Dormy Inn Aomori" },
+                    { time: "18:00", title: "入住 Dormy Inn Aomori", tag: "Hotel", desc: "換上館內服。", detail: "【導遊筆記】進房後先換上他們提供的舒適館內服 (Samue)，這套衣服可以穿著去吃早餐、泡溫泉甚至吃宵夜。", location: "Dormy Inn Aomori" },
+                    { time: "19:00", title: "晚餐：青森市區", tag: "Food", desc: "津輕三味線演奏。", detail: "【導遊筆記】晚餐推薦去體驗「津輕三味線」的現場演奏。居酒屋「助六」或「Wasshoi」氣氛都很熱鬧。", location: "Aomori City Center" },
+                    { time: "21:30", title: "飯店宵夜", tag: "Food", desc: "夜鳴拉麵。", detail: "【導遊筆記】絕對不能錯過的「夜鳴拉麵」！", location: "Dormy Inn Aomori" }
                 ]
             },
             {
                 day: 3, date: "02.04", week: "WED",
-                heroTitle: "津輕鐵道與弘前雪景",
+                heroTitle: "雪地駕駛初體驗，暖爐列車與蘋果派",
                 heroImg: "https://i.imgur.com/M2AVCI5.jpg", 
                 fallbackImg: "https://images.unsplash.com/photo-1549643276-fbc2bd5f4038?q=80&w=800&auto=format&fit=crop",
                 weather: { icon: "fa-spinner fa-spin", temp: "Loading..." },
                 events: [
-                    { time: "09:00", title: "【租車開始】青森站取車", tag: "Transport", desc: "回飯店載人與行李 (開始自駕)。", transport_info: { type: "自駕", car_type: "雪胎確認" }, from: "Dormy Inn Aomori", to: "Aomori Rental Car" },
-                    { time: "10:15", title: "【任務 1】3COINS+plus", tag: "Shopping", desc: "ELM 購物中心買相機 (自駕)。", nav: { mapcode: "168 649 346*52" }, location: "ELM Shopping Center, Goshogawara" },
-                    { time: "11:10", title: "抵達 津輕五所川原站", tag: "Transport", desc: "停車，買票，等等 (自駕)。", location: "Tsugaru Goshogawara Station" },
-                    { time: "12:30", title: "【任務 2】搭乘「暖爐列車」", tag: "Experience", desc: "津輕鐵道。", location: "Tsugaru Railway" },
-                    { time: "14:15", title: "取車，開往弘前市", tag: "Transport", desc: "自駕前往弘前。", transport_info: { type: "自駕" }, from: "Tsugaru Goshogawara Station", to: "Hirosaki City" },
-                    { time: "15:30", title: "【任務 3：必吃的蘋果派】", tag: "Food", desc: "抵達 藤田紀念庭園 (自駕)。", nav: { mapcode: "71 071 513*78" }, location: "Fujita Memorial Garden, Hirosaki" },
-                    { time: "15:30", title: "大正浪漫喫茶室", tag: "Food", desc: "16:00 前完成點餐。", location: "Taisho Roman Tea Room, Hirosaki" },
-                    { time: "16:30", title: "弘前城 散步", tag: "Sightseeing", desc: "欣賞白天雪景 (步行)。", location: "Hirosaki Castle" },
-                    { time: "17:30", title: "【夜間慢行】返回青森", tag: "Transport", desc: "開車返回 Dormy Inn Aomori (自駕)。", transport_info: { type: "自駕" }, from: "Hirosaki", to: "Dormy Inn Aomori" },
-                    { time: "20:00", title: "Dormy Inn Aomori", tag: "Hotel", desc: "記得吃免費拉麵、泡湯。", location: "Dormy Inn Aomori" }
+                    { time: "08:30", title: "步行至租車點", tag: "Transport", desc: "小心黑冰。", detail: "【導遊筆記】早上路面可能會有「黑冰 (Black Ice)」，看起來像濕潤的路面其實是薄冰，走路千萬要小心。", transport_info: { type: "步行" }, to: "Aomori Station Rental Car" },
+                    { time: "09:00", title: "租車：青森站前", tag: "Transport", desc: "自駕開始。", detail: "【導遊筆記】取車關鍵動作：1. 確認雨刷立起。2. 檢查雪胎。3. 詢問油箱蓋位置。雪地駕駛心法：急煞車、急加速、急轉彎是絕對禁止的。", transport_info: { type: "自駕", car_type: "雪地裝備確認" }, from: "Aomori Rental Car", to: "Goshogawara" },
+                    { time: "10:00", title: "移動：往五所川原", tag: "Drive", desc: "適應雪地駕駛。", detail: "【導遊筆記】剛上路的前 20 分鐘最緊張，請慢慢開，習慣雪地輪胎的抓地力。", transport_info: { type: "自駕" } },
+                    { time: "10:30", title: "超商補給", tag: "Food", desc: "炸干貝美乃滋飯糰。", detail: "【導遊筆記】在開車途中若經過 Lawson 或 FamilyMart，進去早餐區找找看。青森限定的飯糰常會豪邁地包入「整顆帆立貝」拌美乃滋。", location: "Convenience Store" },
+                    { time: "11:00", title: "任務 2：ELM 購物中心", tag: "Shopping", desc: "3COINS+plus。", detail: "【導遊筆記】直奔 3COINS+plus，這裡有很多便宜又好用的雪地小物。", nav: { mapcode: "168 649 346*52" }, location: "ELM Shopping Center" },
+                    { time: "11:45", title: "抵達 津輕五所川原站", tag: "Drive", desc: "停車禮儀。", detail: "【導遊筆記】停好車後，記得把雨刷立起來，這是雪國禮儀。", location: "Tsugaru Goshogawara Station" },
+                    { 
+                        time: "12:00", title: "任務 3：津輕鐵道「暖爐列車」", tag: "Experience", 
+                        desc: "烤魷魚與昭和感。", 
+                        detail: "【導遊筆記】這是昭和時代的活古董！車廂內是真的燒煤炭的暖爐。上車後一定要買烤魷魚，列車長會幫你在暖爐上現烤。<br><br>【老鳥說故事】<br>這列火車是一台行駛在雪原上的「時光機」。外頭是零下幾度的暴風雪，車內卻因為那個燒著紅通通煤炭的「達摩火爐」而溫暖如春。文豪「太宰治」生前也搭過。當列車長把乾魷魚放在火爐頂蓋上「滋～」的一聲，配上一杯清酒，那種「赤裸裸的昭和感」會讓您感動。", 
+                        location: "Tsugaru Railway" 
+                    },
+                    { time: "13:30", title: "移動：往弘前", tag: "Drive", desc: "津輕富士。", detail: "【導遊筆記】前往弘前的路上，若天氣晴朗，左手邊會出現壯麗的「岩木山」，被稱為津輕富士。", transport_info: { type: "自駕" }, to: "Hirosaki" },
+                    { time: "14:30", title: "任務 4：藤田紀念庭園", tag: "Food", desc: "大正浪漫喫茶室。", detail: "【導遊筆記】這裡原本是富豪的別墅，洋館建築非常有氣氛。一定要搶窗邊的位置，看著雪覆蓋的日式庭園吃甜點。", nav: { mapcode: "71 071 513*78" }, location: "Fujita Memorial Garden" },
+                    { time: "14:45", title: "星巴克 弘前公園前店", tag: "Sightseeing", desc: "最美星巴克之一。", detail: "【導遊筆記】如果喫茶室大排長龍，這裡是最強備案。它是利用「舊第八師團長官舍」改建的，保留了大正時代的洋風建築特色。", location: "Starbucks Hirosaki Park" },
+                    { time: "15:45", title: "弘前城 (弘前公園)", tag: "Sightseeing", desc: "雪燈籠。", detail: "【導遊筆記】冬天的弘前城雖然天守閣可能會移動，但重點是「雪燈籠」。", location: "Hirosaki Castle" },
+                    { time: "16:30", title: "移動：返回青森市", tag: "Drive", desc: "國道 7 號。", detail: "【導遊筆記】弘前到青森的國道 7 號非常容易塞車，請預留充裕時間。", transport_info: { type: "自駕" }, to: "Aomori City" },
+                    { time: "18:00", title: "晚餐：青森市區", tag: "Food", desc: "味噌咖哩牛奶拉麵。", detail: "【導遊筆記】今晚推薦嘗試青森市的靈魂美食「味噌咖哩牛奶拉麵」。", location: "Aomori City Center" }
                 ]
             },
             {
                 day: 4, date: "02.05", week: "THU",
-                heroTitle: "八甲田：登上纜車去看看雪怪",
+                heroTitle: "勇闖八甲田，入住星野青森屋",
                 heroImg: "https://i.imgur.com/xOsZDUG.jpg", 
                 fallbackImg: "https://images.unsplash.com/photo-1487667258413-5a089052b658?q=80&w=800",
-                alert: "⚠️ 安全警示：若纜車停駛，請務必原路下山！",
+                alert: "⚠️ 雪地駕駛警示：八甲田山路段積雪極深，請注意路面上方紅箭頭指標！",
                 weather: { icon: "fa-spinner fa-spin", temp: "Loading..." },
                 events: [
-                    { time: "09:00", title: "古川市場 早餐", tag: "Food", desc: "吃「のっけ丼」 (自駕，快去快回)。", location: "Furukawa Market, Aomori" },
-                    { time: "09:30", title: "開車上山前往 八甲田", tag: "Drive", desc: "自駕。", from: "Aomori City", to: "Hakkoda Ropeway" },
-                    { time: "10:40", title: "抵達八甲田纜車站", tag: "Transport", desc: "自駕抵達。", location: "Hakkoda Ropeway Station" },
-                    { time: "11:00", title: "【樹冰觀光】", tag: "Nature", desc: "11:00-12:00 搭纜車看雪怪 (纜車)。", location: "Hakkoda Juhyo (Snow Monsters)" },
-                    { time: "12:30", title: "午餐", tag: "Food", desc: "在八甲田附近或返回三澤的路上 (自駕)。", location: "Hakkoda Mountain Area" },
-                    { time: "14:00", title: "前往 星野集團 青森屋", tag: "Drive", desc: "約 2 小時車程 (自駕)。", transport_info: { type: "自駕", time_estimate: "2小時" }, from: "Hakkoda", to: "Hoshino Resorts Aomoriya" },
-                    { time: "16:00", title: "抵達 星野集團 青森屋", tag: "Hotel", desc: "Check-in。", nav: { mapcode: "84 583 002*44" }, reservation_info: { type: "Resort", number: "HOS-AOM-1234", name: "YK", check_in: "16:00" }, location: "Hoshino Resorts Aomoriya" },
-                    { time: "17:30", title: "晚餐：Nore Sore 食堂", tag: "Food", desc: "自助餐 (飯店內)。", location: "Nore Sore Dining, Aomoriya" }
+                    { time: "08:00", title: "青森魚菜中心 (古川市場)", tag: "Food", desc: "自製海鮮丼。", detail: "【導遊筆記】這是最有趣的早餐體驗！拿著碗去各攤位「選妃」。一定要試試看青森特產「扇貝」。", location: "Furukawa Market" },
+                    { time: "09:30", title: "開車上山：往八甲田", tag: "Drive", desc: "雪牆路段。", detail: "【導遊筆記】全行程最危險路段！隨著海拔升高，路旁積雪會變成兩三公尺高的雪牆。請務必注意路面上方的「紅箭頭」指標。", transport_info: { type: "自駕" }, from: "Aomori City", to: "Hakkoda Ropeway" },
+                    { 
+                        time: "10:30", title: "八甲田山樹冰 (纜車)", tag: "Nature", 
+                        desc: "雪怪 (Ice Monsters)。", 
+                        detail: "【導遊筆記】這裡的樹冰比藏王更原始、更狂野。搭纜車到山頂後，您會置身於冰封世界。<br><br>【老鳥說故事】<br>您即將見到的不只是樹和雪，而是大自然雕塑出的「雪怪」。樹冰形成需要三個奇蹟：1. 大量的「青森冷杉」；2. 來自西伯利亞的季風與過冷水滴；3. 氣溫持續低於零下 5 度。八甲田山的樹冰規模宏大，看著成千上萬隻「雪怪」沿著山坡排山倒海而來，那種震懾感與敬畏心油然而生。", 
+                        location: "Hakkoda Ropeway" 
+                    },
+                    { time: "12:00", title: "午餐：纜車站食堂", tag: "Food", desc: "蕎麥麵或咖哩。", location: "Hakkoda Ropeway Station" },
+                    { time: "12:45", title: "酸湯溫泉 (Sukayu Onsen)", tag: "Sightseeing", desc: "千人風呂外觀。", detail: "【導遊筆記】即使不進去泡，光是把車停下來，看那棟全檜木建造的古老建築，以及屋頂上厚達 3-4 公尺的驚人積雪，就非常值得。", location: "Sukayu Onsen" },
+                    { time: "13:00", title: "移動：前往星野青森屋", tag: "Drive", desc: "導航設定注意。", detail: "【導遊筆記】導航陷阱警告！請務必設定經由「陸奧收費道路」往三澤方向。", transport_info: { type: "自駕", time_estimate: "2小時" }, to: "Hoshino Resorts Aomoriya" },
+                    { time: "15:30", title: "入住：星野集團 青森屋", tag: "Hotel", desc: "祭典主題樂園。", detail: "【導遊筆記】歡迎來到祭典的主題樂園！一進門就會有服務員遞上迎賓蘋果汁。", nav: { mapcode: "84 583 002*44" }, reservation_info: { type: "Resort", number: "HOS-AOM-1234", name: "YK", check_in: "15:30" }, location: "Hoshino Resorts Aomoriya" },
+                    { time: "17:00", title: "晚餐：Nore Sore 食堂", tag: "Food", desc: "媽媽的味道。", detail: "【導遊筆記】一定要進攻「現煎牛排」和「炸扇貝」。", location: "Nore Sore Dining" },
+                    { time: "19:00", title: "溫泉：浮湯", tag: "Relax", desc: "露天溫泉。", detail: "【導遊筆記】這裡的露天溫泉設計得像漂浮在水池上。泡在熱湯裡，看著燈光映照在雪地上，夢幻指數破表。", location: "Aomoriya Onsen" }
                 ]
             },
             {
                 day: 5, date: "02.06", week: "FRI",
-                heroTitle: "星野青森屋 與 雪地華爾茲",
+                heroTitle: "馬車巡遊與輕鬆滑雪",
                 heroImg: "https://i.imgur.com/ViOh2sW.jpg", 
                 fallbackImg: "https://images.unsplash.com/photo-1548777123-e213912bc571?q=80&w=800",
                 weather: { icon: "fa-spinner fa-spin", temp: "Loading..." },
                 events: [
-                    { time: "10:00", title: "【飯店活動】暖爐馬車", tag: "Relax", desc: "參加 Stove Carriage (步行，飯店內)。", location: "Stove Carriage Experience, Aomoriya" },
-                    { time: "11:30", title: "出發前往滑雪場", tag: "Drive", desc: "從青森屋出發 (自駕)。", from: "Hoshino Resorts Aomoriya", to: "Skylight Ski Area" },
-                    { time: "13:00", title: "抵達 滑雪場", tag: "Activity", desc: "綠之大地與羅曼之森公園町營滑雪場。", location: "Skylight Ski Area" },
-                    { time: "13:00", title: "午餐", tag: "Food", desc: "13:00-14:00 在滑雪場用餐。", location: "Skylight Ski Area" },
-                    { time: "14:00", title: "【滑雪體驗】", tag: "Activity", desc: "14:00-16:00 在滑雪場練習滑雪 (租借裝備)。", location: "Skylight Ski Area" },
-                    { time: "16:00", title: "返回星野集團 青森屋", tag: "Drive", desc: "16:00-17:30 自駕返回。", transport_info: { type: "自駕", time_estimate: "1.5小時" }, from: "Skylight Ski Area", to: "Hoshino Resorts Aomoriya" },
-                    { time: "17:30", title: "飯店內活動/休息", tag: "Relax", desc: "可利用時間前往溫泉。", location: "Hoshino Resorts Aomoriya" },
-                    { time: "20:00", title: "【文化體驗】陸奧祭典屋", tag: "Culture", desc: "觀賞表演 (步行，飯店內)。", location: "Michinoku Festival Arts, Aomoriya" }
+                    { time: "07:30", title: "Nore Sore 食堂 早餐", tag: "Food", desc: "自製海鮮丼。", detail: "【導遊筆記】早餐的亮點是「帆立貝味噌燒」和「自製海鮮丼」。", location: "Nore Sore Dining" },
+                    { time: "09:00", title: "暖爐馬車 (需預約)", tag: "Experience", desc: "津輕方言導覽。", detail: "【導遊筆記】坐在有暖爐的馬車裡，馬夫會一邊趕馬一邊用津輕方言聊天。", location: "Aomoriya Park" },
+                    { time: "11:00", title: "移動：前往滑雪場", tag: "Drive", desc: "莫蘭之森。", detail: "【導遊筆記】附近的「莫蘭之森 (Komaki Onsen Ski Area)」是個小而美的滑雪場，人通常不多。", transport_info: { type: "自駕" }, to: "Komaki Onsen Ski Area" },
+                    { time: "11:30", title: "滑雪體驗", tag: "Activity", desc: "粉雪體驗。", detail: "【導遊筆記】即使不滑雪，租個雪盆 (Sled) 來玩也超開心！這裡的雪質是粉雪 (Powder Snow)。", location: "Komaki Onsen Ski Area" },
+                    { time: "15:30", title: "移動：返回飯店", tag: "Drive", desc: "回溫。", detail: "【導遊筆記】玩雪後身體會濕冷，回到飯店第一件事就是直奔「元湯」或再次去「浮湯」回溫。", transport_info: { type: "自駕" }, to: "Hoshino Resorts Aomoriya" },
+                    { time: "16:00", title: "歡騰廣場", tag: "Relax", desc: "Jawamegu Hiroba。", detail: "【導遊筆記】位於飯店地下樓層的廣場，永遠都在過節。", location: "Jawamegu Hiroba" },
+                    { time: "18:00", title: "晚餐", tag: "Food", desc: "飯店內。", location: "Hoshino Resorts Aomoriya" },
+                    { 
+                        time: "20:00", title: "陸奧祭典屋", tag: "Culture", 
+                        desc: "睡魔祭表演。", 
+                        detail: "【導遊筆記】絕對必看！如果這趟旅程只能選一個表演，就是這個。<br><br>【老鳥說故事】<br>為什麼青森人對「祭典」這麼瘋狂？因為這裡的冬天太長、太冷、太黑了。睡魔祭 (Nebuta) 的原意是趕走夏日農忙時期的睡魔與災厄，但我認為，這更是喚醒人們靈魂的儀式。在陸奧祭典屋，您將聽到撼動心臟的太鼓聲，與「Rassera!」的吶喊。這不只是一場秀，這是青森人在宣告：「我們熬過了冬天，我們還活著！」", 
+                        location: "Michinoku Matsuriya" 
+                    }
                 ]
             },
             {
                 day: 6, date: "02.07", week: "SAT",
-                heroTitle: "返程-踏著雪花滿載而歸",
+                heroTitle: "踏著雪花滿載而歸",
                 heroImg: "https://i.imgur.com/edlDbD7.jpg", 
                 fallbackImg: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=800",
                 weather: { icon: "fa-spinner fa-spin", temp: "Loading..." },
                 events: [
-                    { time: "10:00", title: "【返程】開車離開飯店", tag: "Transport", desc: "務必準時 (自駕)。", from: "Hoshino Resorts Aomoriya" },
-                    { time: "10:00", title: "前往 青森機場 (AOJ)", tag: "Drive", desc: "10:00-12:30 行駛收費道路等 (自駕，注意安全駕駛)。", transport_info: { type: "自駕", time_estimate: "2.5小時" }, from: "Hoshino Resorts Aomoriya", to: "Aomori Airport" },
-                    { time: "13:00", title: "抵達 青森機場 (AOJ)", tag: "Transport", desc: "抵達機場。", location: "Aomori Airport" },
-                    { time: "13:00", title: "還車", tag: "Transport", desc: "13:00-13:30 加滿油，還車手續。", location: "Aomori Airport Car Rental" },
-                    { time: "14:00", title: "【最終任務】採買伴手禮", tag: "Shopping", desc: "機場免稅店/土產店 (機場內)。", location: "Aomori Airport Duty Free" },
-                    { time: "15:30", title: "搭機返台", tag: "Flight", desc: "BR 121。", reservation_info: { type: "Flight", number: "BR121", departure: "15:30" }, location: "Aomori Airport" }
+                    { time: "08:00", title: "最後享受：早餐/溫泉", tag: "Relax", desc: "推薦元湯。", detail: "【導遊筆記】離別前的最後一泡。推薦去飯店園區入口處的「元湯」。", location: "Aomoriya Motoyu" },
+                    { time: "10:00", title: "移動：前往青森機場", tag: "Drive", desc: "準時出發。", detail: "【導遊筆記】最後一次提醒：冬季趕飛機，寧可早到三小時，不可晚到一分鐘。", transport_info: { type: "自駕", time_estimate: "2.5小時" }, from: "Hoshino Resorts Aomoriya", to: "Aomori Airport" },
+                    { time: "12:00", title: "機場周邊：午餐/加油", tag: "Food", desc: "加滿油。", detail: "【導遊筆記】進機場前最後一項任務：加滿油。", location: "Aomori Airport Area" },
+                    { time: "12:30", title: "青森機場還車", tag: "Transport", desc: "檢查車況。", detail: "【導遊筆記】還車時，工作人員會檢查外觀。", location: "Aomori Airport Car Rental" },
+                    { time: "13:00", title: "機場報到 (AOJ)", tag: "Transport", desc: "辦理登機。", detail: "【導遊筆記】青森機場小而美。", location: "Aomori Airport" },
+                    { time: "13:30", title: "最後採買", tag: "Shopping", desc: "機場 2F 免稅店。", detail: "【導遊筆記】這裡是最後衝刺區！必買整顆蘋果、Patissier's 蘋果派、源垂燒肉醬。", location: "Aomori Airport Duty Free" },
+                    { time: "15:30", title: "搭機返台", tag: "Flight", desc: "BR 121。", detail: "【導遊筆記】飛機起飛時，請往下看，那片白雪覆蓋的大地、八甲田山的輪廓、陸奧灣的深藍，將是您這趟旅程最美的句點。辛苦了！", reservation_info: { type: "Flight", number: "BR121", departure: "15:30" }, location: "Aomori Airport" }
                 ]
             }
         ];
@@ -1362,14 +1442,6 @@
         // --- REAL WEATHER FETCHING ---
         function getIconClass(wmoCode) {
             // WMO Weather interpretation codes (WW)
-            // 0: Clear
-            // 1, 2, 3: Cloud
-            // 45, 48: Fog
-            // 51-55: Drizzle
-            // 61-65: Rain
-            // 71-77: Snow
-            // 80-82: Showers
-            // 95-99: Thunderstorm
             if (wmoCode === 0) return "fa-sun";
             if (wmoCode >= 1 && wmoCode <= 3) return "fa-cloud-sun";
             if (wmoCode === 45 || wmoCode === 48) return "fa-smog";
@@ -1416,9 +1488,6 @@
                 if (!resHak.daily || !resAom.daily) throw new Error("Weather API data incomplete");
 
                 // Map data to tripData
-                // Logic: Day 1 gets Hakodate[0], Days 2-6 get Aomori[1..5]
-                // Open-Meteo returns array of 6 days (Mon-Sat) based on our request
-                
                 tripData.forEach((day, index) => {
                     let source = (index === 0) ? resHak : resAom;
                     let i = index; // 0 to 5
