@@ -10,7 +10,7 @@
     <link rel="manifest" href="data:application/json;base64,eyJkZWZhdWx0X25hbWUiOiAiTFZPWUFHRSIsICJuYW1lIjogIuaVmeeXheaVsS3mgqLmjI3lvojmsbwiLCAic2hvcnRfbmFtZSI6ICJcdTcyNDFcdTRmOTMiLCAiZGlzcGxheSI6ICJzdGFuZGFsb25lIiwgInN0YXJ0X3VybCI6ICIuLyIsICJpY29ucyI6IFt7ICJzcmMiOiAiaWNvbjE5Mi5wbmciLCAic2l6ZXMiOiAiMTkyeDE5MiIsICJ0eXBlIjogImltYWdlL3BuZyIgfSwgezogInNyYyI6ICJpY29uNTEyLnBuZyIsICJzaXplcyI6ICI1MTJ4NTEyIiwgInR5cGUiOiAiaW1hZ2UvcG5nIiB9XSwgImJhY2tncm91bmRfY29sb3IiOiAiIzFDMjU0MSIsICJ0aGVtZV9jb2xvciI6ICIjQjQ5QjY3IiB9">
     
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Noto+Serif+TC:wght@300;500;700&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Noto+Serif+TC:wght@300;500;700&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
     
     <style>
         :root {
@@ -59,38 +59,117 @@
         .info-value { font-size: 0.95rem; font-weight: 500; color: var(--accent-main); text-align: right; }
 
 
-        /* --- INTRO --- */
+        /* --- INTRO SCREEN REDESIGN (UX/UI Optimized) --- */
         #intro-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
-            background: var(--accent-main); color: white;
+            background: linear-gradient(180deg, #1C2541 0%, #151b30 100%); /* 深邃午夜漸層 */
+            color: white;
             z-index: 9999; display: flex; flex-direction: column;
             justify-content: center; align-items: center;
             transition: transform 1s cubic-bezier(0.77, 0, 0.175, 1);
             padding: 0 30px;
+            overflow: hidden; /* 防止雪花超出 */
         }
-        
+
+        /* 背景飄雪容器 */
+        #snow-container {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 1;
+        }
+
+        .snowflake {
+            position: absolute;
+            color: #FFF;
+            opacity: 0.8;
+            top: -20px;
+            animation: fall linear forwards;
+            font-size: 1rem;
+            text-shadow: 0 0 5px rgba(255,255,255,0.8);
+        }
+
+        @keyframes fall {
+            to { transform: translateY(105vh); }
+        }
+
+        /* 內容層級 */
         .intro-text {
+            position: relative; z-index: 10;
             text-align: center;
             display: flex;
             flex-direction: column;
             align-items: center;
+            width: 100%;
+            max-width: 400px;
         }
 
-        .intro-countdown-block { margin-bottom: 40px; opacity: 0; animation: fadeIn 1.5s ease forwards 0.3s; text-align: center; }
-        .countdown-value { font-size: 5rem; line-height: 1; font-weight: 300; color: var(--accent-gold); font-family: var(--font-serif); }
-        .intro-btn {
-            margin-top: 50px; padding: 15px 40px; border: 1px solid rgba(255,255,255,0.3);
-            background: transparent; color: white; font-family: var(--font-serif);
-            font-size: 1.1rem; letter-spacing: 2px; cursor: pointer; transition: 0.3s;
-            opacity: 0; animation: fadeIn 1.5s ease forwards 1s;
+        /* 1. 中央浮動雪花圖標 */
+        .intro-main-icon {
+            font-size: 4.5rem;
+            color: var(--accent-gold);
+            margin-bottom: 20px;
+            filter: drop-shadow(0 0 15px rgba(180, 155, 103, 0.4));
+            animation: floatIcon 6s ease-in-out infinite;
+            opacity: 0;
+            animation: floatIcon 6s ease-in-out infinite, fadeIn 1.5s ease forwards 0.2s;
         }
-        .intro-btn:active { background: rgba(255,255,255,0.1); }
-        @keyframes fadeIn { to { opacity: 1; } }
-        
-        #dynamic-intro-text {
+
+        @keyframes floatIcon {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(5deg); }
+        }
+
+        .intro-countdown-block { 
+            margin-bottom: 40px; 
+            opacity: 0; 
+            animation: fadeIn 1.5s ease forwards 0.5s; 
+            text-align: center; 
+            position: relative;
+        }
+
+        /* 數字樣式優化 */
+        .countdown-value { 
+            font-size: 6.5rem; 
+            line-height: 1; 
+            font-weight: 300; 
+            color: var(--accent-gold); 
             font-family: var(--font-serif);
-            font-size: 1.1rem; 
-            margin-top: 20px; 
+            margin-bottom: 10px;
+            text-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        .countdown-label {
+            font-size: 0.75rem;
+            letter-spacing: 6px; /* 增加字距營造高級感 */
+            color: rgba(255,255,255,0.6);
+            text-transform: uppercase;
+            font-weight: 400;
+            margin-top: -5px;
+        }
+
+        .intro-title {
+            font-family: var(--font-serif);
+            font-size: 1.8rem;
+            letter-spacing: 2px;
+            margin-bottom: 5px;
+            font-weight: 500;
+            opacity: 0;
+            animation: fadeIn 1.5s ease forwards 0.8s;
+        }
+
+        .intro-subtitle {
+            font-family: var(--font-serif);
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.5);
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+            opacity: 0;
+            animation: fadeIn 1.5s ease forwards 0.8s;
+        }
+
+        #dynamic-intro-text {
+            font-family: var(--font-sans);
+            font-size: 0.95rem; 
+            margin-top: 10px; 
             color: rgba(255,255,255,0.9); 
             max-width: 320px; 
             text-align: center; 
@@ -100,10 +179,36 @@
             align-items: center;
             justify-content: center;
             opacity: 0;
-            transition: opacity 1.5s ease-in-out;
+            animation: fadeIn 1.5s ease forwards 1s;
             padding: 5px 0;
             letter-spacing: 1px;
+            font-weight: 300;
         }
+
+        .intro-btn {
+            margin-top: 40px; 
+            padding: 14px 50px; 
+            border: 1px solid rgba(255,255,255,0.4);
+            border-radius: 50px; /* 改為圓角膠囊狀 */
+            background: rgba(255,255,255,0.05); 
+            backdrop-filter: blur(5px);
+            color: white; 
+            font-family: var(--font-serif);
+            font-size: 1.1rem; 
+            letter-spacing: 3px; 
+            cursor: pointer; 
+            transition: all 0.4s ease;
+            opacity: 0; 
+            animation: fadeIn 1.5s ease forwards 1.2s;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        .intro-btn:hover { background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.8); transform: translateY(-2px); }
+        .intro-btn:active { transform: translateY(1px); }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* --- END INTRO STYLES --- */
+
 
         /* --- HEADER --- */
         .elegant-header {
@@ -323,14 +428,24 @@
 
     <!-- Intro -->
     <div id="intro-screen">
+        <!-- 雪花背景容器 (JS 生成) -->
+        <div id="snow-container"></div>
+
         <div class="intro-text">
+            <!-- 1. 中央浮動的雪花圖標 -->
+            <i class="fa-solid fa-snowflake intro-main-icon"></i>
+            
+            <!-- 2. 倒數區域 -->
             <div class="intro-countdown-block">
                 <div class="countdown-value" id="days-left">--</div>
-                <div style="font-size: 0.9rem; letter-spacing: 3px; color: rgba(255,255,255,0.8);">DAYS LEFT</div>
+                <div class="countdown-label">DAYS TO DEPARTURE</div>
             </div>
-            <div class="intro-title" style="letter-spacing: 3px; font-size: 1.2rem; text-align: center;">函館-青森 林檎之旅</div>
+
+            <div class="intro-title">林檎與白雪之旅</div>
+            <div class="intro-subtitle">Hokkaido & Aomori Winter Adventure</div>
+            
             <div id="dynamic-intro-text"></div> 
-            <button class="intro-btn" onclick="window.enterApp()">開啟旅程</button>
+            <button class="intro-btn" onclick="window.enterApp()">開始旅程</button>
         </div>
     </div>
 
@@ -448,7 +563,7 @@
                         <div class="twd-preview" id="preview-twd">≈ TWD 0</div>
                     </div>
                     
-                    <button class="intro-btn" style="width: 100%; margin-top: 20px; border-color: #1C2541; background: #1C2541; color: white;" onclick="window.addExpense()">記錄支出</button>
+                    <button class="intro-btn" style="width: 100%; margin-top: 20px; border-color: #1C2541; background: #1C2541; color: white; opacity:1; animation:none;" onclick="window.addExpense()">記錄支出</button>
                 </div>
                 
                 <!-- 5. History Section -->
@@ -629,7 +744,7 @@
                 <h3 class="serif" style="font-size: 1.2rem; margin-bottom: 15px; color: var(--accent-main);">預訂 / 交通資訊</h3>
             </div>
 
-            <!-- 導遊筆記區塊 (Modified) -->
+            <!-- 導遊筆記區塊 -->
             <div style="margin-top: 25px;">
                 <div style="display:flex; align-items:center; margin-bottom: 10px; border-bottom: 1px solid #EEE; padding-bottom: 5px;">
                     <h3 class="serif" style="font-size: 1.2rem; margin: 0; color: var(--accent-main);">導遊筆記 / Local Insight</h3>
@@ -673,7 +788,7 @@
         // Set log level to debug for firebase errors
         setLogLevel('debug');
 
-        // --- DATA & MESSAGES (Updated Itinerary) ---
+        // --- DATA & MESSAGES ---
         const tripData = [
             {
                 day: 1, date: "02.02", week: "MON",
@@ -718,7 +833,7 @@
                     { 
                         time: "13:15", title: "任務 1：UNIQLO 昭和店", tag: "Shopping", 
                         desc: "採購發熱衣。", 
-                        detail: "【導遊筆記】這是北海道的大型路面店，庫存通常比市區百貨店齊全。務必入手「超極暖 (Ultra Warm)」系列的發熱衣與發熱褲，這是為了全世界降雪量最大的青森做做的必要準備。",
+                        detail: "【導遊筆記】這是北海道的大型路面店，庫存通常比市區百貨店齊全。務必入手「超極暖 (Ultra Warm)」系列的發熱衣與發熱褲，這是為了全世界降雪量最大的青森做做的必要準備。", 
                         navLink: "https://maps.app.goo.gl/sDqtgs3kxsz7nGKU9",
                         location: "UNIQLO Hakodate Showa"
                     },
@@ -747,7 +862,7 @@
                     { 
                         time: "16:00", title: "函館山百萬夜景", tag: "Sightseeing", 
                         desc: "日落 Blue Hour。", 
-                        detail: "【導遊筆記】冬天的日落約在 16:50。一定要待到日落後 20-30 分鐘，這時天空呈現深藍色 (Blue Hour)。記得帶暖暖包貼在手機背面。<br><br>【老鳥說故事】<br>函館夜景被稱為「百萬夜景」的關鍵在於絕無僅有的「地理奇蹟」。左邊是「津輕海峽」，右邊是「函館灣」，這兩片漆黑的大海將發光的城市夾在中間，形成了一個像是女性纖細腰身的形狀（扇形海峽）。冬天的夜景因為雪地反射，亮度提升了 30% 以上。",
+                        detail: "【導遊筆記】冬天的日落約在 16:50。一定要待到日落後 20-30 分鐘，這時天空呈現深藍色 (Blue Hour)。記得帶暖暖包貼在手機背面。<br><br>【老鳥說故事】<br>函館夜景被稱為「百萬夜景」的關鍵在於絕無僅有的「地理奇蹟」。左邊是「津輕海峽」，右邊是「函館灣」，這兩片漆黑的大海將發光的城市夾在中間，形成了一個像是女性纖細腰身的形狀（扇形海峽）。冬天的夜景因為雪地反射，亮度提升了 30% 以上。", 
                         navLink: "https://maps.app.goo.gl/qcq17CBzd3miW9rM6",
                         location: "Mt. Hakodate Observation Deck",
                         nav: { mapcode: "86 041 028*25" } 
@@ -755,34 +870,34 @@
                     { 
                         time: "17:30", title: "纜車下山 -> 前往金森倉庫", tag: "Transport", 
                         desc: "步行或計程車。", 
-                        detail: "【導遊筆記】下山時人潮會瞬間爆發。如果纜車排隊超過 30 分鐘，且戶外風雪不大，其實可以考慮搭乘巴士下山。下山後，金森倉庫就在山腳下不遠處。",
+                        detail: "【導遊筆記】下山時人潮會瞬間爆發。如果纜車排隊超過 30 分鐘，且戶外風雪不大，其實可以考慮搭乘巴士下山。下山後，金森倉庫就在山腳下不遠處。", 
                         transport_info: { type: "纜車/步行" },
                         to: "Kanemori Red Brick Warehouse"
                     },
                     { 
                         time: "18:00", title: "金森紅磚倉庫群", tag: "Sightseeing", 
                         desc: "晚餐：幸運小丑漢堡。", 
-                        detail: "【導遊筆記】這裡的紅磚在白雪覆蓋下，有一種歐洲聖誕市集的氛圍。著名的「幸運小丑漢堡」碼頭末廣店，座位數多且有無敵海景。強烈建議現在就吃！點人氣 No.1 的「中華雞腿漢堡」。",
+                        detail: "【導遊筆記】這裡的紅磚在白雪覆蓋下，有一種歐洲聖誕市集的氛圍。著名的「幸運小丑漢堡」碼頭末廣店，座位數多且有無敵海景。強烈建議現在就吃！點人氣 No.1 的「中華雞腿漢堡」。", 
                         navLink: "https://maps.app.goo.gl/psd5nq2yRDC5zD3W6",
                         location: "Kanemori Red Brick Warehouse" 
                     },
                     { 
                         time: "18:15", title: "Pastry Snaffle's", tag: "Food", 
                         desc: "金森洋物館店。", 
-                        detail: "【導遊筆記】抵達倉庫後請先衝這裡！買一顆「Catch Cake (起司歐姆蕾)」，這不是普通起司蛋糕，口感像舒芙蕾般入口即化。不要買整盒，直接在櫃台買單顆站著現吃，這是函館限定的「黃金一口」。",
+                        detail: "【導遊筆記】抵達倉庫後請先衝這裡！買一顆「Catch Cake (起司歐姆蕾)」，這不是普通起司蛋糕，口感像舒芙蕾般入口即化。不要買整盒，直接在櫃台買單顆站著現吃，這是函館限定的「黃金一口」。", 
                         location: "Pastry Snaffle's Kanemori"
                     },
                     { 
                         time: "19:30", title: "返回飯店", tag: "Transport", 
                         desc: "散步或計程車。", 
-                        detail: "【導遊筆記】吃飽後，沿著海邊或搭車回飯店。",
+                        detail: "【導遊筆記】吃飽後，沿著海邊或搭車回飯店。", 
                         transport_info: { type: "計程車/散步" },
                         to: "JR Inn Hakodate"
                     },
                     { 
                         time: "20:00", title: "休息與大浴場", tag: "Hotel", 
                         desc: "JR Inn Hakodate。",
-                        detail: "【導遊筆記】經過寒風吹拂，現在最需要的是熱食與熱水。直奔頂樓大浴場，那裡的休息室有一整面的落地窗可以看到列車進出站的軌道夜景，配上一支冰牛奶，這才是完美的 Ending。",
+                        detail: "【導遊筆記】經過寒風吹拂，現在最需要的是熱食與熱水。直奔頂樓大浴場，那裡的休息室有一整面的落地窗可以看到列車進出站的軌道夜景，配上一支冰牛奶，這才是完美的 Ending。", 
                         location: "JR Inn Hakodate" 
                     }
                 ]
@@ -1037,10 +1152,35 @@
             measurementId: "G-2J6NCTHZ6B"
         };
 
-        // 設定 App ID (用於資料庫路徑區隔，可維持預設或自訂)
-        // 如果是在公開環境，通常會由系統注入 __app_id，否則使用預設值
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'aomori2026-17310';
         
+        // --- SNOW ANIMATION LOGIC ---
+        function createSnow() {
+            const container = document.getElementById('snow-container');
+            const snowflakeCount = 40; // 增加雪花數量
+            
+            for (let i = 0; i < snowflakeCount; i++) {
+                const snowflake = document.createElement('div');
+                snowflake.classList.add('snowflake');
+                snowflake.innerHTML = '❄';
+                
+                // 隨機位置、大小和動畫持續時間
+                const startLeft = Math.random() * 100;
+                const animDuration = Math.random() * 5 + 5; // 5-10s
+                const animDelay = Math.random() * 5;
+                const size = Math.random() * 0.8 + 0.4; // 0.4 - 1.2rem
+                const opacity = Math.random() * 0.6 + 0.2;
+
+                snowflake.style.left = startLeft + '%';
+                snowflake.style.animationDuration = animDuration + 's';
+                snowflake.style.animationDelay = animDelay + 's';
+                snowflake.style.fontSize = size + 'rem';
+                snowflake.style.opacity = opacity;
+
+                container.appendChild(snowflake);
+            }
+        }
+
         // --- FIRESTORE SUBSCRIPTION FUNCTIONS ---
         const subscribeToExpenses = () => {
             const q = query(expensesRef);
@@ -1091,12 +1231,9 @@
         };
 
         const subscribeToTodos = () => {
-            // NOTE: Firestore does not support orderBy without explicit index in the environment,
-            // so we will rely on client-side sorting or fetch order. Using simple query for stability.
             const q = query(todosRef); 
             onSnapshot(q, (snapshot) => {
                 todos = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                // Client-side sort by timestamp descending
                 todos.sort((a, b) => (b.timestamp?.toMillis() || 0) - (a.timestamp?.toMillis() || 0));
                 renderTodos();
             }, (error) => {
@@ -1172,17 +1309,14 @@
                 if (dailyLocations.length === 1) {
                     dailyMapUrl = `https://www.google.com/maps/embed/v1/search?key=${GOOGLE_MAPS_API_KEY}&q=${encodeURIComponent(dailyLocations[0])}`;
                 } else {
-                    // Route: Origin -> Waypoints -> Destination
                     const origin = encodeURIComponent(dailyLocations[0]);
                     const destination = encodeURIComponent(dailyLocations[dailyLocations.length - 1]);
-                    // Google Maps Embed API allows waypoints separated by pipe char
                     const waypoints = dailyLocations.slice(1, -1).map(l => encodeURIComponent(l)).join('|');
                     
                     dailyMapUrl = `https://www.google.com/maps/embed/v1/directions?key=${GOOGLE_MAPS_API_KEY}&origin=${origin}&destination=${destination}&waypoints=${waypoints}&mode=driving`;
                 }
             }
 
-            // Utility to safely stringify and encode for HTML attribute
             const safeStringify = (obj) => {
                 return encodeURIComponent(JSON.stringify(obj)).replace(/'/g, "%27");
             };
@@ -1197,7 +1331,6 @@
                 ${alertHtml}
             `;
 
-            // Add Daily Map Card if URL exists
             if (dailyMapUrl) {
                 html += `
                     <div class="map-overview-card" style="margin-bottom: 30px;">
@@ -1252,20 +1385,17 @@
             const now = new Date();
             let activeDayIndex = -1;
             
-            // Find the index of the current trip day
             tripData.forEach((day, idx) => {
-                // Assuming trip date format is "MM.DD" in current year (2025 for now)
-                const year = now.getFullYear(); // Use current year for comparison
+                const year = now.getFullYear();
                 const tripDate = new Date(`${year}-${day.date.replace('.', '-')}`);
                 const currentDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
-                // Normalize date objects for comparison
                 if (tripDate.toDateString() === currentDate.toDateString()) {
                     activeDayIndex = idx;
                 }
             });
             
-            if (activeDayIndex === -1) return; // Not traveling today
+            if (activeDayIndex === -1) return;
 
             const currentDayEvents = tripData[activeDayIndex].events;
             const currentHour = now.getHours();
@@ -1285,7 +1415,6 @@
                         const [nh, nm] = currentDayEvents[idx+1].time.split(':').map(Number);
                         nextEventTimeVal = nh * 60 + nm;
                     } else {
-                        // Assume event lasts 90 minutes if it's the last one
                         nextEventTimeVal = eventTimeVal + 90;
                     }
 
@@ -1329,7 +1458,6 @@
             }
             
             if(view === 'wallet') { 
-                // Ensure expense list is visible on wallet view
                 renderExpenses(); 
                 updateExpenseDashboard(); 
             }
@@ -1398,7 +1526,6 @@
         function renderFullTripMap() {
             const mapIframe = document.getElementById('trip-map-overview-iframe');
             if(mapIframe) {
-                // Coordinates covering Hakodate (South) to Aomori (North) region
                 const centerLat = 40.7;
                 const centerLng = 140.7;
                 const zoom = 8;
@@ -1409,13 +1536,11 @@
 
         async function setupFirebase() { 
             try {
-                // 優先使用上方填寫的 firebaseConfig，若無則嘗試讀取環境變數 (相容舊有邏輯)
                 const envConfig = typeof __firebase_config !== 'undefined' ? __firebase_config : '{}';
                 const configToUse = (firebaseConfig.apiKey && firebaseConfig.apiKey !== "") ? firebaseConfig : JSON.parse(envConfig);
 
                 if (!configToUse.apiKey) {
                     console.warn("Firebase config missing. Running in offline/demo mode.");
-                    // Fallback to local rendering if no config
                     renderTrip();
                     return;
                 }
@@ -1424,29 +1549,35 @@
                 db = getFirestore(app);
                 auth = getAuth(app);
                 
-                // Sign in with custom token or anonymously
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await signInWithCustomToken(auth, __initial_auth_token);
+                // --- FIX: Add robust try/catch for custom token sign-in ---
+                const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+                if (initialAuthToken) {
+                    try {
+                        await signInWithCustomToken(auth, initialAuthToken);
+                        console.log("Signed in with custom token successfully.");
+                    } catch (e) {
+                        console.warn("Custom token sign-in failed (auth/custom-token-mismatch or similar). Falling back to anonymous sign-in.", e);
+                        await signInAnonymously(auth);
+                    }
                 } else {
                     await signInAnonymously(auth);
                 }
+                // --- END FIX ---
 
-                // Get userId after authentication
+
                 const userId = auth.currentUser?.uid || crypto.randomUUID(); 
                 
-                // Define public collections
                 expensesRef = collection(db, `artifacts/${appId}/public/data/expenses`);
                 notesRef = collection(db, `artifacts/${appId}/public/data/notes`);
                 todosRef = collection(db, `artifacts/${appId}/public/data/todos`);
                 
-                // Start listeners
                 subscribeToExpenses();
                 subscribeToNotes();
                 subscribeToTodos();
 
             } catch (error) {
                 console.error("Firebase Initialization Error:", error);
-                // Fallback to local rendering if firebase fails
                 renderTrip();
             }
         };
@@ -1454,7 +1585,7 @@
         function startDynamicText() {
             const textElement = document.getElementById('dynamic-intro-text');
             const hour = new Date().getHours();
-            let key = 'rest'; // Default to rest
+            let key = 'rest'; 
             if (hour >= 8 && hour <= 17) key = 'work';
             else if (hour >= 18 && hour <= 23) key = 'evening';
 
@@ -1464,9 +1595,7 @@
             textElement.style.opacity = 1;
         }
 
-        // --- REAL WEATHER FETCHING ---
         function getIconClass(wmoCode) {
-            // WMO Weather interpretation codes (WW)
             if (wmoCode === 0) return "fa-sun";
             if (wmoCode >= 1 && wmoCode <= 3) return "fa-cloud-sun";
             if (wmoCode === 45 || wmoCode === 48) return "fa-smog";
@@ -1481,27 +1610,21 @@
         function getMonday(d) {
             d = new Date(d);
             const day = d.getDay();
-            const diff = d.getDate() - day + (day === 0 ? -6 : 1); // adjust when day is sunday
+            const diff = d.getDate() - day + (day === 0 ? -6 : 1); 
             return new Date(d.setDate(diff));
         }
 
         async function fetchWeather() {
             try {
-                // Calculate current week Monday and Saturday
                 const today = new Date();
                 const monday = getMonday(today);
                 const saturday = new Date(monday);
                 saturday.setDate(monday.getDate() + 5);
 
-                // Format dates for API: YYYY-MM-DD
                 const formatDate = (date) => date.toISOString().split('T')[0];
                 const startStr = formatDate(monday);
                 const endStr = formatDate(saturday);
 
-                // Hakodate: 41.7687, 140.7290 (Day 1)
-                // Aomori: 40.8244, 140.7400 (Day 2-6)
-                
-                // Open-Meteo API URLs
                 const urlHakodate = `https://api.open-meteo.com/v1/forecast?latitude=41.7687&longitude=140.7290&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&start_date=${startStr}&end_date=${endStr}`;
                 const urlAomori = `https://api.open-meteo.com/v1/forecast?latitude=40.8244&longitude=140.7400&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&start_date=${startStr}&end_date=${endStr}`;
 
@@ -1512,10 +1635,9 @@
 
                 if (!resHak.daily || !resAom.daily) throw new Error("Weather API data incomplete");
 
-                // Map data to tripData
                 tripData.forEach((day, index) => {
                     let source = (index === 0) ? resHak : resAom;
-                    let i = index; // 0 to 5
+                    let i = index; 
                     
                     if(source.daily.temperature_2m_max[i] !== undefined) {
                         const max = Math.round(source.daily.temperature_2m_max[i]);
@@ -1529,9 +1651,8 @@
                     }
                 });
 
-                // Re-render if timeline is active
                 if(currentIdx !== -1) renderTrip();
-                // Re-render navbar
+                
                 const nav = document.getElementById('date-nav');
                 if(nav) nav.innerHTML = tripData.map((d, i) => `<div class="d-item ${i === currentIdx ? 'active' : ''}" onclick="window.switchDay(${i})">
                         <div class="d-week">${d.week}</div>
@@ -1552,11 +1673,10 @@
             document.getElementById('intro-screen').style.transform = 'translateY(-100%)';
             renderTrip();
             fetchRate();
-            fetchWeather(); // Start fetching real weather
+            fetchWeather(); 
             renderFullTripMap();
             window.hasScrolledToLive = false;
             checkActiveEvent();
-            // Check active event every minute
             setInterval(checkActiveEvent, 60000); 
         }
 
@@ -1588,7 +1708,6 @@
             try { updateDoc(doc(todosRef, id), { completed: !currentStatus }); } catch (e) { console.error("Error toggling todo:", e); }
         }
 
-        // Modified: Removed confirm() to comply with environment rules
         function deleteTodo(id) {
             if (!todosRef) return;
             try { deleteDoc(doc(todosRef, id)); } catch (e) { console.error("Error deleting todo:", e); }
@@ -1626,7 +1745,6 @@
             const inputEl = document.getElementById('m-note-input');
             
             if (editEl.classList.contains('hidden')) {
-                // Set input value to current display value (allowing for HTML content)
                 inputEl.value = descEl.innerText.trim();
                 descEl.classList.add('hidden');
                 editEl.classList.remove('hidden');
@@ -1641,7 +1759,6 @@
             if (!currentEventId || !notesRef) return;
             
             const descEl = document.getElementById('m-desc');
-            // Allow HTML content in saved note for rich text/links if user uses them
             if(descEl) descEl.innerHTML = newText.replace(/\n/g, '<br>'); 
             
             document.getElementById('m-note-edit').classList.add('hidden');
@@ -1658,7 +1775,6 @@
             document.getElementById('trans-jp-result').innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> 正在翻譯...";
             outputBox.classList.remove('hidden');
             
-            // Simulating API call failure and defaulting to local phrase card suggestion
             setTimeout(() => {
                 document.getElementById('trans-jp-result').innerHTML = "翻譯服務串接中...請暫時使用字卡。"; 
                 showFs("翻譯服務串接中...請暫時使用字卡。", input);
@@ -1714,7 +1830,6 @@
             const mTitle = document.getElementById('m-title');
             const currentTitle = mTitle ? mTitle.innerText : '';
             if(currentTitle) {
-                // Use the generic search intent
                 window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(currentTitle)}`, '_blank');
             }
         }
@@ -1725,7 +1840,6 @@
             }
         }
         
-        // Modified: Removed confirm/alert to comply with rules
         function copyMapCode() {
             const mcEl = document.getElementById('m-mapcode');
             const code = mcEl ? mcEl.innerText : '';
@@ -1737,7 +1851,6 @@
             textArea.select();
             try {
                 document.execCommand('copy');
-                // Note: In a production app, use a toast/snackbar for confirmation
                 console.log('MapCode copied:', code);
             } catch (err) {
                  console.error('Failed to copy MapCode:', err);
@@ -1770,13 +1883,11 @@
             if(mTitle) mTitle.innerText = data.title;
             
             let displayNote = data.detail || data.desc;
-            // Use local/synced note if available
             if(localNotes[currentEventId]) displayNote = localNotes[currentEventId];
             
             const mDesc = document.getElementById('m-desc');
             if(mDesc) mDesc.innerHTML = displayNote; 
             
-            // Reset note editor state
             const mNoteEdit = document.getElementById('m-note-edit');
             if(mNoteEdit) mNoteEdit.classList.add('hidden');
             if(mDesc) mDesc.classList.remove('hidden');
@@ -1795,7 +1906,6 @@
             let infoHtml = '';
             const headerHtml = `<h3 class="serif" style="font-size: 1.2rem; margin-bottom: 15px; color: var(--accent-main);">預訂 / 交通資訊</h3>`;
 
-            // Reservation Info
             if (data.reservation_info) {
                 const res = data.reservation_info;
                 infoGroup.classList.remove('hidden');
@@ -1805,7 +1915,6 @@
                 infoHtml += createInfoItem('fa-users', '人數', res.guests);
             } 
             
-            // Transport Info
             if (data.transport_info) {
                 const trans = data.transport_info;
                 infoGroup.classList.remove('hidden');
@@ -1830,7 +1939,6 @@
                 mapSec.classList.add('hidden');
             }
             
-            // Navigation Button Logic
             currentNavLink = data.navLink;
             const btnNavigate = document.getElementById('btn-navigate');
             if(currentNavLink) {
@@ -1855,7 +1963,6 @@
             document.querySelector('.modal-overlay').classList.add('active');
         }
 
-        // --- GLOBAL ASSIGNMENT (Make functions accessible from HTML) ---
         window.enterApp = enterApp;
         window.switchView = switchView;
         window.switchDay = switchDay;
@@ -1883,10 +1990,10 @@
         window.checkActiveEvent = checkActiveEvent; 
         window.updateExpenseDashboard = updateExpenseDashboard; 
 
-        // --- ONLOAD EXECUTION ---
         window.onload = function() {
+            createSnow(); // Start Snow Animation
             setupFirebase();
-            const start = new Date("2026-02-02").getTime(); // Assuming 2026 for trip start
+            const start = new Date("2026-02-02").getTime();
             const now = new Date().getTime();
             const days = Math.ceil((start - now) / (1000 * 60 * 60 * 24));
             
@@ -1897,7 +2004,7 @@
             if(headerDaysEl) headerDaysEl.innerText = days > 0 ? days : 0;
             
             const tripView = document.getElementById('view-trip');
-            if(tripView) tripView.style.display = 'block'; // Ensure trip view is initially visible
+            if(tripView) tripView.style.display = 'block'; 
             
             setTimeout(startDynamicText, 1000);
         };
