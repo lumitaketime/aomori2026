@@ -1024,9 +1024,23 @@
         let currentFilterUser = null; 
         let currentNavLink = null;
         
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+        // --- FIREBASE CONFIGURATION ---
+        // 請將您的 Firebase Console > Project Settings > General > SDK setup and configuration 
+        // 中的 firebaseConfig 物件內容填入下方：
+        const firebaseConfig = {
+            apiKey: "AIzaSyCbHhcAo25W6yDPNT05bDkxkRIrwfUM2o4",
+            authDomain: "aomori2026-17310.firebaseapp.com",
+            projectId: "aomori2026-17310",
+            storageBucket: "aomori2026-17310.firebasestorage.app",
+            messagingSenderId: "645422415004",
+            appId: "1:645422415004:web:b8017ec6dd040d1dae4159",
+            measurementId: "G-2J6NCTHZ6B"
+        };
 
+        // 設定 App ID (用於資料庫路徑區隔，可維持預設或自訂)
+        // 如果是在公開環境，通常會由系統注入 __app_id，否則使用預設值
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'aomori2026-17310';
+        
         // --- FIRESTORE SUBSCRIPTION FUNCTIONS ---
         const subscribeToExpenses = () => {
             const q = query(expensesRef);
@@ -1395,7 +1409,18 @@
 
         async function setupFirebase() { 
             try {
-                const app = initializeApp(firebaseConfig);
+                // 優先使用上方填寫的 firebaseConfig，若無則嘗試讀取環境變數 (相容舊有邏輯)
+                const envConfig = typeof __firebase_config !== 'undefined' ? __firebase_config : '{}';
+                const configToUse = (firebaseConfig.apiKey && firebaseConfig.apiKey !== "") ? firebaseConfig : JSON.parse(envConfig);
+
+                if (!configToUse.apiKey) {
+                    console.warn("Firebase config missing. Running in offline/demo mode.");
+                    // Fallback to local rendering if no config
+                    renderTrip();
+                    return;
+                }
+
+                const app = initializeApp(configToUse);
                 db = getFirestore(app);
                 auth = getAuth(app);
                 
