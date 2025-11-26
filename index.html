@@ -82,7 +82,7 @@
             color: #FFF;
             opacity: 0.8;
             top: -20px;
-            animation: fall linear forwards;
+            animation: fall linear infinite; /* Modified: Changed forwards to infinite */
             font-size: 1rem;
             text-shadow: 0 0 5px rgba(255,255,255,0.8);
         }
@@ -102,12 +102,12 @@
             max-width: 400px;
         }
 
-        /* 1. 中央浮動雪花圖標 */
+        /* 1. 中央浮動雪花圖標 - Modified for elegance */
         .intro-main-icon {
-            font-size: 4.5rem;
+            font-size: 2.2rem; /* Modified: Smaller size for elegance */
             color: var(--accent-gold);
             margin-bottom: 20px;
-            filter: drop-shadow(0 0 15px rgba(180, 155, 103, 0.4));
+            filter: drop-shadow(0 0 10px rgba(180, 155, 103, 0.3));
             animation: floatIcon 6s ease-in-out infinite;
             opacity: 0;
             animation: floatIcon 6s ease-in-out infinite, fadeIn 1.5s ease forwards 0.2s;
@@ -115,7 +115,7 @@
 
         @keyframes floatIcon {
             0%, 100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-15px) rotate(5deg); }
+            50% { transform: translateY(-8px) rotate(5deg); } /* Modified: More subtle float */
         }
 
         .intro-countdown-block { 
@@ -1168,7 +1168,7 @@
                 const startLeft = Math.random() * 100;
                 const animDuration = Math.random() * 5 + 5; // 5-10s
                 const animDelay = Math.random() * 5;
-                const size = Math.random() * 0.8 + 0.4; // 0.4 - 1.2rem
+                const size = Math.random() * 0.4 + 0.2; // Modified: Smaller snowflakes (0.2-0.6rem)
                 const opacity = Math.random() * 0.6 + 0.2;
 
                 snowflake.style.left = startLeft + '%';
