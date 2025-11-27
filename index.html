@@ -263,16 +263,16 @@
             padding: 0 20px; 
             max-width: 600px; 
             margin: 0 auto; 
-            /* Design Note: Prepare for transform animation */
-            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease; 
+            /* Modified: Faster transition (0.35s) for snappier feel */
+            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.35s ease; 
             will-change: transform, opacity;
         }
 
-        /* Animation Classes */
+        /* Animation Classes - Modified for 0.35s */
         .slide-out-left { transform: translateX(-50px); opacity: 0; }
         .slide-out-right { transform: translateX(50px); opacity: 0; }
-        .slide-in-from-right { animation: slideInRight 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
-        .slide-in-from-left { animation: slideInLeft 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+        .slide-in-from-right { animation: slideInRight 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+        .slide-in-from-left { animation: slideInLeft 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
 
         @keyframes slideInRight {
             from { transform: translateX(50px); opacity: 0; }
@@ -1177,6 +1177,7 @@
         let currentEventId = null; 
         let currentFilterUser = null; 
         let currentNavLink = null;
+        let isAnimating = false;
         
         // --- FIREBASE CONFIGURATION ---
         const firebaseConfig = {
@@ -1546,7 +1547,15 @@
         }
 
         function switchDay(i) {
-            if(i === currentIdx) return;
+            // Animation Lock
+            if (isAnimating) return;
+
+            const tripView = document.getElementById('view-trip');
+            const isHidden = tripView.classList.contains('hidden') || tripView.style.display === 'none';
+
+            // Guard: If clicking the same day AND the trip view is visible, do nothing.
+            // If hidden, we proceed because we need to show the trip view.
+            if(i === currentIdx && !isHidden) return;
             
             // Calculate direction for animation
             // i > currentIdx: Going forward (Next Day) -> Content comes from Right (-1)
@@ -1555,12 +1564,17 @@
 
             currentIdx = i;
             
-            const tripView = document.getElementById('view-trip');
-            if (tripView.classList.contains('hidden') || tripView.style.display === 'none') {
+            if (isHidden) {
                 switchView('trip'); 
+                // Force render with no slide animation (0) to ensure content is up-to-date
+                renderTrip(0); 
+                checkActiveEvent();
             } else {
+                // Lock animation for short duration to prevent cutoff
+                isAnimating = true;
                 renderTrip(direction);
                 checkActiveEvent();
+                setTimeout(() => { isAnimating = false; }, 350); // Matches CSS transition duration
             }
         }
 
@@ -1574,6 +1588,8 @@
             let isHorizontalDrag = false;
 
             tripView.addEventListener('touchstart', (e) => {
+                if (isAnimating) return; // Block swipe if animating
+                
                 startX = e.touches[0].clientX;
                 startY = e.touches[0].clientY;
                 isDragging = true;
@@ -1630,7 +1646,8 @@
                 const container = document.getElementById('timeline-container');
                 
                 // Restore transition for the snap animation
-                container.style.transition = 'transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease';
+                // Modified: Faster snap back (0.35s)
+                container.style.transition = 'transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.35s ease';
 
                 const threshold = window.innerWidth * 0.25; // Swipe 25% of screen to trigger
                 
