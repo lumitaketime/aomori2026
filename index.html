@@ -23,7 +23,8 @@
             --accent-gold: #B49B67; /* 香檳金 */
             --accent-red: #D9333F; /* 青森紅 */
             --line-light: #E0E0E0;
-            --shadow-soft: 0 10px 40px -10px rgba(0,0,0,0.08);
+            /* Design Note: Increased shadow spread for better separation during swipes */
+            --shadow-soft: 0 12px 45px -10px rgba(0,0,0,0.1); 
             --font-serif: 'Cormorant Garamond', 'Noto Serif TC', serif;
             --font-sans: 'Noto Sans TC', sans-serif;
             --safe-bottom: env(safe-area-inset-bottom);
@@ -38,6 +39,9 @@
             font-family: var(--font-sans);
             padding-bottom: calc(90px + var(--safe-bottom)); /* 底部空間 */
             overflow-x: hidden;
+            /* Design Note: Prevents browser navigation swipe on X-axis */
+            overscroll-behavior-x: none; 
+            overscroll-behavior-y: auto;
         }
 
         h1, h2, h3, .serif { font-family: var(--font-serif); }
@@ -223,12 +227,14 @@
         .status-label { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 2px; color: var(--text-secondary); text-align: right; margin-top: 5px; }
 
         /* DATE SCROLLER */
-        .date-scroller { display: flex; gap: 15px; overflow-x: auto; padding-bottom: 10px; scrollbar-width: none; }
+        .date-scroller { display: flex; gap: 15px; overflow-x: auto; padding-bottom: 10px; scrollbar-width: none; scroll-behavior: smooth; }
         .date-scroller::-webkit-scrollbar { display: none; }
         .d-item { 
             min-width: 60px; text-align: center; opacity: 0.4; transition: 0.4s; cursor: pointer; 
             display: flex; flex-direction: column; align-items: center;
             user-select: none;
+            /* Design Note: Prevent shrinking to keep consistent tap target */
+            flex-shrink: 0; 
         }
         .d-item.active { opacity: 1; transform: scale(1.1); }
         .d-week { font-size: 0.7rem; letter-spacing: 1px; margin-bottom: 5px; text-transform: uppercase; }
@@ -241,8 +247,41 @@
         .d-weather i { font-size: 0.8rem; margin-bottom: 2px; }
         .d-item.active .d-weather { color: var(--accent-main); font-weight: 600; }
 
-        /* --- TRIP VIEW --- */
-        .container { padding: 0 20px; max-width: 600px; margin: 0 auto; }
+        /* --- TRIP VIEW & GESTURES --- */
+        .view-section {
+            /* Ensure smooth transitions */
+            width: 100%;
+        }
+
+        #view-trip {
+            overflow-x: hidden; /* Hide the sliding content */
+            min-height: 80vh; /* Ensure touch area covers screen */
+            touch-action: pan-y; /* Allow vertical scroll, handle horizontal in JS */
+        }
+
+        .container { 
+            padding: 0 20px; 
+            max-width: 600px; 
+            margin: 0 auto; 
+            /* Design Note: Prepare for transform animation */
+            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease; 
+            will-change: transform, opacity;
+        }
+
+        /* Animation Classes */
+        .slide-out-left { transform: translateX(-50px); opacity: 0; }
+        .slide-out-right { transform: translateX(50px); opacity: 0; }
+        .slide-in-from-right { animation: slideInRight 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+        .slide-in-from-left { animation: slideInLeft 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+
+        @keyframes slideInRight {
+            from { transform: translateX(50px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes slideInLeft {
+            from { transform: translateX(-50px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
         
         .hero-card {
             position: relative; height: 280px; border-radius: 4px; overflow: hidden; margin-bottom: 20px;
@@ -1140,8 +1179,6 @@
         let currentNavLink = null;
         
         // --- FIREBASE CONFIGURATION ---
-        // 請將您的 Firebase Console > Project Settings > General > SDK setup and configuration 
-        // 中的 firebaseConfig 物件內容填入下方：
         const firebaseConfig = {
             apiKey: "AIzaSyCbHhcAo25W6yDPNT05bDkxkRIrwfUM2o4",
             authDomain: "aomori2026-17310.firebaseapp.com",
@@ -1280,7 +1317,25 @@
             return `<div class="info-item"><div class="info-label"><i class="fa-solid ${icon}"></i><span>${label}</span></div><div class="info-value">${value}</div></div>`;
         }
 
-        function renderTrip() {
+        function centerDateNav(idx) {
+            const nav = document.getElementById('date-nav');
+            const activeEl = nav.children[idx];
+            if (activeEl) {
+                const navWidth = nav.clientWidth;
+                const elLeft = activeEl.offsetLeft;
+                const elWidth = activeEl.clientWidth;
+                
+                // Calculate center position
+                const targetLeft = elLeft - (navWidth / 2) + (elWidth / 2);
+                
+                nav.scrollTo({
+                    left: targetLeft,
+                    behavior: 'smooth'
+                });
+            }
+        }
+
+        function renderTrip(direction = 0) {
             const nav = document.getElementById('date-nav');
             nav.innerHTML = tripData.map((d, i) => `<div class="d-item ${i === currentIdx ? 'active' : ''}" onclick="window.switchDay(${i})">
                     <div class="d-week">${d.week}</div>
@@ -1291,6 +1346,9 @@
                     </div>
                 </div>
             `).join('');
+
+            // Focus Centering
+            setTimeout(() => centerDateNav(currentIdx), 100);
 
             const day = tripData[currentIdx];
             const container = document.getElementById('timeline-container');
@@ -1378,7 +1436,26 @@
             }).join('');
             html += `</div>`;
 
-            container.innerHTML = html;
+            // Spring Animation Logic
+            // Clean previous animation classes
+            container.className = "container";
+            
+            if (direction === 0) {
+                // Initial load, no slide
+                container.innerHTML = html;
+            } else {
+                // Direction 1 (Swipe Right/Prev): Content comes from LEFT
+                // Direction -1 (Swipe Left/Next): Content comes from RIGHT
+                
+                // Set content
+                container.innerHTML = html;
+                
+                if (direction === 1) {
+                    container.classList.add('slide-in-from-left');
+                } else if (direction === -1) {
+                    container.classList.add('slide-in-from-right');
+                }
+            }
         }
 
         function checkActiveEvent() {
@@ -1470,15 +1547,111 @@
 
         function switchDay(i) {
             if(i === currentIdx) return;
+            
+            // Calculate direction for animation
+            // i > currentIdx: Going forward (Next Day) -> Content comes from Right (-1)
+            // i < currentIdx: Going backward (Prev Day) -> Content comes from Left (1)
+            const direction = i > currentIdx ? -1 : 1;
+
             currentIdx = i;
             
             const tripView = document.getElementById('view-trip');
             if (tripView.classList.contains('hidden') || tripView.style.display === 'none') {
                 switchView('trip'); 
             } else {
-                renderTrip();
+                renderTrip(direction);
                 checkActiveEvent();
             }
+        }
+
+        // --- GESTURE SETUP ---
+        function setupGestures() {
+            const tripView = document.getElementById('view-trip');
+            let startX = 0;
+            let startY = 0;
+            let currentTranslate = 0;
+            let isDragging = false;
+            let isHorizontalDrag = false;
+
+            tripView.addEventListener('touchstart', (e) => {
+                startX = e.touches[0].clientX;
+                startY = e.touches[0].clientY;
+                isDragging = true;
+                isHorizontalDrag = false;
+                
+                // Remove transition during drag for direct 1:1 movement
+                const container = document.getElementById('timeline-container');
+                container.style.transition = 'none';
+            }, { passive: true });
+
+            tripView.addEventListener('touchmove', (e) => {
+                if (!isDragging) return;
+                
+                const currentX = e.touches[0].clientX;
+                const currentY = e.touches[0].clientY;
+                const diffX = currentX - startX;
+                const diffY = currentY - startY;
+
+                // Determine intent (Horizontal swipe vs Vertical scroll)
+                if (!isHorizontalDrag) {
+                    if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 10) {
+                        isHorizontalDrag = true;
+                    } else if (Math.abs(diffY) > Math.abs(diffX) && Math.abs(diffY) > 10) {
+                        // User is scrolling vertically, stop tracking horizontal swipe
+                        isDragging = false;
+                        return; 
+                    }
+                }
+
+                if (isHorizontalDrag) {
+                    // Prevent default scrolling behavior handled by CSS overscroll-behavior-x, 
+                    // but we apply transform logic here
+                    
+                    // Rubber Banding Logic (Resistance at edges)
+                    if ((currentIdx === 0 && diffX > 0) || (currentIdx === tripData.length - 1 && diffX < 0)) {
+                        currentTranslate = diffX * 0.3; // High resistance
+                    } else {
+                        currentTranslate = diffX;
+                    }
+
+                    const container = document.getElementById('timeline-container');
+                    container.style.transform = `translateX(${currentTranslate}px)`;
+                }
+            }, { passive: true });
+
+            tripView.addEventListener('touchend', (e) => {
+                if (!isDragging || !isHorizontalDrag) {
+                    // Restore transition even if not dragged
+                    document.getElementById('timeline-container').style.transition = '';
+                    return;
+                }
+                
+                isDragging = false;
+                const container = document.getElementById('timeline-container');
+                
+                // Restore transition for the snap animation
+                container.style.transition = 'transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease';
+
+                const threshold = window.innerWidth * 0.25; // Swipe 25% of screen to trigger
+                
+                if (Math.abs(currentTranslate) > threshold) {
+                    if (currentTranslate > 0 && currentIdx > 0) {
+                        // Swiped Right -> Go to Prev Day
+                        switchDay(currentIdx - 1);
+                    } else if (currentTranslate < 0 && currentIdx < tripData.length - 1) {
+                        // Swiped Left -> Go to Next Day
+                        switchDay(currentIdx + 1);
+                    } else {
+                        // Edge case (Rubber banding snap back)
+                        container.style.transform = 'translateX(0)';
+                    }
+                } else {
+                    // Not enough distance, snap back
+                    container.style.transform = 'translateX(0)';
+                }
+                
+                currentTranslate = 0;
+            });
         }
 
         function updateExpenseDashboard() {
@@ -1542,6 +1715,7 @@
                 if (!configToUse.apiKey) {
                     console.warn("Firebase config missing. Running in offline/demo mode.");
                     renderTrip();
+                    setupGestures();
                     return;
                 }
 
@@ -1549,7 +1723,6 @@
                 db = getFirestore(app);
                 auth = getAuth(app);
                 
-                // --- FIX: Add robust try/catch for custom token sign-in ---
                 const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
 
                 if (initialAuthToken) {
@@ -1557,14 +1730,12 @@
                         await signInWithCustomToken(auth, initialAuthToken);
                         console.log("Signed in with custom token successfully.");
                     } catch (e) {
-                        console.warn("Custom token sign-in failed (auth/custom-token-mismatch or similar). Falling back to anonymous sign-in.", e);
+                        console.warn("Custom token sign-in failed. Falling back to anonymous.", e);
                         await signInAnonymously(auth);
                     }
                 } else {
                     await signInAnonymously(auth);
                 }
-                // --- END FIX ---
-
 
                 const userId = auth.currentUser?.uid || crypto.randomUUID(); 
                 
@@ -1579,8 +1750,9 @@
             } catch (error) {
                 console.error("Firebase Initialization Error:", error);
                 renderTrip();
+                setupGestures();
             }
-        };
+        }
 
         function startDynamicText() {
             const textElement = document.getElementById('dynamic-intro-text');
@@ -1653,6 +1825,7 @@
 
                 if(currentIdx !== -1) renderTrip();
                 
+                // Re-render nav to update weather icons
                 const nav = document.getElementById('date-nav');
                 if(nav) nav.innerHTML = tripData.map((d, i) => `<div class="d-item ${i === currentIdx ? 'active' : ''}" onclick="window.switchDay(${i})">
                         <div class="d-week">${d.week}</div>
@@ -1672,6 +1845,7 @@
         function enterApp() {
             document.getElementById('intro-screen').style.transform = 'translateY(-100%)';
             renderTrip();
+            setupGestures(); // Init gestures after app enter
             fetchRate();
             fetchWeather(); 
             renderFullTripMap();
