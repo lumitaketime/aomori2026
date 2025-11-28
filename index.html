@@ -10,11 +10,11 @@
     <link rel="manifest" href="manifest.json">
     
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Noto+Serif+TC:wght@300;500;700&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Noto+Serif+TC:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            /* Palette: Luxury Winter */
+            /* Palette: Luxury Winter (Original) */
             --bg-body: #F9F8F4;
             --bg-card: #FFFFFF;
             --text-primary: #1A1A1A;
@@ -23,11 +23,24 @@
             --accent-gold: #B49B67; /* 香檳金 */
             --accent-red: #D9333F; /* 青森紅 */
             --line-light: #E0E0E0;
-            /* Design Note: Increased shadow spread for better separation during swipes */
             --shadow-soft: 0 12px 45px -10px rgba(0,0,0,0.1); 
             --font-serif: 'Cormorant Garamond', 'Noto Serif TC', serif;
             --font-sans: 'Noto Sans TC', sans-serif;
             --safe-bottom: env(safe-area-inset-bottom);
+
+            /* --- Receipt Printer Variables (New) --- */
+            --receipt-bg-body: #EAE8E0; 
+            --machine-bg: #2C3550; 
+            --machine-dark: #1a2033;
+            --receipt-gold: #C5A870;
+            --input-bg: #151b2b;
+            --receipt-paper: #FDFDFD;
+            --paper-width: 290px;
+            --apple-red: #FF3B30;
+            --status-green: #00FF94;
+            --status-red: #FF453A;
+            --status-orange: #FFaa00;
+            --paper-texture: url("data:image/svg+xml,%3Csvg width='4' height='4' viewBox='0 0 4 4' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 3h1v1H1V3zm2-2h1v1H3V1z' fill='%23000000' fill-opacity='0.03' fill-rule='evenodd'/%3E%3C/svg%3E");
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -39,7 +52,6 @@
             font-family: var(--font-sans);
             padding-bottom: calc(90px + var(--safe-bottom)); /* 底部空間 */
             overflow-x: hidden;
-            /* Design Note: Prevents browser navigation swipe on X-axis */
             overscroll-behavior-x: none; 
             overscroll-behavior-y: auto;
         }
@@ -358,57 +370,7 @@
             vertical-align: middle; letter-spacing: 1px;
         }
 
-        /* --- WALLET VIEW --- */
-        .wallet-card { background: white; padding: 25px; border-radius: 8px; box-shadow: var(--shadow-soft); margin-bottom: 20px; }
-        .rate-badge { background: #E8F5E9; color: #2E7D32; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; display: inline-block; margin-bottom: 10px; font-weight: bold; }
-        .input-elegant { width: 100%; border: none; border-bottom: 1px solid var(--line-light); padding: 15px 0; font-size: 1.1rem; background: transparent; outline: none; border-radius: 0; }
-        .twd-preview { font-size: 0.9rem; color: var(--accent-gold); margin-top: 5px; text-align: right; font-weight: 500;}
-        
-        .user-selector { display: flex; gap: 10px; margin-bottom: 20px; }
-        .user-btn { flex: 1; padding: 10px; border: 1px solid var(--line-light); border-radius: 4px; background: transparent; color: var(--text-secondary); cursor: pointer; transition: 0.2s; font-family: var(--font-serif); font-size: 1rem; }
-        .user-btn.active { background: var(--accent-main); color: white; border-color: var(--accent-main); }
-        
-        /* EXPENSE DASHBOARD */
-        .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 25px; }
-        .dashboard-item { 
-            background: white; padding: 15px 5px; border-radius: 8px; text-align: center; 
-            border: 1px solid #EEE; cursor: pointer; transition: 0.3s; 
-        }
-        .dashboard-item.active { border-color: var(--accent-gold); background: #FFF9F0; }
-        .dash-avatar { width: 32px; height: 32px; background: var(--accent-main); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 8px; font-size: 0.8rem; }
-        .dash-total { font-family: var(--font-serif); font-size: 1.1rem; color: var(--accent-main); font-weight: bold; }
-        .dash-label { font-size: 0.7rem; color: #999; margin-top: 2px; }
-
-        .expense-item { display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid #EEE; align-items: center; }
-        .exp-user { width: 30px; height: 30px; border-radius: 50%; background: var(--accent-main); color: white; display: flex; justify-content: center; align-items: center; font-size: 0.7rem; margin-right: 10px; }
-        .exp-meta { display: flex; align-items: center; }
-        
-        /* WIDGET TABS */
-        .widget-tabs { display: flex; background: #EEE; border-radius: 20px; padding: 4px; margin-bottom: 15px; }
-        .w-tab { flex: 1; text-align: center; padding: 8px 0; font-size: 0.85rem; color: #666; border-radius: 16px; cursor: pointer; transition: 0.3s; user-select: none; }
-        .w-tab.active { background: white; color: var(--accent-main); font-weight: bold; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-
-        /* CURRENCY CONVERTER */
-        #currency-converter { background: #F0F4F8; padding: 12px; border-radius: 8px; margin-bottom: 10px; border: 1px solid #E0E0E0; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-        .conv-col { flex: 1; display: flex; flex-direction: column; align-items: center; }
-        .conv-input { border: none; border-bottom: 1px solid var(--accent-gold); background: transparent; font-size: 1.1rem; font-family: var(--font-serif); text-align: center; padding: 4px 0; width: 100%; color: var(--accent-main); outline: none; }
-        .conv-label { font-size: 0.7rem; color: #888; margin-top: 4px; font-weight: 600; }
-
-        /* TO-DO LIST */
-        #todo-widget { background: #FFF; border: 1px solid #EEE; border-radius: 8px; padding: 15px; margin-bottom: 20px; }
-        .todo-input-row { display: flex; gap: 10px; margin-bottom: 15px; }
-        .todo-input { flex: 1; border: none; border-bottom: 1px solid #DDD; padding: 8px; font-size: 0.95rem; outline: none; }
-        .todo-add-btn { background: var(--accent-main); color: white; border: none; border-radius: 4px; width: 36px; height: 36px; cursor: pointer; }
-        .todo-list { list-style: none; padding: 0; margin: 0; }
-        .todo-item { display: flex; align-items: center; padding: 10px 0; border-bottom: 1px solid #F5F5F5; }
-        .todo-check { margin-right: 12px; cursor: pointer; color: #DDD; font-size: 1.2rem; }
-        .todo-check.checked { color: var(--accent-gold); }
-        .todo-text { flex: 1; font-size: 0.95rem; color: #333; }
-        .todo-text.checked { text-decoration: line-through; color: #AAA; }
-        .todo-del { color: #DDD; cursor: pointer; padding: 5px; }
-        .todo-del:hover { color: var(--accent-red); }
-
-        /* --- OTHER VIEWS --- */
+        /* --- OTHER VIEWS (Translate, Info) --- */
         .trans-input-area { background: white; padding: 20px; border-radius: 8px; box-shadow: var(--shadow-soft); margin-bottom: 30px; }
         .trans-btn { width: 100%; padding: 15px; background: var(--accent-main); color: white; border: none; margin-top: 15px; cursor: pointer; border-radius: 4px; }
         .ps-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
@@ -419,13 +381,7 @@
         .info-icon { width: 40px; height: 40px; border-radius: 50%; background: #F5F5F5; display: flex; justify-content: center; align-items: center; color: var(--accent-main); margin-right: 15px; }
         .map-overview-card { background: white; padding: 15px; border-radius: 8px; box-shadow: var(--shadow-soft); margin-bottom: 30px; }
         .map-iframe { width: 100%; height: 350px; border: none; border-radius: 4px; }
-        .loading-overlay { 
-            position: absolute; top: 0; left: 0; right: 0; bottom: 0; 
-            background: rgba(255, 255, 255, 0.8); z-index: 50; 
-            display: flex; justify-content: center; align-items: center; 
-            font-size: 1.2rem; color: var(--accent-main);
-        }
-
+        
         /* --- NAV BAR --- */
         .glass-nav {
             position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
@@ -461,6 +417,327 @@
         #fs-text-modal.active { transform: scale(1); opacity: 1; pointer-events: auto; }
         .fs-jp { font-size: 2.5rem; font-weight: 700; margin-bottom: 20px; line-height: 1.4; color: var(--text-primary); }
         .fs-cn { font-size: 1.2rem; color: #666; background: #F5F5F5; padding: 10px 20px; border-radius: 20px; }
+
+        /* --- RECEIPT PRINTER CSS OVERRIDES --- */
+        #view-wallet {
+            background-color: var(--receipt-bg-body);
+            min-height: 100vh;
+            /* Reset padding logic for this view to match standalone printer styling */
+            padding: 100px 20px 100px; /* Top padding for header, bottom for nav */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* --- 總成結構 --- */
+        .printer-assembly {
+            position: relative;
+            width: 100%;
+            max-width: 340px; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 100;
+            margin-bottom: 50px;
+        }
+
+        /* --- LAYER 1: 上方進紙 --- */
+        .paper-input-feed {
+            position: absolute;
+            width: var(--paper-width);
+            top: -95px; 
+            height: 125px; 
+            background: var(--receipt-paper);
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+            z-index: 10; 
+            background-image: var(--paper-texture);
+            mask-image: linear-gradient(to bottom, transparent, black 15%);
+            -webkit-mask-image: linear-gradient(to bottom, transparent, black 15%);
+            overflow: hidden; 
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        
+        .paper-input-feed:hover {
+            transform: translateY(-2px);
+        }
+
+        .feed-scroll-wrapper {
+            width: 100%;
+            height: 250px; 
+            display: flex;
+            flex-direction: column;
+            transform: translate3d(0, 0, 0);
+            transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .paper-input-feed.expanded .feed-scroll-wrapper {
+            transform: translate3d(0, -125px, 0); 
+        }
+
+        .feed-section {
+            width: 100%;
+            height: 125px; 
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end; 
+            padding-bottom: 40px; 
+        }
+
+        .input-header-content { text-align: center; color: #AAA; width: 80%; }
+        .feed-total-view { text-align: center; width: 100%; }
+
+        .input-brand {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.1rem; 
+            font-weight: 600; 
+            letter-spacing: 1px; 
+            color: #777; 
+            margin-bottom: 4px;
+            text-transform: uppercase;
+        }
+        .input-date {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.7rem;
+            color: #BBB;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+        .input-dash { width: 100%; height: 1px; border-bottom: 1px dashed #DDD; }
+
+        .feed-total-label {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.65rem; color: #999; letter-spacing: 2px; margin-bottom: 4px; text-transform: uppercase;
+        }
+        .feed-total-amount {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2rem; font-weight: 700; color: var(--machine-bg); line-height: 1; margin-bottom: 2px;
+        }
+        .feed-total-sub {
+            font-family: 'Share Tech Mono', monospace; font-size: 0.7rem; color: #BBB;
+        }
+
+        /* --- LAYER 3: 機器本體 --- */
+        .machine-body {
+            width: 100%; 
+            background: var(--machine-bg);
+            border-radius: 20px 20px 0 0; 
+            padding: 25px 25px 35px 25px; 
+            box-shadow: 
+                0 5px 20px rgba(0,0,0,0.2), 
+                inset 0 1px 0 rgba(255,255,255,0.1),
+                0 0 0 1px rgba(0,0,0,0.2);
+            position: relative;
+            z-index: 50; 
+        }
+
+        /* --- LAYER 1: 黑色出紙口 --- */
+        .machine-bottom-lip {
+            width: 100%; 
+            height: 25px; 
+            background: #0a0a0a; 
+            border-radius: 0 0 20px 20px; 
+            position: relative;
+            z-index: 30; 
+            margin-top: 0; 
+            box-shadow: 
+                inset 0 2px 10px rgba(0,0,0,0.9), 
+                0 20px 40px -10px rgba(0,0,0,0.6); 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .lip-line { width: 80%; height: 2px; background: #222; border-radius: 2px; opacity: 0.5; }
+
+        /* --- LAYER 2: 收據紙張 --- */
+        .continuous-receipt-container {
+            position: relative;
+            width: var(--paper-width);
+            margin-top: -40px; 
+            z-index: 40; 
+            filter: drop-shadow(0 2px 5px rgba(0,0,0,0.1));
+        }
+
+        .receipt-strip {
+            background: var(--receipt-paper);
+            background-image: var(--paper-texture);
+            min-height: 120px;
+            display: flex;
+            flex-direction: column;
+            padding-top: 30px; 
+            position: relative;
+        }
+
+        .receipt-strip::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 30px;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.3), transparent); z-index: 2; pointer-events: none;
+        }
+        .receipt-strip::after {
+            content: ""; position: absolute; bottom: -10px; left: 0; width: 100%; height: 10px;
+            background: linear-gradient(45deg, transparent 33.333%, var(--receipt-paper) 33.333%, var(--receipt-paper) 66.667%, transparent 66.667%), 
+                        linear-gradient(-45deg, transparent 33.333%, var(--receipt-paper) 33.333%, var(--receipt-paper) 66.667%, transparent 66.667%);
+            background-size: 10px 20px; background-position: 0 -10px; 
+        }
+
+        /* --- 機器介面 --- */
+        .machine-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .brand-plate { 
+            background: rgba(0,0,0,0.3); padding: 4px 10px; border-radius: 4px; 
+            border: 1px solid rgba(197, 168, 112, 0.2); display: flex; align-items: center;
+        }
+        .machine-label { 
+            font-family: 'Share Tech Mono', monospace; color: var(--receipt-gold); 
+            font-size: 0.65rem; letter-spacing: 2px; text-transform: uppercase; 
+        }
+        .header-right-group { display: flex; align-items: center; gap: 12px; }
+        
+        .rate-display { 
+            font-family: 'Share Tech Mono', monospace; color: rgba(197, 168, 112, 0.5); 
+            font-size: 0.65rem; letter-spacing: 1px; 
+        }
+        .rate-label-default {
+            font-size: 0.5em; /* Smaller font for DEFAULT tag */
+            opacity: 0.7;
+            margin-left: 4px;
+            background: rgba(255,69,58,0.2);
+            padding: 1px 3px;
+            border-radius: 2px;
+            color: #FF453A;
+        }
+
+        /* Status Light Variations */
+        .status-light { 
+            width: 6px; height: 6px; border-radius: 50%; 
+            transition: background-color 0.3s, box-shadow 0.3s; 
+        }
+        
+        .status-light.online { background-color: var(--status-green); box-shadow: 0 0 8px var(--status-green); }
+        .status-light.offline { background-color: var(--status-red); box-shadow: 0 0 8px var(--status-red); }
+        .status-light.processing { background-color: var(--status-orange); box-shadow: 0 0 10px var(--status-orange); }
+
+        /* Inputs */
+        .input-deck { display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px;}
+        .skeuo-slot { background: var(--input-bg); border-radius: 8px; box-shadow: inset 0 2px 5px rgba(0,0,0,0.5), 0 1px 0 rgba(255,255,255,0.05); padding: 2px; border: 1px solid rgba(0,0,0,0.3); position: relative; }
+        
+        .machine-input { 
+            width: 100%; background: transparent; border: none; color: #E0E0E0; 
+            padding: 12px 15px; 
+            font-family: 'Noto Serif TC', serif;
+            font-size: 0.95rem; outline: none; letter-spacing: 0.5px; position: relative; z-index: 5;
+        }
+        .machine-input::placeholder { font-family: 'Noto Serif TC', serif; color: rgba(255,255,255,0.15); font-style: normal; }
+        
+        .price-wrapper { display: flex; align-items: center; padding-left: 10px; height: 100%; }
+        .currency-switch { font-family: 'Share Tech Mono', monospace; color: var(--receipt-gold); font-size: 0.9rem; margin-right: 5px; cursor: pointer; padding: 0 8px; display: flex; align-items: center; gap: 4px;}
+        .price-input-container { flex: 1; position: relative; display: flex; align-items: center; }
+        
+        .price-input-container .machine-input { 
+            padding-right: 110px; font-size: 1.5rem; font-family: 'Cormorant Garamond', serif; font-weight: 600; color: var(--receipt-gold); padding-top: 12px; padding-bottom: 12px;
+        }
+        .input-subtext { position: absolute; right: 15px; font-family: 'Share Tech Mono', monospace; font-size: 0.75rem; color: rgba(180, 155, 103, 0.5); pointer-events: none; }
+
+        /* --- Control Panel --- */
+        .control-panel { display: flex; justify-content: space-between; gap: 15px; }
+        
+        .user-toggles-compact { 
+            flex: 1; display: flex; 
+            background: #0f1420; border-radius: 6px; padding: 4px; 
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.5); 
+            border: 1px solid rgba(0,0,0,0.3); 
+            gap: 2px;
+        }
+        
+        .u-btn { 
+            flex: 1; background: transparent; border: none; color: rgba(255,255,255,0.2); 
+            padding: 0; border-radius: 4px; font-size: 0.9rem; font-weight: 600; 
+            cursor: pointer; transition: 0.2s; font-family: 'Noto Serif TC', serif; 
+        }
+        .u-btn.active { background: var(--receipt-gold); color: var(--machine-dark); box-shadow: 0 2px 5px rgba(0,0,0,0.3); font-weight: bold; }
+
+        .print-btn { 
+            width: 100px; height: 45px; 
+            background: linear-gradient(to bottom, #C5A870, #967d4d); 
+            border: none; color: #2b2b2b; 
+            font-family: 'Share Tech Mono', monospace; font-size: 0.8rem; 
+            border-radius: 4px; cursor: pointer; 
+            box-shadow: 0 5px 0 #5e4d2b; font-weight: 700; position: relative; letter-spacing: 1px; overflow: hidden;
+            transition: all 0.1s;
+        }
+        .print-btn:active { transform: translateY(4px); box-shadow: 0 1px 0 #5e4d2b; }
+        .print-btn.processing { opacity: 0.8; cursor: wait; pointer-events: none; color: rgba(43,43,43, 0.6); }
+
+        /* --- OPTIMIZED LIST ITEMS --- */
+        .receipt-entry {
+            position: relative; overflow: hidden; background: transparent;
+            transition: max-height 0.4s ease-out, margin 0.4s ease-out, padding 0.4s ease-out, opacity 0.3s;
+            max-height: 120px; 
+            transform: translate3d(0,0,0);
+        }
+
+        .receipt-content {
+            position: relative;
+            background: var(--receipt-paper);
+            background-image: var(--paper-texture);
+            padding: 12px 20px;
+            z-index: 5;
+            border-bottom: 1px dashed #DDD;
+            transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+            cursor: pointer; 
+            width: 100%;
+        }
+
+        .delete-underlay {
+            position: absolute; top: 0; bottom: 0; right: 0; width: 100%; 
+            background-color: var(--apple-red);
+            display: flex; align-items: center; justify-content: flex-end; 
+            padding-right: 25px; z-index: 1; color: white; font-size: 1.2rem;
+            opacity: 0; 
+            transition: opacity 0.2s;
+        }
+
+        .receipt-entry.reveal-delete .delete-underlay { opacity: 1; }
+        .receipt-entry.reveal-delete .receipt-content { transform: translate3d(-80px, 0, 0); }
+        .receipt-entry.new-item { animation: printSlideOut 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
+
+        .receipt-entry.tearing .receipt-content {
+            transition: transform 0.4s ease-in, opacity 0.3s ease-in;
+            transform: translate3d(-120%, 0, 0) rotate(-10deg);
+            opacity: 0;
+        }
+        .receipt-entry.tearing { max-height: 0; margin: 0; padding: 0; opacity: 0; }
+        .receipt-entry.dimmed .receipt-content { opacity: 0.4; filter: grayscale(1); }
+
+        @keyframes printSlideOut {
+            from { opacity: 0; max-height: 0; padding-top: 0; padding-bottom: 0; transform: translateY(-10px); }
+            to { opacity: 1; max-height: 120px; padding-top: 12px; padding-bottom: 12px; transform: translateY(0); }
+        }
+
+        .re-header { display: flex; justify-content: space-between; font-family: 'Share Tech Mono', monospace; font-size: 0.6rem; color: #999; margin-bottom: 4px; pointer-events: none;}
+        .re-body { display: flex; justify-content: space-between; align-items: flex-end; pointer-events: none;}
+        .re-item { font-family: 'Noto Serif TC', serif; font-weight: 700; color: #333; font-size: 1rem; }
+        .re-user { display: inline-block; background: #333; color: #fff; font-size: 0.6rem; padding: 1px 5px; border-radius: 4px; margin-right: 5px; vertical-align: middle; min-width: 20px; text-align: center;}
+        .receipt-entry:not(.dimmed) .re-user { background: var(--receipt-gold); color: var(--machine-dark); }
+        .re-cost { text-align: right; }
+        .re-price { font-family: 'Cormorant Garamond', serif; font-weight: 700; font-size: 1.2rem; color: var(--machine-bg); line-height: 1; }
+        .re-sub { font-family: 'Share Tech Mono'; font-size: 0.65rem; color: #999; margin-top: 2px; }
+
+        .receipt-total-section {
+            margin-top: auto; padding: 20px 20px 20px;
+            border-top: 2px solid #333; border-bottom: 4px double #333;
+            margin-bottom: 10px; background: rgba(0,0,0,0.02); 
+        }
+        .total-row { display: flex; justify-content: space-between; align-items: baseline; }
+        .total-label { font-family: 'Cormorant Garamond', serif; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; font-size: 1rem; color: #333;}
+        .total-amount { font-family: 'Cormorant Garamond', serif; font-weight: 700; font-size: 1.6rem; color: #333; }
+        .trip-total-row {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-top: 8px; padding-top: 8px; border-top: 1px dashed #DDD;
+            color: #999; font-size: 0.7rem; font-family: 'Share Tech Mono';
+        }
+        .receipt-empty { text-align: center; color: #CCC; font-family: 'Share Tech Mono'; font-size: 0.7rem; padding: 40px 20px; letter-spacing: 1px; }
+
     </style>
 </head>
 <body>
@@ -511,106 +788,88 @@
             </div>
         </div>
 
-        <!-- 2. WALLET VIEW -->
+        <!-- 2. WALLET VIEW (REPLACED CONTENT) -->
         <div id="view-wallet" class="view-section hidden" style="position:relative;">
-            <div class="container">
-                <!-- 1. Summary Section -->
-                <div class="wallet-card" style="text-align: center; background: #1C2541; color: white; margin-bottom: 15px;">
-                    <div style="font-size: 0.8rem; color: #AAA; letter-spacing: 1px; margin-bottom: 5px;">ESTIMATED TOTAL</div>
-                    <div class="serif" style="font-size: 2.5rem; color: #B49B67;" id="total-jpy">¥0</div>
-                    <div style="color: #EEE; font-size: 0.9rem;">≈ TWD <span id="total-twd">0</span></div>
+            <div class="printer-assembly">
+                <div class="paper-input-feed" onclick="window.toggleTopFeed()">
+                    <div class="feed-scroll-wrapper">
+                        <div class="feed-section header-view">
+                            <div class="input-header-content">
+                                <div class="input-brand">L'VOYAGE</div>
+                                <div class="input-date" id="header-date">--</div>
+                                <div class="input-dash"></div>
+                            </div>
+                        </div>
+                        <div class="feed-section total-view">
+                            <div class="feed-total-view">
+                                <div class="feed-total-label" id="top-total-label">TRIP TOTAL</div>
+                                <div class="feed-total-amount" id="top-total-amount">¥0</div>
+                                <div class="feed-total-sub" id="top-total-sub">≈ TWD 0</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <!-- 2. Filter/Dashboard Section -->
-                <div class="dashboard-grid">
-                    <div class="dashboard-item" onclick="window.filterExpenses('YK')">
-                        <div class="dash-avatar">YK</div>
-                        <div class="dash-total" id="dash-yk">¥0</div>
-                        <div class="dash-label">Total</div>
-                    </div>
-                    <div class="dashboard-item" onclick="window.filterExpenses('YY')">
-                        <div class="dash-avatar">YY</div>
-                        <div class="dash-total" id="dash-yy">¥0</div>
-                        <div class="dash-label">Total</div>
-                    </div>
-                    <div class="dashboard-item" onclick="window.filterExpenses('YS')">
-                        <div class="dash-avatar">YS</div>
-                        <div class="dash-total" id="dash-ys">¥0</div>
-                        <div class="dash-label">Total</div>
-                    </div>
-                </div>
-                <!-- Reset Filter Button (Hidden by default) -->
-                <div id="reset-filter-btn" class="hidden" style="text-align: center; margin-bottom: 15px;">
-                    <button onclick="window.filterExpenses(null)" style="background: #EEE; border:none; padding: 5px 15px; border-radius: 20px; color: #666; font-size: 0.8rem;">
-                        <i class="fa-solid fa-times"></i> 清除篩選 (顯示全部)
-                    </button>
-                </div>
-
-                <!-- 3. Tools/Widgets Section (Separated) -->
-                <div class="wallet-card" style="padding-top: 15px; padding-bottom: 15px;">
-                    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;">
-                        <h3 class="serif" style="margin:0; font-size:1.1rem; color:var(--accent-main);">旅行工具 Tools</h3>
-                        <!-- Widget Tabs Inline -->
-                        <div class="widget-tabs" style="margin:0; width: 60%; background: #F5F5F5;">
-                            <div class="w-tab active" id="tab-converter" onclick="window.switchWidget('converter')" style="font-size:0.75rem; padding: 4px 0;">匯率</div>
-                            <div class="w-tab" id="tab-todo" onclick="window.switchWidget('todo')" style="font-size:0.75rem; padding: 4px 0;">待辦</div>
+                <div class="machine-body">
+                    <div class="machine-header">
+                        <div class="brand-plate">
+                            <div class="machine-label">L'VOYAGE RECORDER</div>
+                        </div>
+                        <div class="header-right-group">
+                            <div class="rate-display">RATE: <span id="rate-value">0.22</span></div>
+                            <div class="status-light online" id="status-light"></div> <!-- Default online styling -->
                         </div>
                     </div>
 
-                    <!-- Widget 1: Converter -->
-                    <div id="currency-converter">
-                        <div class="conv-col">
-                            <input type="tel" id="calc-jpy" class="conv-input" placeholder="0" oninput="window.calcFromJpy(this.value)">
-                            <div class="conv-label">JPY ¥</div>
+                    <div class="input-deck">
+                        <div class="skeuo-slot">
+                            <input type="text" id="input-item" class="machine-input" placeholder="ITEM NAME" autocomplete="off">
                         </div>
-                        <i class="fa-solid fa-arrow-right-arrow-left conv-icon"></i>
-                        <div class="conv-col">
-                            <input type="tel" id="calc-twd" class="conv-input" placeholder="0" oninput="window.calcFromTwd(this.value)">
-                            <div class="conv-label">TWD $</div>
+                        <div class="skeuo-slot">
+                            <div class="price-wrapper">
+                                <div class="currency-switch" onclick="window.toggleCurrency(event)">
+                                    <span id="curr-label">JPY</span> <i class="fa-solid fa-caret-down"></i>
+                                </div>
+                                <div class="price-input-container">
+                                    <input type="tel" id="input-price" class="machine-input" placeholder="0" oninput="window.calculateConversion(this.value)">
+                                    <div class="input-subtext" id="embedded-preview">≈ TWD 0</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <!-- Current Rate Display -->
-                    <div class="rate-badge" style="width:100%; text-align:center; margin-top:5px; margin-bottom: 0;">即時匯率: <span id="current-rate">Loading...</span></div>
 
-                    <!-- Widget 2: To-Do List -->
-                    <div id="todo-widget" class="hidden">
-                        <div class="todo-input-row">
-                            <input type="text" id="new-todo-text" class="todo-input" placeholder="新增待辦 (例如: 買蘋果派)...">
-                            <button class="todo-add-btn" onclick="window.addTodo()"><i class="fa-solid fa-plus"></i></button>
+                    <div class="control-panel">
+                        <div class="user-toggles-compact" id="user-toggles">
+                            <button class="u-btn active" onclick="window.selectUser(this, '奎')">奎</button>
+                            <button class="u-btn" onclick="window.selectUser(this, '愉')">愉</button>
+                            <button class="u-btn" onclick="window.selectUser(this, '舜')">舜</button>
                         </div>
-                        <ul id="todo-list-ul" class="todo-list">
-                            <!-- JS Generated -->
-                        </ul>
+                        <button class="print-btn" onclick="window.printReceipt()" id="print-btn">
+                            <span>PRINT</span>
+                        </button>
                     </div>
                 </div>
 
-                <!-- 4. Add Expense Section (Separated) -->
-                <div class="wallet-card">
-                    <h3 class="serif" style="margin:0 0 15px 0; font-size:1.1rem; color:var(--accent-main);">新增支出 Add Expense</h3>
-                    
-                    <div class="user-selector">
-                        <button class="user-btn active" onclick="window.selectUser('YK', this)">YK</button>
-                        <button class="user-btn" onclick="window.selectUser('YY', this)">YY</button>
-                        <button class="user-btn" onclick="window.selectUser('YS', this)">YS</button>
-                    </div>
-
-                    <div class="input-group">
-                        <input type="text" id="ex-item" class="input-elegant" placeholder="項目 (例如：蘋果派)">
-                    </div>
-                    <div class="input-group">
-                        <input type="tel" id="ex-price" class="input-elegant" placeholder="金額 (日幣)" oninput="window.calculatePreview(this.value)">
-                        <div class="twd-preview" id="preview-twd">≈ TWD 0</div>
-                    </div>
-                    
-                    <button class="intro-btn" style="width: 100%; margin-top: 20px; border-color: #1C2541; background: #1C2541; color: white; opacity:1; animation:none;" onclick="window.addExpense()">記錄支出</button>
+                <div class="machine-bottom-lip">
+                    <div class="lip-line"></div>
                 </div>
-                
-                <!-- 5. History Section -->
-                <h3 class="serif" style="padding-left: 10px; margin-bottom: 15px;">近期支出 History</h3>
-                <div id="expense-list">
-                    <!-- Loading state for expenses -->
-                    <div class="loading-overlay" style="position: static; margin-top: 20px; min-height: 100px;">
-                        <i class="fa-solid fa-spinner fa-spin" style="margin-right: 10px;"></i> 正在載入支出...
+
+                <div class="continuous-receipt-container">
+                    <div class="receipt-strip" id="receipt-strip">
+                        <!-- Event Delegation Container -->
+                        <div id="receipt-items-anchor"></div>
+                        
+                        <div class="receipt-empty" id="receipt-empty">READY TO PRINT...</div>
+                        <div class="receipt-total-section">
+                            <div class="total-row">
+                                <span class="total-label" id="total-label">TOTAL (奎)</span>
+                                <span class="total-amount" id="personal-total">¥0</span>
+                            </div>
+                            <div class="trip-total-row">
+                                <span>TRIP TOTAL</span>
+                                <span id="trip-total">¥0</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1168,17 +1427,42 @@
         let expensesRef;
         let notesRef; 
         let todosRef;
+        // Variables for Trip View
         let currentRate = 0.22;
         let currentIdx = 0;
-        let currentUser = 'YK';
-        let expenses = [];
         let localNotes = {}; 
-        let todos = [];
         let currentEventId = null; 
-        let currentFilterUser = null; 
         let currentNavLink = null;
         let isAnimating = false;
         
+        // --- RECEIPT PRINTER VARIABLES ---
+        let currentCurrency = 'JPY'; 
+        let rate = 0.22; // Default for printer
+        let isOnline = false; // Connection status for printer
+        let receiptCount = 1; 
+        let receiptsData = []; 
+        let currentUser = '奎'; 
+        let isTopFeedExpanded = false;
+
+        // --- DOM Elements for Printer (Lazily fetched) ---
+        const getPrinterDom = () => ({
+            headerDate: document.getElementById('header-date'),
+            inputItem: document.getElementById('input-item'),
+            inputPrice: document.getElementById('input-price'),
+            previewEmbed: document.getElementById('embedded-preview'),
+            printBtn: document.getElementById('print-btn'),
+            statusLight: document.getElementById('status-light'),
+            feed: document.querySelector('.paper-input-feed'),
+            listAnchor: document.getElementById('receipt-items-anchor'),
+            listEmpty: document.getElementById('receipt-empty'),
+            totalLabel: document.getElementById('total-label'),
+            totalPersonal: document.getElementById('personal-total'),
+            totalTrip: document.getElementById('trip-total'),
+            topTotalAmt: document.getElementById('top-total-amount'),
+            topTotalSub: document.getElementById('top-total-sub'),
+            rateValue: document.getElementById('rate-value')
+        });
+
         // --- FIREBASE CONFIGURATION ---
         const firebaseConfig = {
             apiKey: "AIzaSyCbHhcAo25W6yDPNT05bDkxkRIrwfUM2o4",
@@ -1221,28 +1505,8 @@
 
         // --- FIRESTORE SUBSCRIPTION FUNCTIONS ---
         const subscribeToExpenses = () => {
-            const q = query(expensesRef);
-            const expenseListEl = document.getElementById('expense-list');
-
-            if (expenseListEl) {
-                // Initial loading state
-                expenseListEl.innerHTML = `
-                    <div class="loading-overlay" style="position: static; margin-top: 20px; min-height: 100px;">
-                        <i class="fa-solid fa-spinner fa-spin" style="margin-right: 10px;"></i> 正在載入支出...
-                    </div>
-                `;
-            }
-
-            onSnapshot(q, (snapshot) => {
-                expenses = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                // Sort by timestamp descending (newest first)
-                expenses.sort((a, b) => (b.timestamp?.toMillis() || 0) - (a.timestamp?.toMillis() || 0));
-                renderExpenses();
-                updateExpenseDashboard();
-            }, (error) => {
-                console.error("Error subscribing to expenses:", error);
-                if (expenseListEl) expenseListEl.innerHTML = '<div style="text-align:center; padding:20px; color:var(--accent-red);">載入支出資料失敗。</div>';
-            });
+            // Placeholder: Existing expense logic removed/replaced by local printer logic in UI
+            // We keep this function structure to avoid breaking init flow if needed later
         };
 
         const subscribeToNotes = () => {
@@ -1268,48 +1532,310 @@
             });
         };
 
-        const subscribeToTodos = () => {
-            const q = query(todosRef); 
-            onSnapshot(q, (snapshot) => {
-                todos = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                todos.sort((a, b) => (b.timestamp?.toMillis() || 0) - (a.timestamp?.toMillis() || 0));
-                renderTodos();
-            }, (error) => {
-                console.error("Error subscribing to todos:", error);
-            });
-        };
-        
-        // --- CORE LOGIC FUNCTIONS ---
-        function renderTodos() {
-            const list = document.getElementById('todo-list-ul');
-            if(list) {
-                const todoHtml = todos.map(t => `<li class="todo-item">
-                        <i class="fa-regular ${t.completed ? 'fa-square-check checked' : 'fa-square'} todo-check" onclick="window.toggleTodo('${t.id}', ${t.completed})"></i>
-                        <span class="todo-text ${t.completed ? 'checked' : ''}">${t.text}</span>
-                        <i class="fa-solid fa-trash todo-del" onclick="window.deleteTodo('${t.id}')"></i>
-                    </li>
-                `).join('');
-                list.innerHTML = todoHtml || '<div style="text-align:center; padding:10px; color:#AAA;">沒有待辦事項了，真棒！</div>';
+        // --- RECEIPT PRINTER LOGIC ---
+        async function fetchExchangeRate() {
+            const dom = getPrinterDom();
+            try {
+                // 使用免費公開 API
+                const response = await fetch('https://api.exchangerate-api.com/v4/latest/JPY');
+                const data = await response.json();
+                
+                if (data && data.rates && data.rates.TWD) {
+                    rate = data.rates.TWD;
+                    isOnline = true;
+                    // 更新 UI
+                    if(dom.rateValue) dom.rateValue.innerHTML = rate.toFixed(3);
+                    updateStatusLight(); 
+                    
+                    // 重新計算
+                    if (dom.inputPrice && dom.inputPrice.value) {
+                        calculateConversion(dom.inputPrice.value);
+                    }
+                }
+            } catch (e) {
+                console.log("Offline mode: Using default rate 0.22");
+                rate = 0.22;
+                isOnline = false;
+                // 斷網顯示
+                if(dom.rateValue) dom.rateValue.innerHTML = `0.22<span class="rate-label-default">DEFAULT</span>`;
+                updateStatusLight();
             }
         }
-        
+
+        function updateStatusLight() {
+            const dom = getPrinterDom();
+            if(!dom.statusLight) return;
+            // 清除所有狀態
+            dom.statusLight.className = 'status-light';
+            
+            if (dom.printBtn.classList.contains('processing')) {
+                dom.statusLight.classList.add('processing');
+            } else if (isOnline) {
+                dom.statusLight.classList.add('online');
+            } else {
+                dom.statusLight.classList.add('offline');
+            }
+        }
+
+        function getFormattedTime() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            return `${year}.${month}.${day} ${hours}:${minutes}`;
+        }
+
+        function updateHeaderTime() {
+            const dom = getPrinterDom();
+            if(dom.headerDate) dom.headerDate.innerText = getFormattedTime();
+        }
+
+        function toggleTopFeed() {
+            const dom = getPrinterDom();
+            isTopFeedExpanded = !isTopFeedExpanded;
+            isTopFeedExpanded ? dom.feed.classList.add('expanded') : dom.feed.classList.remove('expanded');
+        }
+
+        function selectUser(btn, user) {
+            document.querySelectorAll('.u-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentUser = user;
+            renderReceiptList();
+        }
+
+        function toggleCurrency(e) {
+            if(e) e.stopPropagation(); 
+            const label = document.getElementById('curr-label');
+            const dom = getPrinterDom();
+            
+            if (currentCurrency === 'JPY') {
+                currentCurrency = 'TWD';
+                label.innerText = 'TWD';
+            } else {
+                currentCurrency = 'JPY';
+                label.innerText = 'JPY';
+            }
+            calculateConversion(dom.inputPrice.value);
+        }
+
+        function calculateConversion(val) {
+            const dom = getPrinterDom();
+            const num = parseFloat(val);
+            if (isNaN(num) || num === 0) {
+                dom.previewEmbed.innerText = (currentCurrency === 'JPY') ? '≈ TWD 0' : '≈ JPY 0';
+                return;
+            }
+            if (currentCurrency === 'JPY') {
+                const twd = Math.round(num * rate);
+                dom.previewEmbed.innerText = `≈ TWD ${twd.toLocaleString()}`;
+            } else {
+                const jpy = Math.round(num / rate);
+                dom.previewEmbed.innerText = `≈ JPY ${jpy.toLocaleString()}`;
+            }
+        }
+
+        function printReceipt() {
+            const dom = getPrinterDom();
+            const itemVal = dom.inputItem.value || "Item " + receiptCount; 
+            const inputVal = parseFloat(dom.inputPrice.value);
+
+            if (isNaN(inputVal) || inputVal <= 0) {
+                dom.inputPrice.focus();
+                return;
+            }
+            
+            let finalJpy, finalTwd;
+            if (currentCurrency === 'JPY') {
+                finalJpy = inputVal;
+                finalTwd = Math.round(inputVal * rate);
+            } else {
+                finalTwd = inputVal;
+                finalJpy = Math.round(inputVal / rate);
+            }
+
+            if (dom.printBtn.classList.contains('processing')) return; 
+
+            // Animation Start
+            dom.printBtn.classList.add('processing');
+            updateStatusLight(); // Update light to orange
+            updateHeaderTime();
+
+            // Simulate Print Delay
+            setTimeout(() => {
+                const newReceipt = {
+                    id: Date.now().toString(),
+                    user: currentUser, 
+                    item: itemVal,
+                    jpy: finalJpy,
+                    twd: finalTwd,
+                    date: getFormattedTime().split(' ')[0].substring(5) + ' ' + getFormattedTime().split(' ')[1], 
+                    no: String(receiptCount).padStart(3, '0')
+                };
+                receiptsData.unshift(newReceipt); 
+                receiptCount++;
+
+                renderReceiptList(true); // Animate new
+                
+                // Reset Inputs
+                dom.inputItem.value = '';
+                dom.inputPrice.value = '';
+                calculateConversion(0); 
+
+                // Auto-Peek Logic
+                if (!isTopFeedExpanded) {
+                    dom.feed.classList.add('expanded');
+                    setTimeout(() => {
+                        if (!isTopFeedExpanded) dom.feed.classList.remove('expanded');
+                    }, 2500);
+                }
+
+                // Restore state
+                dom.printBtn.classList.remove('processing');
+                updateStatusLight(); // Restore light to green/red
+
+            }, 400); 
+        }
+
+        function initListInteractions() {
+            const dom = getPrinterDom();
+            const container = dom.listAnchor;
+            if(!container) return;
+
+            let startX = 0;
+            let currentX = 0;
+            let isDragging = false;
+            let activeSwipeEl = null;
+
+            container.addEventListener('click', (e) => {
+                const entry = e.target.closest('.receipt-entry');
+                if (e.target.closest('.delete-underlay i')) {
+                    const id = entry.id.split('-')[1];
+                    confirmDelete(id);
+                    return;
+                }
+                
+                if (entry && e.target.closest('.receipt-content')) {
+                    document.querySelectorAll('.receipt-entry.reveal-delete').forEach(el => {
+                        if (el !== entry) el.classList.remove('reveal-delete');
+                    });
+                    entry.classList.toggle('reveal-delete');
+                }
+            });
+
+            container.addEventListener('touchstart', (e) => {
+                const entry = e.target.closest('.receipt-entry');
+                if (!entry) return;
+                startX = e.touches[0].clientX;
+                activeSwipeEl = entry;
+                isDragging = true;
+            }, {passive: true});
+
+            container.addEventListener('touchmove', (e) => {
+                if (!isDragging || !activeSwipeEl) return;
+                const touchX = e.touches[0].clientX;
+                currentX = touchX - startX;
+                
+                if (currentX < 0 && currentX > -100) {
+                    const content = activeSwipeEl.querySelector('.receipt-content');
+                    if(content) content.style.transform = `translate3d(${currentX}px, 0, 0)`;
+                }
+            }, {passive: true});
+
+            container.addEventListener('touchend', (e) => {
+                if (!activeSwipeEl) return;
+                const content = activeSwipeEl.querySelector('.receipt-content');
+                if (content) content.style.transform = ''; 
+
+                if (currentX < -60) { 
+                    document.querySelectorAll('.receipt-entry').forEach(el => el.classList.remove('reveal-delete'));
+                    activeSwipeEl.classList.add('reveal-delete');
+                } else if (currentX > 10) {
+                    activeSwipeEl.classList.remove('reveal-delete');
+                }
+                isDragging = false;
+                activeSwipeEl = null;
+                currentX = 0;
+            });
+        }
+
+        function confirmDelete(id) {
+            const el = document.getElementById(`entry-${id}`);
+            if(!el) return;
+            el.classList.add('tearing');
+            setTimeout(() => {
+                receiptsData = receiptsData.filter(r => r.id !== id);
+                renderReceiptList(false); 
+            }, 400); 
+        }
+
+        function renderReceiptList(animateNew = false) {
+            const dom = getPrinterDom();
+            updateTotalDisplay(receiptsData);
+
+            if (receiptsData.length === 0) {
+                dom.listEmpty.style.display = 'block';
+                dom.listAnchor.innerHTML = '';
+                return;
+            } else {
+                dom.listEmpty.style.display = 'none';
+            }
+
+            let html = '';
+            receiptsData.forEach((r, index) => {
+                const isFocused = (r.user === currentUser);
+                const dimClass = isFocused ? '' : 'dimmed';
+                const newClass = (animateNew && index === 0) ? 'new-item' : '';
+
+                html += `
+                    <div class="receipt-entry ${dimClass} ${newClass}" id="entry-${r.id}">
+                        <div class="delete-underlay">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </div>
+                        <div class="receipt-content">
+                            <div class="re-header">
+                                <span>${r.date}</span>
+                                <span>NO.${r.no}</span>
+                            </div>
+                            <div class="re-body">
+                                <div>
+                                    <span class="re-user">${r.user}</span>
+                                    <span class="re-item">${r.item}</span>
+                                </div>
+                                <div class="re-cost">
+                                    <div class="re-price">¥${r.jpy.toLocaleString()}</div>
+                                    <div class="re-sub">≈ ${r.twd.toLocaleString()}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            dom.listAnchor.innerHTML = html;
+        }
+
+        function updateTotalDisplay(data) {
+            const dom = getPrinterDom();
+            const personalData = data.filter(r => r.user === currentUser);
+            const personalJpy = personalData.reduce((sum, item) => sum + item.jpy, 0);
+            const tripJpy = data.reduce((sum, item) => sum + item.jpy, 0);
+            const tripTwd = data.reduce((sum, item) => sum + item.twd, 0);
+            
+            dom.totalLabel.innerText = `TOTAL (${currentUser})`;
+            dom.totalPersonal.innerText = `¥${personalJpy.toLocaleString()}`;
+            dom.totalTrip.innerText = `¥${tripJpy.toLocaleString()}`;
+
+            dom.topTotalAmt.innerText = `¥${tripJpy.toLocaleString()}`;
+            dom.topTotalSub.innerText = `≈ TWD ${tripTwd.toLocaleString()}`;
+        }
+
+        // --- CORE LOGIC FUNCTIONS (TRIP VIEW) ---
         function getMapUrl(data) {
              const base = `https://www.google.com/maps/embed/v1/`;
-             
-             // Priority 1: Explicit location string provided in data.location (Search)
-             if (data.location) {
-                 return `${base}search?key=${GOOGLE_MAPS_API_KEY}&q=${encodeURIComponent(data.location)}`;
-             }
-
-             // Priority 2: Route (from -> to)
-             if (data.from && data.to) {
-                 return `${base}directions?key=${GOOGLE_MAPS_API_KEY}&origin=${encodeURIComponent(data.from)}&destination=${encodeURIComponent(data.to)}&mode=driving`;
-             } 
-             
-             // Priority 3: Fallback to title (Search)
-             if (data.title) {
-                 return `${base}search?key=${GOOGLE_MAPS_API_KEY}&q=${encodeURIComponent(data.title)}`;
-             }
+             if (data.location) return `${base}search?key=${GOOGLE_MAPS_API_KEY}&q=${encodeURIComponent(data.location)}`;
+             if (data.from && data.to) return `${base}directions?key=${GOOGLE_MAPS_API_KEY}&origin=${encodeURIComponent(data.from)}&destination=${encodeURIComponent(data.to)}&mode=driving`;
+             if (data.title) return `${base}search?key=${GOOGLE_MAPS_API_KEY}&q=${encodeURIComponent(data.title)}`;
              return null;
         }
 
@@ -1325,14 +1851,8 @@
                 const navWidth = nav.clientWidth;
                 const elLeft = activeEl.offsetLeft;
                 const elWidth = activeEl.clientWidth;
-                
-                // Calculate center position
                 const targetLeft = elLeft - (navWidth / 2) + (elWidth / 2);
-                
-                nav.scrollTo({
-                    left: targetLeft,
-                    behavior: 'smooth'
-                });
+                nav.scrollTo({ left: targetLeft, behavior: 'smooth' });
             }
         }
 
@@ -1348,7 +1868,6 @@
                 </div>
             `).join('');
 
-            // Focus Centering
             setTimeout(() => centerDateNav(currentIdx), 100);
 
             const day = tripData[currentIdx];
@@ -1360,8 +1879,6 @@
             }
 
             const imgUrl = day.heroImg || day.fallbackImg;
-
-            // Generate Daily Map URL
             const dailyLocations = day.events.filter(e => e.location).map(e => e.location);
             let dailyMapUrl = '';
             if (dailyLocations.length > 0) {
@@ -1371,7 +1888,6 @@
                     const origin = encodeURIComponent(dailyLocations[0]);
                     const destination = encodeURIComponent(dailyLocations[dailyLocations.length - 1]);
                     const waypoints = dailyLocations.slice(1, -1).map(l => encodeURIComponent(l)).join('|');
-                    
                     dailyMapUrl = `https://www.google.com/maps/embed/v1/directions?key=${GOOGLE_MAPS_API_KEY}&origin=${origin}&destination=${destination}&waypoints=${waypoints}&mode=driving`;
                 }
             }
@@ -1438,39 +1954,24 @@
             html += `</div>`;
 
             // Spring Animation Logic
-            // Clean previous animation classes
             container.className = "container";
-            
             if (direction === 0) {
-                // Initial load, no slide
                 container.innerHTML = html;
             } else {
-                // Direction 1 (Swipe Right/Prev): Content comes from LEFT
-                // Direction -1 (Swipe Left/Next): Content comes from RIGHT
-                
-                // Set content
                 container.innerHTML = html;
-                
-                if (direction === 1) {
-                    container.classList.add('slide-in-from-left');
-                } else if (direction === -1) {
-                    container.classList.add('slide-in-from-right');
-                }
+                if (direction === 1) container.classList.add('slide-in-from-left');
+                else if (direction === -1) container.classList.add('slide-in-from-right');
             }
         }
 
         function checkActiveEvent() {
             const now = new Date();
             let activeDayIndex = -1;
-            
             tripData.forEach((day, idx) => {
                 const year = now.getFullYear();
                 const tripDate = new Date(`${year}-${day.date.replace('.', '-')}`);
                 const currentDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-
-                if (tripDate.toDateString() === currentDate.toDateString()) {
-                    activeDayIndex = idx;
-                }
+                if (tripDate.toDateString() === currentDate.toDateString()) activeDayIndex = idx;
             });
             
             if (activeDayIndex === -1) return;
@@ -1487,23 +1988,18 @@
                  currentDayEvents.forEach((ev, idx) => {
                     const [h, m] = ev.time.split(':').map(Number);
                     const eventTimeVal = h * 60 + m;
-                    
                     let nextEventTimeVal = 9999;
                     if (idx < currentDayEvents.length - 1) {
                         const [nh, nm] = currentDayEvents[idx+1].time.split(':').map(Number);
                         nextEventTimeVal = nh * 60 + nm;
-                    } else {
-                        nextEventTimeVal = eventTimeVal + 90;
-                    }
+                    } else nextEventTimeVal = eventTimeVal + 90;
 
                     if (currentTimeVal >= eventTimeVal && currentTimeVal < nextEventTimeVal) {
                         const card = document.querySelectorAll('.event-node')[idx];
                         if(card) {
                             card.classList.add('active-event');
                             const tag = card.querySelector('.event-tag');
-                            if(tag && !card.querySelector('.active-label')) {
-                                tag.innerHTML += `<span class="active-label">LIVE</span>`;
-                            }
+                            if(tag && !card.querySelector('.active-label')) tag.innerHTML += `<span class="active-label">LIVE</span>`;
                             if (!window.hasScrolledToLive) {
                                 card.scrollIntoView({behavior: "smooth", block: "center"});
                                 window.hasScrolledToLive = true;
@@ -1536,8 +2032,9 @@
             }
             
             if(view === 'wallet') { 
-                renderExpenses(); 
-                updateExpenseDashboard(); 
+                // Initialize Printer Logic if needed (it auto-inits on load, but good to refresh)
+                updateHeaderTime();
+                if(isOnline) fetchExchangeRate();
             }
             if(view === 'info') {
                 renderFullTripMap();
@@ -1547,34 +2044,21 @@
         }
 
         function switchDay(i) {
-            // Animation Lock
             if (isAnimating) return;
-
             const tripView = document.getElementById('view-trip');
             const isHidden = tripView.classList.contains('hidden') || tripView.style.display === 'none';
-
-            // Guard: If clicking the same day AND the trip view is visible, do nothing.
-            // If hidden, we proceed because we need to show the trip view.
             if(i === currentIdx && !isHidden) return;
-            
-            // Calculate direction for animation
-            // i > currentIdx: Going forward (Next Day) -> Content comes from Right (-1)
-            // i < currentIdx: Going backward (Prev Day) -> Content comes from Left (1)
             const direction = i > currentIdx ? -1 : 1;
-
             currentIdx = i;
-            
             if (isHidden) {
                 switchView('trip'); 
-                // Force render with no slide animation (0) to ensure content is up-to-date
                 renderTrip(0); 
                 checkActiveEvent();
             } else {
-                // Lock animation for short duration to prevent cutoff
                 isAnimating = true;
                 renderTrip(direction);
                 checkActiveEvent();
-                setTimeout(() => { isAnimating = false; }, 350); // Matches CSS transition duration
+                setTimeout(() => { isAnimating = false; }, 350); 
             }
         }
 
@@ -1588,48 +2072,30 @@
             let isHorizontalDrag = false;
 
             tripView.addEventListener('touchstart', (e) => {
-                if (isAnimating) return; // Block swipe if animating
-                
+                if (isAnimating) return; 
                 startX = e.touches[0].clientX;
                 startY = e.touches[0].clientY;
                 isDragging = true;
                 isHorizontalDrag = false;
-                
-                // Remove transition during drag for direct 1:1 movement
                 const container = document.getElementById('timeline-container');
                 container.style.transition = 'none';
             }, { passive: true });
 
             tripView.addEventListener('touchmove', (e) => {
                 if (!isDragging) return;
-                
                 const currentX = e.touches[0].clientX;
                 const currentY = e.touches[0].clientY;
                 const diffX = currentX - startX;
                 const diffY = currentY - startY;
 
-                // Determine intent (Horizontal swipe vs Vertical scroll)
                 if (!isHorizontalDrag) {
-                    if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 10) {
-                        isHorizontalDrag = true;
-                    } else if (Math.abs(diffY) > Math.abs(diffX) && Math.abs(diffY) > 10) {
-                        // User is scrolling vertically, stop tracking horizontal swipe
-                        isDragging = false;
-                        return; 
-                    }
+                    if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 10) isHorizontalDrag = true;
+                    else if (Math.abs(diffY) > Math.abs(diffX) && Math.abs(diffY) > 10) { isDragging = false; return; }
                 }
 
                 if (isHorizontalDrag) {
-                    // Prevent default scrolling behavior handled by CSS overscroll-behavior-x, 
-                    // but we apply transform logic here
-                    
-                    // Rubber Banding Logic (Resistance at edges)
-                    if ((currentIdx === 0 && diffX > 0) || (currentIdx === tripData.length - 1 && diffX < 0)) {
-                        currentTranslate = diffX * 0.3; // High resistance
-                    } else {
-                        currentTranslate = diffX;
-                    }
-
+                    if ((currentIdx === 0 && diffX > 0) || (currentIdx === tripData.length - 1 && diffX < 0)) currentTranslate = diffX * 0.3;
+                    else currentTranslate = diffX;
                     const container = document.getElementById('timeline-container');
                     container.style.transform = `translateX(${currentTranslate}px)`;
                 }
@@ -1637,80 +2103,20 @@
 
             tripView.addEventListener('touchend', (e) => {
                 if (!isDragging || !isHorizontalDrag) {
-                    // Restore transition even if not dragged
                     document.getElementById('timeline-container').style.transition = '';
                     return;
                 }
-                
                 isDragging = false;
                 const container = document.getElementById('timeline-container');
-                
-                // Restore transition for the snap animation
-                // Modified: Faster snap back (0.35s)
                 container.style.transition = 'transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.35s ease';
-
-                const threshold = window.innerWidth * 0.25; // Swipe 25% of screen to trigger
-                
+                const threshold = window.innerWidth * 0.25; 
                 if (Math.abs(currentTranslate) > threshold) {
-                    if (currentTranslate > 0 && currentIdx > 0) {
-                        // Swiped Right -> Go to Prev Day
-                        switchDay(currentIdx - 1);
-                    } else if (currentTranslate < 0 && currentIdx < tripData.length - 1) {
-                        // Swiped Left -> Go to Next Day
-                        switchDay(currentIdx + 1);
-                    } else {
-                        // Edge case (Rubber banding snap back)
-                        container.style.transform = 'translateX(0)';
-                    }
-                } else {
-                    // Not enough distance, snap back
-                    container.style.transform = 'translateX(0)';
-                }
-                
+                    if (currentTranslate > 0 && currentIdx > 0) switchDay(currentIdx - 1);
+                    else if (currentTranslate < 0 && currentIdx < tripData.length - 1) switchDay(currentIdx + 1);
+                    else container.style.transform = 'translateX(0)';
+                } else container.style.transform = 'translateX(0)';
                 currentTranslate = 0;
             });
-        }
-
-        function updateExpenseDashboard() {
-            const totals = { 'YK': 0, 'YY': 0, 'YS': 0 };
-            expenses.forEach(e => {
-                if (totals[e.user] !== undefined) totals[e.user] += e.price;
-            });
-            
-            const ykEl = document.getElementById('dash-yk');
-            if(ykEl) ykEl.innerText = "¥" + totals['YK'].toLocaleString();
-            
-            const yyEl = document.getElementById('dash-yy');
-            if(yyEl) yyEl.innerText = "¥" + totals['YY'].toLocaleString();
-            
-            const ysEl = document.getElementById('dash-ys');
-            if(ysEl) ysEl.innerText = "¥" + totals['YS'].toLocaleString();
-        }
-
-        function renderExpenses() {
-            let filteredList = expenses;
-            if (currentFilterUser) {
-                filteredList = expenses.filter(e => e.user === currentFilterUser);
-            }
-
-            let total = 0;
-            filteredList.forEach(e => { total += e.price; });
-            
-            const totalJpyEl = document.getElementById('total-jpy');
-            if(totalJpyEl) totalJpyEl.innerText = "¥" + total.toLocaleString();
-            
-            const totalTwdEl = document.getElementById('total-twd');
-            if(totalTwdEl) totalTwdEl.innerText = (total * currentRate).toFixed(0).toLocaleString();
-
-            const html = filteredList.map(e => {
-                const dateObj = e.timestamp ? e.timestamp.toDate() : new Date();
-                const timeString = dateObj.getHours().toString().padStart(2,'0') + ":" + dateObj.getMinutes().toString().padStart(2,'0');
-                const dateString = (dateObj.getMonth()+1) + "/" + dateObj.getDate();
-                return `<div class="expense-item"><div class="exp-meta"><div class="exp-user">${e.user}</div><div><div style="font-weight:500;">${e.item}</div><div style="font-size:0.75rem; color:#999;">${dateString} ${timeString}</div></div></div><div class="serif">¥${e.price.toLocaleString()}</div></div>`;
-            }).join('');
-            
-            const listEl = document.getElementById('expense-list');
-            if(listEl) listEl.innerHTML = html.length ? html : '<div style="text-align:center; padding:20px; color:#999;">無資料</div>';
         }
 
         function renderFullTripMap() {
@@ -1739,30 +2145,18 @@
                 const app = initializeApp(configToUse);
                 db = getFirestore(app);
                 auth = getAuth(app);
-                
                 const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
 
                 if (initialAuthToken) {
-                    try {
-                        await signInWithCustomToken(auth, initialAuthToken);
-                        console.log("Signed in with custom token successfully.");
-                    } catch (e) {
-                        console.warn("Custom token sign-in failed. Falling back to anonymous.", e);
-                        await signInAnonymously(auth);
-                    }
-                } else {
-                    await signInAnonymously(auth);
-                }
+                    try { await signInWithCustomToken(auth, initialAuthToken); } 
+                    catch (e) { await signInAnonymously(auth); }
+                } else await signInAnonymously(auth);
 
                 const userId = auth.currentUser?.uid || crypto.randomUUID(); 
                 
-                expensesRef = collection(db, `artifacts/${appId}/public/data/expenses`);
                 notesRef = collection(db, `artifacts/${appId}/public/data/notes`);
-                todosRef = collection(db, `artifacts/${appId}/public/data/todos`);
-                
-                subscribeToExpenses();
+                subscribeToExpenses(); // Logic removed for UI replacement, kept for structure
                 subscribeToNotes();
-                subscribeToTodos();
 
             } catch (error) {
                 console.error("Firebase Initialization Error:", error);
@@ -1777,7 +2171,6 @@
             let key = 'rest'; 
             if (hour >= 8 && hour <= 17) key = 'work';
             else if (hour >= 18 && hour <= 23) key = 'evening';
-
             const messages = timeSensitiveMessages[key];
             const msg = messages[Math.floor(Math.random() * messages.length)];
             textElement.innerText = msg;
@@ -1809,11 +2202,9 @@
                 const monday = getMonday(today);
                 const saturday = new Date(monday);
                 saturday.setDate(monday.getDate() + 5);
-
                 const formatDate = (date) => date.toISOString().split('T')[0];
                 const startStr = formatDate(monday);
                 const endStr = formatDate(saturday);
-
                 const urlHakodate = `https://api.open-meteo.com/v1/forecast?latitude=41.7687&longitude=140.7290&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&start_date=${startStr}&end_date=${endStr}`;
                 const urlAomori = `https://api.open-meteo.com/v1/forecast?latitude=40.8244&longitude=140.7400&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&start_date=${startStr}&end_date=${endStr}`;
 
@@ -1827,22 +2218,15 @@
                 tripData.forEach((day, index) => {
                     let source = (index === 0) ? resHak : resAom;
                     let i = index; 
-                    
                     if(source.daily.temperature_2m_max[i] !== undefined) {
                         const max = Math.round(source.daily.temperature_2m_max[i]);
                         const min = Math.round(source.daily.temperature_2m_min[i]);
                         const code = source.daily.weather_code[i];
-                        
-                        day.weather = {
-                            icon: getIconClass(code),
-                            temp: `${min}° / ${max}°`
-                        };
+                        day.weather = { icon: getIconClass(code), temp: `${min}° / ${max}°` };
                     }
                 });
 
                 if(currentIdx !== -1) renderTrip();
-                
-                // Re-render nav to update weather icons
                 const nav = document.getElementById('date-nav');
                 if(nav) nav.innerHTML = tripData.map((d, i) => `<div class="d-item ${i === currentIdx ? 'active' : ''}" onclick="window.switchDay(${i})">
                         <div class="d-week">${d.week}</div>
@@ -1851,90 +2235,29 @@
                             <i class="fa-solid ${d.weather.icon}"></i>
                             <span>${d.weather.temp}</span>
                         </div>
-                    </div>
-                `).join('');
-
-            } catch (e) {
-                console.error("Weather Fetch Error:", e);
-            }
+                    </div>`).join('');
+            } catch (e) { console.error("Weather Fetch Error:", e); }
         }
 
         function enterApp() {
             document.getElementById('intro-screen').style.transform = 'translateY(-100%)';
             renderTrip();
-            setupGestures(); // Init gestures after app enter
-            fetchRate();
+            setupGestures(); 
             fetchWeather(); 
             renderFullTripMap();
+            // Init Printer Logic
+            fetchExchangeRate();
+            updateHeaderTime();
+            initListInteractions();
             window.hasScrolledToLive = false;
             checkActiveEvent();
             setInterval(checkActiveEvent, 60000); 
         }
 
-        function filterExpenses(user) {
-            currentFilterUser = user;
-            document.querySelectorAll('.dashboard-item').forEach(el => el.classList.remove('active'));
-            if (user) {
-                const index = ['YK', 'YY', 'YS'].indexOf(user);
-                if(index !== -1) document.querySelector(`.dashboard-item:nth-child(${index + 1})`).classList.add('active');
-                document.getElementById('reset-filter-btn').classList.remove('hidden');
-            } else {
-                document.getElementById('reset-filter-btn').classList.add('hidden');
-            }
-            renderExpenses();
-        }
-
-        function addTodo() {
-            const input = document.getElementById('new-todo-text');
-            const text = input.value.trim();
-            if (!text || !todosRef) return;
-            try {
-                addDoc(todosRef, { text: text, completed: false, timestamp: serverTimestamp() });
-                input.value = '';
-            } catch (e) { console.error("Error adding todo:", e); }
-        }
-
-        function toggleTodo(id, currentStatus) {
-            if (!todosRef) return;
-            try { updateDoc(doc(todosRef, id), { completed: !currentStatus }); } catch (e) { console.error("Error toggling todo:", e); }
-        }
-
-        function deleteTodo(id) {
-            if (!todosRef) return;
-            try { deleteDoc(doc(todosRef, id)); } catch (e) { console.error("Error deleting todo:", e); }
-        }
-        
-        function switchWidget(type) {
-            document.querySelectorAll('.w-tab').forEach(el => el.classList.remove('active'));
-            document.getElementById('tab-' + type).classList.add('active');
-            
-            if (type === 'converter') {
-                document.getElementById('currency-converter').classList.remove('hidden');
-                document.getElementById('todo-widget').classList.add('hidden');
-            } else {
-                document.getElementById('currency-converter').classList.add('hidden');
-                document.getElementById('todo-widget').classList.remove('hidden');
-            }
-        }
-
-        function addExpense() {
-            const item = document.getElementById('ex-item').value.trim();
-            const price = parseInt(document.getElementById('ex-price').value);
-            if(!item || isNaN(price) || price <= 0) return;
-            if (!expensesRef) return;
-            try {
-                addDoc(expensesRef, { user: currentUser, item, price, timestamp: serverTimestamp(), rate: currentRate });
-                document.getElementById('ex-item').value = '';
-                document.getElementById('ex-price').value = '';
-                document.getElementById('preview-twd').innerText = "≈ TWD 0";
-            } catch (error) { console.error("Error adding expense:", error); }
-        }
-        
         function toggleEditNote() {
             const descEl = document.getElementById('m-desc');
             const editEl = document.getElementById('m-note-edit');
             const inputEl = document.getElementById('m-note-input');
-            
             if (editEl.classList.contains('hidden')) {
                 inputEl.value = descEl.innerText.trim();
                 descEl.classList.add('hidden');
@@ -1948,13 +2271,10 @@
         function saveNote() {
             const newText = document.getElementById('m-note-input').value;
             if (!currentEventId || !notesRef) return;
-            
             const descEl = document.getElementById('m-desc');
             if(descEl) descEl.innerHTML = newText.replace(/\n/g, '<br>'); 
-            
             document.getElementById('m-note-edit').classList.add('hidden');
             if(descEl) descEl.classList.remove('hidden');
-            
             try { setDoc(doc(notesRef, currentEventId), { text: newText.replace(/\n/g, '<br>'), updatedAt: serverTimestamp() }); } catch (error) { console.error("Error saving note:", error); }
         }
 
@@ -1965,87 +2285,31 @@
             document.getElementById('trans-zh').innerText = input;
             document.getElementById('trans-jp-result').innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> 正在翻譯...";
             outputBox.classList.remove('hidden');
-            
             setTimeout(() => {
                 document.getElementById('trans-jp-result').innerHTML = "翻譯服務串接中...請暫時使用字卡。"; 
                 showFs("翻譯服務串接中...請暫時使用字卡。", input);
             }, 1000);
         }
-
-        function calcFromJpy(val) {
-            const jpy = parseFloat(val);
-            if(isNaN(jpy) || jpy === 0) { document.getElementById('calc-twd').value = ""; return; }
-            const twd = Math.round(jpy * currentRate);
-            document.getElementById('calc-twd').value = twd;
-        }
-
-        function calcFromTwd(val) {
-            const twd = parseFloat(val);
-            if(isNaN(twd) || twd === 0) { document.getElementById('calc-jpy').value = ""; return; }
-            const jpy = Math.round(twd / currentRate);
-            document.getElementById('calc-jpy').value = jpy;
-        }
-        
-        function fetchRate() {
-            fetch('https://api.exchangerate-api.com/v4/latest/JPY')
-                .then(response => response.json())
-                .then(data => {
-                    if(data && data.rates && data.rates.TWD) {
-                        currentRate = data.rates.TWD;
-                        const rateEl = document.getElementById('current-rate');
-                        if(rateEl) rateEl.innerText = "1 JPY = " + currentRate.toFixed(4) + " TWD";
-                        renderExpenses();
-                        calculatePreview(document.getElementById('ex-price').value);
-                    }
-                })
-                .catch(err => { 
-                    const rateEl = document.getElementById('current-rate');
-                    if(rateEl) rateEl.innerText = "離線匯率: " + currentRate.toFixed(4); 
-                });
-        }
-        
-        function selectUser(user, btn) {
-            currentUser = user;
-            document.querySelectorAll('.user-btn').forEach(el => el.classList.remove('active'));
-            btn.classList.add('active');
-        }
-
-        function calculatePreview(val) {
-            const jpy = parseInt(val);
-            if(isNaN(jpy) || jpy === 0) { document.getElementById('preview-twd').innerText = "≈ TWD 0"; return; }
-            const twd = Math.round(jpy * currentRate);
-            document.getElementById('preview-twd').innerText = "≈ TWD " + twd.toLocaleString();
-        }
         
         function openExternalMap() {
             const mTitle = document.getElementById('m-title');
             const currentTitle = mTitle ? mTitle.innerText : '';
-            if(currentTitle) {
-                window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(currentTitle)}`, '_blank');
-            }
+            if(currentTitle) window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(currentTitle)}`, '_blank');
         }
 
         function openNavigation() {
-            if(currentNavLink) {
-                window.open(currentNavLink, '_blank');
-            }
+            if(currentNavLink) window.open(currentNavLink, '_blank');
         }
         
         function copyMapCode() {
             const mcEl = document.getElementById('m-mapcode');
             const code = mcEl ? mcEl.innerText : '';
             if (!code) return;
-            
             const textArea = document.createElement('textarea');
             textArea.value = code;
             document.body.appendChild(textArea);
             textArea.select();
-            try {
-                document.execCommand('copy');
-                console.log('MapCode copied:', code);
-            } catch (err) {
-                 console.error('Failed to copy MapCode:', err);
-            }
+            try { document.execCommand('copy'); } catch (err) { console.error('Failed to copy MapCode:', err); }
             document.body.removeChild(textArea);
         }
 
@@ -2067,7 +2331,6 @@
 
         function openDetail(dataStr, dayIdx, eventIdx) {
             const data = JSON.parse(decodeURIComponent(dataStr));
-            
             currentEventId = `d${dayIdx}_e${eventIdx}`;
             
             const mTitle = document.getElementById('m-title');
@@ -2115,58 +2378,38 @@
                 infoHtml += createInfoItem('fa-road', '備註', trans.note);
             } 
             
-            if (!data.reservation_info && !data.transport_info) {
-                 infoGroup.classList.add('hidden');
-            }
+            if (!data.reservation_info && !data.transport_info) infoGroup.classList.add('hidden');
             infoGroup.innerHTML = headerHtml + infoHtml;
-
 
             const mapSec = document.getElementById('m-map-section');
             if (data.nav && data.nav.mapcode) {
                 mapSec.classList.remove('hidden');
                 const mcEl = document.getElementById('m-mapcode');
                 if(mcEl) mcEl.innerText = data.nav.mapcode;
-            } else {
-                mapSec.classList.add('hidden');
-            }
+            } else mapSec.classList.add('hidden');
             
             currentNavLink = data.navLink;
             const btnNavigate = document.getElementById('btn-navigate');
-            if(currentNavLink) {
-                btnNavigate.classList.remove('hidden');
-            } else {
-                btnNavigate.classList.add('hidden');
-            }
+            if(currentNavLink) btnNavigate.classList.remove('hidden');
+            else btnNavigate.classList.add('hidden');
 
             const gmapPreview = document.getElementById('m-gmap-preview');
             const gmapIframe = document.getElementById('m-gmap-iframe');
-            
             const mapUrl = getMapUrl(data);
             
             if (mapUrl) {
                 gmapPreview.classList.remove('hidden');
                 gmapIframe.src = mapUrl;
-            } else {
-                gmapPreview.classList.add('hidden');
-            }
+            } else gmapPreview.classList.add('hidden');
 
             document.getElementById('detail-modal').classList.add('active');
             document.querySelector('.modal-overlay').classList.add('active');
         }
 
+        // Export Functions
         window.enterApp = enterApp;
         window.switchView = switchView;
         window.switchDay = switchDay;
-        window.filterExpenses = filterExpenses;
-        window.switchWidget = switchWidget;
-        window.calcFromJpy = calcFromJpy;
-        window.calcFromTwd = calcFromTwd;
-        window.selectUser = selectUser; 
-        window.calculatePreview = calculatePreview; 
-        window.addExpense = addExpense;
-        window.addTodo = addTodo;
-        window.toggleTodo = toggleTodo;
-        window.deleteTodo = deleteTodo;
         window.translateNow = translateNow;
         window.showFs = showFs;
         window.closeFs = closeFs;
@@ -2179,10 +2422,16 @@
         window.closeModal = closeModal;
         window.renderTrip = renderTrip; 
         window.checkActiveEvent = checkActiveEvent; 
-        window.updateExpenseDashboard = updateExpenseDashboard; 
+        
+        // Export Receipt Printer Functions
+        window.toggleTopFeed = toggleTopFeed;
+        window.selectUser = selectUser;
+        window.toggleCurrency = toggleCurrency;
+        window.calculateConversion = calculateConversion;
+        window.printReceipt = printReceipt;
 
         window.onload = function() {
-            createSnow(); // Start Snow Animation
+            createSnow(); 
             setupFirebase();
             const start = new Date("2026-02-02").getTime();
             const now = new Date().getTime();
@@ -2197,6 +2446,11 @@
             const tripView = document.getElementById('view-trip');
             if(tripView) tripView.style.display = 'block'; 
             
+            // Init Printer
+            updateHeaderTime();
+            initListInteractions();
+            fetchExchangeRate();
+
             setTimeout(startDynamicText, 1000);
         };
         
