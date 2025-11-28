@@ -28,14 +28,18 @@
             --font-sans: 'Noto Sans TC', sans-serif;
             --safe-bottom: env(safe-area-inset-bottom);
 
-            /* --- Receipt Printer Variables (New) --- */
+            /* --- Receipt Printer Variables (Optimized) --- */
             --receipt-bg-body: #EAE8E0; 
             --machine-bg: #2C3550; 
             --machine-dark: #1a2033;
             --receipt-gold: #C5A870;
             --input-bg: #151b2b;
             --receipt-paper: #FDFDFD;
-            --paper-width: 290px;
+            
+            /* Dynamic Width Logic: Clamp between 320px and 420px based on viewport */
+            --machine-width: clamp(320px, 92vw, 420px);
+            --paper-width: calc(100% - 40px); /* Paper is always slightly narrower than machine */
+            
             --apple-red: #FF3B30;
             --status-green: #00FF94;
             --status-red: #FF453A;
@@ -226,12 +230,22 @@
         /* --- END INTRO STYLES --- */
 
 
-        /* --- HEADER --- */
+        /* --- HEADER (Updated for backdrop blur) --- */
         .elegant-header {
             padding: 40px 20px 20px;
-            background: linear-gradient(to bottom, #F9F8F4 90%, rgba(249,248,244,0));
+            /* Enhanced background for scrolling readability */
+            background: linear-gradient(to bottom, #F9F8F4 85%, rgba(249,248,244,0.8) 95%, rgba(249,248,244,0));
             position: sticky; top: 0; z-index: 100;
+            transition: background 0.3s;
         }
+        /* Specific header style for Wallet View to reduce interference */
+        .wallet-mode .elegant-header {
+            background: rgba(234, 232, 224, 0.95); /* Matches receipt-bg-body with opacity */
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
         .top-meta { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 20px; }
         .brand { font-family: var(--font-serif); font-size: 1.4rem; font-weight: 700; letter-spacing: 1px; color: var(--accent-main); }
         
@@ -245,7 +259,6 @@
             min-width: 60px; text-align: center; opacity: 0.4; transition: 0.4s; cursor: pointer; 
             display: flex; flex-direction: column; align-items: center;
             user-select: none;
-            /* Design Note: Prevent shrinking to keep consistent tap target */
             flex-shrink: 0; 
         }
         .d-item.active { opacity: 1; transform: scale(1.1); }
@@ -261,26 +274,24 @@
 
         /* --- TRIP VIEW & GESTURES --- */
         .view-section {
-            /* Ensure smooth transitions */
             width: 100%;
         }
 
         #view-trip {
-            overflow-x: hidden; /* Hide the sliding content */
-            min-height: 80vh; /* Ensure touch area covers screen */
-            touch-action: pan-y; /* Allow vertical scroll, handle horizontal in JS */
+            overflow-x: hidden; 
+            min-height: 80vh; 
+            touch-action: pan-y; 
         }
 
         .container { 
             padding: 0 20px; 
             max-width: 600px; 
             margin: 0 auto; 
-            /* Modified: Faster transition (0.35s) for snappier feel */
             transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.35s ease; 
             will-change: transform, opacity;
         }
 
-        /* Animation Classes - Modified for 0.35s */
+        /* Animation Classes */
         .slide-out-left { transform: translateX(-50px); opacity: 0; }
         .slide-out-right { transform: translateX(50px); opacity: 0; }
         .slide-in-from-right { animation: slideInRight 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
@@ -422,8 +433,8 @@
         #view-wallet {
             background-color: var(--receipt-bg-body);
             min-height: 100vh;
-            /* Reset padding logic for this view to match standalone printer styling */
-            padding: 100px 20px 100px; /* Top padding for header, bottom for nav */
+            /* Update: More bottom padding to clear the floating nav completely */
+            padding: 110px 15px 160px; 
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -432,19 +443,26 @@
         /* --- 總成結構 --- */
         .printer-assembly {
             position: relative;
-            width: 100%;
-            max-width: 340px; 
+            /* Update: Dynamic width using clamp for responsiveness */
+            width: var(--machine-width);
             display: flex;
             flex-direction: column;
             align-items: center;
             z-index: 100;
+            margin-top: 10px;
             margin-bottom: 50px;
+            /* Update: Ensure centering explicitly */
+            margin-left: auto;
+            margin-right: auto;
         }
 
         /* --- LAYER 1: 上方進紙 --- */
         .paper-input-feed {
             position: absolute;
             width: var(--paper-width);
+            /* Center the paper relative to the machine */
+            left: 50%;
+            transform: translateX(-50%);
             top: -95px; 
             height: 125px; 
             background: var(--receipt-paper);
@@ -455,11 +473,16 @@
             -webkit-mask-image: linear-gradient(to bottom, transparent, black 15%);
             overflow: hidden; 
             cursor: pointer;
-            transition: transform 0.3s;
+            transition: transform 0.3s, top 0.3s;
         }
         
         .paper-input-feed:hover {
-            transform: translateY(-2px);
+            /* Modified transform to preserve X centering */
+            transform: translateX(-50%) translateY(-2px);
+        }
+
+        .paper-input-feed.expanded .feed-scroll-wrapper {
+            transform: translate3d(0, -125px, 0); 
         }
 
         .feed-scroll-wrapper {
@@ -469,10 +492,6 @@
             flex-direction: column;
             transform: translate3d(0, 0, 0);
             transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
-        }
-
-        .paper-input-feed.expanded .feed-scroll-wrapper {
-            transform: translate3d(0, -125px, 0); 
         }
 
         .feed-section {
@@ -558,6 +577,9 @@
             margin-top: -40px; 
             z-index: 40; 
             filter: drop-shadow(0 2px 5px rgba(0,0,0,0.1));
+            /* Ensure centering logic applies if width changes */
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .receipt-strip {
@@ -768,7 +790,7 @@
     <!-- Main App -->
     <div id="app-container">
         
-        <div class="elegant-header">
+        <div class="elegant-header" id="app-header">
             <div class="top-meta">
                 <div class="brand">L'VOYAGE</div>
                 <div style="text-align: right;">
@@ -1505,8 +1527,51 @@
 
         // --- FIRESTORE SUBSCRIPTION FUNCTIONS ---
         const subscribeToExpenses = () => {
-            // Placeholder: Existing expense logic removed/replaced by local printer logic in UI
-            // We keep this function structure to avoid breaking init flow if needed later
+            if (!expensesRef) return;
+            const q = query(expensesRef);
+            
+            onSnapshot(q, (snapshot) => {
+                const newData = snapshot.docs.map(doc => {
+                    const data = doc.data();
+                    let dateStr = getFormattedTime();
+                    if (data.timestamp) {
+                        const d = data.timestamp.toDate();
+                        const month = String(d.getMonth() + 1).padStart(2, '0');
+                        const day = String(d.getDate()).padStart(2, '0');
+                        const hours = String(d.getHours()).padStart(2, '0');
+                        const minutes = String(d.getMinutes()).padStart(2, '0');
+                        dateStr = `${d.getFullYear()}.${month}.${day} ${hours}:${minutes}`;
+                    }
+                    
+                    return {
+                        id: doc.id,
+                        user: data.user || 'Unknown',
+                        item: data.item || 'Item',
+                        jpy: data.jpy || 0,
+                        twd: data.twd || 0,
+                        timestamp: data.timestamp,
+                        date: dateStr,
+                        no: "000" // calculated below
+                    };
+                });
+                
+                // Sort descending by time
+                newData.sort((a, b) => (b.timestamp?.toMillis() || 0) - (a.timestamp?.toMillis() || 0));
+                
+                // Assign Receipt Numbers (Oldest = 001)
+                const total = newData.length;
+                newData.forEach((item, index) => {
+                    // Newest is at index 0, so its number is Total
+                    // Oldest is at index total-1, so its number is 1
+                    item.no = String(total - index).padStart(3, '0');
+                });
+
+                receiptsData = newData;
+                receiptCount = total + 1; // Prepare next count for local ref
+                renderReceiptList();
+            }, (error) => {
+                console.error("Error subscribing to expenses:", error);
+            });
         };
 
         const subscribeToNotes = () => {
@@ -1656,44 +1721,46 @@
             }
 
             if (dom.printBtn.classList.contains('processing')) return; 
+            if (!expensesRef) return; // Guard for no firebase
 
             // Animation Start
             dom.printBtn.classList.add('processing');
             updateStatusLight(); // Update light to orange
             updateHeaderTime();
 
-            // Simulate Print Delay
+            // Simulate Print Delay then Add to Firestore
             setTimeout(() => {
                 const newReceipt = {
-                    id: Date.now().toString(),
                     user: currentUser, 
                     item: itemVal,
                     jpy: finalJpy,
                     twd: finalTwd,
-                    date: getFormattedTime().split(' ')[0].substring(5) + ' ' + getFormattedTime().split(' ')[1], 
-                    no: String(receiptCount).padStart(3, '0')
+                    timestamp: serverTimestamp()
                 };
-                receiptsData.unshift(newReceipt); 
-                receiptCount++;
-
-                renderReceiptList(true); // Animate new
                 
-                // Reset Inputs
-                dom.inputItem.value = '';
-                dom.inputPrice.value = '';
-                calculateConversion(0); 
+                addDoc(expensesRef, newReceipt).then(() => {
+                    // Success handling
+                    // Reset Inputs
+                    dom.inputItem.value = '';
+                    dom.inputPrice.value = '';
+                    calculateConversion(0); 
 
-                // Auto-Peek Logic
-                if (!isTopFeedExpanded) {
-                    dom.feed.classList.add('expanded');
-                    setTimeout(() => {
-                        if (!isTopFeedExpanded) dom.feed.classList.remove('expanded');
-                    }, 2500);
-                }
+                    // Auto-Peek Logic
+                    if (!isTopFeedExpanded) {
+                        dom.feed.classList.add('expanded');
+                        setTimeout(() => {
+                            if (!isTopFeedExpanded) dom.feed.classList.remove('expanded');
+                        }, 2500);
+                    }
 
-                // Restore state
-                dom.printBtn.classList.remove('processing');
-                updateStatusLight(); // Restore light to green/red
+                    // Restore state
+                    dom.printBtn.classList.remove('processing');
+                    updateStatusLight(); 
+                }).catch(err => {
+                    console.error("Error adding doc:", err);
+                    dom.printBtn.classList.remove('processing');
+                    updateStatusLight();
+                });
 
             }, 400); 
         }
@@ -1764,10 +1831,13 @@
             const el = document.getElementById(`entry-${id}`);
             if(!el) return;
             el.classList.add('tearing');
-            setTimeout(() => {
-                receiptsData = receiptsData.filter(r => r.id !== id);
-                renderReceiptList(false); 
-            }, 400); 
+            
+            // Delete from Firestore
+            if (expensesRef) {
+                setTimeout(() => {
+                    deleteDoc(doc(expensesRef, id)).catch(err => console.error("Error removing doc:", err));
+                }, 400); 
+            }
         }
 
         function renderReceiptList(animateNew = false) {
@@ -1786,10 +1856,17 @@
             receiptsData.forEach((r, index) => {
                 const isFocused = (r.user === currentUser);
                 const dimClass = isFocused ? '' : 'dimmed';
-                const newClass = (animateNew && index === 0) ? 'new-item' : '';
-
+                // Only animate if it's the very first item AND created very recently (within 2 seconds)
+                // This prevents re-animation on reload, but might animate on real-time sync for other users.
+                // For simplicity, we just check index 0. 
+                // The printReceipt function doesn't need to force animateNew anymore since snapshot handles it.
+                // We can add a check: if timestamp is very recent?
+                // Let's keep it simple: index 0 is always "newest" visually. 
+                // To prevent constant re-animation, we can check if it was already rendered? 
+                // For now, let's just render. The slide-out animation runs on mount.
+                
                 html += `
-                    <div class="receipt-entry ${dimClass} ${newClass}" id="entry-${r.id}">
+                    <div class="receipt-entry ${dimClass}" id="entry-${r.id}">
                         <div class="delete-underlay">
                             <i class="fa-solid fa-trash-can"></i>
                         </div>
@@ -2031,11 +2108,20 @@
                 if(navs[map[view]]) navs[map[view]].classList.add('active');
             }
             
+            // Toggle Header Style
+            const header = document.getElementById('app-header');
             if(view === 'wallet') { 
-                // Initialize Printer Logic if needed (it auto-inits on load, but good to refresh)
+                document.getElementById('view-wallet').classList.add('wallet-mode'); // For header scoping via CSS
+                header.classList.add('wallet-mode-header'); // Simpler toggle if needed
+                // Add specific styling class to body or wrapper if needed
+                
+                // Initialize Printer Logic
                 updateHeaderTime();
                 if(isOnline) fetchExchangeRate();
+            } else {
+                header.classList.remove('wallet-mode-header');
             }
+            
             if(view === 'info') {
                 renderFullTripMap();
             }
@@ -2155,7 +2241,9 @@
                 const userId = auth.currentUser?.uid || crypto.randomUUID(); 
                 
                 notesRef = collection(db, `artifacts/${appId}/public/data/notes`);
-                subscribeToExpenses(); // Logic removed for UI replacement, kept for structure
+                expensesRef = collection(db, `artifacts/${appId}/public/data/expenses`);
+                
+                subscribeToExpenses();
                 subscribeToNotes();
 
             } catch (error) {
