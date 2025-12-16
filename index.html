@@ -519,6 +519,35 @@
         .map-overview-card { background: white; padding: 15px; border-radius: 8px; box-shadow: var(--shadow-soft); margin-bottom: 30px; }
         .map-iframe { width: 100%; height: 350px; border: none; border-radius: 4px; }
         
+        /* --- SETTINGS CARD --- */
+        .settings-card {
+            background: #FAFAFA;
+            border: 1px dashed #CCC;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 30px;
+        }
+        .setting-input-group { margin-bottom: 15px; }
+        .setting-label { font-size: 0.8rem; color: #555; margin-bottom: 5px; display: block; font-weight: 500; }
+        .setting-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #DDD;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            font-family: monospace;
+        }
+        .save-settings-btn {
+            background: #333;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 0.9rem;
+        }
+
         /* --- NAV BAR --- */
         .glass-nav {
             position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
@@ -559,14 +588,14 @@
         #view-wallet {
             background-color: var(--receipt-bg-body);
             min-height: 100vh;
-            /* Update: More bottom padding to clear the floating nav completely */
-            padding: 110px 15px 160px; 
+            /* Update: Padding increased to accommodate negative margin */
+            padding: 140px 15px 160px; 
             display: flex;
             flex-direction: column;
             align-items: center;
         }
 
-        /* --- 總成結構 --- */
+        /* --- 總成結構 (Adjusted for Layering) --- */
         .printer-assembly {
             position: relative;
             /* Update: Dynamic width using clamp for responsiveness */
@@ -574,10 +603,10 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            z-index: 100;
-            margin-top: 10px;
+            /* Overlap the header slightly */
+            z-index: 500;
+            margin-top: -60px; 
             margin-bottom: 50px;
-            /* Update: Ensure centering explicitly */
             margin-left: auto;
             margin-right: auto;
         }
@@ -1152,6 +1181,36 @@
                     </div>
                     <i class="fa-solid fa-phone" style="color:#1565C0);"></i>
                 </div>
+
+                <!-- Settings Card -->
+                <div class="settings-card">
+                    <h3 class="serif" style="margin-top: 0; color: #333; font-size: 1.1rem; border-bottom: 1px dashed #CCC; padding-bottom: 10px; margin-bottom: 15px;">
+                        <i class="fa-solid fa-gears" style="color: #666; margin-right: 5px;"></i> 系統設定 (Settings)
+                    </h3>
+                    
+                    <div class="setting-input-group">
+                        <label class="setting-label">Gemini API Key (翻譯功能用)</label>
+                        <input type="password" id="set-gemini-key" class="setting-input" placeholder="AIzaSy...">
+                    </div>
+
+                    <div class="setting-input-group">
+                        <label class="setting-label">Google Maps API Key</label>
+                        <input type="password" id="set-maps-key" class="setting-input" placeholder="AIzaSy...">
+                    </div>
+
+                    <div class="setting-input-group">
+                        <label class="setting-label">旅程出發日期 (YYYY-MM-DD)</label>
+                        <input type="date" id="set-start-date" class="setting-input">
+                    </div>
+
+                    <button class="save-settings-btn" onclick="window.saveSettings()">
+                        <i class="fa-solid fa-floppy-disk"></i> 儲存並重新載入
+                    </button>
+                    <div style="font-size: 0.7rem; color: #888; margin-top: 10px; text-align: center;">
+                        * 資料僅儲存於您的瀏覽器 (Local Storage)
+                    </div>
+                </div>
+
             </div>
         </div>
 
@@ -1246,7 +1305,11 @@
     <div id="app-message">訊息</div>
 
     <script>
-        const GOOGLE_MAPS_API_KEY = "AIzaSyAX9nvh4bJpiM6-oTm8FoUSZeSBpxZBc1E"; 
+        // Load settings from localStorage
+        const storedMapsKey = localStorage.getItem('maps_api_key');
+        const GOOGLE_MAPS_API_KEY = storedMapsKey || "AIzaSyAX9nvh4bJpiM6-oTm8FoUSZeSBpxZBc1E"; 
+        const storedGeminiKey = localStorage.getItem('gemini_api_key');
+        const storedStartDate = localStorage.getItem('trip_start_date') || "2026-02-02";
     </script>
 
     <script type="module">
@@ -1259,7 +1322,7 @@
 
         // Gemini API Configuration
         const API_MODEL = 'gemini-2.5-flash-preview-09-2025';
-        const apiKey = ""; // Canvas runtime provides this
+        const apiKey = storedGeminiKey || ""; // Use stored key or empty default
         const TRANSLATE_URL = `https://generativelanguage.googleapis.com/v1beta/models/${API_MODEL}:generateContent?key=${apiKey}`;
 
         // --- DATA & MESSAGES ---
@@ -1651,6 +1714,13 @@
             }, 3000);
         }
 
+        // Haptic Feedback Helper
+        function triggerHaptic(pattern = 50) {
+            if (navigator.vibrate) {
+                navigator.vibrate(pattern);
+            }
+        }
+
         /**
          * Generic fetch wrapper with exponential backoff for API calls.
          * @param {string} url The API endpoint URL.
@@ -1916,12 +1986,16 @@
             if (dom.printBtn.classList.contains('processing')) return; 
             if (!expensesRef) return; // Guard for no firebase
 
-            // Animation Start
+            // Animation & Haptic Start
+            triggerHaptic(50); // Short buzz on button press
             dom.printBtn.classList.add('processing');
             updateStatusLight(); // Update light to orange
             updateHeaderTime();
 
-            // Simulate Print Delay then Add to Firestore
+            // 1. Immediate Visual Feedback (Top Feed Peek) - Concurrent with backend call
+            dom.feed.classList.add('expanded');
+
+            // 2. Perform Backend Operation
             setTimeout(() => {
                 const newReceipt = {
                     user: currentUser, 
@@ -1939,13 +2013,10 @@
 
                     showToast(`✅ 已記錄: ${newReceipt.item} (${currentCurrency === 'JPY' ? '¥' + finalJpy : 'TWD' + finalTwd})`);
 
-                    // Auto-Peek Logic
-                    if (!isTopFeedExpanded) {
-                        dom.feed.classList.add('expanded');
-                        setTimeout(() => {
-                            if (!isTopFeedExpanded) dom.feed.classList.remove('expanded');
-                        }, 2500);
-                    }
+                    // Close top peek after a short delay
+                    setTimeout(() => {
+                        dom.feed.classList.remove('expanded');
+                    }, 800); // Shorter delay for snappier feel
 
                     // Restore state
                     dom.printBtn.classList.remove('processing');
@@ -1954,10 +2025,11 @@
                     console.error("Error adding doc:", err);
                     showToast("❌ 記錄失敗，請檢查連線或權限。");
                     dom.printBtn.classList.remove('processing');
+                    dom.feed.classList.remove('expanded'); // Close on error
                     updateStatusLight();
                 });
 
-            }, 400); 
+            }, 200); // Reduced simulated delay
         }
 
         function initListInteractions() {
@@ -2014,6 +2086,7 @@
                 if (currentX < -60) { 
                     document.querySelectorAll('.receipt-entry').forEach(el => el.classList.remove('reveal-delete'));
                     activeSwipeEl.classList.add('reveal-delete');
+                    triggerHaptic(20); // Small haptic on swipe open
                 } else if (currentX > 10) {
                     activeSwipeEl.classList.remove('reveal-delete');
                 } else {
@@ -2029,6 +2102,7 @@
             const el = document.getElementById(`entry-${id}`);
             if(!el) return;
             el.classList.add('tearing');
+            triggerHaptic([20, 30, 20]); // Tear sound feel
             
             if (expensesRef) {
                 setTimeout(() => {
@@ -2045,6 +2119,10 @@
         function renderReceiptList(animateNew = false) {
             const dom = getPrinterDom();
             updateTotalDisplay(receiptsData);
+
+            if (animateNew) {
+                triggerHaptic([30, 50, 30]); // Receipt printed out feel
+            }
 
             if (receiptsData.length === 0) {
                 dom.listEmpty.style.display = 'block';
@@ -2321,11 +2399,38 @@
             }
             
             if(view === 'info') {
+                // Populate Settings Inputs
+                const geminiInput = document.getElementById('set-gemini-key');
+                const mapsInput = document.getElementById('set-maps-key');
+                const dateInput = document.getElementById('set-start-date');
+                
+                if (geminiInput) geminiInput.value = storedGeminiKey || '';
+                if (mapsInput) mapsInput.value = storedMapsKey || '';
+                if (dateInput) dateInput.value = storedStartDate;
+
                 renderFullTripMap();
             }
             
             window.scrollTo(0,0);
         }
+
+        function saveSettings() {
+            const geminiKey = document.getElementById('set-gemini-key').value.trim();
+            const mapsKey = document.getElementById('set-maps-key').value.trim();
+            const startDate = document.getElementById('set-start-date').value;
+
+            if (geminiKey) localStorage.setItem('gemini_api_key', geminiKey);
+            else localStorage.removeItem('gemini_api_key');
+
+            if (mapsKey) localStorage.setItem('maps_api_key', mapsKey);
+            else localStorage.removeItem('maps_api_key');
+
+            if (startDate) localStorage.setItem('trip_start_date', startDate);
+
+            showToast("✅ 設定已儲存，即將重新載入...");
+            setTimeout(() => location.reload(), 1000);
+        }
+        window.saveSettings = saveSettings;
 
         function switchDay(i) {
             if (isAnimating) return;
@@ -2496,8 +2601,10 @@
             // If today is before trip start, fetch current week's weather for preview.
             // If trip has started or is past, fetch for trip dates.
             try {
-                const tripStart = new Date("2026-02-02");
-                const tripEnd = new Date("2026-02-07");
+                const tripStart = new Date(storedStartDate);
+                const tripEnd = new Date(storedStartDate);
+                tripEnd.setDate(tripStart.getDate() + 5);
+
                 const today = new Date();
                 
                 let fetchStart, fetchEnd;
@@ -2867,7 +2974,7 @@
         window.onload = function() {
             createSnow(); 
             setupFirebase();
-            const start = new Date("2026-02-02").getTime();
+            const start = new Date(storedStartDate).getTime();
             const now = new Date().getTime();
             const days = Math.ceil((start - now) / (1000 * 60 * 60 * 24));
             
