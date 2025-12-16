@@ -143,7 +143,6 @@
             color: var(--accent-gold);
             margin-bottom: 20px;
             filter: drop-shadow(0 0 10px rgba(180, 155, 103, 0.3));
-            animation: floatIcon 6s ease-in-out infinite;
             opacity: 0;
             animation: floatIcon 6s ease-in-out infinite, fadeIn 1.5s ease forwards 0.2s;
         }
@@ -220,6 +219,12 @@
             font-weight: 300;
         }
 
+        /* --- New Keyframes for Lively Effect --- */
+        @keyframes livelyPulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+            50% { transform: scale(1.02) translateY(-1px); box-shadow: 0 8px 30px rgba(0,0,0,0.2), 0 0 10px rgba(255, 255, 255, 0.4); }
+        }
+
         .intro-btn {
             margin-top: 40px; 
             padding: 14px 50px; 
@@ -234,11 +239,22 @@
             cursor: pointer; 
             transition: all 0.4s ease;
             opacity: 0; 
-            animation: fadeIn 1.5s ease forwards 1.2s;
+            /* 修正 1: 加入 livelyPulse 動畫，讓按鈕出現後開始震動 */
+            animation: fadeIn 1.5s ease forwards 1.2s, livelyPulse 2.5s infinite ease-in-out 2.7s; 
             box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            transform-origin: center;
         }
-        .intro-btn:hover { background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.8); transform: translateY(-2px); }
-        .intro-btn:active { transform: translateY(1px); }
+        .intro-btn:hover { 
+            /* 懸停時停止脈衝動畫，使用靜態 Hover 效果 */
+            animation: none;
+            background: rgba(255,255,255,0.15); 
+            border-color: rgba(255,255,255,0.8); 
+            transform: translateY(-2px) scale(1.02); 
+        }
+        .intro-btn:active { 
+            animation: none; /* 點擊時停止動畫 */
+            transform: translateY(1px) scale(0.98); 
+        }
         
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
@@ -598,8 +614,12 @@
         .feed-scroll-wrapper {
             width: 100%;
             height: 250px; 
+            flex-shrink: 0; 
             display: flex;
             flex-direction: column;
+            align-items: center;
+            justify-content: flex-end; 
+            padding-bottom: 40px; 
             transform: translate3d(0, 0, 0);
             transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
         }
@@ -709,7 +729,7 @@
         .receipt-strip::after {
             content: ""; position: absolute; bottom: -10px; left: 0; width: 100%; height: 10px;
             background: linear-gradient(45deg, transparent 33.333%, var(--receipt-paper) 33.333%, var(--receipt-paper) 66.667%, transparent 66.667%), 
-                         linear-gradient(-45deg, transparent 33.333%, var(--receipt-paper) 33.333%, var(--receipt-paper) 66.667%, transparent 66.667%);
+                        linear-gradient(-45deg, transparent 33.333%, var(--receipt-paper) 33.333%, var(--receipt-paper) 66.667%, transparent 66.667%);
             background-size: 10px 20px; background-position: 0 -10px; 
         }
 
@@ -796,6 +816,9 @@
             border-radius: 4px; cursor: pointer; 
             box-shadow: 0 5px 0 #5e4d2b; font-weight: 700; position: relative; letter-spacing: 1px; overflow: hidden;
             transition: all 0.1s;
+            /* 修正 2: 針對觸控點按問題，增加 touch-action */
+            touch-action: manipulation; 
+            z-index: 60; /* 確保在機器組件內層級夠高 */
         }
         .print-btn:active { transform: translateY(4px); box-shadow: 0 1px 0 #5e4d2b; }
         .print-btn.processing { opacity: 0.8; cursor: wait; pointer-events: none; color: rgba(43,43,43, 0.6); }
@@ -1074,10 +1097,10 @@
                     <h2 class="serif" style="margin-top: 0; color: var(--accent-main); font-size: 1.3rem;">旅行總覽地圖</h2>
                     <p style="color: #666; font-size: 0.9rem; margin-bottom: 10px;">範圍：八戶、青森、函館、弘前</p>
                     <iframe id="trip-map-overview-iframe" 
-                                class="map-iframe"
-                                allowfullscreen="" 
-                                loading="lazy" 
-                                referrerpolicy="no-referrer-when-downgrade">
+                                 class="map-iframe"
+                                 allowfullscreen="" 
+                                 loading="lazy" 
+                                 referrerpolicy="no-referrer-when-downgrade">
                     </iframe>
                 </div>
 
@@ -1112,7 +1135,7 @@
                     <div style="display:flex; align-items:center;">
                         <div class="info-icon" style="background: #FFEBEE; color: #D32F2F;"><i class="fa-solid fa-truck-medical"></i></div>
                         <div class="info-text">
-                            <h3>火警/救護車 119 </h3>
+                            <h3>火警/救護車 119 </h3>
                             <p>急病或受傷時</p>
                         </div>
                     </div>
@@ -1949,7 +1972,8 @@
 
             container.addEventListener('click', (e) => {
                 const entry = e.target.closest('.receipt-entry');
-                if (e.target.closest('.delete-underlay i')) {
+                // Check if the click occurred on the trash icon area
+                if (e.target.closest('.delete-underlay')) {
                     const id = entry.id.split('-')[1];
                     confirmDelete(id);
                     return;
@@ -2258,7 +2282,7 @@
                             }
                         }
                     }
-                 });
+                });
             }
         }
 
