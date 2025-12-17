@@ -66,6 +66,13 @@
         h1, h2, h3, .serif { font-family: var(--font-serif); }
         .hidden { display: none !important; }
         
+        /* --- SYSTEM STATUS LIGHTS --- */
+        .diag-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid rgba(0,0,0,0.05); }
+        .diag-label { font-size: 0.85rem; color: #555; }
+        .diag-status { width: 10px; height: 10px; border-radius: 50%; background: #DDD; transition: background 0.3s, box-shadow 0.3s; }
+        .diag-status.ok { background: var(--status-green); box-shadow: 0 0 8px var(--status-green); }
+        .diag-status.err { background: var(--status-red); box-shadow: 0 0 8px var(--status-red); }
+
         #m-desc a {
             color: var(--accent-main);
             text-decoration: underline;
@@ -293,24 +300,28 @@
         }
         .alert-highlight { color: var(--accent-red); font-weight: 700; display: block; margin-top: 4px; font-size: 0.85rem;}
 
-        @keyframes breathing {
-            0% { box-shadow: 0 0 5px rgba(180, 155, 103, 0.2); border-color: rgba(180, 155, 103, 0.4); }
-            50% { box-shadow: 0 0 20px rgba(180, 155, 103, 0.6); border-color: rgba(180, 155, 103, 1); }
-            100% { box-shadow: 0 0 5px rgba(180, 155, 103, 0.2); border-color: rgba(180, 155, 103, 0.4); }
+        /* Active Event Animation (Low key luxury) */
+        @keyframes subtleBreath {
+            0% { box-shadow: 0 0 5px rgba(180, 155, 103, 0.1); }
+            50% { box-shadow: 0 0 15px rgba(180, 155, 103, 0.6); }
+            100% { box-shadow: 0 0 5px rgba(180, 155, 103, 0.1); }
         }
         .active-event .event-card {
-            border: 1px solid var(--accent-gold);
-            animation: breathing 3s infinite ease-in-out;
-            background: rgba(255, 255, 255, 0.95); transform: scale(1.02);
+            /* border: 1px solid rgba(180, 155, 103, 0.5); // Optional: Subtle border */
+            animation: subtleBreath 3s infinite ease-in-out;
+            background: rgba(255, 255, 255, 1); 
+            transform: scale(1.02);
+            position: relative;
+            z-index: 5;
         }
         .active-event .time-dot {
             background: var(--accent-gold); border-color: var(--accent-gold);
             box-shadow: 0 0 10px var(--accent-gold);
         }
-        .active-label {
-            display: inline-block; background: var(--accent-gold); color: white;
+        .now-badge {
+            display: inline-block; background: var(--accent-main); color: var(--accent-gold);
             font-size: 0.6rem; padding: 2px 6px; border-radius: 4px; margin-left: 8px;
-            vertical-align: middle; letter-spacing: 1px;
+            vertical-align: middle; letter-spacing: 1px; font-weight: 700;
         }
 
         /* --- TRANSLATE VIEW --- */
@@ -351,13 +362,14 @@
         .ps-title { font-size: 0.9rem; color: #555; }
         
         #fs-controls {
-            margin-top: 30px; display: flex; gap: 15px;
-            justify-content: center; width: 100%;
+            margin-top: 30px; display: flex; gap: 10px;
+            justify-content: center; width: 100%; flex-wrap: wrap;
         }
         .fs-ctrl-btn {
             background: transparent; border: 1px solid #DDD;
-            padding: 10px 20px; border-radius: 50px;
+            padding: 8px 16px; border-radius: 50px;
             font-size: 0.9rem; color: #555; cursor: pointer; transition: 0.2s;
+            min-width: 80px;
         }
         .fs-ctrl-btn.active {
             background: var(--accent-gold); color: white; border-color: var(--accent-gold);
@@ -372,6 +384,10 @@
             font-size: 1.2rem; box-shadow: 0 2px 5px rgba(0,0,0,0.1); cursor: pointer;
         }
         .fs-qty-val { font-size: 1.5rem; font-weight: 700; width: 40px; text-align: center; }
+
+        /* Checkout Matrix UI */
+        .checkout-matrix { display: flex; flex-direction: column; gap: 15px; width: 100%; align-items: center;}
+        .matrix-row { display: flex; gap: 10px; }
 
         .info-card { background: white; padding: 20px; border-radius: 8px; box-shadow: var(--shadow-soft); margin-bottom: 15px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; }
         .info-icon { width: 40px; height: 40px; border-radius: 50%; background: #F5F5F5; display: flex; justify-content: center; align-items: center; color: var(--accent-main); margin-right: 15px; }
@@ -460,13 +476,16 @@
         .paper-input-feed:hover { transform: translateX(-50%) translateY(-2px); }
         .paper-input-feed.expanded .feed-scroll-wrapper { transform: translate3d(0, -125px, 0); }
         
-        /* Pulse Animation for Top Feed */
-        @keyframes pulseFeed {
-            0% { top: -95px; }
-            50% { top: -105px; }
-            100% { top: -95px; }
+        /* Printer Feed Scroll Animation (Internal Only) */
+        @keyframes peekScroll {
+            0% { transform: translate3d(0, 0, 0); }
+            15% { transform: translate3d(0, -125px, 0); } /* Slide up */
+            85% { transform: translate3d(0, -125px, 0); } /* Hold */
+            100% { transform: translate3d(0, 0, 0); } /* Slide down */
         }
-        .paper-input-feed.pulse { animation: pulseFeed 0.4s ease-out; }
+        .feed-scroll-wrapper.anim-peek {
+            animation: peekScroll 2.0s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
 
         .feed-scroll-wrapper {
             width: 100%; height: 250px; display: flex; flex-direction: column;
@@ -583,7 +602,42 @@
         .settings-toggle { color: rgba(255,255,255,0.3); font-size: 1rem; cursor: pointer; transition: 0.3s; margin-left: 10px; }
         .settings-toggle:hover, .settings-toggle.active { color: var(--receipt-gold); transform: rotate(90deg); }
         .settings-panel { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; background: rgba(0,0,0,0.2); border-radius: 6px; margin-bottom: 0; }
-        .settings-panel.open { max-height: 100px; margin-bottom: 15px; padding: 10px; }
+        .settings-panel.open { max-height: 600px; margin-bottom: 15px; padding: 10px; }
+
+        /* ADVANCED SETTINGS UI */
+        .adv-setting-group { margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px; }
+        .adv-label { font-family:'Share Tech Mono'; color:#888; font-size:0.7rem; margin-bottom:8px; display:block; text-transform:uppercase; letter-spacing:1px; }
+        .setting-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+        .setting-name { color: #ccc; font-size: 0.8rem; display: flex; align-items: center; gap: 8px; }
+        .setting-status { width: 6px; height: 6px; border-radius: 50%; background: #444; }
+        .setting-status.ok { background: var(--status-green); box-shadow: 0 0 5px var(--status-green); }
+        .setting-status.err { background: var(--status-red); }
+        
+        .toggle-btn { background: transparent; border: none; cursor: pointer; color: #555; font-size: 1.2rem; transition: 0.3s; }
+        .toggle-btn.on { color: var(--status-green); }
+        
+        .setting-input { 
+            width: 100%; background: #151b2b; border: 1px solid rgba(255,255,255,0.1); 
+            color: var(--receipt-gold); font-family: monospace; font-size: 0.8rem; 
+            padding: 5px 8px; border-radius: 4px; outline: none; margin-bottom: 10px; 
+            display: none; /* Hidden by default if off */
+        }
+        .setting-input.visible { display: block; }
+        .setting-input:focus { border-color: var(--receipt-gold); }
+
+        /* INFO PAGE LIGHT THEME SETTINGS */
+        .light-theme .setting-name { color: #333; }
+        .light-theme .setting-status { background: #ccc; }
+        .light-theme .setting-status.ok { background: var(--status-green); }
+        .light-theme .setting-status.err { background: var(--status-red); }
+        .info-setting-input {
+            width: 100%; background: #F8F8F8; border: 1px solid #DDD; 
+            color: #333; font-family: monospace; font-size: 0.8rem; 
+            padding: 8px; border-radius: 4px; outline: none; margin-bottom: 10px; 
+            display: none; 
+        }
+        .info-setting-input.visible { display: block; }
+        .info-setting-input:focus { border-color: var(--accent-main); background: #FFF; }
 
         .input-deck { display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px;}
         .skeuo-slot { background: var(--input-bg); border-radius: 8px; box-shadow: inset 0 2px 5px rgba(0,0,0,0.5), 0 1px 0 rgba(255,255,255,0.05); padding: 2px; border: 1px solid rgba(0,0,0,0.3); position: relative; transition: all 0.3s; }
@@ -643,7 +697,7 @@
 
         .receipt-entry.reveal-delete .delete-underlay { opacity: 1; }
         .receipt-entry.reveal-delete .receipt-content { transform: translate3d(-80px, 0, 0); }
-        .receipt-entry.new-item { animation: printSlideOut 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
+        .receipt-entry.new-item { animation: printSlideOut 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
 
         .receipt-entry.tearing .receipt-content {
             transition: transform 0.4s ease-in, opacity 0.3s ease-in;
@@ -653,7 +707,7 @@
         .receipt-entry.dimmed .receipt-content { opacity: 0.4; filter: grayscale(1); }
 
         @keyframes printSlideOut {
-            from { opacity: 0; max-height: 0; padding-top: 0; padding-bottom: 0; transform: translateY(-10px); }
+            from { opacity: 0; max-height: 0; padding-top: 0; padding-bottom: 0; transform: translateY(-30px); }
             to { opacity: 1; max-height: 150px; padding-top: 12px; padding-bottom: 12px; transform: translateY(0); }
         }
 
@@ -691,6 +745,10 @@
             color: #999; font-size: 0.7rem; font-family: 'Share Tech Mono';
         }
         .receipt-empty { text-align: center; color: #CCC; font-family: 'Share Tech Mono'; font-size: 0.7rem; padding: 40px 20px; letter-spacing: 1px; }
+
+        /* --- SYSTEM STATUS --- */
+        .sys-summary { background: #fff; padding: 15px; border-radius: 8px; margin-top: 15px; border: 1px solid #EEE; margin-bottom: 30px; }
+        .sys-title { font-family: 'Share Tech Mono'; font-size: 0.75rem; color: #999; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; margin: 0;}
 
     </style>
 </head>
@@ -734,8 +792,8 @@
         <!-- 2. WALLET VIEW -->
         <div id="view-wallet" class="view-section hidden" style="position:relative;">
             <div class="printer-assembly">
-                <div class="paper-input-feed" onclick="window.toggleTopFeed()">
-                    <div class="feed-scroll-wrapper">
+                <div class="paper-input-feed" onclick="window.toggleTopFeed()" id="top-paper-feed">
+                    <div class="feed-scroll-wrapper" id="feed-scroll-wrapper">
                         <div class="feed-section header-view">
                             <div class="input-header-content">
                                 <div class="input-brand">L'VOYAGE</div>
@@ -772,6 +830,14 @@
                             <button class="u-btn active" onclick="window.selectUser(this, '奎')">奎</button>
                             <button class="u-btn" onclick="window.selectUser(this, '愉')">愉</button>
                             <button class="u-btn" onclick="window.selectUser(this, '舜')">舜</button>
+                        </div>
+
+                        <!-- Manual Exchange Rate Override -->
+                        <div style="margin-top:15px; border-top:1px solid rgba(255,255,255,0.1); padding-top:10px;">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
+                                <span style="font-family:'Share Tech Mono'; color:#888; font-size:0.7rem;">MANUAL RATE OVERRIDE</span>
+                            </div>
+                            <input type="number" id="inp-ex-manual" class="setting-input visible" placeholder="Manual Rate (e.g. 0.22)" step="0.01" onchange="window.saveApiSetting('ex_manual', this.value)">
                         </div>
                     </div>
 
@@ -895,6 +961,55 @@
                     <p style="color: #666; font-size: 0.9rem; margin-bottom: 10px;">範圍：八戶、青森、函館、弘前</p>
                     <iframe id="trip-map-overview-iframe" class="map-iframe" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
                 </div>
+                
+                <!-- SYSTEM SETTINGS & STATUS (Moved to Info Page) -->
+                <details class="sys-summary">
+                    <summary style="cursor:pointer; outline:none; list-style:none; display:flex; justify-content:space-between; align-items:center;">
+                        <span class="sys-title">System Settings & Status</span>
+                        <i class="fa-solid fa-chevron-down" style="font-size:0.7rem; color:#CCC;"></i>
+                    </summary>
+                    <div style="margin-top:15px;">
+                        
+                        <!-- Simulation Mode -->
+                        <div class="setting-row light-theme">
+                            <div class="setting-name"><div class="setting-status" id="st-sim"></div> Simulation Mode (2026)</div>
+                            <button class="toggle-btn" id="tg-sim" onclick="window.toggleSetting('sim')"><i class="fa-solid fa-toggle-off"></i></button>
+                        </div>
+
+                        <!-- Google Maps -->
+                        <div class="setting-row light-theme">
+                            <div class="setting-name"><div class="setting-status" id="st-gm"></div> Google Maps</div>
+                            <button class="toggle-btn" id="tg-gm" onclick="window.toggleSetting('gm')"><i class="fa-solid fa-toggle-off"></i></button>
+                        </div>
+                        <input type="password" id="inp-gm" class="info-setting-input" placeholder="API Key" onchange="window.saveApiSetting('gm', this.value)">
+
+                        <!-- Gemini -->
+                        <div class="setting-row light-theme">
+                            <div class="setting-name"><div class="setting-status" id="st-ai"></div> Gemini AI</div>
+                            <button class="toggle-btn" id="tg-ai" onclick="window.toggleSetting('ai')"><i class="fa-solid fa-toggle-off"></i></button>
+                        </div>
+                        <input type="password" id="inp-ai" class="info-setting-input" placeholder="API Key" onchange="window.saveApiSetting('ai', this.value)">
+
+                        <!-- Exchange Rate API -->
+                        <div class="setting-row light-theme">
+                            <div class="setting-name"><div class="setting-status" id="st-ex"></div> Exchange Rate API</div>
+                            <button class="toggle-btn" id="tg-ex" onclick="window.toggleSetting('ex')"><i class="fa-solid fa-toggle-off"></i></button>
+                        </div>
+
+                        <!-- Weather -->
+                        <div class="setting-row light-theme">
+                            <div class="setting-name"><div class="setting-status" id="st-wt"></div> Weather Feed</div>
+                            <button class="toggle-btn" id="tg-wt" onclick="window.toggleSetting('wt')"><i class="fa-solid fa-toggle-off"></i></button>
+                        </div>
+
+                        <!-- Firebase -->
+                        <div class="setting-row light-theme">
+                            <div class="setting-name"><div class="setting-status" id="st-fb"></div> Firebase DB</div>
+                        </div>
+
+                    </div>
+                </details>
+
                 <div class="wallet-card">
                     <h2 class="serif" style="margin-top: 0; color: var(--accent-main);">重要資訊彙整</h2>
                     <p style="color: #666; font-size: 0.9rem;">緊急時刻與通關必備</p>
@@ -1021,18 +1136,28 @@
         // ==========================================
         const App = {
             Config: {
-                GOOGLE_MAPS_API_KEY: "AIzaSyAX9nvh4bJpiM6-oTm8FoUSZeSBpxZBc1E", 
-                GEMINI_API_MODEL: 'gemini-2.5-flash-preview-09-2025',
+                DEFAULT_GOOGLE_KEY: "AIzaSyAX9nvh4bJpiM6-oTm8FoUSZeSBpxZBc1E", 
+                DEFAULT_GEMINI_MODEL: 'gemini-2.5-flash-preview-09-2025',
                 TRANSLATE_URL: `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=`,
                 TRIP_START_DATE: "2026-02-02",
-                EXCHANGE_RATE_API: 'https://api.exchangerate-api.com/v4/latest/JPY' 
+                EXCHANGE_RATE_API: 'https://api.exchangerate-api.com/v4/latest/JPY',
+                
+                // Dynamic Settings stored in localStorage
+                settings: {
+                    gm: { enabled: true, key: "" },
+                    ai: { enabled: true, key: "" },
+                    ex: { enabled: true, manual: 0.22 },
+                    wt: { enabled: true },
+                    sim: { enabled: false } // Simulation Mode
+                }
             },
             State: {
                 db: null, auth: null, expensesRef: null, notesRef: null, todosRef: null, memosRef: null,
                 currentDayIndex: 0, localNotes: {}, currentEventId: null, currentNavLink: null, isAnimating: false,
                 rate: 0.22, isOnline: false, receiptCount: 1, receiptsData: [], receiptsCache: { spend:[], todo:[], memo:[] }, 
                 currentUser: '奎', isTopFeedExpanded: false, currentCurrency: 'JPY', currentMode: 'spend',
-                currentQuantity: 1
+                currentQuantity: 1,
+                checkoutState: { pay: '現金', split: '一起' } // For translate combination
             },
             Data: {
                 Trip: [
@@ -1058,6 +1183,7 @@
                     printBtn: document.getElementById('print-btn'),
                     statusLight: document.getElementById('status-light'),
                     feed: document.querySelector('.paper-input-feed'),
+                    feedWrapper: document.getElementById('feed-scroll-wrapper'),
                     listAnchor: document.getElementById('receipt-items-anchor'),
                     listEmpty: document.getElementById('receipt-empty'),
                     totalLabel: document.getElementById('total-label'),
@@ -1077,7 +1203,7 @@
                     setTimeout(() => toast.classList.remove('show'), 3000);
                 },
                 getFormattedTime: () => {
-                    const now = new Date();
+                    const now = App.Config.settings.sim.enabled ? new Date("2026-02-02T16:05:00") : new Date();
                     const year = now.getFullYear();
                     const month = String(now.getMonth() + 1).padStart(2, '0');
                     const day = String(now.getDate()).padStart(2, '0');
@@ -1113,14 +1239,23 @@
                     return "fa-cloud";
                 },
                 getMapUrl: (data) => {
+                    if(!App.Config.settings.gm.enabled) return null;
                     const base = `https://www.google.com/maps/embed/v1/`;
-                    const key = App.Config.GOOGLE_MAPS_API_KEY;
+                    const key = App.Config.settings.gm.key || App.Config.DEFAULT_GOOGLE_KEY;
+                    if(!key) return null;
+                    
                     if (data.location) return `${base}search?key=${key}&q=${encodeURIComponent(data.location)}`;
                     if (data.from && data.to) return `${base}directions?key=${key}&origin=${encodeURIComponent(data.from)}&destination=${encodeURIComponent(data.to)}&mode=driving`;
                     return null;
                 },
                 safeStringify: (obj) => encodeURIComponent(JSON.stringify(obj)).replace(/'/g, "%27"),
-                createInfoItem: (icon, label, value) => !value ? '' : `<div class="info-item"><div class="info-label"><i class="fa-solid ${icon}"></i><span>${label}</span></div><div class="info-value">${value}</div></div>`
+                createInfoItem: (icon, label, value) => !value ? '' : `<div class="info-item"><div class="info-label"><i class="fa-solid ${icon}"></i><span>${label}</span></div><div class="info-value">${value}</div></div>`,
+                setDiag: (id, ok) => {
+                    const el = document.getElementById(id);
+                    if(el) {
+                        el.className = `diag-status ${ok ? 'ok' : 'err'}`;
+                    }
+                }
             },
             Services: {
                 Firebase: {
@@ -1154,10 +1289,12 @@
                             App.Services.Firebase.subscribeTodos();
                             App.Services.Firebase.subscribeMemos();
                             console.log("Firebase Connected");
+                            App.Utils.setDiag('diag-fb', true);
 
                         } catch (error) {
                             console.error("Firebase Auth/Init Error:", error);
                             App.Utils.showToast("無法連線到資料庫");
+                            App.Utils.setDiag('diag-fb', false);
                         }
                     },
                     subscribeExpenses: () => {
@@ -1173,10 +1310,8 @@
                                 }
                                 return { id: doc.id, type:'spend', user: data.user||'?', item: data.item||'Item', jpy: data.jpy||0, twd: data.twd||0, timestamp: data.timestamp, date: dateStr, no: "000" };
                             });
-                            // Store separately or combine? Keeping separate for specific rendering might be cleaner, but combined is easier for timeline.
-                            // Let's store in a combined cache for rendering.
                             App.Services.Firebase.updateReceiptCache('spend', newData, isNewLocalWrite);
-                        });
+                        }, () => App.Utils.setDiag('diag-fb', false));
                     },
                     subscribeTodos: () => {
                         if (!App.State.todosRef) return;
@@ -1192,7 +1327,7 @@
                                 return { id: doc.id, type:'todo', user: data.user||'?', item: data.item||'Task', done: data.done||false, timestamp: data.timestamp, date: dateStr };
                             });
                             App.Services.Firebase.updateReceiptCache('todo', newData, isNewLocalWrite);
-                        });
+                        }, () => App.Utils.setDiag('diag-fb', false));
                     },
                     subscribeMemos: () => {
                         if (!App.State.memosRef) return;
@@ -1208,18 +1343,13 @@
                                 return { id: doc.id, type:'memo', user: data.user||'?', text: data.text||'', timestamp: data.timestamp, date: dateStr };
                             });
                             App.Services.Firebase.updateReceiptCache('memo', newData, isNewLocalWrite);
-                        });
+                        }, () => App.Utils.setDiag('diag-fb', false));
                     },
                     updateReceiptCache: (type, data, animate) => {
                         if(!App.State.receiptsCache) App.State.receiptsCache = { spend:[], todo:[], memo:[] };
                         App.State.receiptsCache[type] = data;
-                        
-                        // Flatten and sort all by timestamp desc
                         let all = [...App.State.receiptsCache.spend, ...App.State.receiptsCache.todo, ...App.State.receiptsCache.memo];
                         all.sort((a, b) => (b.timestamp?.toMillis() || 0) - (a.timestamp?.toMillis() || 0));
-                        
-                        // Re-assign numbers logic if needed, or just let them be naturally ordered
-                        // For simplicity, we just use the flattened list
                         App.State.receiptsData = all;
                         App.Controllers.Wallet.renderReceiptList(animate);
                     },
@@ -1236,7 +1366,6 @@
                         let ref = App.State.expensesRef;
                         if(type === 'todo') ref = App.State.todosRef;
                         if(type === 'memo') ref = App.State.memosRef;
-                        
                         if (ref) {
                             setTimeout(() => deleteDoc(doc(ref, id)).catch(e => console.error(e)), 400);
                         }
@@ -1254,6 +1383,12 @@
                 },
                 Weather: {
                     fetch: async () => {
+                        if(!App.Config.settings.wt.enabled) {
+                            App.Data.Trip.forEach(d => d.weather = { icon: "fa-cloud", temp: "N/A" });
+                            App.Controllers.Trip.renderTrip();
+                            App.Utils.setDiag('diag-wt', false);
+                            return;
+                        }
                         try {
                             const now = new Date();
                             const day = now.getDay();
@@ -1282,24 +1417,31 @@
                                 }
                             });
                             App.Controllers.Trip.renderTrip(); 
+                            App.Utils.setDiag('diag-wt', true);
                         } catch (e) {
                             console.error("Weather error", e);
                             App.Data.Trip.forEach(d => d.weather = { icon: "fa-cloud", temp: "N/A" });
                             App.Controllers.Trip.renderTrip();
+                            App.Utils.setDiag('diag-wt', false);
                         }
                     }
                 },
                 Translator: {
                     translate: async (input) => {
+                        if(!App.Config.settings.ai.enabled) return "AI Disabled";
                         try {
-                            const res = await App.Utils.fetchRetry(App.Config.TRANSLATE_URL + App.Config.GEMINI_API_KEY, {
+                            const key = App.Config.settings.ai.key || "";
+                            // 如果沒key 就不送出
+                            if(!key) return "Please set API Key";
+
+                            const res = await App.Utils.fetchRetry(App.Config.TRANSLATE_URL + key, {
                                 method: 'POST',
                                 headers: {'Content-Type': 'application/json'},
                                 body: JSON.stringify({ contents: [{ parts: [{ text: `Translate to Japanese: ${input}` }] }] })
                             });
                             const json = await res.json();
                             return json.candidates?.[0]?.content?.parts?.[0]?.text;
-                        } catch (e) { return null; }
+                        } catch (e) { return "Error"; }
                     }
                 }
             },
@@ -1307,16 +1449,19 @@
                 UI: {
                     createSnow: () => {
                         const c = document.getElementById('snow-container');
-                        for(let i=0; i<40; i++) {
+                        for(let i=0; i<50; i++) {
                             const s = document.createElement('div');
                             s.className = 'snowflake'; s.innerHTML = '❄';
                             s.style.left = Math.random()*100+'%';
-                            s.style.animationDuration = (Math.random()*5+5)+'s';
+                            const dur = (Math.random()*5+5);
+                            s.style.animationDuration = dur + 's';
+                            s.style.animationDelay = -(Math.random()*dur) + 's'; 
                             s.style.fontSize = (Math.random()*0.4+0.2)+'rem';
                             c.appendChild(s);
                         }
                     },
                     initApp: () => {
+                        App.Controllers.Wallet.loadSettings();
                         document.getElementById('intro-screen').style.transform = 'translateY(-100%)';
                         App.Controllers.Trip.renderTrip();
                         App.Controllers.Trip.setupGestures();
@@ -1326,6 +1471,9 @@
                         App.Controllers.Wallet.initListInteractions();
                         setInterval(App.Controllers.Trip.checkActiveEvent, 60000);
                         App.Controllers.Trip.checkActiveEvent();
+                        
+                        // Set initial time on wallet
+                        document.getElementById('header-date').innerText = App.Utils.getFormattedTime();
                     },
                     switchView: (view, btn) => {
                         document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
@@ -1333,7 +1481,14 @@
                         document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
                         if(btn) btn.classList.add('active');
                         document.body.className = (view === 'wallet') ? 'wallet-mode' : '';
-                        if(view === 'wallet') App.Controllers.Wallet.fetchExchangeRate();
+                        
+                        // Update time when switching to wallet
+                        if(view === 'wallet') {
+                            App.Controllers.Wallet.fetchExchangeRate();
+                            document.getElementById('header-date').innerText = App.Utils.getFormattedTime();
+                        }
+                        
+                        // Scroll top
                         window.scrollTo(0,0);
                     },
                     translateNow: async () => {
@@ -1349,8 +1504,6 @@
                         document.getElementById('fs-cn').innerText = cn;
                         const ctrl = document.getElementById('fs-controls');
                         ctrl.innerHTML = '';
-
-                        // Toilet Sub-options
                         if (type === 'toilet') {
                             const btnM = document.createElement('button'); btnM.className='fs-ctrl-btn'; btnM.innerText='男廁';
                             const btnF = document.createElement('button'); btnF.className='fs-ctrl-btn'; btnF.innerText='女廁';
@@ -1358,7 +1511,6 @@
                             btnF.onclick = (e) => { e.stopPropagation(); document.getElementById('fs-jp').innerText='女性用お手洗いはどこですか？'; };
                             ctrl.appendChild(btnM); ctrl.appendChild(btnF);
                         }
-                        // Reservation Sub-options
                         if (type === 'reservation') {
                             const types = { '租車':'レンタカー', '住宿':'宿泊', '活動':'アクティビティ' };
                             Object.keys(types).forEach(k => {
@@ -1367,15 +1519,37 @@
                                 ctrl.appendChild(b);
                             });
                         }
-                        // Checkout
                         if (type === 'checkout') {
-                            const btnT = document.createElement('button'); btnT.className='fs-ctrl-btn'; btnT.innerText='一起付';
-                            const btnS = document.createElement('button'); btnS.className='fs-ctrl-btn'; btnS.innerText='分開付';
-                            btnT.onclick = (e) => { e.stopPropagation(); document.getElementById('fs-jp').innerText='お会計は一緒でお願いします。'; };
-                            btnS.onclick = (e) => { e.stopPropagation(); document.getElementById('fs-jp').innerText='お会計は別々でお願いします。'; };
-                            ctrl.appendChild(btnT); ctrl.appendChild(btnS);
+                            // Checkout Combo Logic
+                            App.State.checkoutState = { pay: '現金', split: '一起' };
+                            const updateSentence = () => {
+                                const pay = App.State.checkoutState.pay === '現金' ? '現金' : 'カード';
+                                const split = App.State.checkoutState.split === '一起' ? '一緒' : '別々';
+                                const fullJp = `${pay}で、${split}でお願いします。`; // Genkin de, issho de onegaishimasu
+                                document.getElementById('fs-jp').innerText = fullJp;
+                            }
+                            
+                            // Row 1: Payment Method
+                            const div1 = document.createElement('div'); div1.style.width='100%'; div1.style.display='flex'; div1.style.justifyContent='center'; div1.style.gap='10px'; div1.style.marginBottom='10px';
+                            const btnCash = document.createElement('button'); btnCash.className='fs-ctrl-btn active'; btnCash.innerText='現金';
+                            const btnCard = document.createElement('button'); btnCard.className='fs-ctrl-btn'; btnCard.innerText='刷卡';
+                            
+                            btnCash.onclick = (e) => { e.stopPropagation(); App.State.checkoutState.pay = '現金'; btnCash.classList.add('active'); btnCard.classList.remove('active'); updateSentence(); };
+                            btnCard.onclick = (e) => { e.stopPropagation(); App.State.checkoutState.pay = '刷卡'; btnCard.classList.add('active'); btnCash.classList.remove('active'); updateSentence(); };
+                            div1.appendChild(btnCash); div1.appendChild(btnCard);
+
+                            // Row 2: Split Method
+                            const div2 = document.createElement('div'); div2.style.width='100%'; div2.style.display='flex'; div2.style.justifyContent='center'; div2.style.gap='10px';
+                            const btnTogether = document.createElement('button'); btnTogether.className='fs-ctrl-btn active'; btnTogether.innerText='一起付';
+                            const btnSplit = document.createElement('button'); btnSplit.className='fs-ctrl-btn'; btnSplit.innerText='分開付';
+
+                            btnTogether.onclick = (e) => { e.stopPropagation(); App.State.checkoutState.split = '一起'; btnTogether.classList.add('active'); btnSplit.classList.remove('active'); updateSentence(); };
+                            btnSplit.onclick = (e) => { e.stopPropagation(); App.State.checkoutState.split = '分開'; btnSplit.classList.add('active'); btnTogether.classList.remove('active'); updateSentence(); };
+                            div2.appendChild(btnTogether); div2.appendChild(btnSplit);
+
+                            ctrl.appendChild(div1); ctrl.appendChild(div2);
+                            updateSentence(); // Init text
                         }
-                        // Quantity
                         if (type === 'quantity') {
                             App.State.currentQuantity = 1;
                             const wrap = document.createElement('div'); wrap.className='fs-qty-ctrl';
@@ -1383,7 +1557,6 @@
                             wrap.onclick = e=>e.stopPropagation();
                             ctrl.appendChild(wrap);
                         }
-
                         document.getElementById('fs-text-modal').classList.add('active');
                     },
                     updateFsQty: (delta) => {
@@ -1415,18 +1588,35 @@
                         if(day.alert) html += `<div class="alert-banner"><span class="alert-highlight">${day.alert}</span></div>`;
                         html += `<div class="timeline-block">` + day.events.map((ev,i) => {
                             const data = App.Utils.safeStringify(ev);
-                            return `<div class="event-node visible" style="transition-delay:${i*0.1}s"><div class="time-dot"></div>
-                                <div class="event-card ${ev.tag==='Transport'?'transport-card':''}" onclick="window.openDetail('${data}',${idx},${i})">
+                            const isTicket = ['Transport', 'Drive', 'Flight'].includes(ev.tag);
+                            const eventId = `d${idx}_e${i}`; // Use consistent ID
+                            return `<div class="event-node visible" style="transition-delay:${i*0.1}s">
+                                <div class="time-dot" id="dot-${eventId}"></div>
+                                <div class="event-card ${isTicket?'transport-card':''}" id="card-${eventId}" onclick="window.openDetail('${data}',${idx},${i})">
                                     <div style="display:flex;justify-content:space-between;"><span class="event-tag">${ev.tag}</span><span style="font-weight:700;color:var(--accent-red)">${ev.time}</span></div>
-                                    <div class="event-title">${ev.title}</div><div style="font-size:0.7rem;color:#888;">${ev.desc}</div>
+                                    <div class="event-title">${ev.title}<span class="now-badge hidden" id="badge-${eventId}">NOW</span></div>
+                                    <div style="font-size:0.7rem;color:#888;">${ev.desc}</div>
                                 </div></div>`;
                         }).join('') + `</div>`;
                         
                         const c = document.getElementById('timeline-container');
                         c.innerHTML = html;
                         c.className = "container " + (dir===1 ? 'slide-in-from-left' : dir===-1 ? 'slide-in-from-right' : '');
+                        
+                        // Re-check active event after rendering
+                        setTimeout(App.Controllers.Trip.checkActiveEvent, 100);
                     },
                     switchDay: (i) => {
+                        // Check if current view is trip view, if not switch back
+                        const tripView = document.getElementById('view-trip');
+                        if (tripView.classList.contains('hidden')) {
+                            App.Controllers.UI.switchView('trip', document.querySelector('.nav-btn.active'));
+                            // If coming from another view, we might not need animation or direction, just render
+                            App.State.currentDayIndex = i;
+                            App.Controllers.Trip.renderTrip();
+                            return;
+                        }
+
                         if(App.State.isAnimating || i === App.State.currentDayIndex) return;
                         const dir = i > App.State.currentDayIndex ? -1 : 1;
                         App.State.currentDayIndex = i;
@@ -1458,15 +1648,180 @@
                         document.getElementById('detail-modal').classList.remove('active');
                         document.querySelector('.modal-overlay').classList.remove('active');
                     },
-                    checkActiveEvent: () => { /* Logic */ },
-                    setupGestures: () => { /* Gestures */ },
+                    checkActiveEvent: () => {
+                        // Determine current time
+                        let now;
+                        if (App.Config.settings.sim && App.Config.settings.sim.enabled) {
+                            now = new Date("2026-02-02T16:05:00"); // Simulation Time: Day 1, 16:05 (Before Night View)
+                        } else {
+                            now = new Date();
+                        }
+
+                        // Trip Start Logic
+                        const tripStart = new Date(App.Config.TRIP_START_DATE); // 2026-02-02
+                        // Calculate day index based on 'now'
+                        // Day 1 is 2026-02-02.
+                        // Diff in ms
+                        const diffTime = now - tripStart;
+                        const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)); 
+                        
+                        // If we are within trip dates (0 to 5)
+                        if (diffDays >= 0 && diffDays < App.Data.Trip.length) {
+                            // If current view day is different from 'now' day, user might be browsing
+                            // We only highlight if we are viewing the correct day
+                            if (diffDays === App.State.currentDayIndex) {
+                                const currentH = now.getHours();
+                                const currentM = now.getMinutes();
+                                const currentTimeVal = currentH * 60 + currentM;
+
+                                const events = App.Data.Trip[diffDays].events;
+                                let activeIndex = -1;
+
+                                // Find the latest event that has started
+                                for (let i = 0; i < events.length; i++) {
+                                    const [h, m] = events[i].time.split(':').map(Number);
+                                    const eventVal = h * 60 + m;
+                                    if (currentTimeVal >= eventVal) {
+                                        activeIndex = i;
+                                    } else {
+                                        break; // Future event
+                                    }
+                                }
+
+                                // Reset all highlights
+                                document.querySelectorAll('.active-event').forEach(el => el.classList.remove('active-event'));
+                                document.querySelectorAll('.now-badge').forEach(el => el.classList.add('hidden'));
+
+                                if (activeIndex !== -1) {
+                                    const eventId = `d${diffDays}_e${activeIndex}`;
+                                    const card = document.getElementById(`card-${eventId}`);
+                                    const dot = document.getElementById(`dot-${eventId}`);
+                                    const badge = document.getElementById(`badge-${eventId}`);
+                                    
+                                    if (card && dot && badge) {
+                                        card.parentElement.classList.add('active-event');
+                                        badge.classList.remove('hidden');
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    setupGestures: () => { 
+                        const container = document.getElementById('view-trip');
+                        let touchStartX = 0;
+                        let touchEndX = 0;
+                        
+                        container.addEventListener('touchstart', e => {
+                            touchStartX = e.changedTouches[0].screenX;
+                        }, {passive: true});
+
+                        container.addEventListener('touchend', e => {
+                            touchEndX = e.changedTouches[0].screenX;
+                            handleSwipe();
+                        }, {passive: true});
+
+                        function handleSwipe() {
+                            const threshold = 50;
+                            if (touchEndX < touchStartX - threshold) {
+                                // Swiped Left -> Next Day
+                                if (App.State.currentDayIndex < App.Data.Trip.length - 1) {
+                                    window.switchDay(App.State.currentDayIndex + 1);
+                                }
+                            }
+                            if (touchEndX > touchStartX + threshold) {
+                                // Swiped Right -> Prev Day
+                                if (App.State.currentDayIndex > 0) {
+                                    window.switchDay(App.State.currentDayIndex - 1);
+                                }
+                            }
+                        }
+                    },
                     renderFullTripMap: () => { 
                         const mapIframe = document.getElementById('trip-map-overview-iframe');
-                        if(mapIframe) mapIframe.src = `https://www.google.com/maps/embed/v1/view?key=${App.Config.GOOGLE_MAPS_API_KEY}&center=40.7,140.7&zoom=8`;
+                        if(mapIframe && App.Config.settings.gm.enabled) {
+                            const key = App.Config.settings.gm.key || App.Config.DEFAULT_GOOGLE_KEY;
+                            mapIframe.src = `https://www.google.com/maps/embed/v1/view?key=${key}&center=40.7,140.7&zoom=8`;
+                            App.Utils.setDiag('diag-gm', true);
+                        } else {
+                            App.Utils.setDiag('diag-gm', false);
+                        }
                     }
                 },
                 Wallet: {
+                    loadSettings: () => {
+                        const s = localStorage.getItem('appSettings');
+                        if(s) {
+                            try { App.Config.settings = JSON.parse(s); } catch(e) {}
+                        }
+                        // Update UI
+                        const set = App.Config.settings;
+                        const updateUI = (key, obj) => {
+                            const btn = document.getElementById('tg-'+key);
+                            const inp = document.getElementById('inp-'+key);
+                            const st = document.getElementById('st-'+key);
+                            if(btn) {
+                                btn.innerHTML = obj.enabled ? '<i class="fa-solid fa-toggle-on"></i>' : '<i class="fa-solid fa-toggle-off"></i>';
+                                btn.classList.toggle('on', obj.enabled);
+                            }
+                            if(inp) {
+                                inp.classList.toggle('visible', obj.enabled);
+                                inp.value = (key==='ex') ? obj.manual : obj.key;
+                            }
+                            if(st) st.className = `setting-status ${obj.enabled?'ok':'err'}`;
+                        };
+                        updateUI('gm', set.gm);
+                        updateUI('ai', set.ai);
+                        updateUI('ex', set.ex);
+                        updateUI('wt', set.wt);
+                        updateUI('sim', set.sim); // Simulation
+                        
+                        // Update Manual Rate Input in Wallet
+                        const manualInp = document.getElementById('inp-ex-manual');
+                        if(manualInp) manualInp.value = set.ex.manual;
+                    },
+                    toggleSetting: (key) => {
+                        const set = App.Config.settings;
+                        if(key === 'ex_manual') return; 
+                        set[key].enabled = !set[key].enabled;
+                        localStorage.setItem('appSettings', JSON.stringify(set));
+                        App.Controllers.Wallet.loadSettings();
+                        
+                        // Action based on key
+                        if(key === 'wt') App.Services.Weather.fetch();
+                        if(key === 'ex') App.Controllers.Wallet.fetchExchangeRate();
+                        if(key === 'gm') App.Controllers.Trip.renderFullTripMap();
+                        if(key === 'sim') {
+                            if(set.sim.enabled) {
+                                App.Utils.showToast("⏳ 時光機啟動：目標 2026.02.02");
+                                // Switch to Day 1 automatically
+                                App.Controllers.Trip.switchDay(0);
+                            } else {
+                                App.Utils.showToast("⏳ 時光機關閉：回到現在");
+                            }
+                            App.Controllers.Trip.checkActiveEvent();
+                            document.getElementById('header-date').innerText = App.Utils.getFormattedTime();
+                        }
+                    },
+                    saveApiSetting: (key, val) => {
+                        const set = App.Config.settings;
+                        if(key === 'ex_manual') {
+                            set.ex.manual = parseFloat(val);
+                        } else {
+                            set[key].key = val;
+                        }
+                        localStorage.setItem('appSettings', JSON.stringify(set));
+                        if(key === 'ex_manual') App.Controllers.Wallet.fetchExchangeRate(); // Recalc
+                    },
                     fetchExchangeRate: async () => {
+                        if(!App.Config.settings.ex.enabled) {
+                            // Manual Mode
+                            App.State.rate = App.Config.settings.ex.manual || 0.22;
+                            App.State.isOnline = true; // Technically works
+                            document.getElementById('rate-value').innerText = App.State.rate.toFixed(2);
+                            document.getElementById('status-light').className = 'status-light online';
+                            App.Utils.setDiag('diag-ex', false); // Not calling API
+                            return;
+                        }
                         try {
                             const res = await fetch(App.Config.EXCHANGE_RATE_API);
                             const data = await res.json();
@@ -1474,9 +1829,11 @@
                             App.State.isOnline = true;
                             document.getElementById('rate-value').innerText = App.State.rate.toFixed(2);
                             document.getElementById('status-light').className = 'status-light online';
+                            App.Utils.setDiag('diag-ex', true);
                         } catch(e) {
                             App.State.isOnline = false;
                             document.getElementById('status-light').className = 'status-light offline';
+                            App.Utils.setDiag('diag-ex', false);
                         }
                     },
                     toggleTopFeed: () => {
@@ -1542,12 +1899,19 @@
                         if(!item) return;
                         
                         const btn = document.getElementById('print-btn');
-                        const feed = document.querySelector('.paper-input-feed');
+                        // Animation Logic Update:
+                        // Instead of moving the paper container, we move the scroll wrapper inside to "peek" content
+                        const wrapper = document.getElementById('feed-scroll-wrapper');
+                        
                         btn.classList.add('processing');
                         
-                        // Pulse Animation for both
-                        feed.classList.add('pulse');
-                        setTimeout(()=>feed.classList.remove('pulse'), 400);
+                        // Reset animation
+                        wrapper.classList.remove('anim-peek');
+                        void wrapper.offsetWidth; // Reflow
+                        wrapper.classList.add('anim-peek');
+                        
+                        // Clean up animation class later (optional but good for state)
+                        setTimeout(() => wrapper.classList.remove('anim-peek'), 2500);
                         
                         // Update Header Time Instantly
                         document.getElementById('header-date').innerText = App.Utils.getFormattedTime();
@@ -1580,11 +1944,36 @@
                         const data = App.State.receiptsData.filter(d => d.type === undefined && mode === 'spend' || d.type === mode); // Backwards compat for old spend data without type
                         const user = App.State.currentUser;
                         
+                        // 修正：上方紙張資訊根據模式改變
+                        const topLabel = document.getElementById('top-total-label');
+                        const topAmount = document.getElementById('top-total-amount');
+                        const topSub = document.getElementById('top-total-sub');
+
                         if(mode === 'spend') {
                             const myTotal = data.filter(d=>d.user===user).reduce((a,b)=>a+b.jpy,0);
                             const allTotal = data.reduce((a,b)=>a+b.jpy,0);
+                            
+                            topLabel.innerText = "TRIP TOTAL";
+                            topAmount.innerText = "¥" + allTotal.toLocaleString();
+                            topSub.innerText = "≈ TWD " + Math.round(allTotal * App.State.rate).toLocaleString();
+
                             document.getElementById('personal-total').innerText = '¥'+myTotal.toLocaleString();
                             document.getElementById('trip-total').innerText = '¥'+allTotal.toLocaleString();
+                            document.getElementById('total-label').innerText = `TOTAL (${user})`;
+                        } else if (mode === 'todo') {
+                            const doneCount = data.filter(d => d.done).length;
+                            topLabel.innerText = "TASKS PROGRESS";
+                            topAmount.innerText = `${doneCount} / ${data.length}`;
+                            topSub.innerText = "COMPLETED ITEMS";
+                        } else if (mode === 'memo') {
+                            // Count memos per user
+                            const counts = data.reduce((acc, r) => {
+                                acc[r.user] = (acc[r.user] || 0) + 1;
+                                return acc;
+                            }, {});
+                            topLabel.innerText = "MEMO COUNT";
+                            topAmount.innerText = `TOTAL ${data.length}`;
+                            topSub.innerText = `奎:${counts['奎']||0} | 愉:${counts['愉']||0} | 舜:${counts['舜']||0}`;
                         }
 
                         document.getElementById('receipt-items-anchor').innerHTML = data.map((r, i) => {
@@ -1666,6 +2055,33 @@
                 }
             },
             start: async () => {
+                // Binding functions to window first so HTML can see them
+                window.initApp = App.Controllers.UI.initApp;
+                window.switchView = App.Controllers.UI.switchView;
+                window.switchDay = App.Controllers.Trip.switchDay;
+                window.openDetail = App.Controllers.Trip.openDetail;
+                window.closeModal = App.Controllers.Trip.closeModal;
+                window.toggleEditNote = App.Controllers.Trip.toggleEditNote;
+                window.saveNote = App.Controllers.Trip.saveNote;
+                window.copyMapCode = App.Controllers.Trip.copyMapCode;
+                window.openExternalMap = App.Controllers.Trip.openExternalMap;
+                window.openNavigation = App.Controllers.Trip.openNavigation;
+                window.translateNow = App.Controllers.UI.translateNow;
+                window.showFs = App.Controllers.UI.showFs;
+                window.updateFsQty = App.Controllers.UI.updateFsQty;
+                window.closeFs = App.Controllers.UI.closeFs;
+                window.toggleTopFeed = App.Controllers.Wallet.toggleTopFeed;
+                window.toggleSettings = App.Controllers.Wallet.toggleSettings;
+                window.switchMode = App.Controllers.Wallet.switchMode;
+                window.toggleCurrency = App.Controllers.Wallet.toggleCurrency;
+                window.calculateConversion = App.Controllers.Wallet.calculateConversion;
+                window.selectUser = App.Controllers.Wallet.selectUser;
+                window.printReceipt = App.Controllers.Wallet.printReceipt;
+                window.deleteItem = App.Services.Firebase.deleteItem;
+                window.toggleTodo = App.Services.Firebase.toggleTodo;
+                window.toggleSetting = App.Controllers.Wallet.toggleSetting;
+                window.saveApiSetting = App.Controllers.Wallet.saveApiSetting;
+
                 App.Controllers.UI.createSnow();
                 await App.Services.Firebase.init();
                 const now = new Date();
@@ -1689,31 +2105,6 @@
                 }
             }
         };
-
-        // BINDING
-        window.initApp = App.Controllers.UI.initApp;
-        window.switchView = App.Controllers.UI.switchView;
-        window.switchDay = App.Controllers.Trip.switchDay;
-        window.openDetail = App.Controllers.Trip.openDetail;
-        window.closeModal = App.Controllers.Trip.closeModal;
-        window.toggleEditNote = App.Controllers.Trip.toggleEditNote;
-        window.saveNote = App.Controllers.Trip.saveNote;
-        window.copyMapCode = App.Controllers.Trip.copyMapCode;
-        window.openExternalMap = App.Controllers.Trip.openExternalMap;
-        window.openNavigation = App.Controllers.Trip.openNavigation;
-        window.translateNow = App.Controllers.UI.translateNow;
-        window.showFs = App.Controllers.UI.showFs;
-        window.updateFsQty = App.Controllers.UI.updateFsQty;
-        window.closeFs = App.Controllers.UI.closeFs;
-        window.toggleTopFeed = App.Controllers.Wallet.toggleTopFeed;
-        window.toggleSettings = App.Controllers.Wallet.toggleSettings;
-        window.switchMode = App.Controllers.Wallet.switchMode;
-        window.toggleCurrency = App.Controllers.Wallet.toggleCurrency;
-        window.calculateConversion = App.Controllers.Wallet.calculateConversion;
-        window.selectUser = App.Controllers.Wallet.selectUser;
-        window.printReceipt = App.Controllers.Wallet.printReceipt;
-        window.deleteItem = App.Services.Firebase.deleteItem;
-        window.toggleTodo = App.Services.Firebase.toggleTodo;
 
         window.onload = App.start;
     </script>
