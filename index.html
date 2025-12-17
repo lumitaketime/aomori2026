@@ -208,9 +208,33 @@
             border-bottom: 1px solid rgba(0,0,0,0.05);
         }
 
-        .top-meta { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 20px; }
+        .top-meta { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
+        .brand-container { display: flex; align-items: baseline; gap: 10px; }
         .brand { font-family: var(--font-serif); font-size: 1.4rem; font-weight: 700; letter-spacing: 1px; color: var(--accent-main); }
         
+        /* AI Guide Widget */
+        #ai-guide-widget { 
+            display: flex; align-items: center; gap: 8px; opacity: 0; transition: opacity 0.5s; pointer-events: none;
+        }
+        #ai-guide-widget.visible { opacity: 1; pointer-events: auto; }
+        
+        .ai-btn {
+            background: linear-gradient(135deg, #1C2541 0%, #3A506B 100%);
+            color: var(--accent-gold); border: 1px solid var(--accent-gold);
+            width: 30px; height: 30px; border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            font-size: 0.9rem; cursor: pointer; box-shadow: 0 2px 10px rgba(180, 155, 103, 0.3);
+            animation: pulseStar 3s infinite;
+        }
+        @keyframes pulseStar { 0% { transform: scale(1); } 50% { transform: scale(1.1); box-shadow: 0 0 15px rgba(180, 155, 103, 0.6); } 100% { transform: scale(1); } }
+        
+        .ai-suggestion-pill {
+            font-size: 0.75rem; color: #555; background: rgba(255,255,255,0.8);
+            padding: 4px 10px; border-radius: 20px; border: 1px solid rgba(0,0,0,0.05);
+            max-width: 140px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+            cursor: pointer; backdrop-filter: blur(5px);
+        }
+
         .status-value { font-family: var(--font-serif); font-size: 2rem; line-height: 1; color: var(--accent-gold); text-align: right; }
         .status-label { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 2px; color: var(--text-secondary); text-align: right; margin-top: 5px; }
 
@@ -775,7 +799,14 @@
         
         <div class="elegant-header" id="app-header">
             <div class="top-meta">
-                <div class="brand">L'VOYAGE</div>
+                <div class="brand-container">
+                    <div class="brand">L'VOYAGE</div>
+                    <!-- AI Guide Widget -->
+                    <div id="ai-guide-widget" class="hidden" onclick="window.askAiGuide()">
+                        <div class="ai-btn">✨</div>
+                        <div class="ai-suggestion-pill" id="ai-pill-text">AI Guide Ready...</div>
+                    </div>
+                </div>
                 <div style="text-align: right;">
                     <div class="status-value" id="header-days">--</div>
                     <div class="status-label">DAYS TO GO</div>
@@ -975,6 +1006,7 @@
                             <div class="setting-name"><div class="setting-status" id="st-sim"></div> Simulation Mode (2026)</div>
                             <button class="toggle-btn" id="tg-sim" onclick="window.toggleSetting('sim')"><i class="fa-solid fa-toggle-off"></i></button>
                         </div>
+                        <input type="datetime-local" id="inp-sim-time" class="info-setting-input" onchange="window.saveApiSetting('sim_time', this.value)">
 
                         <!-- Google Maps -->
                         <div class="setting-row light-theme">
@@ -1131,6 +1163,12 @@
         import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, query, onSnapshot, addDoc, serverTimestamp, setDoc, doc, deleteDoc, updateDoc, setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
+        // =========================================================
+        // MANUAL CONFIG: Paste your Firebase config object here if deploying to GitHub Pages
+        // e.g. const MANUAL_FIREBASE_CONFIG = { apiKey: "...", ... };
+        // =========================================================
+        const MANUAL_FIREBASE_CONFIG = null; 
+
         // ==========================================
         // 1. CONFIGURATION (隱私設定集中區)
         // ==========================================
@@ -1148,7 +1186,7 @@
                     ai: { enabled: true, key: "" },
                     ex: { enabled: true, manual: 0.22 },
                     wt: { enabled: true },
-                    sim: { enabled: false } // Simulation Mode
+                    sim: { enabled: false, time: "" } // Simulation Mode
                 }
             },
             State: {
@@ -1202,8 +1240,22 @@
                     toast.classList.add('show');
                     setTimeout(() => toast.classList.remove('show'), 3000);
                 },
+                vibrate: (ms) => {
+                    if (navigator.vibrate) {
+                        navigator.vibrate(ms);
+                    }
+                },
                 getFormattedTime: () => {
-                    const now = App.Config.settings.sim.enabled ? new Date("2026-02-02T16:05:00") : new Date();
+                    let now;
+                    if (App.Config.settings.sim && App.Config.settings.sim.enabled) {
+                        if (App.Config.settings.sim.time) {
+                            now = new Date(App.Config.settings.sim.time);
+                        } else {
+                            now = new Date("2026-02-02T16:05:00");
+                        }
+                    } else {
+                        now = new Date();
+                    }
                     const year = now.getFullYear();
                     const month = String(now.getMonth() + 1).padStart(2, '0');
                     const day = String(now.getDate()).padStart(2, '0');
@@ -1264,7 +1316,20 @@
                         try {
                             const envConfig = typeof __firebase_config !== 'undefined' ? __firebase_config : '{}';
                             let configToUse;
-                            try { configToUse = JSON.parse(envConfig); } catch (e) { console.error("Firebase Config Error", e); return; }
+                            
+                            // Check for manual config first
+                            if (MANUAL_FIREBASE_CONFIG) {
+                                configToUse = MANUAL_FIREBASE_CONFIG;
+                            } else {
+                                try { configToUse = JSON.parse(envConfig); } catch (e) { console.error("Firebase Config Error", e); return; }
+                            }
+
+                            // If still no config, fail gracefully
+                            if (!configToUse || Object.keys(configToUse).length === 0) {
+                                console.warn("No Firebase Config found. App running in offline mode.");
+                                App.Utils.setDiag('diag-fb', false);
+                                return;
+                            }
 
                             const app = initializeApp(configToUse);
                             App.State.db = getFirestore(app);
@@ -1363,6 +1428,7 @@
                     deleteItem: (id, type) => {
                         const el = document.getElementById(`entry-${id}`);
                         if(el) el.classList.add('tearing');
+                        App.Utils.vibrate(80); // Vibrate on delete
                         let ref = App.State.expensesRef;
                         if(type === 'todo') ref = App.State.todosRef;
                         if(type === 'memo') ref = App.State.memosRef;
@@ -1373,6 +1439,7 @@
                     toggleTodo: (id, currentStatus) => {
                         if(App.State.todosRef) {
                             updateDoc(doc(App.State.todosRef, id), { done: !currentStatus });
+                            App.Utils.vibrate(40); // Vibrate on check
                         }
                     },
                     saveNote: async (id, text) => {
@@ -1442,6 +1509,35 @@
                             const json = await res.json();
                             return json.candidates?.[0]?.content?.parts?.[0]?.text;
                         } catch (e) { return "Error"; }
+                    },
+                    fetchAdvice: async () => {
+                        const widget = document.getElementById('ai-pill-text');
+                        widget.innerText = "Thinking...";
+                        
+                        try {
+                            const key = App.Config.settings.ai.key || "";
+                            if(!key) { widget.innerText = "No API Key"; return; }
+
+                            const dayIdx = App.State.currentDayIndex;
+                            const dayInfo = App.Data.Trip[dayIdx];
+                            const prompt = `You are a tour guide. Today is ${dayInfo.date}, location is ${dayInfo.heroTitle}. Weather is ${dayInfo.weather.temp}. Give a 15-word practical advice for a tourist now. Language: Traditional Chinese.`;
+
+                            const res = await App.Utils.fetchRetry(App.Config.TRANSLATE_URL + key, {
+                                method: 'POST',
+                                headers: {'Content-Type': 'application/json'},
+                                body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                            });
+                            const json = await res.json();
+                            const advice = json.candidates?.[0]?.content?.parts?.[0]?.text;
+                            if(advice) {
+                                widget.innerText = advice.replace(/\n/g, ' ');
+                                App.Utils.showToast("💡 導遊建議已更新");
+                            } else {
+                                widget.innerText = "AI Busy...";
+                            }
+                        } catch(e) {
+                            widget.innerText = "AI Error";
+                        }
                     }
                 }
             },
@@ -1461,6 +1557,7 @@
                         }
                     },
                     initApp: () => {
+                        App.Utils.vibrate(100);
                         App.Controllers.Wallet.loadSettings();
                         document.getElementById('intro-screen').style.transform = 'translateY(-100%)';
                         App.Controllers.Trip.renderTrip();
@@ -1474,6 +1571,11 @@
                         
                         // Set initial time on wallet
                         document.getElementById('header-date').innerText = App.Utils.getFormattedTime();
+                        
+                        // Init AI Widget State
+                        if(App.Config.settings.ai.enabled && App.Config.settings.ai.key) {
+                            document.getElementById('ai-guide-widget').classList.add('visible');
+                        }
                     },
                     switchView: (view, btn) => {
                         document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
@@ -1490,6 +1592,10 @@
                         
                         // Scroll top
                         window.scrollTo(0,0);
+                    },
+                    askAiGuide: () => {
+                        App.Utils.vibrate(50);
+                        App.Services.Translator.fetchAdvice();
                     },
                     translateNow: async () => {
                         const input = document.getElementById('trans-input').value;
@@ -1607,6 +1713,7 @@
                         setTimeout(App.Controllers.Trip.checkActiveEvent, 100);
                     },
                     switchDay: (i) => {
+                        App.Utils.vibrate(30);
                         // Check if current view is trip view, if not switch back
                         const tripView = document.getElementById('view-trip');
                         if (tripView.classList.contains('hidden')) {
@@ -1652,7 +1759,11 @@
                         // Determine current time
                         let now;
                         if (App.Config.settings.sim && App.Config.settings.sim.enabled) {
-                            now = new Date("2026-02-02T16:05:00"); // Simulation Time: Day 1, 16:05 (Before Night View)
+                            if (App.Config.settings.sim.time) {
+                                now = new Date(App.Config.settings.sim.time);
+                            } else {
+                                now = new Date("2026-02-02T16:05:00"); // Simulation Time: Day 1, 16:05
+                            }
                         } else {
                             now = new Date();
                         }
@@ -1778,6 +1889,14 @@
                         // Update Manual Rate Input in Wallet
                         const manualInp = document.getElementById('inp-ex-manual');
                         if(manualInp) manualInp.value = set.ex.manual;
+
+                        // AI Widget Visiblity
+                        const aiWidget = document.getElementById('ai-guide-widget');
+                        if(set.ai.enabled && set.ai.key) {
+                            aiWidget.classList.add('visible');
+                        } else {
+                            aiWidget.classList.remove('visible');
+                        }
                     },
                     toggleSetting: (key) => {
                         const set = App.Config.settings;
@@ -1806,11 +1925,17 @@
                         const set = App.Config.settings;
                         if(key === 'ex_manual') {
                             set.ex.manual = parseFloat(val);
+                        } else if (key === 'sim_time') {
+                            set.sim.time = val;
+                            App.Controllers.Trip.checkActiveEvent(); // Recheck active event
+                            document.getElementById('header-date').innerText = App.Utils.getFormattedTime(); // Update wallet time
                         } else {
                             set[key].key = val;
                         }
                         localStorage.setItem('appSettings', JSON.stringify(set));
                         if(key === 'ex_manual') App.Controllers.Wallet.fetchExchangeRate(); // Recalc
+                        // Re-eval AI visibility if key changed
+                        if(key === 'ai') App.Controllers.Wallet.loadSettings();
                     },
                     fetchExchangeRate: async () => {
                         if(!App.Config.settings.ex.enabled) {
@@ -1905,6 +2030,9 @@
                         
                         btn.classList.add('processing');
                         
+                        // Haptic
+                        App.Utils.vibrate(50);
+
                         // Reset animation
                         wrapper.classList.remove('anim-peek');
                         void wrapper.offsetWidth; // Reflow
@@ -2081,6 +2209,7 @@
                 window.toggleTodo = App.Services.Firebase.toggleTodo;
                 window.toggleSetting = App.Controllers.Wallet.toggleSetting;
                 window.saveApiSetting = App.Controllers.Wallet.saveApiSetting;
+                window.askAiGuide = App.Controllers.UI.askAiGuide;
 
                 App.Controllers.UI.createSnow();
                 await App.Services.Firebase.init();
