@@ -494,10 +494,6 @@
             display: flex; flex-direction: column; align-items: center;
         }
 
-        /* ... [省略] 保持原有的 Printer Styles ... */
-        /* 您要求的保留部分：這裡的所有原有 Printer CSS 都會保留 */
-        
-        /* 為了確保正確，我將直接將您提供的 Printer CSS 完整保留 */
         .printer-assembly { position: relative; width: var(--machine-width); display: flex; flex-direction: column; align-items: center; z-index: 100; margin-top: 10px; margin-bottom: 50px; margin-left: auto; margin-right: auto; }
         .paper-input-feed { position: absolute; width: var(--paper-width); left: 50%; transform: translateX(-50%); top: -95px; height: 125px; background: var(--receipt-paper); box-shadow: 0 -2px 10px rgba(0,0,0,0.05); z-index: 10; background-image: var(--paper-texture); mask-image: linear-gradient(to bottom, transparent, black 15%); -webkit-mask-image: linear-gradient(to bottom, transparent, black 15%); overflow: hidden; cursor: pointer; transition: transform 0.3s, top 0.3s; }
         .paper-input-feed:hover { transform: translateX(-50%) translateY(-2px); }
@@ -977,19 +973,6 @@
         import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, query, onSnapshot, addDoc, serverTimestamp, setDoc, doc, deleteDoc, updateDoc, setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // =========================================================
-        // MANUAL CONFIG: Correctly updated for 'aomori2026' project
-        // =========================================================
-        const MANUAL_FIREBASE_CONFIG = {
-        apiKey: "AIzaSyAbKiZcYHfVsNvDliHFYSUxL22fuVEjimw",
-  authDomain: "aomori2026.firebaseapp.com",
-  projectId: "aomori2026",
-  storageBucket: "aomori2026.firebasestorage.app",
-  messagingSenderId: "645422415004", 
-  appId: "1:645422415004:web:b8017ec6dd040d1dae4159",
-  measurementId: ""
-        };
-
         // ==========================================
         // 1. CONFIGURATION (隱私設定集中區)
         // ==========================================
@@ -1135,17 +1118,11 @@
                     init: async () => {
                         setLogLevel('error'); 
                         try {
+                            // 使用環境提供的變數
                             const envConfig = typeof __firebase_config !== 'undefined' ? __firebase_config : '{}';
-                            let configToUse;
-                            
-                            // Check for manual config first
-                            if (MANUAL_FIREBASE_CONFIG) {
-                                configToUse = MANUAL_FIREBASE_CONFIG;
-                            } else {
-                                try { configToUse = JSON.parse(envConfig); } catch (e) { console.error("Firebase Config Error", e); return; }
-                            }
+                            const configToUse = JSON.parse(envConfig);
 
-                            // If still no config, fail gracefully
+                            // 如果依然沒有config, 則報錯
                             if (!configToUse || Object.keys(configToUse).length === 0) {
                                 console.warn("No Firebase Config found. App running in offline mode.");
                                 App.Utils.setDiag('diag-fb', false);
@@ -1156,6 +1133,7 @@
                             App.State.db = getFirestore(app);
                             App.State.auth = getAuth(app);
                             
+                            // 優先嘗試使用 Custom Token (系統注入)
                             const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
 
                             if (initialAuthToken) {
@@ -1164,6 +1142,7 @@
                                 await signInAnonymously(App.State.auth);
                             }
 
+                            // 設定正確的路徑 artifacts/{appId}/public/data/...
                             const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
                             App.State.notesRef = collection(App.State.db, 'artifacts', appId, 'public', 'data', 'notes');
                             App.State.expensesRef = collection(App.State.db, 'artifacts', appId, 'public', 'data', 'expenses');
@@ -1174,7 +1153,7 @@
                             App.Services.Firebase.subscribeExpenses();
                             App.Services.Firebase.subscribeTodos();
                             App.Services.Firebase.subscribeMemos();
-                            console.log("Firebase Connected");
+                            console.log("Firebase Connected Successfully");
                             App.Utils.setDiag('diag-fb', true);
 
                         } catch (error) {
