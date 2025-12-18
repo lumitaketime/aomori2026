@@ -6,7 +6,6 @@
     <title>L'VOYAGE | 函館-青森 林檎之旅</title>
     <meta name="theme-color" content="#1C2541">
     
-    <!-- PWA: Add manifest link for standalone mode -->
     <link rel="manifest" href="manifest.json"> 
     
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
@@ -611,7 +610,6 @@
 </head>
 <body>
 
-    <!-- Intro -->
     <div id="intro-screen">
         <div id="snow-container"></div>
         <div class="intro-text">
@@ -627,14 +625,12 @@
         </div>
     </div>
 
-    <!-- Main App -->
     <div id="app-container">
         
         <div class="elegant-header" id="app-header">
             <div class="top-meta">
                 <div class="brand-container">
                     <div class="brand">L'VOYAGE</div>
-                    <!-- AI Guide Widget -->
                     <div id="ai-guide-widget" class="hidden" onclick="window.askAiGuide()">
                         <div class="ai-btn">✨</div>
                         <div class="ai-suggestion-pill" id="ai-pill-text">AI Guide Ready...</div>
@@ -648,12 +644,10 @@
             <div class="date-scroller" id="date-nav"></div>
         </div>
 
-        <!-- 1. TRIP VIEW -->
         <div id="view-trip" class="view-section">
             <div class="container" id="timeline-container"></div>
         </div>
 
-        <!-- 2. WALLET VIEW -->
         <div id="view-wallet" class="view-section hidden" style="position:relative;">
             <div class="printer-assembly">
                 <div class="paper-input-feed" onclick="window.toggleTopFeed()" id="top-paper-feed">
@@ -687,7 +681,6 @@
                         </div>
                     </div>
 
-                    <!-- Collapsible Settings -->
                     <div class="settings-panel" id="settings-panel">
                         <div style="font-family:'Share Tech Mono'; color:#888; font-size:0.7rem; margin-bottom:5px;">DEFAULT USER</div>
                         <div class="user-toggles-compact" id="user-toggles">
@@ -696,7 +689,6 @@
                             <button class="u-btn" onclick="window.selectUser(this, '舜')">舜</button>
                         </div>
 
-                        <!-- Manual Exchange Rate Override -->
                         <div style="margin-top:15px; border-top:1px solid rgba(255,255,255,0.1); padding-top:10px;">
                             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
                                 <span style="font-family:'Share Tech Mono'; color:#888; font-size:0.7rem;">MANUAL RATE OVERRIDE</span>
@@ -705,7 +697,6 @@
                         </div>
                     </div>
 
-                    <!-- Mode Tabs -->
                     <div class="mode-tabs">
                         <button class="mode-tab active" onclick="window.switchMode('spend')">SPEND</button>
                         <button class="mode-tab" onclick="window.switchMode('todo')">TODO</button>
@@ -730,8 +721,7 @@
                     </div>
 
                     <div class="control-panel">
-                        <div style="flex:1;"></div> <!-- Spacer -->
-                        <button class="print-btn" onclick="window.printReceipt()" id="print-btn">
+                        <div style="flex:1;"></div> <button class="print-btn" onclick="window.printReceipt()" id="print-btn">
                             <span>PRINT</span>
                         </button>
                     </div>
@@ -761,7 +751,6 @@
             </div>
         </div>
 
-        <!-- 3. TRANSLATE VIEW (Optimized) -->
         <div id="view-trans" class="view-section hidden">
             <div class="container">
                 <div class="trans-card">
@@ -773,7 +762,6 @@
                     
                     <div id="trans-output-box" class="hidden">
                         <div style="font-size: 0.75rem; color: #888;">中文原文: <span id="trans-zh"></span></div>
-                        <!-- Updated Display Style -->
                         <div id="trans-jp-result"></div>
                         
                         <button onclick="window.showFs(document.getElementById('trans-jp-result').innerText, document.getElementById('trans-zh').innerText)" style="background: transparent; border: 1px solid #CCC; color: #666; padding: 6px 12px; border-radius: 20px; font-size: 0.8rem; margin-top: 10px; cursor: pointer; display: block; margin-left: auto;">
@@ -820,7 +808,6 @@
             </div>
         </div>
 
-        <!-- 4. INFO VIEW -->
         <div id="view-info" class="view-section hidden">
             <div class="container">
                 <div class="map-overview-card" style="margin-top: 20px;">
@@ -829,7 +816,6 @@
                     <iframe id="trip-map-overview-iframe" class="map-iframe" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
                 </div>
                 
-                <!-- SYSTEM SETTINGS & STATUS (Moved to Info Page) -->
                 <details class="sys-summary">
                     <summary style="cursor:pointer; outline:none; list-style:none; display:flex; justify-content:space-between; align-items:center;">
                         <span class="sys-title">System Settings & Status</span>
@@ -837,40 +823,34 @@
                     </summary>
                     <div style="margin-top:15px;">
                         
-                        <!-- Simulation Mode -->
                         <div class="setting-row light-theme">
                             <div class="setting-name"><div class="setting-status" id="st-sim"></div> Simulation Mode (2026)</div>
                             <button class="toggle-btn" id="tg-sim" onclick="window.toggleSetting('sim')"><i class="fa-solid fa-toggle-off"></i></button>
                         </div>
                         <input type="datetime-local" id="inp-sim-time" class="info-setting-input" onchange="window.saveApiSetting('sim_time', this.value)">
 
-                        <!-- Google Maps -->
                         <div class="setting-row light-theme">
                             <div class="setting-name"><div class="setting-status" id="st-gm"></div> Google Maps</div>
                             <button class="toggle-btn" id="tg-gm" onclick="window.toggleSetting('gm')"><i class="fa-solid fa-toggle-off"></i></button>
                         </div>
                         <input type="password" id="inp-gm" class="info-setting-input" placeholder="API Key" onchange="window.saveApiSetting('gm', this.value)">
 
-                        <!-- Gemini -->
                         <div class="setting-row light-theme">
                             <div class="setting-name"><div class="setting-status" id="st-ai"></div> Gemini AI</div>
                             <button class="toggle-btn" id="tg-ai" onclick="window.toggleSetting('ai')"><i class="fa-solid fa-toggle-off"></i></button>
                         </div>
                         <input type="password" id="inp-ai" class="info-setting-input" placeholder="API Key" onchange="window.saveApiSetting('ai', this.value)">
 
-                        <!-- Exchange Rate API -->
                         <div class="setting-row light-theme">
                             <div class="setting-name"><div class="setting-status" id="st-ex"></div> Exchange Rate API</div>
                             <button class="toggle-btn" id="tg-ex" onclick="window.toggleSetting('ex')"><i class="fa-solid fa-toggle-off"></i></button>
                         </div>
 
-                        <!-- Weather -->
                         <div class="setting-row light-theme">
                             <div class="setting-name"><div class="setting-status" id="st-wt"></div> Weather Feed</div>
                             <button class="toggle-btn" id="tg-wt" onclick="window.toggleSetting('wt')"><i class="fa-solid fa-toggle-off"></i></button>
                         </div>
 
-                        <!-- Firebase -->
                         <div class="setting-row light-theme">
                             <div class="setting-name"><div class="setting-status" id="st-fb"></div> Firebase DB</div>
                         </div>
@@ -926,7 +906,6 @@
         </div>
     </div>
 
-    <!-- Nav Bar -->
     <div class="glass-nav">
         <div class="nav-btn active" onclick="window.switchView('trip', this)">
             <i class="fa-solid fa-map-location-dot"></i>
@@ -942,7 +921,6 @@
         </div>
     </div>
 
-    <!-- Detail Modal -->
     <div class="modal-overlay" onclick="window.closeModal()"></div>
     <div class="modal-full" id="detail-modal">
         <div style="position: sticky; top: 0; padding: 10px; text-align: right; z-index: 10;">
@@ -1000,18 +978,17 @@
         import { getFirestore, collection, query, onSnapshot, addDoc, serverTimestamp, setDoc, doc, deleteDoc, updateDoc, setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // =========================================================
-        // MANUAL CONFIG: Paste your Firebase config object here if deploying to GitHub Pages
-        // e.g. const MANUAL_FIREBASE_CONFIG = { apiKey: "...", ... };
+        // MANUAL CONFIG: Correctly updated for 'aomori2026' project
         // =========================================================
-const MANUAL_FIREBASE_CONFIG = {
-  apiKey: "AIzaSyAbKiZcYHfVsNvDliHFYSUxL22fuVEjimw",
-  authDomain: "aomori2026.firebaseapp.com",
-  projectId: "aomori2026",
-  storageBucket: "aomori2026.firebasestorage.app",
-  messagingSenderId: "645422415004",
-  appId: "1:645422415004:web:b8017ec6dd040d1dae4159",
-  measurementId: "G-2J6NCTHZ6B"
-};
+        const MANUAL_FIREBASE_CONFIG = {
+          apiKey: "AIzaSyAbKiZcYHfVsNvDliHFYSUxL22fuVEjimw", // Updated API Key from aomori2026 (unrestricted)
+          authDomain: "aomori2026.firebaseapp.com",
+          projectId: "aomori2026",
+          storageBucket: "aomori2026.firebasestorage.app",
+          messagingSenderId: "645422415004",
+          appId: "1:645422415004:web:b8017ec6dd040d1dae4159",
+          measurementId: "G-2J6NCTHZ6B"
+        };
 
         // ==========================================
         // 1. CONFIGURATION (隱私設定集中區)
