@@ -190,7 +190,7 @@
             padding: 5px 0; letter-spacing: 1px; font-weight: 300;
         }
 
-        .intro-btn {
+.intro-btn {
             margin-top: 40px; padding: 14px 50px; 
             border: 1px solid rgba(255,255,255,0.4); border-radius: 50px;
             background: rgba(255,255,255,0.05); backdrop-filter: blur(5px);
@@ -198,8 +198,12 @@
             letter-spacing: 3px; cursor: pointer; transition: all 0.4s ease;
             opacity: 0; animation: fadeIn 1.5s ease forwards 1.2s;
             box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-            /* UX Fix: Increase touch target size */
+            
+            /* === 新增以下四行 === */
             touch-action: manipulation;
+            position: relative;  /* 確保 z-index 生效 */
+            z-index: 2000;       /* 強制浮在雪花與文字之上 */
+            pointer-events: auto; /* 強制接收點擊事件 */
         }
         .intro-btn:hover { background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.8); transform: translateY(-2px); }
         .intro-btn:active { transform: translateY(1px); }
@@ -634,7 +638,7 @@
             <div class="intro-subtitle">Hokkaido & Aomori Winter Adventure</div>
             <div id="dynamic-intro-text"></div> 
             <!-- FIX: Removed onclick attribute, added ID for safer binding -->
-            <button class="intro-btn" id="btn-start-journey">開始旅程</button>
+            <button class="intro-btn" id="btn-start-journey" onclick="window.initApp && window.initApp()">開始旅程</button>
         </div>
     </div>
 
@@ -2058,8 +2062,22 @@
                     }
                 }
             },
-            start: async () => {
-                // FIX: Bind global functions IMMEDIATELY
+start: async () => {
+                // ============================================
+                // FIX: 將按鈕綁定移到函式最開頭，避免被後續邏輯卡住
+                // ============================================
+                const startBtn = document.getElementById('btn-start-journey');
+                if (startBtn) {
+                    console.log("Button binding attached"); // 除錯訊息
+                    startBtn.addEventListener('click', (e) => {
+                        console.log("Start clicked"); // 除錯訊息
+                        App.Controllers.UI.initApp();
+                    });
+                } else {
+                    console.error("Button not found!");
+                }
+
+                // 綁定全域函式 (供 HTML onclick 使用)
                 window.initApp = App.Controllers.UI.initApp;
                 window.switchView = App.Controllers.UI.switchView;
                 window.switchDay = App.Controllers.Trip.switchDay;
@@ -2090,11 +2108,37 @@
                      App.Utils.showToast('📋 MapCode 已複製');
                 };
                 window.openExternalMap = () => {
-                    // Logic to open Google Maps app based on lat/lng or name
-                    // Simplified:
                     const title = document.getElementById('m-title').innerText;
                     window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(title)}`, '_blank');
                 };
+
+                // 啟動雪花
+                App.Controllers.UI.createSnow();
+                
+                // 計算倒數天數
+                const now = new Date();
+                const start = new Date("2026-02-02");
+                const diff = Math.ceil((start - now) / (1000 * 60 * 60 * 24));
+                document.getElementById('days-left').innerText = diff > 0 ? diff : 0;
+                document.getElementById('header-days').innerText = diff > 0 ? diff : 0;
+                setTimeout(App.Controllers.UI.startDynamicText, 1000);
+                
+                // 讀取設定與使用者
+                App.Controllers.Wallet.loadSettings();
+                const savedUser = localStorage.getItem('defaultUser');
+                if(savedUser) {
+                    App.State.currentUser = savedUser;
+                    document.querySelectorAll('.u-btn').forEach(b => {
+                        if(b.innerText === savedUser) {
+                            document.querySelectorAll('.u-btn').forEach(btn=>btn.classList.remove('active'));
+                            b.classList.add('active');
+                        }
+                    });
+                }
+
+                // 最後才初始化 Firebase (避免因為網路問題導致上方按鈕沒綁定到)
+                App.Services.Firebase.init();
+            }
 
                 // FIX: Bind the start button listener manually to ensure it works
 const startBtn = document.getElementById('btn-start-journey');
