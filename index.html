@@ -2098,9 +2098,16 @@
 
                 // FIX: Bind the start button listener manually to ensure it works
                 const startBtn = document.getElementById('btn-start-journey');
-                if(startBtn) {
-                    startBtn.addEventListener('click', App.Controllers.UI.initApp);
-                }
+if(startBtn) {
+    // 同時綁定 click 與 touchend 以確保 100% 觸發
+    const handleStart = (e) => {
+        e.preventDefault(); // 防止雙重觸發
+        App.Controllers.UI.initApp();
+    };
+    
+    startBtn.addEventListener('click', handleStart);
+    startBtn.addEventListener('touchend', handleStart);
+}
 
                 App.Controllers.UI.createSnow();
                 
