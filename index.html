@@ -1113,14 +1113,21 @@
                     }
                 }
             },
-            Services: {
+        Services: {
                 Firebase: {
                     init: async () => {
                         setLogLevel('error'); 
                         try {
-                            // 使用環境提供的變數
-                            const envConfig = typeof __firebase_config !== 'undefined' ? __firebase_config : '{}';
-                            const configToUse = JSON.parse(envConfig);
+                            // ↓↓↓ 修改：直接填入 Firebase 設定資料 ↓↓↓
+                            const configToUse = {
+                                apiKey: "AIzaSyCbHhcAo25W6yDPNT05bDkxkRIrwFUM2o4",
+                                authDomain: "aomori2026-17310.firebaseapp.com",
+                                projectId: "aomori2026-17310",
+                                storageBucket: "aomori2026-17310.firebasestorage.app",
+                                messagingSenderId: "645422415004",
+                                appId: "1:645422415004:web:b8017ec6dd040d1dae4159",
+                                measurementId: "G-2J6NCTHZ6B"
+                            };
 
                             // 如果依然沒有config, 則報錯
                             if (!configToUse || Object.keys(configToUse).length === 0) {
