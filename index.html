@@ -118,10 +118,17 @@
         }
 
         .snowflake {
-            position: absolute; color: #FFF; opacity: 0.8; top: -20px;
-            animation: fall linear infinite; font-size: 1rem;
-            text-shadow: 0 0 5px rgba(255,255,255,0.8);
-        }
+    position: absolute; 
+    color: #FFF; 
+    opacity: 0.8; 
+    top: -20px;
+    animation: fall linear infinite; 
+    font-size: 1rem;
+    text-shadow: 0 0 5px rgba(255,255,255,0.8);
+    /* 重點：確保雪花不會攔截手指觸碰事件 */
+    pointer-events: none !important; 
+    user-select: none;
+}
 
         @keyframes fall { to { transform: translateY(105vh); } }
 
