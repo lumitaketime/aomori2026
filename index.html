@@ -570,12 +570,35 @@
         .print-btn { width: 100px; height: 45px; background: linear-gradient(to bottom, #C5A870, #967d4d); border: none; color: #2b2b2b; font-family: 'Share Tech Mono', monospace; font-size: 0.8rem; border-radius: 4px; cursor: pointer; box-shadow: 0 5px 0 #5e4d2b; font-weight: 700; position: relative; letter-spacing: 1px; overflow: hidden; transition: all 0.1s; }
         .print-btn:active { transform: translateY(4px); box-shadow: 0 1px 0 #5e4d2b; }
         .print-btn.processing { opacity: 0.8; cursor: wait; pointer-events: none; color: rgba(43,43,43, 0.6); }
+        
+        /* New View Switch Button Style */
+        .view-switch-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #888;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.75rem; /* Slightly smaller for 'VIEW:' prefix */
+            padding: 0 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+            height: 45px; /* Match print btn height */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            min-width: 110px;
+        }
+        .view-switch-btn:active { transform: translateY(2px); background: rgba(255, 255, 255, 0.1); }
+        .view-switch-btn.twd-mode { color: var(--accent-gold); border-color: var(--accent-gold); box-shadow: 0 0 10px rgba(180, 155, 103, 0.2); }
+
         .receipt-entry { position: relative; overflow: hidden; background: transparent; transition: max-height 0.4s ease-out, margin 0.4s ease-out, padding 0.4s ease-out, opacity 0.3s; max-height: 150px; transform: translate3d(0,0,0); }
         .receipt-content { position: relative; background: var(--receipt-paper); background-image: var(--paper-texture); padding: 12px 20px; z-index: 5; border-bottom: 1px dashed #DDD; transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1); cursor: pointer; width: 100%; }
         .delete-underlay { position: absolute; top: 0; bottom: 0; right: 0; width: 100%; background-color: var(--apple-red); display: flex; align-items: center; justify-content: flex-end; padding-right: 25px; z-index: 1; color: white; font-size: 1.2rem; opacity: 0; transition: opacity 0.2s; }
         .receipt-entry.reveal-delete .delete-underlay { opacity: 1; }
         .receipt-entry.reveal-delete .receipt-content { transform: translate3d(-80px, 0, 0); }
-        .receipt-entry.new-item { animation: printSlideOut 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
+        .receipt-entry.new-item { animation: printSlideOut 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; } /* Sped up animation */
         .receipt-entry.tearing .receipt-content { transition: transform 0.4s ease-in, opacity 0.3s ease-in; transform: translate3d(-120%, 0, 0) rotate(-10deg); opacity: 0; }
         .receipt-entry.tearing { max-height: 0; margin: 0; padding: 0; opacity: 0; }
         .receipt-entry.dimmed .receipt-content { opacity: 0.4; filter: grayscale(1); }
@@ -594,6 +617,7 @@
         .receipt-entry.done .re-item { position: relative; color: #AAA; }
         .receipt-entry.done .re-item::after { content: ''; position: absolute; left: 0; top: 50%; width: 100%; height: 2px; background: var(--accent-red); transform: rotate(-1deg); opacity: 0.7; }
         .receipt-total-section { margin-top: auto; padding: 20px 20px 20px; border-top: 2px solid #333; border-bottom: 4px double #333; margin-bottom: 10px; background: rgba(0,0,0,0.02); }
+        .total-row { display: flex; justify-content: space-between; align-items: baseline; }
         .total-row { display: flex; justify-content: space-between; align-items: baseline; }
         .total-label { font-family: 'Cormorant Garamond', serif; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; font-size: 1rem; color: #333;}
         .total-amount { font-family: 'Cormorant Garamond', serif; font-weight: 700; font-size: 1.6rem; color: #333; }
@@ -722,7 +746,12 @@
                     </div>
 
                     <div class="control-panel">
-                        <div style="flex:1;"></div> <button class="print-btn" onclick="window.printReceipt()" id="print-btn">
+                         <!-- Modified Control Panel -->
+                        <button class="view-switch-btn" id="view-switch-btn" onclick="window.toggleViewCurrency()">
+                            <i class="fa-solid fa-eye"></i> <span id="view-btn-text">VIEW: JPY</span>
+                        </button>
+                        
+                        <button class="print-btn" onclick="window.printReceipt()" id="print-btn">
                             <span>PRINT</span>
                         </button>
                     </div>
@@ -1024,6 +1053,7 @@
                 rate: 0.22, isOnline: false, receiptCount: 1, receiptsData: [], receiptsCache: { spend:[], todo:[], memo:[] }, 
                 currentUser: '奎', isTopFeedExpanded: false, currentCurrency: 'JPY', currentMode: 'spend',
                 currentQuantity: 1,
+                viewCurrency: 'JPY', // New state for view logic
                 checkoutState: { pay: '現金', split: '一起' } // For translate combination
             },
             Data: {
@@ -1740,22 +1770,73 @@
                         } else if (mode === 'todo') { addDoc(App.State.todosRef, { user: App.State.currentUser, item, done: false, timestamp: serverTimestamp() }).then(done).catch(fail); }
                         else if (mode === 'memo') { addDoc(App.State.memosRef, { user: App.State.currentUser, text: item, timestamp: serverTimestamp() }).then(done).catch(fail); }
                     },
-                    renderReceiptList: (animateNew = false) => {
+                    
+                    // --- View Currency Logic ---
+                    toggleViewCurrency: () => {
+                        App.State.viewCurrency = App.State.viewCurrency === 'JPY' ? 'TWD' : 'JPY';
+                        const btn = document.getElementById('view-switch-btn');
+                        const txt = document.getElementById('view-btn-text');
+                        const isTwd = App.State.viewCurrency === 'TWD';
+                        
+                        // UI Feedback
+                        txt.innerText = isTwd ? 'VIEW: TWD' : 'VIEW: JPY';
+                        btn.classList.toggle('twd-mode', isTwd);
+                        App.Utils.vibrate(20);
+                        
+                        // Trigger re-render with animation
+                        App.Controllers.Wallet.renderReceiptList(true, true); // (animateNew, forceAllAnim)
+                    },
+
+                    renderReceiptList: (animateNew = false, forceAllAnim = false) => {
                         const mode = App.State.currentMode; const data = App.State.receiptsData.filter(d => d.type === undefined && mode === 'spend' || d.type === mode); 
                         const user = App.State.currentUser; const topLabel = document.getElementById('top-total-label'); const topAmount = document.getElementById('top-total-amount'); const topSub = document.getElementById('top-total-sub');
+                        
+                        // Currency View Logic
+                        const isTwdView = App.State.viewCurrency === 'TWD';
+                        
                         if(mode === 'spend') {
-                            const myTotal = data.filter(d=>d.user===user).reduce((a,b)=>a+b.jpy,0); const allTotal = data.reduce((a,b)=>a+b.jpy,0);
-                            topLabel.innerText = "TRIP TOTAL"; topAmount.innerText = "¥" + allTotal.toLocaleString(); topSub.innerText = "≈ TWD " + Math.round(allTotal * App.State.rate).toLocaleString();
-                            document.getElementById('personal-total').innerText = '¥'+myTotal.toLocaleString(); document.getElementById('trip-total').innerText = '¥'+allTotal.toLocaleString(); document.getElementById('total-label').innerText = `TOTAL (${user})`;
+                            // Calculate Totals based on view
+                            let myTotal = 0; let allTotal = 0;
+                            
+                            data.forEach(d => {
+                                const val = isTwdView ? (d.twd || Math.round(d.jpy * App.State.rate)) : d.jpy;
+                                if(d.user === user) myTotal += val;
+                                allTotal += val;
+                            });
+
+                            const currencySymbol = isTwdView ? 'TWD ' : '¥';
+
+                            topLabel.innerText = "TRIP TOTAL"; 
+                            topAmount.innerText = currencySymbol + allTotal.toLocaleString(); 
+                            
+                            // Subtext shows the *other* currency
+                            if(isTwdView) {
+                                const jpyTotal = data.reduce((a,b)=>a+b.jpy,0);
+                                topSub.innerText = "≈ ¥ " + jpyTotal.toLocaleString();
+                            } else {
+                                const twdTotal = data.reduce((a,b)=>a+(d.twd||Math.round(b.jpy*App.State.rate)),0);
+                                topSub.innerText = "≈ TWD " + twdTotal.toLocaleString();
+                            }
+
+                            document.getElementById('personal-total').innerText = currencySymbol + myTotal.toLocaleString(); 
+                            document.getElementById('trip-total').innerText = currencySymbol + allTotal.toLocaleString(); 
+                            document.getElementById('total-label').innerText = `TOTAL (${user})`;
                         } else if (mode === 'todo') {
                             topLabel.innerText = "TASKS PROGRESS"; topAmount.innerText = `${data.filter(d => d.done).length} / ${data.length}`; topSub.innerText = "COMPLETED ITEMS";
                         } else if (mode === 'memo') {
                             const counts = data.reduce((acc, r) => { acc[r.user] = (acc[r.user] || 0) + 1; return acc; }, {});
                             topLabel.innerText = "MEMO COUNT"; topAmount.innerText = `TOTAL ${data.length}`; topSub.innerText = `奎:${counts['奎']||0} | 愉:${counts['愉']||0} | 舜:${counts['舜']||0}`;
                         }
+                        
                         document.getElementById('receipt-items-anchor').innerHTML = data.map((r, i) => {
-                            const isNew = animateNew && i === 0 ? 'new-item' : '';
-                            if (mode === 'spend') { return `<div class="receipt-entry ${r.user===user?'':'dimmed'} ${isNew}" id="entry-${r.id}"><div class="delete-underlay" onclick="window.deleteItem('${r.id}', 'spend')"><i class="fa-solid fa-trash-can"></i></div><div class="receipt-content"><div class="re-header"><span>${r.date}</span><span>NO.${i+1}</span></div><div class="re-body"><div><span class="re-user">${r.user}</span><span class="re-item">${r.item}</span></div><div class="re-cost"><div class="re-price">¥${r.jpy}</div></div></div></div></div>`; }
+                            const isNew = (animateNew && i === 0) || forceAllAnim ? 'new-item' : ''; // Force animation if requested
+                            if (mode === 'spend') { 
+                                // Dynamic Value for Item
+                                const val = isTwdView ? (r.twd || Math.round(r.jpy * App.State.rate)) : r.jpy;
+                                const displayPrice = isTwdView ? `TWD ${val.toLocaleString()}` : `¥${val.toLocaleString()}`;
+
+                                return `<div class="receipt-entry ${r.user===user?'':'dimmed'} ${isNew}" id="entry-${r.id}"><div class="delete-underlay" onclick="window.deleteItem('${r.id}', 'spend')"><i class="fa-solid fa-trash-can"></i></div><div class="receipt-content"><div class="re-header"><span>${r.date}</span><span>NO.${i+1}</span></div><div class="re-body"><div><span class="re-user">${r.user}</span><span class="re-item">${r.item}</span></div><div class="re-cost"><div class="re-price">${displayPrice}</div></div></div></div></div>`; 
+                            }
                             else if (mode === 'todo') { return `<div class="receipt-entry ${r.done?'done':''} ${isNew}" id="entry-${r.id}" onclick="window.toggleTodo('${r.id}', ${r.done})"><div class="delete-underlay" onclick="window.deleteItem('${r.id}', 'todo')"><i class="fa-solid fa-trash-can"></i></div><div class="receipt-content"><div class="re-header"><span>${r.date}</span><span>TODO</span></div><div class="re-body" style="align-items:center;"><i class="fa-regular ${r.done?'fa-square-check':'fa-square'} re-todo-check"></i><span class="re-item">${r.item}</span></div></div></div>`; }
                             else if (mode === 'memo') { return `<div class="receipt-entry ${isNew}" id="entry-${r.id}"><div class="delete-underlay" onclick="window.deleteItem('${r.id}', 'memo')"><i class="fa-solid fa-trash-can"></i></div><div class="receipt-content"><div class="re-header"><span>${r.date}</span><span>MEMO</span></div><div><span class="re-user">${r.user}</span></div><div class="re-note">${r.text}</div></div></div>`; }
                         }).join('');
@@ -1783,6 +1864,9 @@
                 window.calculateConversion = App.Controllers.Wallet.calculateConversion; window.selectUser = App.Controllers.Wallet.selectUser; window.printReceipt = App.Controllers.Wallet.printReceipt;
                 window.deleteItem = App.Services.Firebase.deleteItem; window.toggleTodo = App.Services.Firebase.toggleTodo; window.toggleSetting = App.Controllers.Wallet.toggleSetting;
                 window.saveApiSetting = App.Controllers.Wallet.saveApiSetting; window.askAiGuide = App.Controllers.UI.askAiGuide; window.updateSimTimeFromInputs = App.Controllers.UI.updateSimTimeFromInputs;
+                
+                // New Global
+                window.toggleViewCurrency = App.Controllers.Wallet.toggleViewCurrency;
 
                 App.Controllers.UI.createSnow(); await App.Services.Firebase.init();
                 const diff = Math.ceil((new Date("2026-02-02") - new Date()) / (1000 * 60 * 60 * 24));
