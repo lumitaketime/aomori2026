@@ -179,6 +179,7 @@
             min-height: 60px; display: flex; align-items: center; justify-content: center;
             opacity: 0; animation: fadeIn 1.5s ease forwards 1s;
             padding: 5px 0; letter-spacing: 1px; font-weight: 300;
+            transition: opacity 0.5s ease;
         }
 
         .intro-btn {
@@ -207,32 +208,41 @@
             border-bottom: 1px solid rgba(0,0,0,0.05);
         }
 
-        .top-meta { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
-        .brand-container { display: flex; align-items: baseline; gap: 10px; }
-        .brand { font-family: var(--font-serif); font-size: 1.4rem; font-weight: 700; letter-spacing: 1px; color: var(--accent-main); }
+        .top-meta { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; min-height: 45px; }
+        .brand-container { display: flex; align-items: flex-start; gap: 10px; flex: 1; position: relative; }
+        .brand { 
+            font-family: var(--font-serif); font-size: 1.4rem; font-weight: 700; letter-spacing: 1px; color: var(--accent-main);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+            white-space: nowrap; cursor: pointer;
+        }
+        .brand.displaced { opacity: 0; transform: translateX(-20px); pointer-events: none; position: absolute; }
         
-        /* AI Guide Widget */
+        /* 智慧助手 Widget */
         #ai-guide-widget { 
-            display: flex; align-items: center; gap: 8px; opacity: 0; transition: opacity 0.5s; pointer-events: none;
+            display: flex; align-items: flex-start; gap: 8px; opacity: 0; transition: opacity 0.5s; pointer-events: none;
+            flex: 1;
         }
         #ai-guide-widget.visible { opacity: 1; pointer-events: auto; }
         
         .ai-btn {
             background: linear-gradient(135deg, #1C2541 0%, #3A506B 100%);
             color: var(--accent-gold); border: 1px solid var(--accent-gold);
-            width: 30px; height: 30px; border-radius: 50%;
+            width: 24px; height: 24px; border-radius: 50%;
             display: flex; justify-content: center; align-items: center;
-            font-size: 0.9rem; cursor: pointer; box-shadow: 0 2px 10px rgba(180, 155, 103, 0.3);
+            font-size: 0.7rem; cursor: pointer; box-shadow: 0 2px 10px rgba(180, 155, 103, 0.3);
             animation: pulseStar 3s infinite;
+            margin-top: 4px; flex-shrink: 0;
         }
         @keyframes pulseStar { 0% { transform: scale(1); } 50% { transform: scale(1.1); box-shadow: 0 0 15px rgba(180, 155, 103, 0.6); } 100% { transform: scale(1); } }
         
         .ai-suggestion-pill {
-            font-size: 0.75rem; color: #555; background: rgba(255,255,255,0.8);
-            padding: 4px 10px; border-radius: 20px; border: 1px solid rgba(0,0,0,0.05);
-            max-width: 140px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-            cursor: pointer; backdrop-filter: blur(5px);
+            font-size: 0.85rem; color: #444; 
+            padding: 2px 0; line-height: 1.5;
+            cursor: pointer; font-weight: 500;
+            display: block; transition: color 0.3s;
+            text-align: left;
         }
+        .ai-suggestion-pill:active { color: var(--accent-gold); }
 
         .status-value { font-family: var(--font-serif); font-size: 2rem; line-height: 1; color: var(--accent-gold); text-align: right; }
         .status-label { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 2px; color: var(--text-secondary); text-align: right; margin-top: 5px; }
@@ -625,6 +635,32 @@
         .sim-time-wrapper select { flex: 1.2; }
         .sim-time-wrapper input { flex: 1; }
 
+        /* 智慧功能 CSS */
+        .ai-analysis-btn {
+            background: linear-gradient(135deg, var(--accent-gold) 0%, #8c7346 100%);
+            color: white; border: none; padding: 12px 20px; border-radius: 4px;
+            font-family: var(--font-sans); font-size: 0.9rem; font-weight: 600;
+            cursor: pointer; width: 100%; box-shadow: 0 4px 15px rgba(180, 155, 103, 0.3);
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            transition: transform 0.2s, opacity 0.2s;
+        }
+        .ai-analysis-btn:active { transform: scale(0.98); }
+        .ai-analysis-btn:disabled { opacity: 0.6; cursor: wait; }
+        .ai-analysis-result {
+            background: #fdfaf0; border: 1px solid #f2e6cc; border-radius: 8px;
+            padding: 15px; margin-top: 15px; font-size: 0.9rem; line-height: 1.6; color: #5c4b2b;
+            position: relative; animation: fadeIn 0.5s ease;
+        }
+        .ai-insight-btn {
+            background: white; border: 1px solid var(--accent-gold); color: var(--accent-gold);
+            padding: 8px 15px; border-radius: 4px; font-size: 0.8rem; cursor: pointer;
+            margin-top: 10px; display: flex; align-items: center; gap: 5px;
+        }
+        .ai-insight-content {
+            background: #f9f9f9; padding: 12px; border-radius: 4px; border-left: 3px solid var(--accent-gold);
+            font-size: 0.9rem; margin-top: 10px; color: #444; line-height: 1.6;
+        }
+
     </style>
 </head>
 <body>
@@ -632,14 +668,15 @@
     <div id="intro-screen">
         <div id="snow-container"></div>
         <div class="intro-text">
-            <i class="fa-solid fa-snowflake intro-main-icon"></i>
+            <!-- 智慧導遊第一步：啟動首頁預載 -->
+            <i class="fa-solid fa-snowflake intro-main-icon" onclick="App.Services.SmartGuide.fetchAdvice(true)"></i>
             <div class="intro-countdown-block">
                 <div class="countdown-value" id="days-left">--</div>
                 <div class="countdown-label">DAYS TO DEPARTURE</div>
             </div>
             <div class="intro-title">白雪與林檎之旅</div>
             <div class="intro-subtitle">Hakodate & Aomori Winter Adventure</div>
-            <div id="dynamic-intro-text"></div> 
+            <div id="dynamic-intro-text">智慧導遊正在準備開場白...</div> 
             <button class="intro-btn" onclick="window.initApp()">開始旅程</button>
         </div>
     </div>
@@ -649,10 +686,12 @@
         <div class="elegant-header" id="app-header">
             <div class="top-meta">
                 <div class="brand-container">
-                    <div class="brand">L'VOYAGE</div>
-                    <div id="ai-guide-widget" class="hidden" onclick="window.askAiGuide()">
-                        <div class="ai-btn">✨</div>
-                        <div class="ai-suggestion-pill" id="ai-pill-text">AI Guide Ready...</div>
+                    <!-- 點按品牌：重新呼出 (秒開) -->
+                    <div class="brand" id="brand-logo" onclick="window.askAiGuide()">L'VOYAGE</div>
+                    <div id="ai-guide-widget" class="hidden">
+                        <div class="ai-btn" onclick="window.askAiGuide()">✨</div>
+                        <!-- 點按文字：換一句建議 (秒開) -->
+                        <div class="ai-suggestion-pill" id="ai-pill-text" onclick="window.askAiGuide()">智慧導遊正在觀察風景...</div>
                     </div>
                 </div>
                 <div style="text-align: right;">
@@ -708,12 +747,17 @@
                             <button class="u-btn" onclick="window.selectUser(this, '舜')">舜</button>
                         </div>
 
-                        <div style="margin-top:15px; border-top:1px solid rgba(255,255,255,0.1); padding-top:10px;">
-                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
-                                <span style="font-family:'Share Tech Mono'; color:#888; font-size:0.7rem;">MANUAL RATE OVERRIDE</span>
+                        <!-- 智慧帳務分析並列佈局 -->
+                        <div style="margin-top:15px; border-top:1px solid rgba(255,255,255,0.1); padding-top:10px; display: flex; gap: 10px; align-items: flex-end;">
+                            <div style="flex: 1.2;">
+                                <div style="font-family:'Share Tech Mono'; color:#888; font-size:0.7rem; margin-bottom:5px;">MANUAL RATE OVERRIDE</div>
+                                <input type="number" id="inp-ex-manual" class="setting-input visible" style="margin-bottom:0;" placeholder="0.22" step="0.01" onchange="window.saveApiSetting('ex_manual', this.value)">
                             </div>
-                            <input type="number" id="inp-ex-manual" class="setting-input visible" placeholder="Manual Rate (e.g. 0.22)" step="0.01" onchange="window.saveApiSetting('ex_manual', this.value)">
+                            <button id="ai-wallet-analyze-btn" class="ai-analysis-btn" style="flex: 1; height: 31px; margin-top:0; font-size: 0.75rem;" onclick="window.analyzeSpending()">
+                                ✨ 智慧帳務分析
+                            </button>
                         </div>
+                        <div id="ai-wallet-result" class="ai-analysis-result hidden" style="font-size: 0.8rem; margin-top: 10px;"></div>
                     </div>
 
                     <div class="mode-tabs">
@@ -777,7 +821,7 @@
         <div id="view-trans" class="view-section hidden">
             <div class="container">
                 <div class="trans-card">
-                    <h3 class="serif" style="margin-top:0; margin-bottom: 20px; color: var(--accent-main); text-align: center;">即時翻譯 (Powered by Gemini)</h3>
+                    <h3 class="serif" style="margin-top:0; margin-bottom: 20px; color: var(--accent-main); text-align: center;">智慧導遊翻譯</h3>
                     <textarea id="trans-input" class="trans-input" rows="3" placeholder="輸入中文... (例如：請問這個多少錢？)"></textarea>
                     <button class="trans-action-btn" onclick="window.translateNow()">
                         <i class="fa-solid fa-language"></i> 翻譯成日文
@@ -841,18 +885,30 @@
                 
                 <details class="sys-summary">
                     <summary style="cursor:pointer; outline:none; list-style:none; display:flex; justify-content:space-between; align-items:center;">
-                        <span class="sys-title">System Settings & Status</span>
+                        <span class="sys-title">系統狀態與設定</span>
                         <i class="fa-solid fa-chevron-down" style="font-size:0.7rem; color:#CCC;"></i>
                     </summary>
                     <div style="margin-top:15px;">
                         
+                        <!-- 智慧助手開關 -->
                         <div class="setting-row light-theme">
-                            <div class="setting-name"><div class="setting-status" id="st-vib"></div> Haptic Feedback</div>
+                            <div class="setting-name"><div class="setting-status" id="st-guide"></div> 智慧導覽助手</div>
+                            <button class="toggle-btn" id="tg-guide" onclick="window.toggleSetting('guide')"><i class="fa-solid fa-toggle-on"></i></button>
+                        </div>
+                        
+                        <!-- 智慧助手顯示秒數 (自定義調整) -->
+                        <div class="setting-row light-theme" id="row-guide-seconds">
+                            <div class="setting-name">建議語句停留時間 (秒)</div>
+                            <input type="number" id="inp-guide-seconds" class="info-setting-input visible" style="width: 80px; text-align: center; margin-bottom: 0;" min="3" max="60" onchange="window.saveApiSetting('guide_seconds', this.value)">
+                        </div>
+
+                        <div class="setting-row light-theme">
+                            <div class="setting-name"><div class="setting-status" id="st-vib"></div> 觸覺回饋</div>
                             <button class="toggle-btn" id="tg-vib" onclick="window.toggleSetting('vib')"><i class="fa-solid fa-toggle-off"></i></button>
                         </div>
 
                         <div class="setting-row light-theme">
-                            <div class="setting-name"><div class="setting-status" id="st-sim"></div> Simulation Mode (2026)</div>
+                            <div class="setting-name"><div class="setting-status" id="st-sim"></div> 模擬旅行模式 (2026)</div>
                             <button class="toggle-btn" id="tg-sim" onclick="window.toggleSetting('sim')"><i class="fa-solid fa-toggle-off"></i></button>
                         </div>
                         <div id="sim-input-group" class="hidden" style="margin-bottom: 15px;">
@@ -876,23 +932,23 @@
                         <input type="password" id="inp-gm" class="info-setting-input" placeholder="API Key" onchange="window.saveApiSetting('gm', this.value)">
 
                         <div class="setting-row light-theme">
-                            <div class="setting-name"><div class="setting-status" id="st-ai"></div> Gemini AI</div>
+                            <div class="setting-name"><div class="setting-status" id="st-ai"></div> 智慧導覽核心</div>
                             <button class="toggle-btn" id="tg-ai" onclick="window.toggleSetting('ai')"><i class="fa-solid fa-toggle-off"></i></button>
                         </div>
                         <input type="password" id="inp-ai" class="info-setting-input" placeholder="API Key" onchange="window.saveApiSetting('ai', this.value)">
 
                         <div class="setting-row light-theme">
-                            <div class="setting-name"><div class="setting-status" id="st-ex"></div> Exchange Rate API</div>
+                            <div class="setting-name"><div class="setting-status" id="st-ex"></div> 匯率 API</div>
                             <button class="toggle-btn" id="tg-ex" onclick="window.toggleSetting('ex')"><i class="fa-solid fa-toggle-off"></i></button>
                         </div>
 
                         <div class="setting-row light-theme">
-                            <div class="setting-name"><div class="setting-status" id="st-wt"></div> Weather Feed</div>
+                            <div class="setting-name"><div class="setting-status" id="st-wt"></div> 天氣資訊</div>
                             <button class="toggle-btn" id="tg-wt" onclick="window.toggleSetting('wt')"><i class="fa-solid fa-toggle-off"></i></button>
                         </div>
 
                         <div class="setting-row light-theme">
-                            <div class="setting-name"><div class="setting-status" id="st-fb"></div> Firebase DB</div>
+                            <div class="setting-name"><div class="setting-status" id="st-fb"></div> Firebase 資料庫</div>
                         </div>
 
                     </div>
@@ -999,6 +1055,11 @@
                     <textarea id="m-note-input" class="note-edit-area" rows="6"></textarea>
                     <div style="text-align: right;"><button class="note-save-btn" onclick="window.saveNote()">儲存筆記</button></div>
                 </div>
+
+                <button class="ai-insight-btn" id="ai-insight-btn" onclick="window.getAiInsight()">
+                    <span>✨ 智慧導遊深度解析</span>
+                </button>
+                <div id="ai-insight-result" class="ai-insight-content hidden"></div>
             </div>
         </div>
     </div>
@@ -1017,14 +1078,15 @@
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, query, onSnapshot, addDoc, serverTimestamp, setDoc, doc, deleteDoc, updateDoc, setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
+        const apiKey = ""; 
+
         // ==========================================
-        // 1. CONFIGURATION (隱私設定集中區)
+        // 1. CONFIGURATION
         // ==========================================
         const App = {
             Config: {
                 DEFAULT_GOOGLE_KEY: "AIzaSyAX9nvh4bJpiM6-oTm8FoUSZeSBpxZBc1E", 
                 DEFAULT_GEMINI_MODEL: 'gemini-2.5-flash-preview-09-2025',
-                TRANSLATE_URL: `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=`,
                 TRIP_START_DATE: "2026-02-02",
                 EXCHANGE_RATE_API: 'https://api.exchangerate-api.com/v4/latest/JPY',
                 
@@ -1034,7 +1096,9 @@
                     ex: { enabled: true, manual: 0.22 },
                     wt: { enabled: true },
                     vib: { enabled: false }, 
-                    sim: { enabled: false, time: "" } 
+                    sim: { enabled: false, time: "" },
+                    guide: { enabled: true },
+                    guide_seconds: 10 // 智慧助手顯示秒數
                 }
             },
             State: {
@@ -1046,22 +1110,26 @@
                 viewCurrency: 'JPY', 
                 todoFilter: 'all',  
                 memoFilter: 'all',  
-                checkoutState: { pay: '現金', split: '一起' }
+                checkoutState: { pay: '現金', split: '一起' },
+                guideResetTimer: null,
+                cachedAdvice: "", // 智慧預載快取
+                fallbackIntroMessages: [
+                    "還在找蘋果，等一下就好～",
+                    "香噴噴的蘋果派即將出爐，請稍候。",
+                    "北國的白雪已經就緒，你準備好了嗎？",
+                    "正在捕捉空氣中那微甜的蘋果香氣...",
+                    "美麗的白雪正在片片飄落"
+                ]
             },
             Data: {
                 Trip: [
-                    { day: 1, date: "02.02", week: "MON", heroTitle: "函館：百元發熱衣與百萬夜景", heroImg: "https://i.imgur.com/RTJNqwv.jpg", fallbackImg: "https://images.unsplash.com/photo-1542640244-7e67286feb8f?q=80&w=800&auto=format&fit=crop", weather: { icon: "fa-spinner fa-spin", temp: "Loading..." }, events: [ { time: "11:10", title: "抵達 函館機場 (HKD)", tag: "Arrival", desc: "入境與準備。", detail: "【導遊筆記】函館機場雖小，但冬季運作非常有秩序。下機後的體感溫差會讓您瞬間清醒。入境審查通常很快，出關後，別急著離開，深呼吸一口北國冷冽的空氣，這就是北海道的味道。", to: "JR 函館站", location: "Hakodate Airport, Japan" }, { time: "12:00", title: "機場巴士 (往 JR 函館站)", tag: "Transport", desc: "移動至市區。", detail: "【導遊筆記】上車時請注意，日本巴士是「後門上車、前門下車」。沿途您會看到著名的「湯之川溫泉」區，若看到海邊有冒煙的景象，那就是溫泉流進海裡的證明。", navLink: "https://maps.app.goo.gl/SgEccLta3MTxhD4d9?g_st=ac", from: "Hakodate Airport", to: "JR Inn Hakodate", transport_info: {type: "機場巴士", departure: "12:00"} }, { time: "12:30", title: "JR Inn Hakodate (寄放)", tag: "Hotel", desc: "寄放行李。", detail: "【導遊筆記】選擇這間飯店是絕對正確的戰略！它與車站直結，不用拖著行李在雪地裡掙扎。寄放行李時，請順便確認一下大廳提供的「枕頭挑選區」，晚上下手太慢就被搶光了。", location: "JR Inn Hakodate", navLink: "https://maps.app.goo.gl/SgEccLta3MTxhD4d9?g_st=ac", to: "JR Inn Hakodate" }, { time: "12:50", title: "計程車 (趕時間首選)", tag: "Transport", desc: "前往 UNIQLO。", detail: "【導遊筆記】為了省下寶貴的 30-40 分鐘，這 2,500 日圓的車資絕對值得。去 UNIQLO 昭和店的巴士班次在離峰時間很稀疏。", navLink: "https://maps.app.goo.gl/s85bmZtawnf7EQY26?g_st=ac", from: "JR Inn Hakodate", to: "UNIQLO 函館昭和店", transport_info: { type: "計程車", note: "約2500日圓" } }, { time: "13:15", title: "任務 1：UNIQLO 昭和店", tag: "Shopping", desc: "採購發熱衣。", detail: "【導遊筆記】這是北海道的大型路面店，庫存通常比市區百貨店齊全。務必入手「超極暖 (Ultra Warm)」系列的發熱衣與發熱褲，這是為了全世界降雪量最大的青森做做的必要準備。", navLink: "https://maps.app.goo.gl/sDqtgs3kxsz7nGKU9", location: "UNIQLO Hakodate Showa" }, { time: "14:45", title: "計程車 (返回飯店卸貨)", tag: "Transport", desc: "回 JR Inn。", detail: "【導遊筆記】既然買了很多，我們直接搭車回 JR Inn。把戰利品丟回房間（或櫃台），一身輕便再出門。飯店門口排班計程車多，對接下來的行程更方便。", transport_info: { type: "計程車", note: "返回飯店" }, from: "UNIQLO 函館昭和店", to: "JR Inn Hakodate" }, { time: "15:15", title: "飯店卸貨 & 稍作整裝", tag: "Hotel", desc: "快速整裝。", detail: "【導遊提醒】動作要快，放好東西、上個廁所，15:30 準時出發，才趕得上夜景的最佳卡位時間。", location: "JR Inn Hakodate" }, { time: "15:30", title: "計程車 (前往纜車站)", tag: "Transport", desc: "JR 函館站 -> 纜車山麓站。", detail: "【行程】約 10-15 分鐘車程。", transport_info: { type: "計程車", note: "往纜車站" }, from: "JR Inn Hakodate", to: "Hakodate Ropeway" }, { time: "16:00", title: "函館山百萬夜景", tag: "Sightseeing", desc: "日落 Blue Hour。", detail: "【導遊筆記】冬天的日落約在 16:50。一定要待到日落後 20-30 分鐘，這時天空呈現深藍色 (Blue Hour)。記得帶暖暖包貼在手機背面。<br><br>【老鳥說故事】<br>函館夜景被稱為「百萬夜景」的關鍵在於絕無僅有的「地理奇蹟」。左邊是「津輕海峽」，右邊是「函館灣」，這兩片漆黑的大海將發光的城市夾在中間，形成了一個像是女性纖細腰身的形狀（扇形海峽）。冬天的夜景 because 雪地反射，亮度提升了 30% 以上。", navLink: "https://maps.app.goo.gl/qcq17CBzd3miW9rM6", location: "Mt. Hakodate Observation Deck", nav: { mapcode: "86 041 028*25" } }, { time: "17:30", title: "纜車下山 -> 前往金森倉庫", tag: "Transport", desc: "步行或計程車。", detail: "【導遊筆記】下山時人潮會瞬間爆發。如果纜車排隊超過 30 分鐘，且戶外風雪不大，其實可以考慮搭乘巴士下山。下山後，金森倉庫就在山腳下不遠處。", transport_info: { type: "纜車/步行" }, to: "Kanemori Red Brick Warehouse" }, { time: "18:00", title: "金森紅磚倉庫群", tag: "Sightseeing", desc: "晚餐：幸運小丑漢堡。", detail: "【導遊筆記】這裡的紅磚在白雪覆蓋下，有一種歐洲聖誕市集的氛圍。著名的「幸運小丑漢堡」碼頭末廣店，座位數多且有無敵海景。強烈建議現在就吃！點人氣 No.1 的「中華雞腿漢堡」。", navLink: "https://maps.app.goo.gl/psd5nq2yRDC5zD3W6", location: "Kanemori Red Brick Warehouse" }, { time: "18:15", title: "Pastry Snaffle's", tag: "Food", desc: "金森洋物館店。", detail: "【導遊筆記】抵達倉庫後請先衝這裡！買一顆「Catch Cake (起司歐姆蕾)」，這不是普通起司蛋糕，口感像舒芙蕾般入口即化。不要買整盒，直接在櫃台買單顆站著現吃，這是函館限定的「黃金一口」。", location: "Pastry Snaffle's Kanemori" }, { time: "19:30", title: "返回飯店", tag: "Transport", desc: "散步或計程車。", detail: "【導遊筆記】吃飽後，沿著海邊或搭車回飯店。", transport_info: { type: "計程車/散步" }, to: "JR Inn Hakodate" }, { time: "20:00", title: "休息與大浴場", tag: "Hotel", desc: "JR Inn Hakodate。", detail: "【導遊筆記】經過寒風吹拂，現在最需要的是熱食與熱水.直奔頂樓大浴場，那裡的休息室有一整面的落地窗可以看到列車進出站的軌道夜景，配上一支冰牛奶，這才是完美的 Ending。", location: "JR Inn Hakodate" } ] },
-                    { day: 2, date: "02.03", week: "TUE", heroTitle: "新幹線跨海，拜訪奈良美智", heroImg: "https://i.imgur.com/iqO53uS.jpg", fallbackImg: "https://images.unsplash.com/photo-1532236395709-7d70320fec2d?q=80&w=800", weather: { icon: "fa-spinner fa-spin", temp: "Loading..." }, events: [ { time: "07:30", title: "函館朝市 早餐", tag: "Food", desc: "釣烏賊體驗。", detail: "【導遊筆記】雖然說是觀光客聖地，但「釣烏賊」體驗真的很有趣，現釣現殺的烏賊肉是透明且爽脆的，完全沒有腥味。", location: "Hakodate Morning Market" }, { time: "09:30", title: "步行回飯店取行李", tag: "Transport", desc: "前往車站。", detail: "【導遊筆記】吃飽喝足散步回飯店拿行李。", from: "Hakodate Morning Market", to: "JR Hakodate Station", transport_info: { type: "步行" } }, { time: "10:00", title: "跨海移動：函館 -> 青森", tag: "Transport", desc: "三段式接力。", detail: "【導遊筆記】這是今天的重頭戲！<br>1. 函館 Liner：普通電車，搶窗邊位置看最後風景。<br>2. 新幹線隼號：全車指定席！鑽進「青函隧道」時會有廣播，這時您正位於深海之下。<br>3. 奧羽本線：抵達新青森後轉乘在來線，6分鐘到市區。", transport_info: { type: "JR/新幹線", departure: "10:00", note: "青函隧道" }, from: "JR Hakodate Station", to: "JR Aomori Station" }, { time: "12:15", title: "午餐：青森站周邊", tag: "Food", desc: "Osanai 食堂。", detail: "【導遊筆記】「Osanai (おさない)」是這裡的傳奇食堂，必點「帆立貝味噌燒」。", location: "Osanai Aomori" }, { time: "13:30", title: "計程車 (直奔美術館)", tag: "Transport", desc: "前往美術館。", detail: "【導遊筆記】不建議搭巴士，班距長。計程車費約 2000 多日圓。", transport_info: { type: "計程車" }, from: "JR Aomori Station", to: "Aomori Museum of Art" }, { time: "14:00", title: "青森縣立美術館", tag: "Sightseeing", desc: "奈良美智與青森犬。", detail: "【導遊筆記】這座美術館本身就是一件藝術品。一定要去看奈良美智的「青森犬」，冬天時工作人員會幫大狗戴上一頂「雪帽」！<br><br>【老鳥說故事】<br>美術館的設計理念非常深奧，它是由知名建築師青木淳所設計的。整座美術館並不是「蓋在地上」，而是「埋在土裡」的（靈感來自三內丸山遺跡的壕溝 Trench）。在館內行走像是在探險。那隻巨大的「青森犬」低著頭，在雪地中顯得特別孤獨卻又療癒。", location: "Aomori Museum of Art" }, { time: "16:00", title: "計程車 (前往 A-FACTORY)", tag: "Transport", desc: "前往港邊。", detail: "【導遊筆記】直接請美術館櫃檯叫車前往青森車站旁的 A-FACTORY。", transport_info: { type: "計程車" }, from: "Aomori Museum of Art", to: "A-FACTORY" }, { time: "16:30", title: "A-FACTORY (蘋果工廠)", tag: "Shopping", desc: "Cidre 試喝。", detail: "【導遊筆記】傍晚點燈後的氣氛極佳。這裡可以慢慢試喝不同濃度的 Cidre (蘋果酒)。<br><br>【老鳥說故事】<br>A-FACTORY 是青森蘋果的「文藝復興」。這棟在海邊發光的房子，代表青森從單純的「農業大縣」華麗轉身為「時尚品牌」。當您喝下那杯蘋果酒，您喝下的不只是酒，而是青森人為了生存與榮耀，在傳統中淬鍊出的新滋味。", location: "A-FACTORY" }, { time: "17:00", title: "ラグノオ (Raguenau)", tag: "Food", desc: "Polo Chocolat。", detail: "【導遊筆記】就在 A-FACTORY 賣場裡.雖然到處都有賣，但它是青森在地廠商做的，口感紮實濃育，CP 值極高。", location: "A-FACTORY" }, { time: "17:30", title: "取行李 -> 計程車", tag: "Transport", desc: "前往飯店。", transport_info: { type: "計程車" }, to: "Dormy Inn Aomori" }, { time: "18:00", title: "入住 Dormy Inn Aomori", tag: "Hotel", desc: "換上館內服。", detail: "【導遊筆記】進房後先換上他們提供的舒適館內服 (Samue)，這套衣服可以穿著去吃早餐、泡溫泉甚至吃宵夜。", location: "Dormy Inn Aomori" }, { time: "19:00", title: "晚餐：青森市區", tag: "Food", desc: "津輕三味線演奏。", detail: "【導遊筆記】晚餐推薦去體驗「津輕三味線」現場演奏。居酒屋「助六」或「Wasshoi」氣氛都很熱鬧。", location: "Aomori City Center" }, { time: "21:30", title: "飯店宵夜", tag: "Food", desc: "夜鳴拉麵。", detail: "【導遊筆記】絕對不能錯過的「夜鳴拉麵」！", location: "Dormy Inn Aomori" } ] },
-                    { day: 3, date: "02.04", week: "WED", heroTitle: "雪地駕駛初體驗，暖爐列車與蘋果派", heroImg: "https://i.imgur.com/M2AVCI5.jpg", fallbackImg: "https://images.unsplash.com/photo-1549643276-fbc2bd5f4038?q=80&w=800&auto=format&fit=crop", weather: { icon: "fa-spinner fa-spin", temp: "Loading..." }, events: [ { time: "08:30", title: "步行至租車點", tag: "Transport", desc: "小心黑冰。", detail: "【導遊筆記】早上路面可能會有「黑冰 (Black Ice)」，看起來像濕潤的路面其實是薄冰，走路千萬要小心。", transport_info: { type: "步行" }, to: "Aomori Station Rental Car" }, { time: "09:00", title: "租車：青森站前", tag: "Transport", desc: "自駕開始。", detail: "【導遊筆記】取車關鍵動作：1. 確認雨刷立起。2. 檢查雪胎. 3. 詢問油箱蓋位置. 雪地駕駛心法：急煞車、急加速、急轉彎是絕對禁止的。", transport_info: { type: "自駕", car_type: "雪地裝備確認" }, from: "Aomori Rental Car", to: "Goshogawara" }, { time: "10:00", title: "移動：往五所川原", tag: "Drive", desc: "適應雪地駕駛。", detail: "【導遊筆記】剛上路的前 20 分鐘最緊張，請慢慢開，習慣雪地輪胎的抓地力。", transport_info: { type: "自駕" } }, { time: "10:30", title: "超商補給", tag: "Food", desc: "炸干貝美乃滋飯糰。", detail: "【導遊筆記】在開車途中若經過 Lawson 或 FamilyMart，進去早餐區找找看。青森限定的飯糰常會豪邁地包入「整顆帆立貝」拌美乃滋。", location: "Convenience Store" }, { time: "11:00", title: "任務 2：ELM 購物中心", tag: "Shopping", desc: "3COINS+plus。", detail: "【導遊筆記】直奔 3COINS+plus，這裡有很多便宜又好用的雪地小物。", nav: { mapcode: "168 649 346*52" }, location: "ELM Shopping Center" }, { time: "11:45", title: "抵達 津輕五所川原站", tag: "Drive", desc: "停車禮儀。", detail: "【導遊筆記】停好車後，記得把雨刷立起來，這是雪國禮儀。", location: "Tsugaru Goshogawara Station" }, { time: "12:00", title: "任務 3：津輕鐵道「暖爐列車」", tag: "Experience", desc: "烤魷魚與昭和感。", detail: "【導遊筆記】這是昭和時代的活古董！車廂內是真的燒煤炭的暖爐. 上車後一定要買烤魷魚，列車長會幫你在暖爐上現烤。<br><br>【老鳥說故事】<br>這列火車是一台行駛在雪原上的「時光機」。外頭是零下幾度的暴風雪，車內卻因為那個燒著紅通通煤炭的「達摩火爐」而溫暖如春。文豪「太宰治」生前也搭過. 當列車長把乾魷魚放在火爐頂蓋上「滋～」的一聲，配上一杯清酒，那種「赤裸裸的昭和感」會讓您感動。", location: "Tsugaru Railway" }, { time: "13:30", title: "移動：往弘前", tag: "Drive", desc: "津輕富士。", detail: "【導遊筆記】前往弘前的路上，若天氣晴朗，左手邊會出現壯麗的「岩木山」，被稱為津輕富士。", transport_info: { type: "自駕" }, to: "Hirosaki" }, { time: "14:30", title: "任務 4：藤田紀念庭園", tag: "Food", desc: "大正浪漫喫茶室。", detail: "【導遊筆記】這裡原本是富豪的別墅，洋館建築非常有氣氛。一定要搶窗邊的位置，看著雪覆蓋的日式庭園吃甜點。", nav: { mapcode: "71 071 513*78" }, location: "Fujita Memorial Garden" }, { time: "14:45", title: "星巴克 弘前公園前店", tag: "Sightseeing", desc: "最美星巴克之一。", detail: "【導遊筆記】如果喫茶室大排長龍，這裡是最強備案。它是利用「舊第八師團長官舍」改建的，保留了大正時代的洋風建築特色。", location: "Starbucks Hirosaki Park" }, { time: "15:45", title: "弘前城 (弘前公園)", tag: "Sightseeing", desc: "雪燈籠。", detail: "【導遊筆記】冬天的弘前城雖然天守閣可能會移動，但重點是「雪燈籠」。", location: "Hirosaki Castle" }, { time: "16:30", title: "移動：返回青森市", tag: "Drive", desc: "國道 7 號。", detail: "【導遊筆記】弘前到青森的國道 7 號非常容易塞車，請預留充裕時間。", transport_info: { type: "自駕" }, to: "Aomori City" }, { time: "18:00", title: "晚餐：青森市區", tag: "Food", desc: "味噌咖哩牛奶拉麵。", detail: "【導遊筆記】今晚推薦嘗試青森市的靈魂美食「味噌咖哩牛奶拉麵」。", location: "Aomori City Center" } ] },
-                    { day: 4, date: "02.05", week: "THU", heroTitle: "勇闖八甲田，入住星野青森屋", heroImg: "https://i.imgur.com/xOsZDUG.jpg", fallbackImg: "https://images.unsplash.com/photo-1487667258413-5a089052b658?q=80&w=800", alert: "⚠️ 雪地駕駛警示：八甲田山路段積雪極深，請注意路面上方紅箭頭指標！", weather: { icon: "fa-spinner fa-spin", temp: "Loading..." }, events: [ { time: "08:00", title: "青森魚菜中心 (古川市場)", tag: "Food", desc: "自製海鮮丼。", detail: "【導遊筆記】這是最有趣的早餐體驗！拿著碗去各攤位「選妃」。一定要試試看青森特產「扇貝」。", location: "Furukawa Market" }, { time: "09:30", title: "開車上山：往八甲田", tag: "Drive", desc: "雪牆路段。", detail: "【導遊筆記】全行程最危險路段！隨著海拔升高，路旁積雪會變成兩三公尺高的雪牆. 請務必注意路面上方的「紅箭頭」指標。", transport_info: { type: "自駕" }, from: "Aomori City", to: "Hakkoda Ropeway" }, { time: "10:30", title: "八甲田山樹冰 (纜車)", tag: "Nature", desc: "雪怪 (Ice Monsters)。", detail: "【導遊筆記】這裡的樹冰比藏王更原始、更狂野。搭纜車到山頂後，您會置身於冰封世界。<br><br>【老鳥說故事】<br>您即將見到的不裝飾不只是樹和雪，而是大自然雕塑出的「雪怪」。樹冰形成需要三個奇蹟：1. 大量的「青森冷杉」；2. 來自西伯利亞的季風與過冷水滴；3. 氣溫持續低於零下 5 度. 八甲田山的樹冰規模宏大，看著成千上萬隻「雪怪」沿著山坡排山倒海而來，那種震懾感與敬畏心油然而生。", location: "Hakkoda Ropeway" }, { time: "12:00", title: "午餐：纜車站食堂", tag: "Food", desc: "蕎麥麵或咖哩。", location: "Hakkoda Ropeway Station" }, { time: "12:45", title: "酸湯溫泉 (Sukayu Onsen)", tag: "Sightseeing", desc: "千人風呂外觀。", detail: "【導遊筆記】即使不進去泡，光是把車停下來，看那棟全檜木建造的古老建築，以及屋頂上厚達 3-4 公尺的驚人積雪，就非常值得。", location: "Sukayu Onsen" }, { time: "13:00", title: "移動：前往星野青森屋", tag: "Drive", desc: "導航設定注意。", detail: "【導遊筆記】導航陷阱警告！請務必設定經由「陸奧收費道路」往三澤方向。", transport_info: { type: "自駕", time_estimate: "2小時" }, to: "Hoshino Resorts Aomoriya" }, { time: "15:30", title: "入住：星野集團 青森屋", tag: "Hotel", desc: "祭典主題樂園。", detail: "【導遊筆記】歡迎來到祭典的主題樂園！一進門就會有服務員遞上迎賓蘋果汁。", nav: { mapcode: "84 583 002*44" }, reservation_info: { type: "Resort", number: "HOS-AOM-1234", name: "YK", check_in: "15:30" }, location: "Hoshino Resorts Aomoriya" }, { time: "17:00", title: "晚餐：Nore Sore 食堂", tag: "Food", desc: "媽媽的味道。", detail: "【導遊筆記】一定要進攻「現煎牛排」和「炸扇貝」。", location: "Nore Sore Dining" }, { time: "19:00", title: "溫泉：浮湯", tag: "Relax", desc: "露天溫泉。", detail: "【導遊筆記】這裡的露天溫泉設計得像漂浮在水池上。泡在熱湯裡，看著燈光映照在雪地上，夢幻指數破表。", location: "Aomoriya Onsen" } ] },
+                    { day: 1, date: "02.02", week: "MON", heroTitle: "函館：百元發熱衣與百萬夜景", heroImg: "https://i.imgur.com/RTJNqwv.jpg", fallbackImg: "https://images.unsplash.com/photo-1542640244-7e67286feb8f?q=80&w=800&auto=format&fit=crop", weather: { icon: "fa-spinner fa-spin", temp: "Loading..." }, events: [ { time: "11:10", title: "抵達 函館機場 (HKD)", tag: "Arrival", desc: "入境與準備。", detail: "【導遊筆記】函館機場雖小，但冬季運作非常有秩序。下機後的體感溫差會讓您瞬間清醒。入境審查通常很快，出關後，別急著離開，深呼吸一口北國冷冽的空氣，這就是北海道的味道。", to: "JR 函館站", location: "Hakodate Airport, Japan" }, { time: "12:00", title: "機場巴士 (往 JR 函館站)", tag: "Transport", desc: "移動至市區。", detail: "【導遊筆記】上車時請注意，日本巴士是「後門上車、前門下車」。沿途您會看到著名的「湯之川溫泉」區，若看到海邊有冒煙的景象，那就是溫泉流進海裡的證明。", navLink: "https://maps.app.goo.gl/SgEccLta3MTxhD4d9?g_st=ac", from: "Hakodate Airport", to: "JR Inn Hakodate", transport_info: {type: "機場巴士", departure: "12:00"} }, { time: "12:30", title: "JR Inn Hakodate (寄放)", tag: "Hotel", desc: "寄放行李。", detail: "【導遊筆記】選擇這間飯店是絕對正確的戰略！它與車站直結，不用拖著行李在雪地裡掙扎。寄放行李時，請順便確認一下大廳提供的「枕頭挑選區」，晚上下手太慢就被搶光了。", location: "JR Inn Hakodate", navLink: "https://maps.app.goo.gl/SgEccLta3MTxhD4d9?g_st=ac", to: "JR Inn Hakodate" }, { time: "12:50", title: "計程車 (趕時間首選)", tag: "Transport", desc: "前往 UNIQLO。", detail: "【導遊筆記】為了省下寶貴的 30-40 分鐘，這 2,500 日圓的車資絕對值得。去 UNIQLO 昭和店的巴士班次在離峰時間很稀疏。", navLink: "https://maps.app.goo.gl/s85bmZtawnf7EQY26?g_st=ac", from: "JR Inn Hakodate", to: "UNIQLO 函館昭和店", transport_info: { type: "計程車", note: "約2500日圓" } }, { time: "13:15", title: "任務 1：UNIQLO 昭和店", tag: "Shopping", desc: "採購發熱衣。", detail: "【導遊筆記】這是北海道的大型路面店，庫存通常比市區百貨店齊全。務必入手「超極暖 (Ultra Warm)」系列的發熱衣與發熱褲，這是為了全世界降雪量最大的青森做做的必要準備。", navLink: "https://maps.app.goo.gl/sDqtgs3kxsz7nGKU9", location: "UNIQLO Hakodate Showa" }, { time: "14:45", title: "計程車 (返回飯店卸貨)", tag: "Transport", desc: "回 JR Inn。", detail: "【導遊筆記】既然買了很多，我們直接搭車回 JR Inn。把戰利品丟回房間（或櫃台），一身輕便再出門。飯店門口排班計程車多，對接下來的行程更方便。", transport_info: { type: "計程車", note: "返回飯店" }, from: "UNIQLO 函館昭和店", to: "JR Inn Hakodate" }, { time: "15:15", title: "飯店卸貨 & 稍作整裝", tag: "Hotel", desc: "快速整裝。", detail: "【導遊提醒】動作要快，放好東西、上個廁所，15:30 準時出發，才趕得上夜景的最佳卡位時間。", location: "JR Inn Hakodate" }, { time: "15:30", title: "計程車 (前往纜車站)", tag: "Transport", desc: "JR 函館站 -> 纜車山麓站。", detail: "【行程】約 10-15 分鐘車程。", transport_info: { type: "計程車", note: "往纜車站" }, from: "JR Inn Hakodate", to: "Hakodate Ropeway" }, { time: "16:00", title: "函館山百萬夜景", tag: "Sightseeing", desc: "日落 Blue Hour。", detail: "【導遊筆記】冬天的日落約在 16:50。一定要待到日落後 20-30 分鐘，這時天空呈現深藍色 (Blue Hour)。記得帶暖暖包貼在手機背面。<br><br>【老鳥說故事】<br>函館夜景被稱為「百萬夜景」的關鍵在於絕無僅有的「地理奇蹟」。左邊是「津輕海峽」，右邊是「函館灣」，這兩片漆黑的大海將發光的城市夾在中間，形成了一個像是女性纖細腰身的形狀（扇形海峽）。冬天的夜景 because 雪地反射，亮度提升了 30% 以上。", navLink: "https://maps.app.goo.gl/qcq17CBzd3miW9rM6", location: "Mt. Hakodate Observation Deck", nav: { mapcode: "86 041 028*25" } }, { time: "17:30", title: "纜車下山 -> 前往金森倉庫", tag: "Transport", desc: "步行或計程車。", detail: "【導遊筆記】下山時人潮會瞬間爆發。如果纜車排隊超過 30 分鐘，且戶外風雪不大，其實可以考慮搭乘巴士下山. 下山後，金森倉庫就在山腳下不遠處。", transport_info: { type: "纜車/步行" }, to: "Kanemori Red Brick Warehouse" }, { time: "18:00", title: "金森紅磚倉庫群", tag: "Sightseeing", desc: "晚餐：幸運小丑漢堡。", detail: "【導遊筆記】這裡的紅磚在白雪覆蓋下，有一種歐洲聖誕市集的氛圍。著名的「幸運小丑漢堡」碼頭末廣店，座位數多且有無敵海景。強烈建議現在就吃！點人氣 No.1 的「中華雞腿漢堡」。", navLink: "https://maps.app.goo.gl/psd5nq2yRDC5zD3W6", location: "Kanemori Red Brick Warehouse" }, { time: "18:15", title: "Pastry Snaffle's", tag: "Food", desc: "金森洋物館店。", detail: "【導遊筆記】抵達倉庫後請先衝這裡！買一顆「Catch Cake (起司歐姆蕾)」，這不是普通起司蛋糕，口感像舒芙蕾般入口即化。不要買整盒，直接在櫃台買單顆站著現吃，這是函館限定的「黃金一口」。", location: "Pastry Snaffle's Kanemori" }, { time: "19:30", title: "返回飯店", tag: "Transport", desc: "散步或計程車。", detail: "【導遊筆記】吃飽後，沿著海邊或搭車回飯店。", transport_info: { type: "計程車/散步" }, to: "JR Inn Hakodate" }, { time: "20:00", title: "休息與大浴場", tag: "Hotel", desc: "JR Inn Hakodate。", detail: "【導遊筆記】經過寒風吹拂，現在最需要的是熱食與熱水.直奔頂樓大浴場，那裡的休息室有一整面的落地窗可以看到列車進出站的軌道夜景，配上一支冰牛奶，這才是完美的 Ending。", location: "JR Inn Hakodate" } ] },
+                    { day: 2, date: "02.03", week: "TUE", heroTitle: "新幹線跨海，拜訪奈良美智", heroImg: "https://i.imgur.com/iqO53uS.jpg", fallbackImg: "https://images.unsplash.com/photo-1532236395709-7d70320fec2d?q=80&w=800", weather: { icon: "fa-spinner fa-spin", temp: "Loading..." }, events: [ { time: "07:30", title: "函館朝市 早餐", tag: "Food", desc: "釣烏賊體驗。", detail: "【導遊筆記】雖然說是觀光客聖地，但「釣烏賊」體驗真的很有趣，現釣現殺的烏賊肉是透明且爽脆的，完全沒有腥味。", location: "Hakodate Morning Market" }, { time: "09:30", title: "步行回飯店取行李", tag: "Transport", desc: "前往車站。", detail: "【導遊筆記】吃飽喝足散步回飯店拿行李。", from: "Hakodate Morning Market", to: "JR Hakodate Station", transport_info: { type: "步行" } }, { time: "10:00", title: "跨海移動：函館 -> 青森", tag: "Transport", desc: "三段式接力。", detail: "【導遊筆記】這是今天的重頭戲！<br>1. 函館 Liner：普通電車，搶窗邊位置看最後風景。<br>2. 新幹線隼號：全車指定席！鑽進「青函隧道」時會有廣播，這時您正位於深海之下。<br>3. 奧羽本線：抵達新青森後轉乘在來線，6分鐘到市區。", transport_info: { type: "JR/新幹線", departure: "10:00", note: "青函隧道" }, from: "JR Hakodate Station", to: "JR Aomori Station" }, { time: "12:15", title: "午餐：青森站周邊", tag: "Food", desc: "Osanai 食堂。", detail: "【導遊筆記】「Osanai (おさない)」是這裡的傳奇食堂，必點「帆立貝味噌燒」。", location: "Osanai Aomori" }, { time: "13:30", title: "計程車 (直奔美術館)", tag: "Transport", desc: "前往美術館。", detail: "【導遊筆記】不建議當巴士，班距長。計程車費約 2000 多日圓。", transport_info: { type: "計程車" }, from: "JR Aomori Station", to: "Aomori Museum of Art" }, { time: "14:00", title: "青森縣立美術館", tag: "Sightseeing", desc: "奈良美智與青森犬。", detail: "【導遊筆記】這座美術館本身就是一件藝術品. 一定要去看奈良美智的「青森犬」，冬天時工作人員會幫大狗戴上一頂「雪帽」！<br><br>【老鳥說故事】<br>美術館的設計理念非常深奧，它是由知名建築師青木淳所設計的. 整座美術館並不是「蓋在地上」，而是「埋在土裡」的（靈感來自三內丸山遺跡的壕溝 Trench）. 在館內行走像是在探險. 那隻巨大的「青森犬」低著頭，在雪地中顯得特別孤獨卻又療癒。", location: "Aomori Museum of Art" }, { time: "16:00", title: "計程車 (前往 A-FACTORY)", tag: "Transport", desc: "前往港邊。", detail: "【導遊筆記】直接請美術館櫃檯叫車前往青森車站旁的 A-FACTORY。", transport_info: { type: "計程車" }, from: "Aomori Museum of Art", to: "A-FACTORY" }, { time: "16:30", title: "A-FACTORY (蘋果工廠)", tag: "Shopping", desc: "Cidre 試喝。", detail: "【導遊筆記】傍晚點燈後的氣氛極佳。這裡可以慢慢試喝不同濃度的 Cidre (蘋果酒)。<br><br>【老鳥說故事】<br>A-FACTORY 是青森蘋果的「文藝復興」。這棟在海邊發光的房子，代表青森從單純的「農業大縣」華麗轉身為「時尚品牌」。當您喝下那杯蘋果酒，您喝下的不只是酒，而是青森人為了生存與榮耀，在傳統中淬鍊出的新滋味。", location: "A-FACTORY" }, { time: "17:00", title: "ラグノオ (Raguenau)", tag: "Food", desc: "Polo Chocolat。", detail: "【導遊筆記】就在 A-FACTORY 賣場裡.雖然到處都有賣，但它是青森在地廠商做的，口感紮實濃育，CP 值極高。", location: "A-FACTORY" }, { time: "17:30", title: "取行李 -> 計程車", tag: "Transport", desc: "前往飯店。", transport_info: { type: "計程車" }, to: "Dormy Inn Aomori" }, { time: "18:00", title: "入住 Dormy Inn Aomori", tag: "Hotel", desc: "換上館內服。", detail: "【導遊筆記】進房後先換上他們提供的舒適館內服 (Samue)，這套衣服可以穿著去吃早餐、泡溫泉甚至吃宵夜。", location: "Dormy Inn Aomori" }, { time: "19:00", title: "晚餐：青森市區", tag: "Food", desc: "津輕三味線演奏。", detail: "【導遊筆記】晚餐推薦去體驗「津輕三味線」現場演奏。居酒屋「助六」或「Wasshoi」氣氛都很熱鬧。", location: "Aomori City Center" }, { time: "21:30", title: "飯店宵夜", tag: "Food", desc: "夜鳴拉麵。", detail: "【導遊筆記】絕對不能錯過的「夜鳴拉麵」！", location: "Dormy Inn Aomori" } ] },
+                    { day: 3, date: "02.04", week: "WED", heroTitle: "雪地駕駛初體驗，暖爐列車與蘋果派", heroImg: "https://i.imgur.com/M2AVCI5.jpg", fallbackImg: "https://images.unsplash.com/photo-1549643276-fbc2bd5f4038?q=80&w=800&auto=format&fit=crop", weather: { icon: "fa-spinner fa-spin", temp: "Loading..." }, events: [ { time: "08:30", title: "步行至租車點", tag: "Transport", desc: "小心黑冰。", detail: "【導遊筆記】早上路面可能會有「黑冰 (Black Ice)」，看起來像濕潤的路面其實是薄冰，走路千萬要小心。", transport_info: { type: "步行" }, to: "Aomori Station Rental Car" }, { time: "09:00", title: "租車：青森站前", tag: "Transport", desc: "自駕開始。", detail: "【導遊筆記】取車關鍵動作：1. 確認雨刷立起. 2. 檢查雪胎. 3. 詢問油箱蓋位置. 雪地駕駛心法：急煞車、急加速、急轉彎是絕對禁止的。", transport_info: { type: "自駕", car_type: "雪地裝備確認" }, from: "Aomori Rental Car", to: "Goshogawara" }, { time: "10:00", title: "移動：往五所川原", tag: "Drive", desc: "適應雪地駕駛。", detail: "【導遊筆記】剛上路的前 20 分鐘最緊張，請慢慢開，習慣雪地輪胎的抓地力。", transport_info: { type: "自駕" } }, { time: "10:30", title: "超商補給", tag: "Food", desc: "炸干貝美乃誌飯糰。", detail: "【導遊筆記】在開車途中若經過 Lawson 或 FamilyMart，進去早餐區找找看。青森限定的飯糰常會豪邁地包入「整顆帆立貝」拌美乃誌。", location: "Convenience Store" }, { time: "11:00", title: "任務 2：ELM 購物中心", tag: "Shopping", desc: "3COINS+plus。", detail: "【導遊筆記】直奔 3COINS+plus，這裡有很多便宜又好用的雪地小物。", nav: { mapcode: "168 649 346*52" }, location: "ELM Shopping Center" }, { time: "11:45", title: "抵達 津輕五所川原站", tag: "Drive", desc: "停車禮儀。", detail: "【導遊筆記】停好車後，記得把雨刷立起來，這是雪國禮儀。", location: "Tsugaru Goshogawara Station" }, { time: "12:00", title: "任務 3：津輕鐵道「暖爐列車」", tag: "Experience", desc: "烤魷魚與昭和感。", detail: "【導遊筆記】這是昭和時代的活古董！車廂內是真的燒煤炭的暖爐. 上車後一定要買烤魷魚，列車長會幫你在暖爐上現烤。<br><br>【老鳥說故事】<br>這列火車是一台行駛在雪原上的「時光機」。外頭是零下幾度的暴風雪，車內卻因為那個燒著紅通通煤炭的「達摩火爐」而溫暖如春. 文豪「太宰治」生前也搭過. 當列車長把乾魷魚放在火爐頂蓋上「滋～」的一聲，配上一杯清酒，那種「赤裸裸的昭和感」會讓您感動。", location: "Tsugaru Railway" }, { time: "13:30", title: "移動：往弘前", tag: "Drive", desc: "津輕富士。", detail: "【導遊筆記】前往弘前的路上，若天氣晴朗，左手邊會出現壯麗的「岩木山」，被稱為津輕富士。", transport_info: { type: "自駕" }, to: "Hirosaki" }, { time: "14:30", title: "任務 4：藤田紀念庭園", tag: "Food", desc: "大正浪漫喫茶室。", detail: "【導遊筆記】這裡原本是富豪的別墅，洋館建築非常有氣氛. 一定要搶窗邊的位置，看著雪覆蓋的日式庭園吃甜點。", nav: { mapcode: "71 071 513*78" }, location: "Fujita Memorial Garden" }, { time: "14:45", title: "星巴克 弘前公園前店", tag: "Sightseeing", desc: "最美星巴克之一。", detail: "【導遊筆記】如果喫茶室大排長龍，這裡是最強備案. 它是利用「舊第八師團長官舍」改建的，保留了大正時代的洋風建築特色。", location: "Starbucks Hirosaki Park" }, { time: "15:45", title: "弘前城 (弘前公園)", tag: "Sightseeing", desc: "雪燈籠。", detail: "【導遊筆記】冬天的弘前城雖然天守閣可能會移動，但重點是「雪燈籠」。", location: "Hirosaki Castle" }, { time: "16:30", title: "移動：返回青森市", tag: "Drive", desc: "國道 7 號。", detail: "【導遊筆記】弘前到青森的國道 7 號非常容易塞車，請預留充裕時間。", transport_info: { type: "自駕" }, to: "Aomori City" }, { time: "18:00", title: "晚餐：青森市區", tag: "Food", desc: "味噌咖哩牛奶拉麵。", detail: "【導遊筆記】今晚推薦嘗試青森市的靈魂美食「味噌咖哩牛奶拉麵」。", location: "Aomori City Center" } ] },
+                    { day: 4, date: "02.05", week: "THU", heroTitle: "勇闖八甲田，入住星野青森屋", heroImg: "https://i.imgur.com/xOsZDUG.jpg", fallbackImg: "https://images.unsplash.com/photo-1487667258413-5a089052b658?q=80&w=800", alert: "⚠️ 雪地駕駛警示：八甲田山路段積雪極深，請注意路面上方紅箭頭指標！", weather: { icon: "fa-spinner fa-spin", temp: "Loading..." }, events: [ { time: "08:00", title: "青森魚菜中心 (古川市場)", tag: "Food", desc: "自製海鮮丼。", detail: "【導遊筆記】這是最有趣的早餐體驗！拿著碗去各攤位「選妃」。一定要試試看青森特產「扇貝」。", location: "Furukawa Market" }, { time: "09:30", title: "開車上山：往八甲田", tag: "Drive", desc: "雪牆路段。", detail: "【導遊筆記】全行程最危險路段！隨著海拔升高，路旁積雪會變成兩三公尺高的雪牆. 請務必注意路面上方的「紅箭頭」指標。", transport_info: { type: "自駕" }, from: "Aomori City", to: "Hakkoda Ropeway" }, { time: "10:30", title: "八甲田山樹冰 (纜車)", tag: "Nature", desc: "雪怪 (Ice Monsters)。", detail: "【導遊筆記】這裡的樹冰比藏王更原始、更狂野. 搭纜車到山頂後，您會置身於冰封世界.<br><br>【老鳥說故事】<br>您即將見到的不裝飾不只是樹和雪，而是大自然雕塑出的「雪怪」。樹冰形成需要三個奇蹟：1. 大量的「青森冷杉」；2. 來自西伯利亞的季風與過冷水滴；3. 氣溫持續低於零下 5 度. 八甲田山的樹冰規模宏大，看著成千上萬隻「雪怪」沿著山坡排山倒海而來，那種震懾感與敬畏心油然而生。", location: "Hakkoda Ropeway" }, { time: "12:00", title: "午餐：纜車站食堂", tag: "Food", desc: "蕎麥麵或咖哩。", location: "Hakkoda Ropeway Station" }, { time: "12:45", title: "酸湯溫泉 (Sukayu Onsen)", tag: "Sightseeing", desc: "千人風呂外觀。", detail: "【導遊筆記】即使不進去泡，光是把車停下來，看那棟全檜木建造的古老建築，以及屋頂上厚達 3-4 公尺的驚人積雪，就非常值得。", location: "Sukayu Onsen" }, { time: "13:00", title: "移動：前往星野青森屋", tag: "Drive", desc: "導航設定注意。", detail: "【導遊筆記】導航陷阱警告！請務必設定經由「陸奧收費道路」往三澤方向。", transport_info: { type: "自駕", time_estimate: "2小時" }, to: "Hoshino Resorts Aomoriya" }, { time: "15:30", title: "入住：星野集團 青森屋", tag: "Hotel", desc: "祭典主題樂園。", detail: "【導遊筆記】歡迎來到祭典的主題樂園！一進門就會有服務員遞上迎賓蘋果汁。", nav: { mapcode: "84 583 002*44" }, reservation_info: { type: "Resort", number: "HOS-AOM-1234", name: "YK", check_in: "15:30" }, location: "Hoshino Resorts Aomoriya" }, { time: "17:00", title: "晚餐：Nore Sore 食堂", tag: "Food", desc: "媽媽的味道。", detail: "【導遊筆記】一定要進攻「現煎牛排」和「炸扇貝」。", location: "Nore Sore Dining" }, { time: "19:00", title: "溫泉：浮湯", tag: "Relax", desc: "露天溫泉。", detail: "【導遊筆記】這裡的露天溫泉設計得像漂浮在水池上. 泡在熱湯裡，看著燈光映照在雪地上，夢幻指數破表。", location: "Aomoriya Onsen" } ] },
                     { day: 5, date: "02.06", week: "FRI", heroTitle: "馬車巡遊與輕鬆滑雪", heroImg: "https://i.imgur.com/ViOh2sW.jpg", fallbackImg: "https://images.unsplash.com/photo-1548777123-e213912bc571?q=80&w=800", weather: { icon: "fa-spinner fa-spin", temp: "Loading..." }, events: [ { time: "07:30", title: "Nore Sore 食堂 早餐", tag: "Food", desc: "自製海鮮丼。", detail: "【導遊筆記】早餐的亮點是「帆立貝味噌燒」和「自製海鮮丼」。", location: "Nore Sore Dining" }, { time: "09:00", title: "暖爐馬車 (需預約)", tag: "Experience", desc: "津輕方言導覽。", detail: "【導遊筆記】坐在有暖爐的馬車裡，馬夫會一邊趕馬一邊用津輕方言聊天。", location: "Aomoriya Park" }, { time: "11:00", title: "移動：前往滑雪場", tag: "Drive", desc: "莫蘭之森。", detail: "【導遊筆記】附近的「莫蘭之森 (Komaki Onsen Ski Area)」是個小而美的滑雪場，人通常不多。", transport_info: { type: "自駕" }, to: "Komaki Onsen Ski Area" }, { time: "11:30", title: "滑雪體驗", tag: "Activity", desc: "粉雪體驗。", detail: "【導遊筆記】即使不滑雪，租個雪盆 (Sled) 來玩也超開心！這裡的雪質是粉雪 (Powder Snow)。", location: "Komaki Onsen Ski Area" }, { time: "15:30", title: "移動：返回飯店", tag: "Drive", desc: "回溫。", detail: "【導遊筆記】玩雪後身體會濕冷，回到飯店第一件事就是直奔「元湯」或再次去「浮湯」回溫。", transport_info: { type: "自駕" }, to: "Hoshino Resorts Aomoriya" }, { time: "16:00", title: "歡騰廣場", tag: "Relax", desc: "Jawamegu Hiroba。", detail: "【導遊筆記】位於飯店地下樓層的廣場，永遠都在過節。", location: "Jawamegu Hiroba" }, { time: "18:00", title: "晚餐", tag: "Food", desc: "飯店內。", location: "Hoshino Resorts Aomoriya" }, { time: "20:00", title: "陸奧祭典屋", tag: "Culture", desc: "睡魔祭表演。", detail: "【導遊筆記】絕對必看！如果這趟旅程只能選一個表演，就是這個。<br><br>【老鳥說故事】<br>為什麼青森人對「祭典」這麼瘋狂？因為這裡的冬天太長、太冷、太黑了. 睡魔祭 (Nebuta) 的原意是趕走夏日農忙時期的睡魔與災厄，但我認為，這更是喚醒人們靈魂的儀式. 在陸奧祭典屋，您將聽到撼動心臟的太鼓聲，與「Rassera!」的吶喊. 這不只是一場秀，這是青森人在宣告：「我們熬過了冬天，我們還活著！」", location: "Michinoku Matsuriya" } ] },
-                    { day: 6, date: "02.07", week: "SAT", heroTitle: "踏著雪花滿載而歸", heroImg: "https://i.imgur.com/edlDbD7.jpg", fallbackImg: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=800", weather: { icon: "fa-spinner fa-spin", temp: "Loading..." }, events: [ { time: "08:00", title: "最後享受：早餐/溫泉", tag: "Relax", desc: "推薦元湯。", detail: "【導遊筆記】離別前的最後一泡。推薦去飯店園區入口處的「元湯」。", location: "Aomoriya Motoyu" }, { time: "10:00", title: "移動：前往青森機場", tag: "Drive", desc: "準時出發。", detail: "【導遊筆記】最後一次提醒：冬季趕飛機，寧可早到三小時，不可晚到一分鐘。", transport_info: { type: "自駕", time_estimate: "2.5小時" }, from: "Hoshino Resorts Aomoriya", to: "Aomori Airport" }, { time: "12:00", title: "機場周邊：午餐/加油", tag: "Food", desc: "加滿油。", detail: "【導遊筆記】進機場前最後一項任務：加滿油。", location: "Aomori Airport Area" }, { time: "12:30", title: "青森機場還車", tag: "Transport", desc: "檢查車況。", detail: "【導遊筆記】還車時，工作人員會檢查外觀。", location: "Aomori Airport Car Rental" }, { time: "13:00", title: "機場報到 (AOJ)", tag: "Transport", desc: "辦理登機。", detail: "【導遊筆記】青森機場小而美。", location: "Aomori Airport" }, { time: "13:30", title: "最後採買", tag: "Shopping", desc: "機場 2F 免稅店。", detail: "【導遊筆記】這裡是最後衝刺區！必買整顆蘋果、Patissier's 蘋果派、源垂燒肉醬。", location: "Aomori Airport Duty Free" }, { time: "15:30", title: "搭機返台", tag: "Flight", desc: "BR 121。", detail: "【導遊筆記】飛機起飛時，請往下看，那片白雪覆蓋的大地、八甲田山的輪廓、陸奧灣的深藍，將是您這趟旅程最美的句點. 辛苦了！", reservation_info: { type: "Flight", number: "BR121", departure: "15:30" }, location: "Aomori Airport" } ] }
-                ],
-                Messages: {
-                    work: ["每天都在處理突發狀況，這次唯一的突發狀況，只有「食物太好吃」。","那些表格、報告、SOP 都留在台灣，行李箱只裝得下期待。","總是為了別人忙得團團轉，Day 5 的暖爐馬車是專門為你們慢下來的。","不管是鈴聲、呼叫器還是電話聲，都比不上弘前雪地裡的寂靜好聽。"],
-                    evening: ["每天都在講話安撫別人，去金森紅磚倉庫時，我們試著安靜地看著夕陽就好.","你的耐心餘額已不足？沒關係，函館的百萬夜景會幫你充值。"],
-                    rest: ["總是聽別人的煩惱，這次換聽聽津輕海峽的海浪聲吧。","知道你肩膀很重，所以我們安排了溫泉，把那些責任都洗掉。"]
-                }
+                    { day: 6, date: "02.07", week: "SAT", heroTitle: "踏著雪花滿載而歸", heroImg: "https://i.imgur.com/edlDbD7.jpg", fallbackImg: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=800", weather: { icon: "fa-spinner fa-spin", temp: "Loading..." }, events: [ { time: "08:00", title: "最後享受：早餐/溫泉", tag: "Relax", desc: "推薦元湯。", detail: "【導遊筆記】離別前的最後一泡. 推薦去飯店園區入口處的「元湯」。", location: "Aomoriya Motoyu" }, { time: "10:00", title: "移動：前往青森機場", tag: "Drive", desc: "準時出發。", detail: "【導遊筆記】最後一次提醒：冬季趕飛機，傳可早到三小時，不可晚到一分鐘。", transport_info: { type: "自駕", time_estimate: "2.5小時" }, from: "Hoshino Resorts Aomoriya", to: "Aomori Airport" }, { time: "12:00", title: "機場周邊：午餐/加油", tag: "Food", desc: "加滿油。", detail: "【導遊筆記】進機場前最後一項任務：加滿油。", location: "Aomori Airport Area" }, { time: "12:30", title: "青森機場還車", tag: "Transport", desc: "檢查車況。", detail: "【導遊筆記】還車時，工作人員會檢查外觀。", location: "Aomori Airport Car Rental" }, { time: "13:00", title: "機場報到 (AOJ)", tag: "Transport", desc: "辦理登機。", detail: "【導遊筆記】青森機場小而美。", location: "Aomori Airport" }, { time: "13:30", title: "最後採買", tag: "Shopping", desc: "機場 2F 免稅店。", detail: "【導遊筆記】這裡是最後衝刺區！必買整顆蘋果、Patissier's 蘋果派、源垂燒肉醬。", location: "Aomori Airport Duty Free" }, { time: "15:30", title: "搭機返台", tag: "Flight", desc: "BR 121。", detail: "【導遊筆記】飛機起飛時，請往下看，那片白雪覆蓋的大地、八甲田山的輪廓、陸奧灣的深藍，將是您這趟旅程最美的句點. 辛苦了！", reservation_info: { type: "Flight", number: "BR121", departure: "15:30" }, location: "Aomori Airport" } ] }
+                ]
             },
             Utils: {
                 getPrinterDom: () => ({
@@ -1116,12 +1184,12 @@
                     const minutes = String(now.getMinutes()).padStart(2, '0');
                     return `${year}.${month}.${day} ${hours}:${minutes}`;
                 },
-                fetchRetry: async (url, options, retries = 3) => {
+                fetchRetry: async (url, options, retries = 5) => {
                     for (let i = 0; i < retries; i++) {
                         try {
                             const response = await fetch(url, options);
                             if (response.status === 429) { 
-                                await new Promise(r => setTimeout(r, Math.pow(2, i) * 1000 + Math.random() * 1000));
+                                await new Promise(r => setTimeout(r, Math.pow(2, i) * 1000));
                                 continue;
                             }
                             if (!response.ok) throw new Error(`API failed: ${await response.text()}`);
@@ -1302,7 +1370,6 @@
                             App.Utils.vibrate(40);
                         }
                     },
-                    // FIX: Updated saveNote to handle automatic parameter gathering and UI transition
                     saveNote: async () => {
                         const id = App.State.currentEventId;
                         const inputEl = document.getElementById('m-note-input');
@@ -1320,19 +1387,12 @@
                         try {
                             const rawText = inputEl.value;
                             const processedText = rawText.replace(/\n/g, '<br>');
-                            
-                            // 儲存到 Firebase
                             await setDoc(doc(App.State.notesRef, id), { 
                                 text: processedText, 
                                 updatedAt: serverTimestamp() 
                             });
-
-                            // 更新本地快取，讓 UI 即時反應
                             App.State.localNotes[id] = processedText;
-                            
                             App.Utils.showToast("📝 筆記已儲存");
-                            
-                            // 切換回閱讀模式
                             App.Controllers.Trip.toggleEditNote(); 
                         } catch (error) {
                             console.error("Save Note Error:", error);
@@ -1386,43 +1446,124 @@
                         }
                     }
                 },
-                Translator: {
-                    translate: async (input) => {
-                        if(!App.Config.settings.ai.enabled) return "AI Disabled";
+                Gemini: {
+                    call: async (promptText) => {
+                        if (!App.Config.settings.ai.enabled) return null;
+                        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+                        
                         try {
-                            const key = App.Config.settings.ai.key || "";
-                            if(!key) return "Please set API Key";
-                            const refinedPrompt = `你現在是一位專業的隨身旅遊翻譯官。請將以下中文翻譯成日文，並附上羅馬拼音。規則：1. 只輸出日文翻譯與羅馬拼音。2. 格式嚴格要求：[日文原文] \n [羅馬拼音] 3. 不要包含任何解釋、備註、問候語。4. 使用禮貌體。待翻譯文字：${input}`;
-                            const res = await App.Utils.fetchRetry(App.Config.TRANSLATE_URL + key, {
+                            const response = await App.Utils.fetchRetry(url, {
                                 method: 'POST',
-                                headers: {'Content-Type': 'application/json'},
-                                body: JSON.stringify({ contents: [{ parts: [{ text: refinedPrompt }] }] })
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    contents: [{ parts: [{ text: promptText }] }]
+                                })
                             });
-                            const json = await res.json();
-                            return json.candidates?.[0]?.content?.parts?.[0]?.text;
-                        } catch (e) { return "Error"; }
-                    },
-                    fetchAdvice: async () => {
-                        const widget = document.getElementById('ai-pill-text');
-                        widget.innerText = "Thinking...";
-                        try {
-                            const key = App.Config.settings.ai.key || "";
-                            if(!key) { widget.innerText = "No API Key"; return; }
+                            const result = await response.json();
+                            let text = result.candidates?.[0]?.content?.parts?.[0]?.text;
+                            
+                            if(text) {
+                                // 強化的文字清洗：移除所有日文字元、Markdown 標記、括號
+                                text = text.replace(/[ぁ-んァ-ン*#>`\-—（）()]/g, '').trim();
+                                text = text.replace(/^(好的|我是導遊|貼心建議|祝您旅途愉快)[，。, ]*/, '');
+                            }
+                            return text;
+                        } catch (error) {
+                            console.error("Gemini Unified Error:", error);
+                            return null;
+                        }
+                    }
+                },
+                SmartGuide: {
+                    fetchAdvice: async (isIntro = false) => {
+                        if(!App.Config.settings.guide.enabled && !isIntro) return;
+
+                        const widget = document.getElementById('ai-guide-widget');
+                        const brand = document.getElementById('brand-logo');
+                        const pillText = document.getElementById('ai-pill-text');
+                        const introText = document.getElementById('dynamic-intro-text');
+                        
+                        // 1. 首頁瞬發 Fallback
+                        if (isIntro) {
+                            const fallbacks = App.State.fallbackIntroMessages;
+                            introText.innerText = fallbacks[Math.floor(Math.random() * fallbacks.length)];
+                            introText.style.opacity = 1;
+                        }
+
+                        // 2. 智慧預載快取優先
+                        if (!isIntro && App.State.cachedAdvice) {
+                            const currentAdvice = App.State.cachedAdvice;
+                            pillText.innerText = currentAdvice;
+                            App.State.cachedAdvice = ""; 
+                            
+                            brand.classList.add('displaced');
+                            widget.classList.remove('hidden');
+                            setTimeout(() => widget.classList.add('visible'), 50);
+                            
+                            if(App.State.guideResetTimer) clearTimeout(App.State.guideResetTimer);
+                            const displayMs = (App.Config.settings.guide_seconds || 10) * 1000;
+                            App.State.guideResetTimer = setTimeout(() => {
+                                widget.classList.remove('visible');
+                                setTimeout(() => {
+                                    widget.classList.add('hidden');
+                                    brand.classList.remove('displaced');
+                                }, 500);
+                            }, displayMs);
+
+                            App.Services.SmartGuide.preFetchNext();
+                            return;
+                        }
+
+                        // 3. 背景生成動態語句
+                        const now = App.Config.settings.sim.enabled && App.Config.settings.sim.time ? new Date(App.Config.settings.sim.time) : new Date();
+                        const tripStart = new Date(App.Config.TRIP_START_DATE);
+                        const daysLeft = Math.ceil((tripStart - now) / (1000 * 60 * 60 * 24));
+                        const hours = now.getHours();
+                        const timeTag = hours < 6 ? "深夜" : hours < 11 ? "清晨" : hours < 14 ? "正午" : hours < 18 ? "傍晚" : "夜晚";
+
+                        let prompt = "";
+                        const style = "語氣要幽默、風趣、溫暖又貼心。禁止提到洗手間、垃圾桶。絕對禁止日文。禁止Markdown符號。使用台灣繁體中文。";
+                        
+                        if (isIntro) {
+                            prompt = `你是風趣的旅伴。現在是${timeTag}，旅程還有 ${daysLeft} 天。請針對「期待出發」的心情，寫一段幽默開場白。限 30 字內。${style}`;
+                        } else if (now < tripStart) {
+                            prompt = `你是深度在地導遊。現在是${timeTag}，距離出發還有 ${daysLeft} 天。請給予一句貼心的行前叮嚀。限 25 字內。${style}`;
+                        } else {
                             const dayIdx = App.State.currentDayIndex;
                             const dayInfo = App.Data.Trip[dayIdx];
-                            const prompt = `You are a tour guide. Today is ${dayInfo.date}, location is ${dayInfo.heroTitle}. Weather is ${dayInfo.weather.temp}. Give a 15-word practical advice for a tourist now. Language: Traditional Chinese.`;
-                            const res = await App.Utils.fetchRetry(App.Config.TRANSLATE_URL + key, {
-                                method: 'POST',
-                                headers: {'Content-Type': 'application/json'},
-                                body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
-                            });
-                            const json = await res.json();
-                            const advice = json.candidates?.[0]?.content?.parts?.[0]?.text;
-                            if(advice) {
-                                widget.innerText = advice.replace(/\n/g, ' ');
-                                App.Utils.showToast("💡 導遊建議已更新");
-                            } else { widget.innerText = "AI Busy..."; }
-                        } catch(e) { widget.innerText = "AI Error"; }
+                            prompt = `你是日本導遊。現在是${timeTag}，今日主題 ${dayInfo.heroTitle}，氣溫 ${dayInfo.weather.temp}。請給予一句貼心的建議。限 25 字內。${style}`;
+                        }
+                        
+                        const advice = await App.Services.Gemini.call(prompt);
+                        if(advice) {
+                            if (isIntro) {
+                                introText.style.opacity = 0;
+                                setTimeout(() => {
+                                    introText.innerText = advice;
+                                    introText.style.opacity = 1;
+                                }, 500);
+                            } else {
+                                pillText.innerText = advice;
+                                brand.classList.add('displaced');
+                                widget.classList.remove('hidden');
+                                setTimeout(() => widget.classList.add('visible'), 50);
+                                App.Services.SmartGuide.preFetchNext();
+                            }
+                        }
+                    },
+                    preFetchNext: async () => {
+                        const now = App.Config.settings.sim.enabled && App.Config.settings.sim.time ? new Date(App.Config.settings.sim.time) : new Date();
+                        const tripStart = new Date(App.Config.TRIP_START_DATE);
+                        const style = "語氣貼心，限 25 字，禁止日文，禁止生理需求话题。只輸出文字內容。";
+                        let prompt = "";
+                        if (now < tripStart) {
+                            prompt = `身為在地導遊，請準備一段行前貼心叮嚀供之後顯示。${style}`;
+                        } else {
+                            const dayInfo = App.Data.Trip[App.State.currentDayIndex];
+                            prompt = `身為青森與函館導遊，針對主題「${dayInfo.heroTitle}」準備一段貼心的旅遊小撇步。${style}`;
+                        }
+                        const advice = await App.Services.Gemini.call(prompt);
+                        if(advice) App.State.cachedAdvice = advice;
                     }
                 }
             },
@@ -1454,8 +1595,9 @@
                         setInterval(App.Controllers.Trip.checkActiveEvent, 60000);
                         App.Controllers.Trip.checkActiveEvent();
                         document.getElementById('header-date').innerText = App.Utils.getFormattedTime();
-                        if(App.Config.settings.ai.enabled && App.Config.settings.ai.key) {
-                            document.getElementById('ai-guide-widget').classList.add('visible');
+                        
+                        if(App.Config.settings.ai.enabled && App.Config.settings.guide.enabled) {
+                            App.Services.SmartGuide.fetchAdvice(); 
                         }
                     },
                     switchView: (view, btn) => {
@@ -1471,8 +1613,30 @@
                         window.scrollTo(0,0);
                     },
                     askAiGuide: () => {
+                        if(!App.Config.settings.guide.enabled) return;
                         App.Utils.vibrate(50);
-                        App.Services.Translator.fetchAdvice();
+                        App.Services.SmartGuide.fetchAdvice();
+                    },
+                    getAiInsight: async () => {
+                        const btn = document.getElementById('ai-insight-btn');
+                        const result = document.getElementById('ai-insight-result');
+                        const eventTitle = document.getElementById('m-title').innerText;
+                        
+                        btn.disabled = true;
+                        btn.innerText = "✨ 導遊撰寫中...";
+                        result.classList.remove('hidden');
+                        result.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> 正在翻閱在地景點秘辛...";
+
+                        const prompt = `你是一位深度在地導遊，請針對「${eventTitle}」這個景點，提供大約 100 字左右的文化解析或在地秘辛。語氣要溫暖貼心。禁止日文。嚴格禁止提到洗手間。`;
+                        const res = await App.Services.Gemini.call(prompt);
+                        
+                        if(res) {
+                            result.innerHTML = res.replace(/\n/g, '<br>');
+                        } else {
+                            result.innerHTML = "導遊正在雪地裡迷路，請稍後再試。";
+                        }
+                        btn.disabled = false;
+                        btn.innerText = "✨ 智慧導遊深度解析";
                     },
                     translateNow: async () => {
                         const input = document.getElementById('trans-input').value;
@@ -1483,7 +1647,10 @@
                         outputBox.classList.remove('hidden');
                         zhEl.innerText = input;
                         resultEl.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> 翻譯中...";
-                        const res = await App.Services.Translator.translate(input);
+                        
+                        const refinedPrompt = `你現在是一位專業的隨身旅遊翻譯官。請將以下中文翻譯成日文，並附上羅馬拼音。格式要求：[日文原文] \n [羅馬拼音]。只輸出翻譯內容。待翻譯文字：${input}`;
+                        const res = await App.Services.Gemini.call(refinedPrompt);
+                        
                         if (res && res.includes('\n')) {
                             const parts = res.split('\n');
                             const jp = parts[0].trim();
@@ -1514,9 +1681,7 @@
                     },
                     closeFs: () => document.getElementById('fs-text-modal').classList.remove('active'),
                     startDynamicText: () => {
-                        const msgs = App.Data.Messages.rest;
-                        document.getElementById('dynamic-intro-text').innerText = msgs[Math.floor(Math.random()*msgs.length)];
-                        document.getElementById('dynamic-intro-text').style.opacity = 1;
+                        App.Services.SmartGuide.fetchAdvice(true);
                     },
                     updateSimTimeFromInputs: () => {
                         const day = document.getElementById('inp-sim-day').value;
@@ -1588,10 +1753,9 @@
                         document.getElementById('m-title').innerText = data.title;
                         document.getElementById('m-tag').innerText = data.tag;
                         document.getElementById('m-img').src = data.img || App.Data.Trip[di].heroImg;
-                        
-                        // 確保開啟 Modal 時顯示內容為正確模式
                         document.getElementById('m-desc').classList.remove('hidden');
                         document.getElementById('m-note-edit').classList.add('hidden');
+                        document.getElementById('ai-insight-result').classList.add('hidden');
                         
                         App.Controllers.Trip.updateModalNoteContent(data.detail);
                         document.getElementById('detail-modal').classList.add('active');
@@ -1665,18 +1829,38 @@
                         const updateUI = (key, obj) => {
                             const btn = document.getElementById('tg-'+key); const inp = document.getElementById('inp-'+key); const st = document.getElementById('st-'+key);
                             if(btn) { btn.innerHTML = obj.enabled ? '<i class="fa-solid fa-toggle-on"></i>' : '<i class="fa-solid fa-toggle-off"></i>'; btn.classList.toggle('on', obj.enabled); }
-                            if(inp) { inp.classList.toggle('visible', obj.enabled); if(key !== 'sim') inp.value = (key==='ex') ? obj.manual : obj.key; }
+                            if(inp) { inp.classList.toggle('visible', obj.enabled); if(key !== 'sim' && key !== 'guide' && key !== 'guide_seconds') inp.value = (key==='ex') ? obj.manual : obj.key; }
                             if(st) st.className = `setting-status ${obj.enabled?'ok':'err'}`;
                         };
-                        ['gm','ai','ex','wt','vib','sim'].forEach(k => updateUI(k, set[k]));
+                        ['gm','ai','ex','wt','vib','sim','guide'].forEach(k => updateUI(k, set[k]));
+                        if(document.getElementById('inp-guide-seconds')) document.getElementById('inp-guide-seconds').value = set.guide_seconds;
                         if(document.getElementById('inp-ex-manual')) document.getElementById('inp-ex-manual').value = set.ex.manual;
-                        if(set.sim.enabled) {
-                            document.getElementById('sim-input-group').classList.remove('hidden');
-                            if(set.sim.time) {
-                                const [d, t] = set.sim.time.split('T');
-                                document.getElementById('inp-sim-day').value = d; document.getElementById('inp-sim-time-only').value = t.substring(0,5);
-                            }
+                    },
+                    analyzeSpending: async () => {
+                        const btn = document.getElementById('ai-wallet-analyze-btn');
+                        const result = document.getElementById('ai-wallet-result');
+                        
+                        if(App.State.receiptsData.length === 0) {
+                            App.Utils.showToast("目前還沒有消費紀錄可以分析喔！");
+                            return;
                         }
+
+                        btn.disabled = true;
+                        btn.innerText = "分析中...";
+                        result.classList.remove('hidden');
+                        result.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> 正在審閱帳單...";
+
+                        const spendData = App.State.receiptsCache.spend.map(r => `${r.user}: ${r.item} (¥${r.jpy})`).join('\n');
+                        const prompt = `你是一位旅遊理財管家。以下是目前的消費清單：\n${spendData}\n請針對這些消費提供大約 80 字的分析與建議。請用親切繁體中文，絕對不要出現任何日文或標記符號。只輸出純文字內容。`;
+                        
+                        const res = await App.Services.Gemini.call(prompt);
+                        if(res) {
+                            result.innerHTML = `<strong>✨ 智慧點評：</strong><br>${res.replace(/\n/g, '<br>')}`;
+                        } else {
+                            result.innerHTML = "暫時無法分析，導遊正在休息中。";
+                        }
+                        btn.disabled = false;
+                        btn.innerText = "✨ 智慧帳務分析";
                     },
                     toggleSetting: (key) => {
                         if(key === 'ex_manual') return; 
@@ -1686,11 +1870,17 @@
                         if(key === 'wt') App.Services.Weather.fetch();
                         if(key === 'ex') App.Controllers.Wallet.fetchExchangeRate();
                         if(key === 'gm') App.Controllers.Trip.renderFullTripMap();
+                        if(key === 'guide' && !App.Config.settings.guide.enabled) {
+                            document.getElementById('ai-guide-widget').classList.remove('visible');
+                            setTimeout(()=>document.getElementById('ai-guide-widget').classList.add('hidden'), 500);
+                            document.getElementById('brand-logo').classList.remove('displaced');
+                        }
                     },
                     saveApiSetting: (key, val) => {
                         const set = App.Config.settings;
                         if(key === 'ex_manual') { set.ex.manual = parseFloat(val); }
                         else if (key === 'sim_time') { set.sim.time = val; }
+                        else if (key === 'guide_seconds') { set.guide_seconds = parseInt(val); }
                         else { set[key].key = val; }
                         localStorage.setItem('appSettings', JSON.stringify(set));
                         if(key === 'ex_manual') App.Controllers.Wallet.fetchExchangeRate(); 
@@ -1727,14 +1917,11 @@
                         App.State.currentMode = mode;
                         document.querySelectorAll('.mode-tab').forEach(b => b.classList.remove('active'));
                         document.querySelectorAll('.mode-tab')[mode==='spend'?0:mode==='todo'?1:2].classList.add('active');
-                        
                         const slotPrice = document.getElementById('slot-price'); 
                         const inputItem = document.getElementById('input-item'); 
                         const btn = document.getElementById('print-btn');
-                        
                         inputItem.value = ''; 
                         document.getElementById('input-price').value = '';
-                        
                         if (mode === 'spend') { 
                             slotPrice.classList.remove('hidden'); inputItem.placeholder = 'ITEM NAME'; btn.innerHTML = '<span>PRINT</span>'; document.getElementById('total-section').style.display = 'block'; 
                         } else if (mode === 'todo') { 
@@ -1742,7 +1929,6 @@
                         } else if (mode === 'memo') { 
                             slotPrice.classList.add('hidden'); inputItem.placeholder = 'WRITE A NOTE...'; btn.innerHTML = '<span>POST</span>'; document.getElementById('total-section').style.display = 'none'; 
                         }
-                        
                         App.Controllers.Wallet.updateActionButtonUI();
                         App.Controllers.Wallet.renderReceiptList();
                     },
@@ -1753,7 +1939,6 @@
                         let label = "";
                         let icon = "";
                         let active = false;
-
                         if (mode === 'spend') {
                             label = `VIEW: ${App.State.viewCurrency}`;
                             icon = '<i class="fa-solid fa-eye"></i> ';
@@ -1768,7 +1953,6 @@
                             icon = '<i class="fa-solid fa-user"></i> ';
                             active = App.State.memoFilter !== 'all';
                         }
-                        
                         txt.innerText = label;
                         btn.innerHTML = icon + `<span id="dynamic-btn-text">${label}</span>`;
                         btn.classList.toggle('active-filter', active);
@@ -1805,21 +1989,17 @@
                         const mode = App.State.currentMode; 
                         const anchor = document.getElementById('receipt-items-anchor');
                         anchor.innerHTML = ""; 
-                        
                         let data = App.State.receiptsData.filter(d => (d.type || 'spend') === mode);
-                        
                         if (mode === 'todo') {
                             if (App.State.todoFilter === 'pending') data = data.filter(d => !d.done);
                             else if (App.State.todoFilter === 'done') data = data.filter(d => d.done);
                         } else if (mode === 'memo') {
                             if (App.State.memoFilter !== 'all') data = data.filter(d => d.user === App.State.memoFilter);
                         }
-
                         const user = App.State.currentUser; 
                         const topLabel = document.getElementById('top-total-label'); 
                         const topAmount = document.getElementById('top-total-amount'); 
                         const topSub = document.getElementById('top-total-sub');
-                        
                         if(mode === 'spend') {
                             let myTotal = 0, allTotal = 0, allJpy = 0, allTwd = 0;
                             data.forEach(d => {
@@ -1829,12 +2009,10 @@
                                 allJpy += d.jpy;
                                 allTwd += (d.twd || Math.round(d.jpy * App.State.rate));
                             });
-
                             const sym = App.State.viewCurrency === 'TWD' ? 'TWD ' : '¥';
                             topLabel.innerText = "TRIP TOTAL"; 
                             topAmount.innerText = sym + allTotal.toLocaleString(); 
                             topSub.innerText = App.State.viewCurrency === 'TWD' ? `≈ ¥ ${allJpy.toLocaleString()}` : `≈ TWD ${allTwd.toLocaleString()}`;
-
                             document.getElementById('personal-total').innerText = sym + myTotal.toLocaleString(); 
                             document.getElementById('trip-total').innerText = sym + allTotal.toLocaleString(); 
                             document.getElementById('total-label').innerText = `TOTAL (${user})`;
@@ -1843,7 +2021,6 @@
                         } else if (mode === 'memo') {
                             topLabel.innerText = "MEMO COUNT"; topAmount.innerText = `TOTAL ${data.length}`; topSub.innerText = `FILTER: ${App.State.memoFilter}`;
                         }
-                        
                         anchor.innerHTML = data.map((r, i) => {
                             const isNew = (animateNew && i === 0) || forceAllAnim ? 'new-item' : '';
                             if (mode === 'spend') { 
@@ -1878,12 +2055,21 @@
                 window.deleteItem = App.Services.Firebase.deleteItem; window.toggleTodo = App.Services.Firebase.toggleTodo; window.toggleSetting = App.Controllers.Wallet.toggleSetting;
                 window.saveApiSetting = App.Controllers.Wallet.saveApiSetting; window.askAiGuide = App.Controllers.UI.askAiGuide; window.updateSimTimeFromInputs = App.Controllers.UI.updateSimTimeFromInputs;
                 window.handleDynamicAction = App.Controllers.UI.handleDynamicAction;
+                window.getAiInsight = App.Controllers.UI.getAiInsight; window.analyzeSpending = App.Controllers.Wallet.analyzeSpending;
 
                 App.Controllers.UI.createSnow(); await App.Services.Firebase.init();
                 const diff = Math.ceil((new Date("2026-02-02") - new Date()) / (1000 * 60 * 60 * 24));
                 document.getElementById('days-left').innerText = diff > 0 ? diff : 0;
                 document.getElementById('header-days').innerText = diff > 0 ? diff : 0;
-                setTimeout(App.Controllers.UI.startDynamicText, 1000);
+                
+                // 首頁小語啟動
+                App.Controllers.UI.startDynamicText();
+                
+                // 智慧導覽助手：第一句預載快取
+                if(App.Config.settings.ai.enabled) {
+                    App.Services.SmartGuide.preFetchNext();
+                }
+
                 const savedUser = localStorage.getItem('defaultUser');
                 if(savedUser) { App.State.currentUser = savedUser; document.querySelectorAll('.u-btn').forEach(b => { if(b.innerText === savedUser) { document.querySelectorAll('.u-btn').forEach(btn=>btn.classList.remove('active')); b.classList.add('active'); } }); }
             }
