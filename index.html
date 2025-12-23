@@ -330,7 +330,6 @@
             100% { box-shadow: 0 0 5px rgba(180, 155, 103, 0.1); }
         }
         .active-event .event-card {
-            /* border: 1px solid rgba(180, 155, 103, 0.5); // Optional: Subtle border */
             animation: subtleBreath 3s infinite ease-in-out;
             background: rgba(255, 255, 255, 1); 
             transform: scale(1.02);
@@ -379,13 +378,13 @@
             border-radius: 4px; 
             background: #F8F8F8; 
             border-left: 4px solid var(--accent-gold);
-            word-break: break-word; /* Prevent layout breaking */
+            word-break: break-word; 
             overflow-wrap: break-word;
         }
 
         #trans-jp-result {
             font-family: var(--font-serif);
-            font-size: 1.6rem; /* Increased size */
+            font-size: 1.6rem; 
             color: var(--accent-main);
             margin-top: 10px;
             font-weight: 600;
@@ -475,7 +474,8 @@
         .modal-content { padding: 0 20px; }
         
         .note-edit-area { width: 100%; padding: 10px; border: 1px solid var(--accent-gold); border-radius: 4px; font-family: var(--font-sans); margin-bottom: 10px; font-size: 1rem; line-height: 1.5; }
-        .note-save-btn { background: var(--accent-gold); color: white; border: none; padding: 8px 20px; border-radius: 4px; cursor: pointer; font-size: 0.9rem; }
+        .note-save-btn { background: var(--accent-gold); color: white; border: none; padding: 8px 20px; border-radius: 4px; cursor: pointer; font-size: 0.9rem; transition: opacity 0.3s; }
+        .note-save-btn:disabled { opacity: 0.6; cursor: not-allowed; }
         .snowflake-icon { color: #B49B67; font-size: 1.1rem; cursor: pointer; margin-left: 10px; transition: transform 0.3s; display: inline-block; }
         .snowflake-icon:hover { transform: rotate(45deg); }
 
@@ -522,11 +522,9 @@
         .machine-label { font-family: 'Share Tech Mono', monospace; color: var(--receipt-gold); font-size: 0.65rem; letter-spacing: 2px; text-transform: uppercase; }
         .header-right-group { display: flex; align-items: center; gap: 12px; }
         .rate-display { font-family: 'Share Tech Mono', monospace; color: rgba(197, 168, 112, 0.5); font-size: 0.65rem; letter-spacing: 1px; }
-        .rate-label-default { font-size: 0.5em; opacity: 0.7; margin-left: 4px; background: rgba(255,69,58,0.2); padding: 1px 3px; border-radius: 2px; color: #FF453A; }
         .status-light { width: 6px; height: 6px; border-radius: 50%; transition: background-color 0.3s, box-shadow 0.3s; }
         .status-light.online { background-color: var(--status-green); box-shadow: 0 0 8px var(--status-green); }
         .status-light.offline { background-color: var(--status-red); box-shadow: 0 0 8px var(--status-red); }
-        .status-light.processing { background-color: var(--status-orange); box-shadow: 0 0 10px var(--status-orange); }
         .mode-tabs { display: flex; background: #1a2033; padding: 4px; border-radius: 8px; margin-bottom: 15px; border: 1px solid rgba(0,0,0,0.2); }
         .mode-tab { flex: 1; background: transparent; border: none; color: #888; padding: 8px 0; font-family: 'Share Tech Mono', monospace; font-size: 0.7rem; cursor: pointer; transition: 0.2s; border-radius: 6px; text-transform: uppercase; letter-spacing: 1px; }
         .mode-tab.active { background: var(--receipt-gold); color: var(--machine-dark); font-weight: 700; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
@@ -534,8 +532,6 @@
         .settings-toggle:hover, .settings-toggle.active { color: var(--receipt-gold); transform: rotate(90deg); }
         .settings-panel { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; background: rgba(0,0,0,0.2); border-radius: 6px; margin-bottom: 0; }
         .settings-panel.open { max-height: 600px; margin-bottom: 15px; padding: 10px; }
-        .adv-setting-group { margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px; }
-        .adv-label { font-family:'Share Tech Mono'; color:#888; font-size:0.7rem; margin-bottom:8px; display:block; text-transform:uppercase; letter-spacing:1px; }
         .setting-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
         .setting-name { color: #ccc; font-size: 0.8rem; display: flex; align-items: center; gap: 8px; }
         .setting-status { width: 6px; height: 6px; border-radius: 50%; background: #444; }
@@ -571,18 +567,17 @@
         .print-btn:active { transform: translateY(4px); box-shadow: 0 1px 0 #5e4d2b; }
         .print-btn.processing { opacity: 0.8; cursor: wait; pointer-events: none; color: rgba(43,43,43, 0.6); }
         
-        /* New View Switch Button Style */
         .view-switch-btn {
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.2);
             color: #888;
             font-family: 'Share Tech Mono', monospace;
-            font-size: 0.75rem; /* Slightly smaller for 'VIEW:' prefix */
+            font-size: 0.75rem;
             padding: 0 20px;
             border-radius: 4px;
             cursor: pointer;
             transition: all 0.2s;
-            height: 45px; /* Match print btn height */
+            height: 45px; 
             display: flex;
             align-items: center;
             justify-content: center;
@@ -598,7 +593,7 @@
         .delete-underlay { position: absolute; top: 0; bottom: 0; right: 0; width: 100%; background-color: var(--apple-red); display: flex; align-items: center; justify-content: flex-end; padding-right: 25px; z-index: 1; color: white; font-size: 1.2rem; opacity: 0; transition: opacity 0.2s; }
         .receipt-entry.reveal-delete .delete-underlay { opacity: 1; }
         .receipt-entry.reveal-delete .receipt-content { transform: translate3d(-80px, 0, 0); }
-        .receipt-entry.new-item { animation: printSlideOut 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; } /* Sped up animation */
+        .receipt-entry.new-item { animation: printSlideOut 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; } 
         .receipt-entry.tearing .receipt-content { transition: transform 0.4s ease-in, opacity 0.3s ease-in; transform: translate3d(-120%, 0, 0) rotate(-10deg); opacity: 0; }
         .receipt-entry.tearing { max-height: 0; margin: 0; padding: 0; opacity: 0; }
         .receipt-entry.dimmed .receipt-content { opacity: 0.4; filter: grayscale(1); }
@@ -745,7 +740,6 @@
                     </div>
 
                     <div class="control-panel">
-                         <!-- Multi-purpose Dynamic Button -->
                         <button class="view-switch-btn" id="dynamic-action-btn" onclick="window.handleDynamicAction()">
                             <i class="fa-solid fa-eye"></i> <span id="dynamic-btn-text">VIEW: JPY</span>
                         </button>
@@ -852,13 +846,11 @@
                     </summary>
                     <div style="margin-top:15px;">
                         
-                        <!-- 震動反饋控制 -->
                         <div class="setting-row light-theme">
                             <div class="setting-name"><div class="setting-status" id="st-vib"></div> Haptic Feedback</div>
                             <button class="toggle-btn" id="tg-vib" onclick="window.toggleSetting('vib')"><i class="fa-solid fa-toggle-off"></i></button>
                         </div>
 
-                        <!-- 時光機模擬 -->
                         <div class="setting-row light-theme">
                             <div class="setting-name"><div class="setting-status" id="st-sim"></div> Simulation Mode (2026)</div>
                             <button class="toggle-btn" id="tg-sim" onclick="window.toggleSetting('sim')"><i class="fa-solid fa-toggle-off"></i></button>
@@ -1022,7 +1014,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, query, onSnapshot, addDoc, serverTimestamp, setDoc, doc, deleteDoc, updateDoc, setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // ==========================================
@@ -1036,14 +1028,13 @@
                 TRIP_START_DATE: "2026-02-02",
                 EXCHANGE_RATE_API: 'https://api.exchangerate-api.com/v4/latest/JPY',
                 
-                // Dynamic Settings stored in localStorage
                 settings: {
                     gm: { enabled: true, key: "" },
                     ai: { enabled: true, key: "" },
                     ex: { enabled: true, manual: 0.22 },
                     wt: { enabled: true },
-                    vib: { enabled: false }, // 震動反饋，預設關閉
-                    sim: { enabled: false, time: "" } // Simulation Mode
+                    vib: { enabled: false }, 
+                    sim: { enabled: false, time: "" } 
                 }
             },
             State: {
@@ -1052,9 +1043,9 @@
                 rate: 0.22, isOnline: false, receiptCount: 1, receiptsData: [], receiptsCache: { spend:[], todo:[], memo:[] }, 
                 currentUser: '奎', isTopFeedExpanded: false, currentCurrency: 'JPY', currentMode: 'spend',
                 currentQuantity: 1,
-                viewCurrency: 'JPY', // State for SPEND view
-                todoFilter: 'all',  // State for TODO filter: all, pending, done
-                memoFilter: 'all',  // State for MEMO filter: all, 奎, 愉, 舜
+                viewCurrency: 'JPY', 
+                todoFilter: 'all',  
+                memoFilter: 'all',  
                 checkoutState: { pay: '現金', split: '一起' }
             },
             Data: {
@@ -1197,7 +1188,6 @@
                                                 : firebaseConfig;
 
                             if (!configToUse.apiKey || configToUse.apiKey === "YOUR_API_KEY_HERE") {
-                                console.warn("Firebase Config not set yet.");
                                 App.Utils.setDiag('st-fb', false);
                                 return;
                             }
@@ -1312,10 +1302,45 @@
                             App.Utils.vibrate(40);
                         }
                     },
-                    saveNote: async (id, text) => {
-                        if (!id || !App.State.notesRef) return;
-                        await setDoc(doc(App.State.notesRef, id), { text: text.replace(/\n/g, '<br>'), updatedAt: serverTimestamp() });
-                        App.Utils.showToast("📝 筆記已儲存");
+                    // FIX: Updated saveNote to handle automatic parameter gathering and UI transition
+                    saveNote: async () => {
+                        const id = App.State.currentEventId;
+                        const inputEl = document.getElementById('m-note-input');
+                        const saveBtn = document.querySelector('.note-save-btn');
+                        
+                        if (!id || !App.State.notesRef || !inputEl) {
+                            App.Utils.showToast("⚠️ 無法取得筆記資訊");
+                            return;
+                        }
+
+                        const originalText = saveBtn.innerText;
+                        saveBtn.innerText = "儲存中...";
+                        saveBtn.disabled = true;
+
+                        try {
+                            const rawText = inputEl.value;
+                            const processedText = rawText.replace(/\n/g, '<br>');
+                            
+                            // 儲存到 Firebase
+                            await setDoc(doc(App.State.notesRef, id), { 
+                                text: processedText, 
+                                updatedAt: serverTimestamp() 
+                            });
+
+                            // 更新本地快取，讓 UI 即時反應
+                            App.State.localNotes[id] = processedText;
+                            
+                            App.Utils.showToast("📝 筆記已儲存");
+                            
+                            // 切換回閱讀模式
+                            App.Controllers.Trip.toggleEditNote(); 
+                        } catch (error) {
+                            console.error("Save Note Error:", error);
+                            App.Utils.showToast("❌ 儲存失敗，請檢查網路");
+                        } finally {
+                            saveBtn.innerText = originalText;
+                            saveBtn.disabled = false;
+                        }
                     }
                 },
                 Weather: {
@@ -1471,42 +1496,6 @@
                         document.getElementById('fs-cn').innerText = cn;
                         const ctrl = document.getElementById('fs-controls');
                         ctrl.innerHTML = '';
-                        if (type === 'toilet') {
-                            const btnM = document.createElement('button'); btnM.className='fs-ctrl-btn'; btnM.innerText='男廁';
-                            const btnF = document.createElement('button'); btnF.className='fs-ctrl-btn'; btnF.innerText='女廁';
-                            btnM.onclick = (e) => { e.stopPropagation(); document.getElementById('fs-jp').innerText='男性用お手洗いはどこですか？'; };
-                            btnF.onclick = (e) => { e.stopPropagation(); document.getElementById('fs-jp').innerText='女性用お手洗いはどこですか？'; };
-                            ctrl.appendChild(btnM); ctrl.appendChild(btnF);
-                        }
-                        if (type === 'reservation') {
-                            const types = { '租車':'レンタカー', '住宿':'宿泊', '活動':'アクティビティ' };
-                            Object.keys(types).forEach(k => {
-                                const b = document.createElement('button'); b.className='fs-ctrl-btn'; b.innerText=k;
-                                b.onclick = (e) => { e.stopPropagation(); document.getElementById('fs-jp').innerText=`${types[k]}の予約をしています。`; };
-                                ctrl.appendChild(b);
-                            });
-                        }
-                        if (type === 'checkout') {
-                            App.State.checkoutState = { pay: '現金', split: '一起' };
-                            const updateSentence = () => {
-                                const pay = App.State.checkoutState.pay === '現金' ? '現金' : 'カード';
-                                const split = App.State.checkoutState.split === '一起' ? '一緒' : '別々';
-                                document.getElementById('fs-jp').innerText = `${pay}で、${split}でお願いします。`;
-                            }
-                            const div1 = document.createElement('div'); div1.style.width='100%'; div1.style.display='flex'; div1.style.justifyContent='center'; div1.style.gap='10px'; div1.style.marginBottom='10px';
-                            const btnCash = document.createElement('button'); btnCash.className='fs-ctrl-btn active'; btnCash.innerText='現金';
-                            const btnCard = document.createElement('button'); btnCard.className='fs-ctrl-btn'; btnCard.innerText='刷卡';
-                            btnCash.onclick = (e) => { e.stopPropagation(); App.State.checkoutState.pay = '現金'; btnCash.classList.add('active'); btnCard.classList.remove('active'); updateSentence(); };
-                            btnCard.onclick = (e) => { e.stopPropagation(); App.State.checkoutState.pay = '刷卡'; btnCard.classList.add('active'); btnCash.classList.remove('active'); updateSentence(); };
-                            div1.appendChild(btnCash); div1.appendChild(btnCard);
-                            const div2 = document.createElement('div'); div2.style.width='100%'; div2.style.display='flex'; div2.style.justifyContent='center'; div2.style.gap='10px';
-                            const btnTogether = document.createElement('button'); btnTogether.className='fs-ctrl-btn active'; btnTogether.innerText='一起付';
-                            const btnSplit = document.createElement('button'); btnSplit.className='fs-ctrl-btn'; btnSplit.innerText='分開付';
-                            btnTogether.onclick = (e) => { e.stopPropagation(); App.State.checkoutState.split = '一起'; btnTogether.classList.add('active'); btnSplit.classList.remove('active'); updateSentence(); };
-                            btnSplit.onclick = (e) => { e.stopPropagation(); App.State.checkoutState.split = '分開'; btnSplit.classList.add('active'); btnTogether.classList.remove('active'); updateSentence(); };
-                            div2.appendChild(btnTogether); div2.appendChild(btnSplit);
-                            ctrl.appendChild(div1); ctrl.appendChild(div2); updateSentence(); 
-                        }
                         if (type === 'quantity') {
                             App.State.currentQuantity = 1;
                             const wrap = document.createElement('div'); wrap.className='fs-qty-ctrl';
@@ -1599,6 +1588,11 @@
                         document.getElementById('m-title').innerText = data.title;
                         document.getElementById('m-tag').innerText = data.tag;
                         document.getElementById('m-img').src = data.img || App.Data.Trip[di].heroImg;
+                        
+                        // 確保開啟 Modal 時顯示內容為正確模式
+                        document.getElementById('m-desc').classList.remove('hidden');
+                        document.getElementById('m-note-edit').classList.add('hidden');
+                        
                         App.Controllers.Trip.updateModalNoteContent(data.detail);
                         document.getElementById('detail-modal').classList.add('active');
                         document.querySelector('.modal-overlay').classList.add('active');
@@ -1611,7 +1605,8 @@
                     toggleEditNote: () => {
                         const view = document.getElementById('m-desc'), edit = document.getElementById('m-note-edit');
                         const isEdit = !edit.classList.contains('hidden');
-                        edit.classList.toggle('hidden', isEdit); view.classList.toggle('hidden', !isEdit);
+                        edit.classList.toggle('hidden', isEdit); 
+                        view.classList.toggle('hidden', !isEdit);
                     },
                     closeModal: () => {
                         document.getElementById('detail-modal').classList.remove('active');
@@ -1809,11 +1804,10 @@
                     renderReceiptList: (animateNew = false, forceAllAnim = false) => {
                         const mode = App.State.currentMode; 
                         const anchor = document.getElementById('receipt-items-anchor');
-                        anchor.innerHTML = ""; // Force clear DOM to prevent stale data
+                        anchor.innerHTML = ""; 
                         
                         let data = App.State.receiptsData.filter(d => (d.type || 'spend') === mode);
                         
-                        // Apply context filters
                         if (mode === 'todo') {
                             if (App.State.todoFilter === 'pending') data = data.filter(d => !d.done);
                             else if (App.State.todoFilter === 'done') data = data.filter(d => d.done);
